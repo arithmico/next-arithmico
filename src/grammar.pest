@@ -1,0 +1,132 @@
+main = _{ SOI ~ program ~ EOI }
+
+// program
+program = _{ statement+ }
+statement = {
+	(
+    	definition 
+    	| expression
+    ) ~ "\n"*
+}
+
+// definition
+definition = _{ 
+    | symbol_definition
+    | function_definition
+}
+symbol_definition = { symbol ~ ":=" ~ expression }
+function_definition = { 
+    function_definition_target
+    ~ function_definition_arguments?
+    ~ ")" 
+    ~ ":=" 
+    ~ expression
+}
+function_definition_target = ${ symbol ~ "(" }
+function_definition_arguments = { symbol ~ ("," ~ symbol)*}
+
+// expression
+expression = _{ 
+	| sum
+    | sum_item
+    | negate
+    | sub_expression
+}
+sub_expression = _{
+	"(" ~ expression ~ ")"
+}
+
+// algebraic operators
+// + -
+sum = { 
+	sum_item ~ (("+" ~ sum_item) | negate)+ 
+}
+negate = {
+	"-" ~ sum_item
+}
+sum_item = _{ 
+    | product
+    | product_item
+}
+
+// * /
+product = {
+	product_item ~ (division | multiplication)+
+}
+division = {
+	"/" ~ product_item
+}
+multiplication = {
+	"*"? ~ product_item
+}
+product_item = _{
+	| power
+    | power_item
+}
+
+// ^
+power = { power_item ~ "^" ~ power_item }
+power_item = _{
+	| vector
+    | vector_item
+}
+
+// vector
+vector = { 
+	"[" ~ 
+    (
+    	vector_item ~ (argument_separator ~ vector_item)*
+    )?
+    ~ "]"
+}
+vector_item = _{
+	| function_call
+    | function_call_item
+}
+
+// function call
+function_call = { 
+	function_call_target 
+    ~ function_call_arguments?
+    ~ function_call_end
+}
+function_call_target = ${ symbol ~ "("}
+function_call_end = _{ ")"}
+function_call_arguments = {
+	function_call_item
+    ~ (argument_separator ~ function_call_item)*
+}
+function_call_item = _{
+	| function_call
+	| sub_expression
+    | literal
+}
+
+// literal types
+literal = _{ number | boolean | symbol }
+
+symbol = @{ symbol_first_character ~ symbol_character* }
+symbol_first_character = _{ 'a'..'z' | 'A'..'Z' | "_" }
+symbol_character = _{ symbol_first_character | '0'..'9' }
+
+boolean = { "true" | "false" }
+
+number =  @{ float | integer }
+integer = _{ 
+	digit_zero 
+    | digit_non_zero ~ digit* 
+}
+float = _{
+	(digit_zero | digit_non_zero ~ digit*) 
+    ~ decimal_separator 
+    ~ digit+
+}
+
+digit = _{ digit_zero | digit_non_zero }
+digit_zero = _{ "0" }
+digit_non_zero = _{ '1'..'9' }
+
+// misc
+WHITESPACE = _{ " " }
+argument_separator = _{ "," }
+decimal_separator = _{ "." }
