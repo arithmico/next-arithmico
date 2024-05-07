@@ -51,15 +51,17 @@ sum_item = _{
 
 // * /
 product = {
-	product_item ~ (division | multiplication)+
-}
-division = {
-	"/" ~ product_item
-}
-multiplication = {
-	"*"? ~ product_item
+	product_item ~ ("*"? ~ product_item)+
 }
 product_item = _{
+	| division
+    | division_item
+}
+
+division = {
+	division_item ~ "/" ~ division_item
+}
+division_item = _{
 	| power
     | power_item
 }
@@ -80,9 +82,16 @@ vector = {
     ~ "]"
 }
 vector_item = _{
+    | function
 	| function_call
     | function_call_item
 }
+
+// function
+function = {
+    "(" ~ function_arguments ~ ")" ~ "->" ~ expression
+}
+function_arguments = { (symbol ~ (argument_separator ~ symbol)*)? }
 
 // function call
 function_call = { 
