@@ -1,50 +1,12 @@
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
 
+mod node;
+use node::Node;
+
 #[derive(Parser)]
 #[grammar = "grammar.pest"]
 pub struct ArithmicoParser;
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum Node {
-    Number {
-        value: f64,
-    },
-    Symbol {
-        name: String,
-    },
-    Boolean {
-        value: bool,
-    },
-    Negate {
-        value: Box<Node>,
-    },
-    Sum {
-        values: Vec<Node>,
-    },
-    Product {
-        values: Vec<Node>,
-    },
-    Division {
-        dividend: Box<Node>,
-        divisor: Box<Node>,
-    },
-    Power {
-        base: Box<Node>,
-        exponent: Box<Node>,
-    },
-    Vector {
-        values: Vec<Node>,
-    },
-    FunctionCall {
-        target: Box<Node>,
-        arguments: Vec<Node>,
-    },
-    Function {
-        arguments: Vec<String>,
-        expression: Box<Node>,
-    },
-}
 
 pub fn parse(input: &str) -> Node {
     let pairs = ArithmicoParser::parse(Rule::program, input)
