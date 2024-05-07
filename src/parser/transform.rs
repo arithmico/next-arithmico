@@ -93,10 +93,10 @@ pub fn transform(pair: Pair<Rule>) -> Node {
         }
         Rule::function_definition => {
             let mut inner_pairs = pair.into_inner();
-            let target_pair = inner_pairs.next().unwrap();
-            let target = match target_pair.as_rule() {
+            let symbol_pair = inner_pairs.next().unwrap();
+            let symbol = match symbol_pair.as_rule() {
                 Rule::function_definition_target => String::from(
-                    target_pair.into_inner().next().unwrap().as_str(),
+                    symbol_pair.into_inner().next().unwrap().as_str(),
                 ),
                 _ => unreachable!(),
             };
@@ -110,11 +110,20 @@ pub fn transform(pair: Pair<Rule>) -> Node {
             };
             let expression = transform(inner_pairs.next().unwrap());
             Node::Definition {
-                symbol: target,
+                symbol,
                 expression: Box::new(Node::Function {
                     arguments,
                     expression: Box::new(expression),
                 }),
+            }
+        }
+        Rule::symbol_definition => {
+            let mut inner_pairs = pair.into_inner();
+            let symbol = String::from(inner_pairs.next().unwrap().as_str());
+            let expression = transform(inner_pairs.next().unwrap());
+            Node::Definition {
+                symbol,
+                expression: Box::new(expression),
             }
         }
         _ => unreachable!(),
@@ -345,6 +354,18 @@ mod tests {
                         ]
                     })
                 })
+            }
+        );
+    }
+
+    #[test]
+    fn parse_symbol_definition() {
+        let result = parse_statement("x := 2");
+        assert_eq!(
+            result,
+            Node::Definition {
+                symbol: String::from("x"),
+                expression: Box::new(Node::Number { value: 2.0 })
             }
         );
     }
