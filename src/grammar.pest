@@ -17,13 +17,13 @@ definition = _{
 symbol_definition = { symbol ~ ":=" ~ expression }
 function_definition = { 
     function_definition_target
-    ~ function_definition_arguments?
+    ~ function_definition_arguments
     ~ ")" 
     ~ ":=" 
     ~ expression
 }
 function_definition_target = ${ symbol ~ "(" }
-function_definition_arguments = { symbol ~ ("," ~ symbol)*}
+function_definition_arguments = { (symbol ~ ("," ~ symbol)*)? }
 
 // expression
 expression = _{ 

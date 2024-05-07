@@ -37,4 +37,8 @@ pub enum Node {
         arguments: Vec<String>,
         expression: Box<Node>,
     },
+    Definition {
+        symbol: String,
+        expression: Box<Node>,
+    },
 }

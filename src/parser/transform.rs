@@ -91,6 +91,32 @@ pub fn transform(pair: Pair<Rule>) -> Node {
                 expression: Box::new(transform(expression)),
             }
         }
+        Rule::function_definition => {
+            let mut inner_pairs = pair.into_inner();
+            let target_pair = inner_pairs.next().unwrap();
+            let target = match target_pair.as_rule() {
+                Rule::function_definition_target => String::from(
+                    target_pair.into_inner().next().unwrap().as_str(),
+                ),
+                _ => unreachable!(),
+            };
+            let arguments_pair = inner_pairs.next().unwrap();
+            let arguments: Vec<_> = match arguments_pair.as_rule() {
+                Rule::function_definition_arguments => arguments_pair
+                    .into_inner()
+                    .map(|argument| String::from(argument.as_str()))
+                    .collect(),
+                _ => unreachable!(),
+            };
+            let expression = transform(inner_pairs.next().unwrap());
+            Node::Definition {
+                symbol: target,
+                expression: Box::new(Node::Function {
+                    arguments,
+                    expression: Box::new(expression),
+                }),
+            }
+        }
         _ => unreachable!(),
     }
 }
@@ -294,6 +320,30 @@ mod tests {
                             name: String::from("y")
                         }
                     ]
+                })
+            }
+        );
+    }
+
+    #[test]
+    fn parse_function_definition() {
+        let result = parse_statement("f(x, y) := x + y");
+        assert_eq!(
+            result,
+            Node::Definition {
+                symbol: String::from("f"),
+                expression: Box::new(Node::Function {
+                    arguments: vec![String::from("x"), String::from("y")],
+                    expression: Box::new(Node::Sum {
+                        values: vec![
+                            Node::Symbol {
+                                name: String::from("x")
+                            },
+                            Node::Symbol {
+                                name: String::from("y")
+                            }
+                        ]
+                    })
                 })
             }
         );
