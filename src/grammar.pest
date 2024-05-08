@@ -82,6 +82,7 @@ vector = {
     ~ "]"
 }
 vector_item = _{
+    | vector
     | function
 	| function_call
     | function_call_item
@@ -96,14 +97,13 @@ function_arguments = { (symbol ~ (argument_separator ~ symbol)*)? }
 // function call
 function_call = { 
 	function_call_target 
-    ~ function_call_arguments?
+    ~ function_call_arguments
     ~ function_call_end
 }
 function_call_target = ${ symbol ~ "("}
 function_call_end = _{ ")"}
 function_call_arguments = {
-	function_call_item
-    ~ (argument_separator ~ function_call_item)*
+	(function_call_item ~ (argument_separator ~ function_call_item)*)?
 }
 function_call_item = _{
 	| function_call
