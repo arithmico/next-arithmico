@@ -1,5 +1,3 @@
-use std::fmt::Arguments;
-
 use crate::node::Node;
 
 use super::parser::Rule;
@@ -147,25 +145,25 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parse_float() {
+    fn transform_float() {
         let result = parse_statement("2.1");
         assert_eq!(result, Node::Number { value: 2.1 });
     }
 
     #[test]
-    fn parse_true() {
+    fn transform_true() {
         let result = parse_statement("true");
         assert_eq!(result, Node::Boolean { value: true });
     }
 
     #[test]
-    fn parse_false() {
+    fn transform_false() {
         let result = parse_statement("false");
         assert_eq!(result, Node::Boolean { value: false });
     }
 
     #[test]
-    fn parse_symbol() {
+    fn transform_symbol() {
         let result = parse_statement("hello");
         assert_eq!(
             result,
@@ -176,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_negate() {
+    fn transform_negate() {
         let result = parse_statement("-1");
         assert_eq!(
             result,
@@ -187,7 +185,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sum() {
+    fn transform_sum() {
         let result = parse_statement("1 + 2 + 3");
         assert_eq!(
             result,
@@ -202,7 +200,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_sum_with_negate() {
+    fn transform_sum_with_negate() {
         let result = parse_statement("1 + 2 - 3");
         assert_eq!(
             result,
@@ -219,7 +217,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_product() {
+    fn transform_product() {
         let result = parse_statement("1 * 2");
         assert_eq!(
             result,
@@ -233,7 +231,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_product_with_inner_sum() {
+    fn transform_product_with_inner_sum() {
         let result = parse_statement("(1 + 2) * 3");
         assert_eq!(
             result,
@@ -252,7 +250,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_division() {
+    fn transform_division() {
         let result = parse_statement("1 / 2");
         assert_eq!(
             result,
@@ -264,7 +262,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_product_with_division() {
+    fn transform_product_with_division() {
         let result = parse_statement("1 / 2 * 3");
         assert_eq!(
             result,
@@ -281,7 +279,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_power() {
+    fn transform_power() {
         let result = parse_statement("2 ^ 3");
         assert_eq!(
             result,
@@ -293,7 +291,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_vector() {
+    fn transform_vector() {
         let result = parse_statement("[1, 2, 3]");
         assert_eq!(
             result,
@@ -308,7 +306,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_function_call() {
+    fn transform_function_call() {
         let result = parse_statement("f(1, 2)");
         assert_eq!(
             result,
@@ -325,7 +323,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_function() {
+    fn transform_function() {
         let result = parse_statement("(x, y) -> x + y");
         assert_eq!(
             result,
@@ -346,7 +344,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_function_definition() {
+    fn transform_function_definition() {
         let result = parse_statement("f(x, y) := x + y");
         assert_eq!(
             result,
@@ -370,7 +368,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_symbol_definition() {
+    fn transform_symbol_definition() {
         let result = parse_statement("x := 2");
         assert_eq!(
             result,
