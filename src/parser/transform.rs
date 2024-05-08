@@ -1,7 +1,9 @@
+use std::fmt::Arguments;
+
 use crate::node::Node;
 
 use super::parser::Rule;
-use pest::iterators::Pair;
+use pest::iterators::{Pair, Pairs};
 
 pub fn transform(pair: Pair<Rule>) -> Node {
     match pair.as_rule() {
@@ -51,63 +53,61 @@ pub fn transform(pair: Pair<Rule>) -> Node {
         },
         Rule::function_call => {
             let mut inner_pairs = pair.into_inner();
-            let target_pair = inner_pairs.next().unwrap();
-            let target = match target_pair.as_rule() {
-                Rule::function_call_target => {
-                    transform(target_pair.into_inner().next().unwrap())
-                }
-                _ => unreachable!(),
-            };
-            let arguments_pair = inner_pairs.next().unwrap();
-            let arguments: Vec<Node> = match arguments_pair.as_rule() {
-                Rule::function_call_arguments => arguments_pair
-                    .into_inner()
-                    .map(|argument| transform(argument))
-                    .collect(),
-                _ => unreachable!(),
-            };
 
             Node::FunctionCall {
-                target: Box::new(target),
-                arguments,
+                target: Box::new(transform(
+                    next_pair_of_rule(
+                        &mut inner_pairs,
+                        Rule::function_call_target,
+                    )
+                    .into_inner()
+                    .next()
+                    .unwrap(),
+                )),
+                arguments: next_pair_of_rule(
+                    &mut inner_pairs,
+                    Rule::function_call_arguments,
+                )
+                .into_inner()
+                .map(|argument| transform(argument))
+                .collect(),
             }
         }
         Rule::function => {
             let mut inner_pairs = pair.into_inner();
-            let arguments_pair = inner_pairs.next().unwrap();
-            let arguments: Vec<String> = match arguments_pair.as_rule() {
-                Rule::function_arguments => arguments_pair
-                    .into_inner()
-                    .map(|argument| match argument.as_rule() {
-                        Rule::symbol => String::from(argument.as_str()),
-                        _ => unreachable!(),
-                    })
-                    .collect(),
-                _ => unreachable!(),
-            };
-            let expression = inner_pairs.next().unwrap();
             Node::Function {
-                arguments,
-                expression: Box::new(transform(expression)),
+                arguments: next_pair_of_rule(
+                    &mut inner_pairs,
+                    Rule::function_arguments,
+                )
+                .into_inner()
+                .map(|argument| match argument.as_rule() {
+                    Rule::symbol => String::from(argument.as_str()),
+                    _ => unreachable!(),
+                })
+                .collect(),
+                expression: Box::new(transform(inner_pairs.next().unwrap())),
             }
         }
         Rule::function_definition => {
             let mut inner_pairs = pair.into_inner();
-            let symbol_pair = inner_pairs.next().unwrap();
-            let symbol = match symbol_pair.as_rule() {
-                Rule::function_definition_target => String::from(
-                    symbol_pair.into_inner().next().unwrap().as_str(),
-                ),
-                _ => unreachable!(),
-            };
-            let arguments_pair = inner_pairs.next().unwrap();
-            let arguments: Vec<_> = match arguments_pair.as_rule() {
-                Rule::function_definition_arguments => arguments_pair
-                    .into_inner()
-                    .map(|argument| String::from(argument.as_str()))
-                    .collect(),
-                _ => unreachable!(),
-            };
+            let symbol = String::from(
+                next_pair_of_rule(
+                    &mut inner_pairs,
+                    Rule::function_definition_target,
+                )
+                .into_inner()
+                .next()
+                .unwrap()
+                .as_str(),
+            );
+            let arguments = next_pair_of_rule(
+                &mut inner_pairs,
+                Rule::function_definition_arguments,
+            )
+            .into_inner()
+            .map(|argument| String::from(argument.as_str()))
+            .collect();
             let expression = transform(inner_pairs.next().unwrap());
             Node::Definition {
                 symbol,
@@ -128,6 +128,17 @@ pub fn transform(pair: Pair<Rule>) -> Node {
         }
         _ => unreachable!(),
     }
+}
+
+fn next_pair_of_rule<'a>(
+    pairs: &'a mut Pairs<Rule>,
+    rule: Rule,
+) -> Pair<'a, Rule> {
+    let pair = pairs.next().unwrap();
+    if pair.as_rule() != rule {
+        panic!("unexpected rule");
+    }
+    pair
 }
 
 #[cfg(test)]
