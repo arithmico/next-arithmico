@@ -11,7 +11,16 @@ fn serialize_and_wrap_in_parenthesis(node: &Node, parent: &Node) -> String {
 impl Node {
     pub fn serialize(&self) -> String {
         match self {
-            Node::Number { value } => value.to_string(),
+            Node::Number { value } => {
+                if *value < 0.0 {
+                    Node::Negate {
+                        value: Box::new(Node::Number { value: -*value }),
+                    }
+                    .serialize()
+                } else {
+                    value.to_string()
+                }
+            }
             Node::Symbol { name } => String::from(name),
             Node::Boolean { value } => {
                 if *value == true {
