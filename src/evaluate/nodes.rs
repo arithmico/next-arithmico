@@ -1,4 +1,5 @@
 mod division;
+mod function;
 mod negate;
 mod number;
 mod power;
@@ -7,6 +8,7 @@ mod sum;
 mod symbol;
 
 pub use division::evaluate_division;
+pub use function::evaluate_function;
 pub use negate::evaluate_negate;
 pub use number::evaluate_number;
 pub use power::evaluate_power;

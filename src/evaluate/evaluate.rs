@@ -2,8 +2,8 @@ use crate::context::Context;
 use crate::node::Node;
 
 use super::nodes::{
-    evaluate_division, evaluate_negate, evaluate_number, evaluate_power,
-    evaluate_product, evaluate_sum, evaluate_symbol,
+    evaluate_division, evaluate_function, evaluate_negate, evaluate_number,
+    evaluate_power, evaluate_product, evaluate_sum, evaluate_symbol,
 };
 use super::EvaluationError;
 
@@ -21,6 +21,10 @@ impl Node {
                 evaluate_power(base, exponent, context)
             }
             Node::Symbol { name } => evaluate_symbol(name, context),
+            Node::Function {
+                arguments,
+                expression,
+            } => evaluate_function(arguments, expression, context),
             _ => Err(EvaluationError::UnsupportedOperation),
         }
     }
@@ -120,6 +124,26 @@ mod tests {
             .evaluate(&context)
             .unwrap(),
             Node::Number { value: 36.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_function() {
+        assert_eq!(
+            Node::Function {
+                arguments: vec![String::from("x")],
+                expression: Box::new(Node::Symbol {
+                    name: String::from("x")
+                })
+            }
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Function {
+                arguments: vec![String::from("x")],
+                expression: Box::new(Node::Symbol {
+                    name: String::from("x")
+                })
+            }
         )
     }
 }
