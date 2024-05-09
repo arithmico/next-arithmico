@@ -1,6 +1,6 @@
 use crate::{evaluate::EvaluationError, node::Node};
 
-pub fn evaluate_sum(values: &Vec<Node>) -> Result<Node, EvaluationError> {
+pub fn evaluate_product(values: &Vec<Node>) -> Result<Node, EvaluationError> {
     if values.len() < 2 {
         return Err(EvaluationError::InvalidNumberOfValues);
     }
@@ -12,7 +12,7 @@ pub fn evaluate_sum(values: &Vec<Node>) -> Result<Node, EvaluationError> {
                 Node::Number { value: right_value },
             ) => {
                 result = Node::Number {
-                    value: left_value + right_value,
+                    value: left_value * right_value,
                 }
             }
             _ => return Err(EvaluationError::UnsupportedOperation),

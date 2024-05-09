@@ -1,6 +1,8 @@
 use crate::node::Node;
 
-use super::nodes::{evaluate_negate, evaluate_number, evaluate_sum};
+use super::nodes::{
+    evaluate_negate, evaluate_number, evaluate_product, evaluate_sum,
+};
 use super::EvaluationError;
 
 impl Node {
@@ -9,6 +11,7 @@ impl Node {
             Node::Number { value } => evaluate_number(value),
             Node::Negate { value } => evaluate_negate(value),
             Node::Sum { values } => evaluate_sum(values),
+            Node::Product { values } => evaluate_product(values),
             _ => Err(EvaluationError::UnsupportedOperation),
         }
     }
@@ -50,6 +53,21 @@ mod tests {
             .evaluate()
             .unwrap(),
             Node::Number { value: 3.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_product() {
+        assert_eq!(
+            Node::Product {
+                values: vec![
+                    Node::Number { value: 3.0 },
+                    Node::Number { value: 2.0 }
+                ]
+            }
+            .evaluate()
+            .unwrap(),
+            Node::Number { value: 6.0 }
         )
     }
 }
