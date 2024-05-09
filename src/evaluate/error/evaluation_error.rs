@@ -10,4 +10,7 @@ pub enum EvaluationError {
 
     #[error("unknown symbol")]
     UnknownSymbol,
+
+    #[error("invalid number of arguments")]
+    InvalidNumberOfArguments,
 }
