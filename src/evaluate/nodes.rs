@@ -1,3 +1,4 @@
+mod definition;
 mod division;
 mod function;
 mod function_call;
@@ -8,6 +9,7 @@ mod product;
 mod sum;
 mod symbol;
 
+pub use definition::evaluate_definition;
 pub use division::evaluate_division;
 pub use function::evaluate_function;
 pub use function_call::evaluate_function_call;

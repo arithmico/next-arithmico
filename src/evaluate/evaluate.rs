@@ -2,9 +2,9 @@ use crate::context::Context;
 use crate::node::Node;
 
 use super::nodes::{
-    evaluate_division, evaluate_function, evaluate_function_call,
-    evaluate_negate, evaluate_number, evaluate_power, evaluate_product,
-    evaluate_sum, evaluate_symbol,
+    evaluate_definition, evaluate_division, evaluate_function,
+    evaluate_function_call, evaluate_negate, evaluate_number, evaluate_power,
+    evaluate_product, evaluate_sum, evaluate_symbol,
 };
 use super::EvaluationError;
 
@@ -28,6 +28,9 @@ impl Node {
             } => evaluate_function(arguments, expression, context),
             Node::FunctionCall { target, arguments } => {
                 evaluate_function_call(target, arguments, context)
+            }
+            Node::Definition { symbol, expression } => {
+                evaluate_definition(symbol, expression, context)
             }
             _ => Err(EvaluationError::UnsupportedOperation),
         }
@@ -166,6 +169,22 @@ mod tests {
             .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: 42.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_definition() {
+        assert_eq!(
+            Node::Definition {
+                symbol: String::from("test"),
+                expression: Box::new(Node::Number { value: 42.0 })
+            }
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Definition {
+                symbol: String::from("test"),
+                expression: Box::new(Node::Number { value: 42.0 })
+            }
         )
     }
 }
