@@ -7,4 +7,7 @@ pub enum EvaluationError {
 
     #[error("invalid number of values")]
     InvalidNumberOfValues,
+
+    #[error("unknown symbol")]
+    UnknownSymbol,
 }

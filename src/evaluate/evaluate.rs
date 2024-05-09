@@ -1,22 +1,26 @@
+use crate::context::Context;
 use crate::node::Node;
 
 use super::nodes::{
     evaluate_division, evaluate_negate, evaluate_number, evaluate_power,
-    evaluate_product, evaluate_sum,
+    evaluate_product, evaluate_sum, evaluate_symbol,
 };
 use super::EvaluationError;
 
 impl Node {
-    pub fn evaluate(&self) -> Result<Node, EvaluationError> {
+    pub fn evaluate(&self, context: &Context) -> Result<Node, EvaluationError> {
         match self {
-            Node::Number { value } => evaluate_number(value),
-            Node::Negate { value } => evaluate_negate(value),
-            Node::Sum { values } => evaluate_sum(values),
-            Node::Product { values } => evaluate_product(values),
+            Node::Number { value } => evaluate_number(value, context),
+            Node::Negate { value } => evaluate_negate(value, context),
+            Node::Sum { values } => evaluate_sum(values, context),
+            Node::Product { values } => evaluate_product(values, context),
             Node::Division { dividend, divisor } => {
-                evaluate_division(dividend, divisor)
+                evaluate_division(dividend, divisor, context)
             }
-            Node::Power { base, exponent } => evaluate_power(base, exponent),
+            Node::Power { base, exponent } => {
+                evaluate_power(base, exponent, context)
+            }
+            Node::Symbol { name } => evaluate_symbol(name, context),
             _ => Err(EvaluationError::UnsupportedOperation),
         }
     }
@@ -29,7 +33,9 @@ mod tests {
     #[test]
     fn evaluate_number() {
         assert_eq!(
-            Node::Number { value: 2.1 }.evaluate().unwrap(),
+            Node::Number { value: 2.1 }
+                .evaluate(&Context::new())
+                .unwrap(),
             Node::Number { value: 2.1 }
         )
     }
@@ -40,7 +46,7 @@ mod tests {
             Node::Negate {
                 value: Box::new(Node::Number { value: 2.1 })
             }
-            .evaluate()
+            .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: -2.1 }
         )
@@ -55,7 +61,7 @@ mod tests {
                     Node::Number { value: 2.0 }
                 ]
             }
-            .evaluate()
+            .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: 3.0 }
         )
@@ -70,7 +76,7 @@ mod tests {
                     Node::Number { value: 2.0 }
                 ]
             }
-            .evaluate()
+            .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: 6.0 }
         )
@@ -83,7 +89,7 @@ mod tests {
                 dividend: Box::new(Node::Number { value: 6.0 }),
                 divisor: Box::new(Node::Number { value: 2.0 })
             }
-            .evaluate()
+            .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: 3.0 }
         )
@@ -96,7 +102,22 @@ mod tests {
                 base: Box::new(Node::Number { value: 6.0 }),
                 exponent: Box::new(Node::Number { value: 2.0 })
             }
-            .evaluate()
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Number { value: 36.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_symbol() {
+        let mut context = Context::new();
+        context.insert("test", Node::Number { value: 36.0 });
+
+        assert_eq!(
+            Node::Symbol {
+                name: String::from("test")
+            }
+            .evaluate(&context)
             .unwrap(),
             Node::Number { value: 36.0 }
         )
