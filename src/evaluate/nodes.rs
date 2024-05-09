@@ -1,8 +1,10 @@
+mod division;
 mod negate;
 mod number;
 mod product;
 mod sum;
 
+pub use division::evaluate_division;
 pub use negate::evaluate_negate;
 pub use number::evaluate_number;
 pub use product::evaluate_product;

@@ -1,7 +1,8 @@
 use crate::node::Node;
 
 use super::nodes::{
-    evaluate_negate, evaluate_number, evaluate_product, evaluate_sum,
+    evaluate_division, evaluate_negate, evaluate_number, evaluate_product,
+    evaluate_sum,
 };
 use super::EvaluationError;
 
@@ -12,6 +13,9 @@ impl Node {
             Node::Negate { value } => evaluate_negate(value),
             Node::Sum { values } => evaluate_sum(values),
             Node::Product { values } => evaluate_product(values),
+            Node::Division { dividend, divisor } => {
+                evaluate_division(dividend, divisor)
+            }
             _ => Err(EvaluationError::UnsupportedOperation),
         }
     }
@@ -68,6 +72,19 @@ mod tests {
             .evaluate()
             .unwrap(),
             Node::Number { value: 6.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_division() {
+        assert_eq!(
+            Node::Division {
+                dividend: Box::new(Node::Number { value: 6.0 }),
+                divisor: Box::new(Node::Number { value: 2.0 })
+            }
+            .evaluate()
+            .unwrap(),
+            Node::Number { value: 3.0 }
         )
     }
 }
