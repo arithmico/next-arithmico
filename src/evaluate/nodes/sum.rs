@@ -1,11 +1,11 @@
-use crate::{context::Context, evaluate::EvaluationError, node::Node};
+use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
 
 pub fn evaluate_sum(
     values: &Vec<Node>,
     context: &Context,
-) -> Result<Node, EvaluationError> {
+) -> Result<Node, NodeEvaluationError> {
     if values.len() < 2 {
-        return Err(EvaluationError::InvalidNumberOfValues);
+        return Err(NodeEvaluationError::InvalidNumberOfValues);
     }
     let mut result = values[0].evaluate(context)?;
     for current_node in values[1..].iter() {
@@ -19,7 +19,7 @@ pub fn evaluate_sum(
                     value: left_value + right_value,
                 }
             }
-            _ => return Err(EvaluationError::UnsupportedOperation),
+            _ => return Err(NodeEvaluationError::UnsupportedOperation),
         }
     }
 

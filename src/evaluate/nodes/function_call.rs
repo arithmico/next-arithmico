@@ -1,10 +1,10 @@
-use crate::{context::Context, evaluate::EvaluationError, node::Node};
+use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
 
 pub fn evaluate_function_call(
     target: &Node,
     call_arguments: &Vec<Node>,
     context: &Context,
-) -> Result<Node, EvaluationError> {
+) -> Result<Node, NodeEvaluationError> {
     let evaluated_target = target.evaluate(context)?;
     match evaluated_target {
         Node::Function {
@@ -12,7 +12,7 @@ pub fn evaluate_function_call(
             expression,
         } => {
             if call_arguments.len() != arguments.len() {
-                return Err(EvaluationError::InvalidNumberOfArguments);
+                return Err(NodeEvaluationError::InvalidNumberOfArguments);
             }
             let mut call_context = context.clone();
             call_context.push_frame();
@@ -26,6 +26,6 @@ pub fn evaluate_function_call(
             }
             expression.evaluate(&call_context)
         }
-        _ => Err(EvaluationError::UnsupportedOperation),
+        _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }

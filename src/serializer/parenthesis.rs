@@ -1,5 +1,3 @@
-use std::iter::Product;
-
 use crate::node::Node;
 
 pub enum ParenthesesBehavior {

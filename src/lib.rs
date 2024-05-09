@@ -4,7 +4,7 @@ mod evaluate {
         pub mod evaluation_error;
     }
     mod nodes;
-    pub use error::evaluation_error::EvaluationError;
+    pub use error::evaluation_error::NodeEvaluationError;
 }
 mod node {
     mod node;
@@ -23,3 +23,8 @@ mod context {
     mod context;
     pub use context::Context;
 }
+mod session {
+    pub mod session;
+}
+
+pub use session::session::{EvaluationError, Session, Statement};

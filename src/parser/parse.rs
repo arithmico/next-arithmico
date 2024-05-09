@@ -1,4 +1,4 @@
-use pest::Parser;
+use pest::{error::Error, Parser};
 
 use crate::node::Node;
 
@@ -7,11 +7,10 @@ use super::{
     transform::transform,
 };
 
-pub fn parse_statement(input: &str) -> Node {
-    let pairs = ArithmicoParser::parse(Rule::statement, input)
-        .expect("failed to parse")
+pub fn parse_statement(input: &str) -> Result<Node, Error<Rule>> {
+    let pairs = ArithmicoParser::parse(Rule::statement, input)?
         .next()
         .unwrap();
 
-    transform(pairs)
+    Ok(transform(pairs))
 }

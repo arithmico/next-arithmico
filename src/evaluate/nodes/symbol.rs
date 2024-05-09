@@ -1,11 +1,11 @@
-use crate::{context::Context, evaluate::EvaluationError, node::Node};
+use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
 
 pub fn evaluate_symbol(
     name: &String,
     context: &Context,
-) -> Result<Node, EvaluationError> {
+) -> Result<Node, NodeEvaluationError> {
     match context.lookup(name) {
         Some(node) => Ok(node.clone()),
-        None => Err(EvaluationError::UnknownSymbol),
+        None => Err(NodeEvaluationError::UnknownSymbol),
     }
 }

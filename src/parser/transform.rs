@@ -146,25 +146,25 @@ mod tests {
 
     #[test]
     fn transform_float() {
-        let result = parse_statement("2.1");
+        let result = parse_statement("2.1").unwrap();
         assert_eq!(result, Node::Number { value: 2.1 });
     }
 
     #[test]
     fn transform_true() {
-        let result = parse_statement("true");
+        let result = parse_statement("true").unwrap();
         assert_eq!(result, Node::Boolean { value: true });
     }
 
     #[test]
     fn transform_false() {
-        let result = parse_statement("false");
+        let result = parse_statement("false").unwrap();
         assert_eq!(result, Node::Boolean { value: false });
     }
 
     #[test]
     fn transform_symbol() {
-        let result = parse_statement("hello");
+        let result = parse_statement("hello").unwrap();
         assert_eq!(
             result,
             Node::Symbol {
@@ -175,7 +175,7 @@ mod tests {
 
     #[test]
     fn transform_negate() {
-        let result = parse_statement("-1");
+        let result = parse_statement("-1").unwrap();
         assert_eq!(
             result,
             Node::Negate {
@@ -186,7 +186,7 @@ mod tests {
 
     #[test]
     fn transform_sum() {
-        let result = parse_statement("1 + 2 + 3");
+        let result = parse_statement("1 + 2 + 3").unwrap();
         assert_eq!(
             result,
             Node::Sum {
@@ -201,7 +201,7 @@ mod tests {
 
     #[test]
     fn transform_sum_with_negate() {
-        let result = parse_statement("1 + 2 - 3");
+        let result = parse_statement("1 + 2 - 3").unwrap();
         assert_eq!(
             result,
             Node::Sum {
@@ -218,7 +218,7 @@ mod tests {
 
     #[test]
     fn transform_product() {
-        let result = parse_statement("1 * 2");
+        let result = parse_statement("1 * 2").unwrap();
         assert_eq!(
             result,
             Node::Product {
@@ -232,7 +232,7 @@ mod tests {
 
     #[test]
     fn transform_product_with_inner_sum() {
-        let result = parse_statement("(1 + 2) * 3");
+        let result = parse_statement("(1 + 2) * 3").unwrap();
         assert_eq!(
             result,
             Node::Product {
@@ -251,7 +251,7 @@ mod tests {
 
     #[test]
     fn transform_division() {
-        let result = parse_statement("1 / 2");
+        let result = parse_statement("1 / 2").unwrap();
         assert_eq!(
             result,
             Node::Division {
@@ -263,7 +263,7 @@ mod tests {
 
     #[test]
     fn transform_product_with_division() {
-        let result = parse_statement("1 / 2 * 3");
+        let result = parse_statement("1 / 2 * 3").unwrap();
         assert_eq!(
             result,
             Node::Product {
@@ -280,7 +280,7 @@ mod tests {
 
     #[test]
     fn transform_power() {
-        let result = parse_statement("2 ^ 3");
+        let result = parse_statement("2 ^ 3").unwrap();
         assert_eq!(
             result,
             Node::Power {
@@ -292,7 +292,7 @@ mod tests {
 
     #[test]
     fn transform_vector() {
-        let result = parse_statement("[1, 2, 3]");
+        let result = parse_statement("[1, 2, 3]").unwrap();
         assert_eq!(
             result,
             Node::Vector {
@@ -307,7 +307,7 @@ mod tests {
 
     #[test]
     fn transform_function_call() {
-        let result = parse_statement("f(1, 2)");
+        let result = parse_statement("f(1, 2)").unwrap();
         assert_eq!(
             result,
             Node::FunctionCall {
@@ -324,7 +324,7 @@ mod tests {
 
     #[test]
     fn transform_function() {
-        let result = parse_statement("(x, y) -> x + y");
+        let result = parse_statement("(x, y) -> x + y").unwrap();
         assert_eq!(
             result,
             Node::Function {
@@ -345,7 +345,7 @@ mod tests {
 
     #[test]
     fn transform_function_definition() {
-        let result = parse_statement("f(x, y) := x + y");
+        let result = parse_statement("f(x, y) := x + y").unwrap();
         assert_eq!(
             result,
             Node::Definition {
@@ -369,7 +369,7 @@ mod tests {
 
     #[test]
     fn transform_symbol_definition() {
-        let result = parse_statement("x := 2");
+        let result = parse_statement("x := 2").unwrap();
         assert_eq!(
             result,
             Node::Definition {

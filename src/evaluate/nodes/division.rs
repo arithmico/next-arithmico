@@ -1,11 +1,11 @@
 use crate::context::Context;
-use crate::{evaluate::EvaluationError, node::Node};
+use crate::{evaluate::NodeEvaluationError, node::Node};
 
 pub fn evaluate_division(
     dividend: &Node,
     divisor: &Node,
     context: &Context,
-) -> Result<Node, EvaluationError> {
+) -> Result<Node, NodeEvaluationError> {
     let evaluated_dividend = dividend.evaluate(context)?;
     let evaluated_divisor = divisor.evaluate(context)?;
     match (evaluated_dividend, evaluated_divisor) {
@@ -15,6 +15,6 @@ pub fn evaluate_division(
         ) => Ok(Node::Number {
             value: left_value / right_value,
         }),
-        _ => return Err(EvaluationError::UnsupportedOperation),
+        _ => return Err(NodeEvaluationError::UnsupportedOperation),
     }
 }

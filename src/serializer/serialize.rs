@@ -109,7 +109,7 @@ mod tests {
     use crate::parser::parse::parse_statement;
 
     fn compare(input: &str, expected: &str) {
-        assert_eq!(parse_statement(input).serialize(), expected);
+        assert_eq!(parse_statement(input).unwrap().serialize(), expected);
     }
 
     #[test]

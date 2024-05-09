@@ -6,10 +6,10 @@ use super::nodes::{
     evaluate_function_call, evaluate_negate, evaluate_number, evaluate_power,
     evaluate_product, evaluate_sum, evaluate_symbol,
 };
-use super::EvaluationError;
+use super::NodeEvaluationError;
 
 impl Node {
-    pub fn evaluate(&self, context: &Context) -> Result<Node, EvaluationError> {
+    pub fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
         match self {
             Node::Number { value } => evaluate_number(value, context),
             Node::Negate { value } => evaluate_negate(value, context),
@@ -32,7 +32,7 @@ impl Node {
             Node::Definition { symbol, expression } => {
                 evaluate_definition(symbol, expression, context)
             }
-            _ => Err(EvaluationError::UnsupportedOperation),
+            _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
     }
 }

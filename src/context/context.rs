@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::node::Node;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Context {
     stack: Vec<HashMap<String, Node>>,
 }
@@ -16,7 +16,7 @@ impl Context {
 
     pub fn lookup(&self, name: &String) -> Option<&Node> {
         for stack_frame in self.stack.iter() {
-            if (stack_frame.contains_key(name)) {
+            if stack_frame.contains_key(name) {
                 return stack_frame.get(name);
             }
         }
