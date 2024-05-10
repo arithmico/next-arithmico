@@ -1,5 +1,5 @@
 use crate::pages::*;
-use yew::{html, Html};
+use yew::{html, Html, Properties};
 use yew_router::Routable;
 
 #[derive(Clone, Routable, PartialEq)]

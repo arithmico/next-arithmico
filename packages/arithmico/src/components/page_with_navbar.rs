@@ -1,6 +1,9 @@
 use yew::{function_component, html, Html, Properties};
 
-use crate::components::{Navbar, Page};
+use crate::{
+    components::{Navbar, NavbarLink, Page},
+    router::Route,
+};
 
 #[derive(PartialEq, Properties)]
 pub struct PageWithNavbarProps {
@@ -12,10 +15,10 @@ pub fn PageWithNavbar(props: &PageWithNavbarProps) -> Html {
     html! {
         <Page>
             <Navbar>
-                <li class="p-2">{"Rechner"}</li>
-                <li class="p-2">{"Einstellungen"}</li>
-                <li class="p-2">{"Hilfe"}</li>
-                <li class="p-2">{"Über"}</li>
+                <NavbarLink to={Route::Calculator}>{"Rechner"}</NavbarLink>
+                <NavbarLink to={Route::Settings}>{"Einstellungen"}</NavbarLink>
+                <NavbarLink to={Route::Help}>{"Hilfe"}</NavbarLink>
+                <NavbarLink to={Route::About}>{"Über"}</NavbarLink>
             </Navbar>
             {props.children.clone()}
         </Page>
