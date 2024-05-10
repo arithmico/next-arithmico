@@ -13,4 +13,7 @@ pub enum NodeEvaluationError {
 
     #[error("invalid number of arguments")]
     InvalidNumberOfArguments,
+
+    #[error("division by zero is not allowed")]
+    DivisionByZero,
 }

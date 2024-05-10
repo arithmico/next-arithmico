@@ -9,7 +9,10 @@ use super::nodes::{
 use super::NodeEvaluationError;
 
 impl Node {
-    pub fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    pub fn evaluate(
+        &self,
+        context: &Context,
+    ) -> Result<Node, NodeEvaluationError> {
         match self {
             Node::Number { value } => evaluate_number(value, context),
             Node::Negate { value } => evaluate_negate(value, context),
@@ -103,6 +106,20 @@ mod tests {
             .evaluate(&Context::new())
             .unwrap(),
             Node::Number { value: 3.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_division_by_zero() {
+        assert_eq!(
+            Node::Division {
+                dividend: Box::new(Node::Number { value: 6.0 }),
+                divisor: Box::new(Node::Number { value: 0.0 })
+            }
+            .evaluate(&Context::new())
+            .err()
+            .unwrap(),
+            NodeEvaluationError::DivisionByZero
         )
     }
 
