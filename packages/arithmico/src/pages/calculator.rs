@@ -1,4 +1,9 @@
-use yew::{classes, function_component, html, Html, Properties};
+use gloo_console::log;
+use wasm_bindgen::JsCast;
+use web_sys::HtmlInputElement;
+use yew::{
+    classes, function_component, html, Callback, Event, Html, Properties,
+};
 
 use crate::components::PageWithNavbar;
 
@@ -7,6 +12,14 @@ pub struct CalculatorPageProps {}
 
 #[function_component]
 pub fn CalculatorPage(_props: &CalculatorPageProps) -> Html {
+    let onchange = Callback::from(|event: Event| {
+        let target = event.target();
+        let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
+        if let Some(input) = input {
+            log!(input.value())
+        }
+    });
+
     html! {
         <PageWithNavbar>
             <div class={classes!("flex", "flex-col", "items-center")}>
@@ -15,6 +28,7 @@ pub fn CalculatorPage(_props: &CalculatorPageProps) -> Html {
                         {"Eingabe"}
                         <input
                             type={"text"}
+                            onchange={onchange}
                             class={classes!("border", "border-black", "w-full", "outline-none", "p-2")}
                         />
                     </label>
