@@ -3,6 +3,7 @@ mod about {
 }
 mod calculator {
     pub mod calculator;
+    mod components;
 }
 mod help {
     pub mod help;
