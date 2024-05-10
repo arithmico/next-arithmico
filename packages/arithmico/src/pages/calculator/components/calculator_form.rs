@@ -1,20 +1,28 @@
-use gloo_console::log;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlInputElement;
 use yew::{
-    classes, function_component, html, Callback, Event, Html, Properties,
+    classes, function_component, html, use_context, Callback, Event, Html,
+    Properties,
 };
+
+use super::CalculatorContext;
 
 #[derive(PartialEq, Properties)]
 pub struct CalculatorFormProps {}
 
 #[function_component]
 pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
-    let onchange = Callback::from(|event: Event| {
+    let context = use_context::<CalculatorContext>().unwrap();
+    let last_statement = context
+        .session()
+        .last_statement()
+        .and_then(|statement| Some(statement.clone()));
+
+    let onchange = Callback::from(move |event: Event| {
         let target = event.target();
         let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
         if let Some(input) = input {
-            log!(input.value())
+            context.dispatch(input.value());
         }
     });
 
@@ -34,6 +42,15 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
                     <input
                         type={"text"}
                         readonly={true}
+                        value={match last_statement {
+                            Some(statement) => {
+                                match &statement.output {
+                                    Ok(value) => value.clone(),
+                                    Err(error) => error.clone().to_string(),
+                                }
+                            },
+                            None => "".to_string(),
+                        }}
                         class={classes!("border", "border-black", "w-full", "outline-none", "p-2")}
                     />
                 </label>

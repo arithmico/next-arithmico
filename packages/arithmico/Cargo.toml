@@ -9,3 +9,4 @@ yew-router = "0.18.0"
 gloo-console = "0.3.0"
 wasm-bindgen = "0.2.92"
 web-sys = "0.3.69"
+engine = { path = "../engine"}

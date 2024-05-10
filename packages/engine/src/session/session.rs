@@ -31,12 +31,12 @@ impl From<NodeEvaluationError> for EvaluationError {
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Statement {
-    input: String,
-    output: Result<String, EvaluationError>,
+    pub input: String,
+    pub output: Result<String, EvaluationError>,
     context: Context,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Session {
     current_context: Context,
     statements: Vec<Statement>,
@@ -90,6 +90,18 @@ impl Session {
             current_context: context,
             statements: next_statements,
         }
+    }
+
+    pub fn statement(&self, index: usize) -> Option<&Statement> {
+        self.statements.get(index)
+    }
+
+    pub fn len(&self) -> usize {
+        self.statements.len()
+    }
+
+    pub fn last_statement(&self) -> Option<&Statement> {
+        self.statements.last()
     }
 }
 
