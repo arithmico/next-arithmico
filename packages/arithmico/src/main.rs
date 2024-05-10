@@ -1,13 +1,17 @@
 use yew::prelude::*;
+use yew_router::{BrowserRouter, Switch};
 
-use crate::pages::CalculatorPage;
+use crate::router::{switch, Route};
 mod components;
 mod pages;
+mod router;
 
 #[function_component]
 fn App() -> Html {
     html! {
-        <CalculatorPage />
+        <BrowserRouter>
+            <Switch<Route> render={switch}/>
+        </BrowserRouter>
     }
 }
 
