@@ -1,21 +1,18 @@
 use yew::prelude::*;
 
-use crate::components::page::Page;
+use crate::components::{Navbar, Page};
 mod components;
 
 #[function_component]
 fn App() -> Html {
     html! {
         <Page>
-            <nav class="w-full flex justify-center items-center bg-blue-400">
-                <h1 class="pr-4">{"Arithmico"}</h1>
-                <ul class="flex">
-                    <li class="p-2">{"Rechner"}</li>
-                    <li class="p-2">{"Einstellungen"}</li>
-                    <li class="p-2">{"Hilfe"}</li>
-                    <li class="p-2">{"Über"}</li>
-                </ul>
-            </nav>
+            <Navbar>
+                <li class="p-2">{"Rechner"}</li>
+                <li class="p-2">{"Einstellungen"}</li>
+                <li class="p-2">{"Hilfe"}</li>
+                <li class="p-2">{"Über"}</li>
+            </Navbar>
         </Page>
     }
 }
