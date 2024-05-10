@@ -12,10 +12,12 @@ pub struct NavbarProps {
 pub fn Navbar(props: &NavbarProps) -> Html {
     html!(
         <nav class={classes!("w-full", "flex", "justify-center", "items-center", "bg-blue-400")}>
-            <h1 class="pr-4">{"Arithmico"}</h1>
-            <ul class="flex">
-                {props.children.clone()}
-            </ul>
+            <div class={classes!("w-3/5", "flex", "items-center")}>
+                <h1 class="pr-4">{"Arithmico"}</h1>
+                <ul class={classes!("flex", "ml-auto")}>
+                    {props.children.clone()}
+                </ul>
+            </div>
         </nav>
     )
 }
