@@ -8,7 +8,7 @@ use crate::{
     parser::{parse::parse_statement, parser::Rule},
 };
 
-#[derive(Error, Debug, PartialEq)]
+#[derive(Error, Debug, PartialEq, Clone)]
 pub enum EvaluationError {
     #[error("SyntaxError: {0}")]
     SyntaxError(Error<Rule>),
@@ -29,7 +29,7 @@ impl From<NodeEvaluationError> for EvaluationError {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Statement {
     input: String,
     output: Result<String, EvaluationError>,
@@ -64,25 +64,32 @@ impl Session {
         Ok((serialized_result, next_context))
     }
 
-    pub fn push(&mut self, input: &str) {
+    pub fn push(&self, input: &str) -> Self {
         let output_result = self.evaluate_input(input);
-        let statement = match output_result {
+        let (context, statement) = match output_result {
             Ok((output, context)) => {
                 let statement = Statement {
                     input: String::from(input),
                     output: Ok(output),
                     context: self.current_context.clone(),
                 };
-                self.current_context = context;
-                statement
+                (context, statement)
             }
-            Err(error) => Statement {
-                input: String::from(input),
-                output: Err(error),
-                context: self.current_context.clone(),
-            },
+            Err(error) => (
+                self.current_context.clone(),
+                Statement {
+                    input: String::from(input),
+                    output: Err(error),
+                    context: self.current_context.clone(),
+                },
+            ),
         };
-        self.statements.push(statement);
+        let mut next_statements = self.statements.clone();
+        next_statements.push(statement);
+        Session {
+            current_context: context,
+            statements: next_statements,
+        }
     }
 }
 
@@ -93,10 +100,9 @@ mod tests {
 
     #[test]
     fn push_statement() {
-        let mut session = Session::new();
-        session.push("1+2");
+        let session = Session::new();
         assert_eq!(
-            session,
+            session.push("1+2"),
             Session {
                 current_context: Context::new(),
                 statements: vec![Statement {
@@ -110,13 +116,11 @@ mod tests {
 
     #[test]
     fn define_symbol_and_evaluate_later() {
-        let mut session = Session::new();
-        session.push("a := 2");
-        session.push("a");
+        let session = Session::new();
         let mut context_after_definition = Context::new();
         context_after_definition.insert("a", Node::Number { value: 2.0 });
         assert_eq!(
-            session,
+            session.push("a := 2").push("a"),
             Session {
                 current_context: context_after_definition.clone(),
                 statements: vec![

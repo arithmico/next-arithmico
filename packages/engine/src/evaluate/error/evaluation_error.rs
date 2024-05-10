@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-#[derive(Error, Debug, PartialEq)]
+#[derive(Error, Debug, PartialEq, Clone)]
 pub enum NodeEvaluationError {
     #[error("unsupported operation")]
     UnsupportedOperation,
