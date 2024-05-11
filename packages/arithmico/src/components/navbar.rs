@@ -1,5 +1,5 @@
 use yew::{classes, function_component, html, Classes, Html, Properties};
-use yew_router::components::Link;
+use yew_router::{components::Link, hooks::use_route};
 
 use crate::router::Route;
 
@@ -11,10 +11,10 @@ pub struct NavbarProps {
 #[function_component]
 pub fn Navbar(props: &NavbarProps) -> Html {
     html!(
-        <nav class={classes!("w-full", "flex", "justify-center", "items-center", "bg-blue-400")}>
-            <div class={classes!("w-3/5", "flex", "items-center")}>
-                <h1 class="pr-4">{"Arithmico"}</h1>
-                <ul class={classes!("flex", "ml-auto")}>
+        <nav class={classes!("w-full", "flex", "justify-center", "items-center")}>
+            <div class={classes!("w-3/5", "flex", "items-center", "h-full")}>
+                <h1 class={classes!("pr-4", "py-4", "text-3xl")}>{"Arithmico"}</h1>
+                <ul class={classes!("flex", "ml-auto", "h-full")}>
                     {props.children.clone()}
                 </ul>
             </div>
@@ -30,10 +30,29 @@ pub struct NavbarLinkProps {
 
 #[function_component]
 pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
+    let route = use_route::<Route>();
+    let active_classes = {
+        let link_route = props.to.clone();
+        route.and_then(|route| {
+            if route == link_route {
+                Some("bg-neutral-300")
+            } else {
+                None
+            }
+        })
+    };
+
     html! {
-        <li class={classes!("flex")}>
+        <li class={classes!("flex", "h-full", "ml-2")}>
             <LinkWrapper
-                class={classes!("p-2")}
+                class={classes!(
+                    "px-8",
+                    "hover:bg-neutral-300",
+                    "flex", "items-center",
+                    "h-full",
+                    "rounded-b-md",
+                    active_classes
+                )}
                 to={props.to.clone()}
             >
                 {props.children.clone()}
