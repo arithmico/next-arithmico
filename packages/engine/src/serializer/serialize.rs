@@ -1,25 +1,40 @@
 use super::parenthesis::ParenthesesBehavior;
-use crate::node::Node;
-
-fn serialize_and_wrap_in_parenthesis(node: &Node, parent: &Node) -> String {
-    match parent.requires_parenthesis(node) {
-        ParenthesesBehavior::Optional => node.serialize(),
-        ParenthesesBehavior::Required => format!("({})", node.serialize()),
-    }
-}
+use crate::{context::Context, node::Node};
 
 impl Node {
-    pub fn serialize(&self) -> String {
+    pub fn serialize(&self, context: &Context) -> String {
+        let transformed_node = self.pre_serialize_transform(context);
+        transformed_node.serialize_transformed_node(context)
+    }
+
+    fn serialize_transformed_node_for_parent(
+        &self,
+        parent: &Node,
+        context: &Context,
+    ) -> String {
+        match parent.requires_parenthesis(self) {
+            ParenthesesBehavior::Optional => {
+                self.serialize_transformed_node(context)
+            }
+            ParenthesesBehavior::Required => {
+                format!("({})", self.serialize_transformed_node(context))
+            }
+        }
+    }
+
+    fn serialize_transformed_node(&self, context: &Context) -> String {
         match self {
             Node::Number { value } => {
                 if *value < 0.0 {
-                    Node::Negate {
-                        value: Box::new(Node::Number { value: -*value }),
-                    }
-                    .serialize()
-                } else {
-                    value.to_string()
+                    panic!("can not serialize node");
                 }
+                let decimal_places = context.get_decimal_places() as usize;
+                let serialized_value = format!("{:.1$}", value, decimal_places);
+                String::from(
+                    serialized_value
+                        .trim_end_matches("0")
+                        .trim_end_matches("."),
+                )
             }
             Node::Symbol { name } => String::from(name),
             Node::Boolean { value } => {
@@ -30,23 +45,32 @@ impl Node {
                 }
             }
             Node::Negate { value } => {
-                format!("-{}", serialize_and_wrap_in_parenthesis(value, self))
+                format!(
+                    "-{}",
+                    value.serialize_transformed_node_for_parent(self, context)
+                )
             }
             Node::Sum { values } => {
-                values.iter().fold(String::new(), |acc, val| {
+                values.iter().fold(String::new(), |acc, value| {
                     if acc.is_empty() {
-                        serialize_and_wrap_in_parenthesis(val, self)
+                        value.serialize_transformed_node_for_parent(
+                            self, context,
+                        )
                     } else {
-                        match val {
+                        match value {
                             Node::Negate { value } => format!(
                                 "{} - {}",
                                 acc,
-                                serialize_and_wrap_in_parenthesis(value, self)
+                                value.serialize_transformed_node_for_parent(
+                                    self, context
+                                )
                             ),
                             _ => format!(
                                 "{} + {}",
                                 acc,
-                                serialize_and_wrap_in_parenthesis(val, self)
+                                value.serialize_transformed_node_for_parent(
+                                    self, context
+                                )
                             ),
                         }
                     }
@@ -55,35 +79,37 @@ impl Node {
 
             Node::Product { values } => values
                 .iter()
-                .map(|value| serialize_and_wrap_in_parenthesis(value, self))
+                .map(|value| {
+                    value.serialize_transformed_node_for_parent(self, context)
+                })
                 .collect::<Vec<_>>()
                 .join(" * "),
             Node::Division { dividend, divisor } => format!(
                 "{} / {}",
-                serialize_and_wrap_in_parenthesis(dividend, self),
-                serialize_and_wrap_in_parenthesis(divisor, self)
+                dividend.serialize_transformed_node_for_parent(self, context),
+                divisor.serialize_transformed_node_for_parent(self, context)
             ),
             Node::Power { base, exponent } => format!(
                 "{}^{}",
-                serialize_and_wrap_in_parenthesis(base, self),
-                serialize_and_wrap_in_parenthesis(exponent, self)
+                base.serialize_transformed_node_for_parent(self, context),
+                exponent.serialize_transformed_node_for_parent(self, context)
             ),
             Node::Vector { values } => format!(
                 "[{}]",
                 values
                     .iter()
-                    .map(|value| serialize_and_wrap_in_parenthesis(value, self))
+                    .map(|value| value
+                        .serialize_transformed_node_for_parent(self, context))
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
             Node::FunctionCall { target, arguments } => format!(
                 "{}({})",
-                serialize_and_wrap_in_parenthesis(target, self),
+                target.serialize_transformed_node_for_parent(self, context),
                 arguments
                     .iter()
-                    .map(|argument| serialize_and_wrap_in_parenthesis(
-                        argument, self
-                    ))
+                    .map(|argument| argument
+                        .serialize_transformed_node_for_parent(self, context))
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
@@ -93,23 +119,114 @@ impl Node {
             } => format!(
                 "({}) -> {}",
                 arguments.join(", "),
-                serialize_and_wrap_in_parenthesis(expression, self)
+                expression.serialize_transformed_node_for_parent(self, context)
             ),
             Node::Definition { symbol, expression } => format!(
                 "{} := {}",
                 symbol,
-                serialize_and_wrap_in_parenthesis(expression, self)
+                expression.serialize_transformed_node_for_parent(self, context)
             ),
+        }
+    }
+
+    fn pre_serialize_transform(&self, context: &Context) -> Node {
+        match self {
+            Node::Number { value } => {
+                let decimal_places = context.get_decimal_places() as i32;
+                let magnitude = value.abs().log10().round() as i32;
+                if magnitude.abs() <= decimal_places {
+                    return if *value < 0.0 {
+                        Node::Negate {
+                            value: self.clone().into(),
+                        }
+                    } else {
+                        self.clone()
+                    };
+                }
+                let sign = value.signum();
+                let factor = value.abs() * 10_f64.powi(-magnitude);
+                let scientific_notation = Node::Product {
+                    values: vec![
+                        Node::Number { value: factor },
+                        Node::Power {
+                            base: Node::Number { value: 10.0 }.into(),
+                            exponent: Node::Number {
+                                value: magnitude as f64,
+                            }
+                            .into(),
+                        },
+                    ],
+                };
+                if sign > 0.0 {
+                    scientific_notation
+                } else {
+                    Node::Negate {
+                        value: scientific_notation.into(),
+                    }
+                }
+            }
+            Node::Symbol { .. } => self.clone(),
+            Node::Boolean { .. } => self.clone(),
+            Node::Negate { value } => Node::Negate {
+                value: Box::new(value.pre_serialize_transform(context)),
+            },
+            Node::Sum { values } => Node::Sum {
+                values: values
+                    .iter()
+                    .map(|value| value.pre_serialize_transform(context))
+                    .collect(),
+            },
+            Node::Product { values } => Node::Product {
+                values: values
+                    .iter()
+                    .map(|value| value.pre_serialize_transform(context))
+                    .collect(),
+            },
+            Node::Division { dividend, divisor } => Node::Division {
+                dividend: dividend.pre_serialize_transform(context).into(),
+                divisor: divisor.pre_serialize_transform(context).into(),
+            },
+            Node::Power { base, exponent } => Node::Power {
+                base: base.pre_serialize_transform(context).into(),
+                exponent: exponent.pre_serialize_transform(context).into(),
+            },
+            Node::Vector { values } => Node::Vector {
+                values: values
+                    .iter()
+                    .map(|value| value.pre_serialize_transform(context))
+                    .collect(),
+            },
+            Node::FunctionCall { target, arguments } => Node::FunctionCall {
+                target: target.pre_serialize_transform(context).into(),
+                arguments: arguments
+                    .iter()
+                    .map(|argument| argument.pre_serialize_transform(context))
+                    .collect(),
+            },
+            Node::Function {
+                arguments,
+                expression,
+            } => Node::Function {
+                arguments: arguments.clone(),
+                expression: expression.pre_serialize_transform(context).into(),
+            },
+            Node::Definition { symbol, expression } => Node::Definition {
+                symbol: symbol.clone(),
+                expression: expression.pre_serialize_transform(context).into(),
+            },
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::parse::parse_statement;
+    use crate::{context::Context, parser::parse::parse_statement};
 
     fn compare(input: &str, expected: &str) {
-        assert_eq!(parse_statement(input).unwrap().serialize(), expected);
+        assert_eq!(
+            parse_statement(input).unwrap().serialize(&Context::new()),
+            expected
+        );
     }
 
     #[test]
@@ -120,6 +237,11 @@ mod tests {
     #[test]
     fn serialize_number_float() {
         compare("2.3", "2.3");
+    }
+
+    #[test]
+    fn serialize_number_to_scientific_notation() {
+        compare("11234567", "1.12346 * 10^7");
     }
 
     #[test]

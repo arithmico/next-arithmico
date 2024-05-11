@@ -56,7 +56,7 @@ impl Session {
     ) -> Result<(String, Context), EvaluationError> {
         let node = parse_statement(input)?;
         let result = node.evaluate(&self.current_context)?;
-        let serialized_result = result.serialize();
+        let serialized_result = result.serialize(&self.current_context);
         let mut next_context = self.current_context.clone();
         if let Node::Definition { symbol, expression } = result {
             next_context.insert(&symbol, (*expression).clone());

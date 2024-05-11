@@ -50,4 +50,8 @@ impl Context {
     pub fn push_frame(&mut self) {
         self.stack.push(HashMap::new());
     }
+
+    pub fn get_decimal_places(&self) -> u8 {
+        self.decimal_places.0
+    }
 }
