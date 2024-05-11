@@ -1,4 +1,4 @@
-use yew::{function_component, html, Html, Properties};
+use yew::{classes, function_component, html, Html, Properties};
 
 use crate::{
     components::{Navbar, NavbarLink, Page},
@@ -20,7 +20,9 @@ pub fn PageWithNavbar(props: &PageWithNavbarProps) -> Html {
                 <NavbarLink to={Route::Help}>{"Hilfe"}</NavbarLink>
                 <NavbarLink to={Route::About}>{"Über"}</NavbarLink>
             </Navbar>
-            {props.children.clone()}
+            <main class={classes!("w-full", "px-[20%]")}>
+                {props.children.clone()}
+            </main>
         </Page>
     }
 }

@@ -27,8 +27,8 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
     });
 
     html! {
-        <div class={classes!("flex", "flex-col", "items-center")}>
-            <div class={classes!("py-8", "flex", "flex-col", "w-3/5")}>
+        <div class={classes!("flex", "flex-col", "items-center", "justify-center", "w-full", "h-full")}>
+            <div class={classes!("py-8", "flex", "flex-col", "w-full")}>
                 <label class={classes!("flex", "flex-col", "w-full")}>
                     <span class={classes!("sr-only")}>{"Eingabe"}</span>
                     <input
@@ -43,7 +43,8 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
                             "p-4",
                             "rounded-sm",
                             "text-3xl",
-                            "focus:outline-2"
+                            "focus:outline-2",
+                            "bg-neutral-100"
                         )}
                     />
                 </label>
@@ -70,7 +71,8 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
                             "p-4",
                             "rounded-sm",
                             "text-3xl",
-                            "focus:outline-2"
+                            "focus:outline-2",
+                            "bg-neutral-100"
                         )}
                     />
                 </label>
