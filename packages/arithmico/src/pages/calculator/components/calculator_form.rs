@@ -30,18 +30,29 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
         <div class={classes!("flex", "flex-col", "items-center")}>
             <div class={classes!("py-8", "flex", "flex-col", "w-3/5")}>
                 <label class={classes!("flex", "flex-col", "w-full")}>
-                    {"Eingabe"}
+                    <span class={classes!("sr-only")}>{"Eingabe"}</span>
                     <input
                         type={"text"}
                         onchange={onchange}
-                        class={classes!("border", "border-black", "w-full", "outline-none", "p-2")}
+                        placeholder={"Eingabe"}
+                        class={classes!(
+                            "outline-1",
+                            "outline-black",
+                            "w-full",
+                            "outline-none",
+                            "p-4",
+                            "rounded-sm",
+                            "text-3xl",
+                            "focus:outline-2"
+                        )}
                     />
                 </label>
-                <label class={classes!("flex", "flex-col", "mt-4", "w-full")}>
-                    {"Ausgabe"}
+                <label class={classes!("flex", "flex-col", "mt-12", "w-full")}>
+                    <span class={classes!("sr-only")}>{"Ausgabe"}</span>
                     <input
                         type={"text"}
                         readonly={true}
+                        placeholder={"Ausgabe"}
                         value={match last_statement {
                             Some(statement) => {
                                 match &statement.output {
@@ -51,7 +62,16 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
                             },
                             None => "".to_string(),
                         }}
-                        class={classes!("border", "border-black", "w-full", "outline-none", "p-2")}
+                        class={classes!(
+                            "outline-1",
+                            "outline-black",
+                            "w-full",
+                            "outline-none",
+                            "p-4",
+                            "rounded-sm",
+                            "text-3xl",
+                            "focus:outline-2"
+                        )}
                     />
                 </label>
             </div>

@@ -35,7 +35,7 @@ pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
         let link_route = props.to.clone();
         route.and_then(|route| {
             if route == link_route {
-                Some("bg-neutral-300")
+                Some("bg-neutral-200")
             } else {
                 None
             }
@@ -47,7 +47,7 @@ pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
             <LinkWrapper
                 class={classes!(
                     "px-8",
-                    "hover:bg-neutral-300",
+                    "hover:bg-neutral-200",
                     "flex", "items-center",
                     "h-full",
                     "rounded-b-md",
