@@ -16,4 +16,7 @@ pub enum NodeEvaluationError {
 
     #[error("division by zero is not allowed")]
     DivisionByZero,
+
+    #[error("{0}")]
+    ArithmeticError(String),
 }

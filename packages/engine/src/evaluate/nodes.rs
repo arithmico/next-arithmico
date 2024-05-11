@@ -8,6 +8,7 @@ mod power;
 mod product;
 mod sum;
 mod symbol;
+mod vector;
 
 pub use definition::evaluate_definition;
 pub use division::evaluate_division;
@@ -19,3 +20,4 @@ pub use power::evaluate_power;
 pub use product::evaluate_product;
 pub use sum::evaluate_sum;
 pub use symbol::evaluate_symbol;
+pub use vector::evaluate_vector;

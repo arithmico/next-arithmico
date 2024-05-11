@@ -4,7 +4,7 @@ use crate::node::Node;
 use super::nodes::{
     evaluate_definition, evaluate_division, evaluate_function,
     evaluate_function_call, evaluate_negate, evaluate_number, evaluate_power,
-    evaluate_product, evaluate_sum, evaluate_symbol,
+    evaluate_product, evaluate_sum, evaluate_symbol, evaluate_vector,
 };
 use super::NodeEvaluationError;
 
@@ -35,6 +35,7 @@ impl Node {
             Node::Definition { symbol, expression } => {
                 evaluate_definition(symbol, expression, context)
             }
+            Node::Vector { values } => evaluate_vector(values, context),
             _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
     }
@@ -202,6 +203,66 @@ mod tests {
                 symbol: String::from("test"),
                 expression: Box::new(Node::Number { value: 42.0 })
             }
+        )
+    }
+
+    #[test]
+    fn evaluate_vector() {
+        assert_eq!(
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Sum {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                        ]
+                    }
+                ]
+            }
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 3.0 },
+                ]
+            },
+        )
+    }
+
+    #[test]
+    fn evaluate_sum_of_vectors() {
+        assert_eq!(
+            Node::Sum {
+                values: vec![
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 3.0 },
+                        ]
+                    },
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 3.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 1.0 },
+                        ]
+                    },
+                ]
+            }
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 4.0 },
+                    Node::Number { value: 4.0 },
+                    Node::Number { value: 4.0 },
+                ]
+            },
         )
     }
 }
