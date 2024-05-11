@@ -3,14 +3,28 @@ use std::collections::HashMap;
 use crate::node::Node;
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct DecimalPlaces(u8);
+
+impl From<u8> for DecimalPlaces {
+    fn from(value: u8) -> Self {
+        if value > 15 {
+            panic!("invalid decimal places");
+        }
+        DecimalPlaces(value)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct Context {
     stack: Vec<HashMap<String, Node>>,
+    decimal_places: DecimalPlaces,
 }
 
 impl Context {
     pub fn new() -> Self {
         Context {
             stack: vec![HashMap::new()],
+            decimal_places: 5.into(),
         }
     }
 
