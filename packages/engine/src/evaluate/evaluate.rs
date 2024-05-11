@@ -265,4 +265,28 @@ mod tests {
             },
         )
     }
+
+    #[test]
+    fn evaluate_sum_of_overflowing_numbers() {
+        assert_eq!(
+            Node::Sum {
+                values: vec![
+                    Node::Power {
+                        base: Node::Number { value: 10.0 }.into(),
+                        exponent: Node::Number { value: 32.0 }.into()
+                    },
+                    Node::Negate {
+                        value: Node::Power {
+                            base: Node::Number { value: 10.0 }.into(),
+                            exponent: Node::Number { value: 32.0 }.into()
+                        }
+                        .into(),
+                    }
+                ]
+            }
+            .evaluate(&Context::new())
+            .unwrap(),
+            Node::Number { value: 0.0 }
+        )
+    }
 }

@@ -25,8 +25,11 @@ impl Node {
     fn serialize_transformed_node(&self, context: &Context) -> String {
         match self {
             Node::Number { value } => {
+                if *value == 0.0 {
+                    return "0".into();
+                }
                 if *value < 0.0 {
-                    panic!("can not serialize node");
+                    panic!("can not serialize node {}", value);
                 }
                 let decimal_places = context.get_decimal_places() as usize;
                 let serialized_value = format!("{:.1$}", value, decimal_places);
@@ -132,9 +135,14 @@ impl Node {
     fn pre_serialize_transform(&self, context: &Context) -> Node {
         match self {
             Node::Number { value } => {
+                if *value == 0.0 {
+                    return self.clone();
+                }
                 let decimal_places = context.get_decimal_places() as i32;
-                let magnitude = value.abs().log10().round() as i32;
-                if magnitude.abs() <= decimal_places {
+                let magnitude = value.abs().log10().round() as i64;
+                let magnitude_abs =
+                    if magnitude < 0 { -magnitude } else { magnitude };
+                if magnitude_abs <= decimal_places as i64 {
                     return if *value < 0.0 {
                         Node::Negate {
                             value: self.clone().into(),
@@ -144,7 +152,7 @@ impl Node {
                     };
                 }
                 let sign = value.signum();
-                let factor = value.abs() * 10_f64.powi(-magnitude);
+                let factor = value.abs() * 10_f64.powi(-magnitude as i32);
                 let scientific_notation = Node::Product {
                     values: vec![
                         Node::Number { value: factor },
