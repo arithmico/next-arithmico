@@ -5,7 +5,7 @@ use crate::{
     context::Context,
     evaluate::NodeEvaluationError,
     node::Node,
-    parser::{parse::parse_statement, parser::Rule},
+    parse::{parse::parse_statement, parser::Rule},
 };
 
 #[derive(Error, Debug, PartialEq, Clone)]

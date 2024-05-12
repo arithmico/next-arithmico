@@ -10,12 +10,12 @@ mod node {
     mod node;
     pub use node::Node;
 }
-mod parser {
+mod parse {
     pub mod parse;
     pub mod parser;
     pub mod transform;
 }
-mod serializer {
+mod serialize {
     mod parenthesis;
     pub mod serialize;
 }

@@ -228,7 +228,7 @@ impl Node {
 
 #[cfg(test)]
 mod tests {
-    use crate::{context::Context, parser::parse::parse_statement};
+    use crate::{context::Context, parse::parse::parse_statement};
 
     fn compare(input: &str, expected: &str) {
         assert_eq!(
