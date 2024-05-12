@@ -29,6 +29,7 @@ mod session {
     pub use error::EvaluationError;
     pub use session::{Session, Statement};
 }
+mod api;
 
-pub use context::HostApi;
+pub use api::load_host_api;
 pub use session::{EvaluationError, Session, Statement};

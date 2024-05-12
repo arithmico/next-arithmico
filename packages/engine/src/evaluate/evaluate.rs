@@ -316,4 +316,22 @@ mod tests {
             Node::Number { value: 0.0 }
         )
     }
+
+    #[test]
+    fn get_constant_from_host_api() {
+        let host_api = HostApi::builder()
+            .add_constant_endpoint("test".into(), |_context| Node::Number {
+                value: 42.0,
+            })
+            .build();
+        let context = Context::new(host_api.into());
+        assert_eq!(
+            Node::Symbol {
+                name: "test".into()
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Number { value: 42.0 }
+        )
+    }
 }

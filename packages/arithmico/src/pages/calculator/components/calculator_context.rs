@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use engine::{HostApi, Session};
+use engine::{load_host_api, Session};
 use yew::{Reducible, UseReducerHandle};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -10,7 +10,7 @@ pub struct CalculatorState {
 
 impl CalculatorState {
     pub fn new() -> Self {
-        let host_api = Rc::new(HostApi::builder().build());
+        let host_api = Rc::new(load_host_api());
         CalculatorState {
             session: Session::new(host_api),
         }
