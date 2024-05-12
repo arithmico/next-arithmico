@@ -26,6 +26,17 @@ pub fn evaluate_function_call(
             }
             expression.evaluate(&call_context)
         }
+        Node::HostApiFunctionEndpoint { name } => {
+            let endpoint = context.endpoint(&name).unwrap();
+            match endpoint {
+                crate::context::HostEndpoint::Function(f) => {
+                    f(&call_arguments, context)
+                }
+                crate::context::HostEndpoint::Constant(_) => {
+                    Err(NodeEvaluationError::UnsupportedOperation)
+                }
+            }
+        }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }

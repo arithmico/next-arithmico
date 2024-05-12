@@ -56,4 +56,8 @@ impl Context {
     pub fn get_decimal_places(&self) -> u8 {
         self.settings.get_decimal_places()
     }
+
+    pub fn endpoint(&self, name: &str) -> Option<&HostEndpoint> {
+        self.host_api.endpoint(name)
+    }
 }

@@ -318,7 +318,7 @@ mod tests {
     }
 
     #[test]
-    fn get_constant_from_host_api() {
+    fn evaluate_host_constant_endpoint() {
         let host_api = HostApi::builder()
             .add_constant_endpoint("test".into(), |_context| Node::Number {
                 value: 42.0,
@@ -332,6 +332,43 @@ mod tests {
             .evaluate(&context)
             .unwrap(),
             Node::Number { value: 42.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_host_function_endpoint() {
+        let host_api = HostApi::builder()
+            .add_function_endpoint("test".into(), |arguments, context| {
+                let mut result: Vec<Node> = Vec::new();
+                for argument in arguments.iter() {
+                    let evaluated_argument = argument.evaluate(context)?;
+                    result.push(evaluated_argument);
+                }
+                Ok(Node::Vector { values: result })
+            })
+            .build();
+        let context = Context::new(host_api.into());
+        assert_eq!(
+            Node::FunctionCall {
+                target: Node::Symbol {
+                    name: "test".into()
+                }
+                .into(),
+                arguments: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 3.0 },
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 3.0 },
+                ]
+            }
         )
     }
 }
