@@ -19,10 +19,7 @@ mod serialize {
     mod parenthesis;
     pub mod serialize;
 }
-mod context {
-    mod context;
-    pub use context::Context;
-}
+mod context;
 mod session {
     pub mod session;
     mod error {
