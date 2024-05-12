@@ -14,12 +14,12 @@ pub fn load_host_api() -> HostApi {
                 ));
             }
             let argument = arguments.get(0).unwrap();
-            let evaluated_argument =
-                argument.evaluate(context).or_else(|_| {
-                    Err(NodeEvaluationError::RuntimeError("test".into()))
-                })?;
+            let evaluated_argument = argument.evaluate(context)?;
             match evaluated_argument {
                 Node::Number { value } => {
+                    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
+                        return Ok(Node::Number { value: 0.0 });
+                    }
                     Ok(Node::Number { value: value.sin() })
                 }
                 _ => Err(NodeEvaluationError::RuntimeError(

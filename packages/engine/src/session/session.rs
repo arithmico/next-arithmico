@@ -87,6 +87,8 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
+    use crate::load_host_api;
+
     use super::*;
 
     #[test]
@@ -130,5 +132,12 @@ mod tests {
                 ]
             }
         )
+    }
+
+    #[test]
+    fn test_e2e_1() {
+        let host_api = Rc::new(load_host_api());
+        let session = Session::new(host_api.clone());
+        session.push("sin(200pi-1)");
     }
 }

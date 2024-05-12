@@ -148,7 +148,7 @@ impl Node {
                 if magnitude_abs <= decimal_places as i64 {
                     return if *value < 0.0 {
                         Node::Negate {
-                            value: self.clone().into(),
+                            value: Node::Number { value: value.abs() }.into(),
                         }
                     } else {
                         self.clone()
