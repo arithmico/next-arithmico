@@ -1,6 +1,13 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, rc::Rc};
+
+use crate::{context::Context, node::Node, Language};
 
 use super::host_endpoint::{ConstantEndpoint, FunctionEndpoint, HostEndpoint};
+
+pub struct Documentation {
+    pub synopsis: String,
+    pub description: String,
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct HostApi {
@@ -14,6 +21,45 @@ impl HostApi {
 
     pub fn endpoint(&self, name: &str) -> Option<&HostEndpoint> {
         self.endpoints.get(name)
+    }
+
+    pub fn get_documentation(&self, language: &Language) -> Vec<Documentation> {
+        self.endpoints
+            .iter()
+            .map(|(name, endpoint)| match endpoint {
+                HostEndpoint::Function {
+                    arguments,
+                    description,
+                    ..
+                } => Documentation {
+                    synopsis: Node::FunctionCall {
+                        target: Node::Symbol { name: name.clone() }.into(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| Node::Symbol {
+                                name: argument.clone(),
+                            })
+                            .collect(),
+                    }
+                    .serialize(&Context::new(Rc::new(self.clone()))),
+                    description: description
+                        .get(language)
+                        .and_then(|description| Some(description.clone()))
+                        .unwrap_or_else(|| {
+                            String::from("No documentation available")
+                        }),
+                },
+                HostEndpoint::Constant { description, .. } => Documentation {
+                    synopsis: name.clone(),
+                    description: description
+                        .get(language)
+                        .and_then(|description| Some(description.clone()))
+                        .unwrap_or_else(|| {
+                            String::from("No documentation available")
+                        }),
+                },
+            })
+            .collect()
     }
 }
 
@@ -45,17 +91,33 @@ impl HostApiBuilder {
     pub fn add_function_endpoint(
         self,
         name: &str,
-        function: FunctionEndpoint,
+        executor: FunctionEndpoint,
+        arguments: Vec<String>,
+        documentation: HashMap<Language, String>,
     ) -> HostApiBuilder {
-        self.add_endpoint(name, HostEndpoint::Function(function))
+        self.add_endpoint(
+            name,
+            HostEndpoint::Function {
+                executor,
+                arguments,
+                description: documentation,
+            },
+        )
     }
 
     pub fn add_constant_endpoint(
         self,
         name: &str,
-        constant: ConstantEndpoint,
+        executor: ConstantEndpoint,
+        documentation: HashMap<Language, String>,
     ) -> HostApiBuilder {
-        self.add_endpoint(name, HostEndpoint::Constant(constant))
+        self.add_endpoint(
+            name,
+            HostEndpoint::Constant {
+                executor,
+                description: documentation,
+            },
+        )
     }
 
     pub fn build(self) -> HostApi {

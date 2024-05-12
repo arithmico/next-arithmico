@@ -30,10 +30,10 @@ impl Context {
         }
         if let Some(endpoint) = self.host_api.endpoint(name) {
             return match endpoint {
-                HostEndpoint::Function(_) => {
+                HostEndpoint::Function { .. } => {
                     Some(Node::HostApiFunctionEndpoint { name: name.clone() })
                 }
-                HostEndpoint::Constant(f) => Some(f(self)),
+                HostEndpoint::Constant { executor, .. } => Some(executor(self)),
             };
         }
         None

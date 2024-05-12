@@ -30,6 +30,8 @@ mod session {
     pub use session::{Session, Statement};
 }
 mod api;
+mod language;
 
 pub use api::load_host_api;
+pub use language::Language;
 pub use session::{EvaluationError, Session, Statement};

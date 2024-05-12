@@ -43,6 +43,8 @@ impl Node {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
     use crate::context::HostApi;
 
     use super::*;
@@ -320,9 +322,11 @@ mod tests {
     #[test]
     fn evaluate_host_constant_endpoint() {
         let host_api = HostApi::builder()
-            .add_constant_endpoint("test".into(), |_context| Node::Number {
-                value: 42.0,
-            })
+            .add_constant_endpoint(
+                "test".into(),
+                |_context| Node::Number { value: 42.0 },
+                HashMap::new(),
+            )
             .build();
         let context = Context::new(host_api.into());
         assert_eq!(
@@ -338,14 +342,19 @@ mod tests {
     #[test]
     fn evaluate_host_function_endpoint() {
         let host_api = HostApi::builder()
-            .add_function_endpoint("test".into(), |arguments, context| {
-                let mut result: Vec<Node> = Vec::new();
-                for argument in arguments.iter() {
-                    let evaluated_argument = argument.evaluate(context)?;
-                    result.push(evaluated_argument);
-                }
-                Ok(Node::Vector { values: result })
-            })
+            .add_function_endpoint(
+                "test".into(),
+                |arguments, context| {
+                    let mut result: Vec<Node> = Vec::new();
+                    for argument in arguments.iter() {
+                        let evaluated_argument = argument.evaluate(context)?;
+                        result.push(evaluated_argument);
+                    }
+                    Ok(Node::Vector { values: result })
+                },
+                vec![String::from("x")],
+                HashMap::new(),
+            )
             .build();
         let context = Context::new(host_api.into());
         assert_eq!(

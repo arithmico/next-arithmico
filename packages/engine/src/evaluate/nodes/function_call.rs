@@ -33,8 +33,10 @@ pub fn evaluate_function_call(
         Node::HostApiFunctionEndpoint { name } => {
             let endpoint = context.endpoint(&name).unwrap();
             match endpoint {
-                HostEndpoint::Function(f) => f(&call_arguments, context),
-                HostEndpoint::Constant(_) => {
+                HostEndpoint::Function { executor, .. } => {
+                    executor(&call_arguments, context)
+                }
+                HostEndpoint::Constant { .. } => {
                     Err(NodeEvaluationError::RuntimeError(
                         "Can not call constant".into(),
                     ))
