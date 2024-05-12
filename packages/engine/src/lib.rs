@@ -33,5 +33,6 @@ mod api;
 mod language;
 
 pub use api::load_host_api;
+pub use context::{Documentation, HostApi};
 pub use language::Language;
 pub use session::{EvaluationError, Session, Statement};

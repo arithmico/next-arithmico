@@ -3,4 +3,4 @@ mod host_api;
 mod settings;
 
 pub use context::Context;
-pub use host_api::{HostApi, HostEndpoint};
+pub use host_api::{Documentation, HostApi, HostEndpoint};

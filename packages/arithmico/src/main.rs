@@ -1,17 +1,29 @@
+use std::rc::Rc;
+
+use engine::load_host_api;
 use yew::prelude::*;
 use yew_router::{BrowserRouter, Switch};
 
-use crate::router::{switch, Route};
+use crate::{
+    components::AppContext,
+    router::{switch, Route},
+};
 mod components;
 mod pages;
 mod router;
 
 #[function_component]
 fn App() -> Html {
+    let context = AppContext {
+        host_api: Rc::new(load_host_api()),
+    };
+
     html! {
-        <BrowserRouter>
-            <Switch<Route> render={switch}/>
-        </BrowserRouter>
+        <ContextProvider<AppContext> context={context}>
+            <BrowserRouter>
+                <Switch<Route> render={switch}/>
+            </BrowserRouter>
+        </ContextProvider<AppContext>>
     }
 }
 
