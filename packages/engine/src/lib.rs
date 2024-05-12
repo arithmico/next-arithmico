@@ -30,4 +30,5 @@ mod session {
     pub use session::{Session, Statement};
 }
 
+pub use context::HostApi;
 pub use session::{EvaluationError, Session, Statement};

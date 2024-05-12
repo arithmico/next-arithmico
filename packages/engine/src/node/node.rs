@@ -37,6 +37,9 @@ pub enum Node {
         arguments: Vec<String>,
         expression: Box<Node>,
     },
+    HostApiFunctionEndpoint {
+        name: String,
+    },
     Definition {
         symbol: String,
         expression: Box<Node>,

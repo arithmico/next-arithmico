@@ -1,28 +1,40 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, rc::Rc};
 
 use crate::node::Node;
 
-use super::settings::Settings;
+use super::{host_api::HostApi, settings::Settings, HostEndpoint};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Context {
     stack: Vec<HashMap<String, Node>>,
     settings: Settings,
+    host_api: Rc<HostApi>,
 }
 
 impl Context {
-    pub fn new() -> Self {
+    pub fn new(host_api: Rc<HostApi>) -> Context {
         Context {
             stack: vec![HashMap::new()],
             settings: Settings::default(),
+            host_api,
         }
     }
 
-    pub fn lookup(&self, name: &String) -> Option<&Node> {
-        for stack_frame in self.stack.iter() {
+    pub fn lookup(&self, name: &String) -> Option<Node> {
+        for stack_frame in self.stack.iter().rev() {
             if stack_frame.contains_key(name) {
-                return stack_frame.get(name);
+                return stack_frame
+                    .get(name)
+                    .and_then(|node| Some(node.clone()));
             }
+        }
+        if let Some(endpoint) = self.host_api.endpoint(name) {
+            return match endpoint {
+                HostEndpoint::Function(_) => {
+                    Some(Node::HostApiFunctionEndpoint { name: name.clone() })
+                }
+                HostEndpoint::Constant(f) => Some(f(self)),
+            };
         }
         None
     }

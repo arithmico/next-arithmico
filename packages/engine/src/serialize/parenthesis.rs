@@ -68,6 +68,10 @@ impl Node {
 
             (Node::Definition { .. }, _) => ParenthesesBehavior::Optional,
 
+            (Node::HostApiFunctionEndpoint { .. }, _) => {
+                ParenthesesBehavior::Optional
+            }
+
             _ => ParenthesesBehavior::Required,
         }
     }

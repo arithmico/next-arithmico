@@ -129,6 +129,9 @@ impl Node {
                 symbol,
                 expression.serialize_transformed_node_for_parent(self, context)
             ),
+            Node::HostApiFunctionEndpoint { .. } => {
+                panic!("cannot serialize function endpoint");
+            }
         }
     }
 
@@ -222,17 +225,28 @@ impl Node {
                 symbol: symbol.clone(),
                 expression: expression.pre_serialize_transform(context).into(),
             },
+            Node::HostApiFunctionEndpoint { name, .. } => {
+                Node::Symbol { name: name.into() }
+            }
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{context::Context, parse::parse::parse_statement};
+    use std::rc::Rc;
+
+    use crate::{
+        context::{Context, HostApi},
+        parse::parse::parse_statement,
+    };
 
     fn compare(input: &str, expected: &str) {
+        let host_api = Rc::new(HostApi::builder().build());
         assert_eq!(
-            parse_statement(input).unwrap().serialize(&Context::new()),
+            parse_statement(input)
+                .unwrap()
+                .serialize(&Context::new(host_api)),
             expected
         );
     }
