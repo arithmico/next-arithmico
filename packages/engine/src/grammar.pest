@@ -44,7 +44,7 @@ sum = {
 negate = {
 	"-" ~ sum_item
 }
-sum_item = _{ 
+sum_item = _{
     | product
     | product_item
 }
@@ -85,7 +85,8 @@ vector_item = _{
     | vector
     | function
 	| function_call
-    | function_call_item
+    | sub_expression
+    | literal
 }
 
 // function
@@ -103,12 +104,7 @@ function_call = {
 function_call_target = ${ symbol ~ "("}
 function_call_end = _{ ")"}
 function_call_arguments = {
-	(function_call_item ~ (argument_separator ~ function_call_item)*)?
-}
-function_call_item = _{
-	| function_call
-	| sub_expression
-    | literal
+	(expression ~ (argument_separator ~ expression)*)?
 }
 
 // literal types

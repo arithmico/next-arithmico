@@ -161,8 +161,17 @@ impl Node {
                         Node::Number { value: factor },
                         Node::Power {
                             base: Node::Number { value: 10.0 }.into(),
-                            exponent: Node::Number {
-                                value: magnitude as f64,
+                            exponent: if magnitude < 0 {
+                                Node::Negate {
+                                    value: Node::Number {
+                                        value: magnitude.abs() as f64,
+                                    }
+                                    .into(),
+                                }
+                            } else {
+                                Node::Number {
+                                    value: magnitude.abs() as f64,
+                                }
                             }
                             .into(),
                         },

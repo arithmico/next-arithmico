@@ -1,4 +1,8 @@
-use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
+use crate::{
+    context::{Context, HostEndpoint},
+    evaluate::NodeEvaluationError,
+    node::Node,
+};
 
 pub fn evaluate_function_call(
     target: &Node,
@@ -29,11 +33,11 @@ pub fn evaluate_function_call(
         Node::HostApiFunctionEndpoint { name } => {
             let endpoint = context.endpoint(&name).unwrap();
             match endpoint {
-                crate::context::HostEndpoint::Function(f) => {
-                    f(&call_arguments, context)
-                }
-                crate::context::HostEndpoint::Constant(_) => {
-                    Err(NodeEvaluationError::UnsupportedOperation)
+                HostEndpoint::Function(f) => f(&call_arguments, context),
+                HostEndpoint::Constant(_) => {
+                    Err(NodeEvaluationError::RuntimeError(
+                        "Can not call constant".into(),
+                    ))
                 }
             }
         }

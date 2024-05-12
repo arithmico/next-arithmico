@@ -19,4 +19,7 @@ pub enum NodeEvaluationError {
 
     #[error("{0}")]
     ArithmeticError(String),
+
+    #[error("{0}")]
+    RuntimeError(String),
 }
