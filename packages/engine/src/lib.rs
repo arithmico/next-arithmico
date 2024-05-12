@@ -25,6 +25,12 @@ mod context {
 }
 mod session {
     pub mod session;
+    mod error {
+        mod error;
+        pub use error::EvaluationError;
+    }
+    pub use error::EvaluationError;
+    pub use session::{Session, Statement};
 }
 
-pub use session::session::{EvaluationError, Session, Statement};
+pub use session::{EvaluationError, Session, Statement};

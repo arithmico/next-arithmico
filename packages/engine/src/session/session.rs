@@ -1,33 +1,6 @@
-use pest::error::Error;
-use thiserror::Error;
+use crate::{context::Context, node::Node, parse::parse::parse_statement};
 
-use crate::{
-    context::Context,
-    evaluate::NodeEvaluationError,
-    node::Node,
-    parse::{parse::parse_statement, parser::Rule},
-};
-
-#[derive(Error, Debug, PartialEq, Clone)]
-pub enum EvaluationError {
-    #[error("SyntaxError: {0}")]
-    SyntaxError(Error<Rule>),
-
-    #[error("RuntimeError: {0}")]
-    RuntimeError(NodeEvaluationError),
-}
-
-impl From<Error<Rule>> for EvaluationError {
-    fn from(value: Error<Rule>) -> Self {
-        EvaluationError::SyntaxError(value)
-    }
-}
-
-impl From<NodeEvaluationError> for EvaluationError {
-    fn from(value: NodeEvaluationError) -> Self {
-        EvaluationError::RuntimeError(value)
-    }
-}
+use super::EvaluationError;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Statement {
@@ -107,7 +80,6 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
-
     use super::*;
 
     #[test]
