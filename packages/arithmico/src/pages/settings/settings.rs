@@ -1,10 +1,9 @@
-use engine::Language;
-use headless_components::listbox::{
-    Listbox, ListboxButton, ListboxOption, ListboxOptions,
+use crate::components::{
+    Listbox, ListboxButton, ListboxOption, ListboxOptions, PageWithNavbar,
 };
-use yew::prelude::*;
+use engine::Language;
 
-use crate::components::PageWithNavbar;
+use yew::prelude::*;
 
 use icons::ExpandIcon;
 
@@ -25,20 +24,8 @@ pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
             <Listbox<Language>
                 on_change={onchange_language}
                 value={(*language).clone()}
-                class={classes!("relative", "flex", "flex-col", "w-36")}
             >
-                <ListboxButton<Language>
-                    class={classes!(
-                        "bg-neutral-300",
-                        "px-2",
-                        "py-1",
-                        "rounded-sm",
-                        "w-full",
-                        "items-center",
-                        "flex",
-                        "group"
-                    )}
-                >
+                <ListboxButton<Language>>
                     {match *language {
                         Language::German => html!({"Deutsch"}),
                         Language::English => html!({"Englisch"}),
@@ -51,48 +38,11 @@ pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
                     )} />
                 </ListboxButton<Language>>
                 <div>
-                    <ListboxOptions<Language>
-                        class={classes!(
-                            "absolute",
-                            "bg-neutral-300",
-                            "mt-2",
-                            "w-full",
-                            "rounded-sm",
-                            "outline-black",
-                            "focus:outline-2",
-                            "focus-visible:outline-2"
-                        )}
-                    >
-                        <ListboxOption<Language>
-                            value={Language::German}
-                            class={classes!(
-                                "bg-neutral-300",
-                                "px-2",
-                                "py-1",
-                                "rounded-sm",
-                                "w-full",
-                                "text-left",
-                                "outline-black",
-                                "focus:outline-2",
-                                "focus-visible:outline-2"
-                            )}
-                        >
+                    <ListboxOptions<Language>>
+                        <ListboxOption<Language> value={Language::German}>
                             {"Deutsch"}
                         </ListboxOption<Language>>
-                        <ListboxOption<Language>
-                            value={Language::English}
-                            class={classes!(
-                                "bg-neutral-300",
-                                "px-2",
-                                "py-1",
-                                "rounded-sm",
-                                "w-full",
-                                "text-left",
-                                "outline-black",
-                                "focus:outline-2",
-                                "focus-visible:outline-2"
-                            )}
-                        >
+                        <ListboxOption<Language> value={Language::English}>
                             {"Englisch"}
                         </ListboxOption<Language>>
                     </ListboxOptions<Language>>
