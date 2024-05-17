@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::{BrowserRouter, Switch};
 
 use crate::{
-    app_context::AppContext,
+    app_context::{AppContext, AppState},
     router::{switch, Route},
 };
 mod app_context;
@@ -12,7 +12,7 @@ mod router;
 
 #[function_component]
 fn App() -> Html {
-    let context = AppContext::default();
+    let context = use_reducer(|| AppState::default());
 
     html! {
         <ContextProvider<AppContext> context={context}>

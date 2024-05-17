@@ -5,24 +5,23 @@ use yew::{
     Properties,
 };
 
-use super::CalculatorContext;
+use crate::app_context::{AppContext, AppReducerAction};
 
 #[derive(PartialEq, Properties)]
 pub struct CalculatorFormProps {}
 
 #[function_component]
 pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
-    let context = use_context::<CalculatorContext>().unwrap();
+    let context = use_context::<AppContext>().unwrap();
     let last_statement = context
-        .session()
-        .last_statement()
+        .get_last_statement()
         .and_then(|statement| Some(statement.clone()));
 
     let onchange = Callback::from(move |event: Event| {
         let target = event.target();
         let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
         if let Some(input) = input {
-            context.dispatch(input.value());
+            context.dispatch(AppReducerAction::Evaluate(input.value()));
         }
     });
 
