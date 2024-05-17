@@ -29,6 +29,7 @@ version = "0.1.0"
 dependencies = [
  "engine",
  "headless_components",
+ "icons",
  "log",
  "wasm-bindgen",
  "wasm-logger",
@@ -664,6 +665,13 @@ dependencies = [
  "bytes",
  "fnv",
  "itoa",
+]
+
+[[package]]
+name = "icons"
+version = "0.1.0"
+dependencies = [
+ "yew",
 ]
 
 [[package]]

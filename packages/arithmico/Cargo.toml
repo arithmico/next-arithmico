@@ -8,7 +8,10 @@ yew = { version = "0.21.0", features = ["csr"] }
 yew-router = "0.18.0"
 wasm-bindgen = "0.2.92"
 web-sys = "0.3.69"
-engine = { path = "../engine"}
-headless_components = { path = "../headless_components" }
 log = "0.4.21"
 wasm-logger = "0.2.0"
+
+# internal dependencies
+engine = { path = "../engine" }
+headless_components = { path = "../headless_components" }
+icons = { path = "../icons" }

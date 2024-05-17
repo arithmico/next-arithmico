@@ -59,6 +59,7 @@ pub fn ListboxOption<T: ListboxValue>(props: &ListboxOptionProps<T>) -> Html {
             onclick={on_click}
             onkeydown={onkeypress}
             aria-selected={selected.to_string()}
+            data-selected={selected.to_string()}
         >
             {props.children.clone()}
         </li>
