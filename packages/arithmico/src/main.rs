@@ -1,6 +1,3 @@
-use std::rc::Rc;
-
-use engine::load_host_api;
 use yew::prelude::*;
 use yew_router::{BrowserRouter, Switch};
 
@@ -15,9 +12,7 @@ mod router;
 
 #[function_component]
 fn App() -> Html {
-    let context = AppContext {
-        host_api: Rc::new(load_host_api()),
-    };
+    let context = AppContext::default();
 
     html! {
         <ContextProvider<AppContext> context={context}>
