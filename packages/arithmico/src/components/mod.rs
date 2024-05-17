@@ -1,6 +1,3 @@
-mod app_context {
-    pub mod app_context;
-}
 mod navbar {
     pub mod navbar;
 }
@@ -15,7 +12,6 @@ mod listbox {
     pub mod listbox;
 }
 
-pub use app_context::app_context::*;
 pub use listbox::listbox::*;
 pub use navbar::navbar::*;
 pub use page::page::*;

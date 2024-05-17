@@ -5,9 +5,10 @@ use yew::prelude::*;
 use yew_router::{BrowserRouter, Switch};
 
 use crate::{
-    components::AppContext,
+    app_context::AppContext,
     router::{switch, Route},
 };
+mod app_context;
 mod components;
 mod pages;
 mod router;

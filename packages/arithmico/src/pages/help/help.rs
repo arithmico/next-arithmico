@@ -1,7 +1,7 @@
 use engine::Language;
 use yew::{classes, function_component, html, use_context, Html, Properties};
 
-use crate::components::{AppContext, PageWithNavbar};
+use crate::{app_context::AppContext, components::PageWithNavbar};
 
 #[derive(PartialEq, Properties)]
 pub struct HelpPageProps {}
