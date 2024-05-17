@@ -5,12 +5,13 @@ use super::listbox_context::ListboxContext;
 use super::listbox_options_context::ListboxOptionsContext;
 use super::ListboxValue;
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Debug)]
 pub struct ListboxOptionProps<T: ListboxValue> {
     pub value: T,
+    #[prop_or_default]
     pub children: Children,
-    #[prop_or(None)]
-    pub class: Option<Classes>,
+    #[prop_or_default]
+    pub class: Classes,
 }
 
 #[function_component]
