@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "arithmico",
-        "engine"
+        "engine",
+        "icons"
     ]
 }

@@ -49,6 +49,7 @@ pub fn ListboxButton<T: ListboxValue>(props: &ListboxButtonProps) -> Html {
             class={props.class.clone()}
             aria-haspopup={"listbox"}
             aria-expanded={is_open.to_string()}
+            data-expanded={is_open.to_string()}
             aria-controls={aria_controls}
         >
             {props.children.clone()}

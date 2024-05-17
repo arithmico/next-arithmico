@@ -6,6 +6,8 @@ use yew::prelude::*;
 
 use crate::components::PageWithNavbar;
 
+use icons::ExpandIcon;
+
 #[derive(PartialEq, Properties)]
 pub struct SettingsPageProps {}
 
@@ -32,13 +34,21 @@ pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
                         "py-1",
                         "rounded-sm",
                         "w-full",
-                        "text-left"
+                        "items-center",
+                        "flex",
+                        "group"
                     )}
                 >
                     {match *language {
                         Language::German => html!({"Deutsch"}),
                         Language::English => html!({"Englisch"}),
                     }}
+                    <ExpandIcon class={classes!(
+                        "w-4",
+                        "h-4",
+                        "ml-auto",
+                        "group-data-[expanded=true]:rotate-180"
+                    )} />
                 </ListboxButton<Language>>
                 <div>
                     <ListboxOptions<Language>
