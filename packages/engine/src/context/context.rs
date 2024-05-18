@@ -1,60 +1,94 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::node::Node;
+use crate::{load_host_api, node::Node};
 
 use super::{host_api::HostApi, settings::Settings, HostEndpoint};
 
+pub type Stackframe = HashMap<String, Node>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Stack {
+    frames: Vec<Stackframe>,
+}
+
+impl Stack {
+    pub fn new() -> Self {
+        Stack {
+            frames: vec![HashMap::new()],
+        }
+    }
+
+    pub fn get_frames(&self) -> &Vec<Stackframe> {
+        &self.frames
+    }
+
+    pub fn add_frame(&mut self) {
+        self.frames.push(HashMap::new());
+    }
+
+    pub fn insert(&mut self, name: &str, node: Node) {
+        if self.frames.is_empty() {
+            self.frames.push(HashMap::new());
+        }
+        self.frames.last_mut().unwrap().insert(name.into(), node);
+    }
+
+    pub fn lookup(&self, name: &str) -> Option<Node> {
+        for frame in &self.frames {
+            let node_option = frame.get(name);
+            if let Some(node) = node_option {
+                return Some(node.clone());
+            }
+        }
+        None
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Context {
-    stack: Vec<HashMap<String, Node>>,
-    settings: Settings,
-    host_api: Rc<HostApi>,
+    pub stack: Stack,
+    pub settings: Settings,
+    pub host_api: Rc<HostApi>,
+}
+
+impl Default for Context {
+    fn default() -> Self {
+        Self {
+            stack: Stack::new(),
+            settings: Settings::default(),
+            host_api: load_host_api().into(),
+        }
+    }
 }
 
 impl Context {
-    pub fn new(host_api: Rc<HostApi>) -> Context {
+    pub fn new(
+        stack: Stack,
+        settings: Settings,
+        host_api: Rc<HostApi>,
+    ) -> Context {
         Context {
-            stack: vec![HashMap::new()],
-            settings: Settings::default(),
+            stack,
+            settings,
             host_api,
         }
     }
 
-    pub fn lookup(&self, name: &String) -> Option<Node> {
-        for stack_frame in self.stack.iter().rev() {
-            if stack_frame.contains_key(name) {
-                return stack_frame
-                    .get(name)
-                    .and_then(|node| Some(node.clone()));
-            }
+    pub fn lookup(&self, name: &str) -> Option<Node> {
+        if let Some(node) = self.stack.lookup(name) {
+            return Some(node);
         }
         if let Some(endpoint) = self.host_api.endpoint(name) {
             return match endpoint {
                 HostEndpoint::Function { .. } => {
-                    Some(Node::HostApiFunctionEndpoint { name: name.clone() })
+                    Some(Node::HostApiFunctionEndpoint {
+                        name: name.to_string(),
+                    })
                 }
                 HostEndpoint::Constant { executor, .. } => Some(executor(self)),
             };
         }
         None
-    }
-
-    pub fn insert(&mut self, name: &str, value: Node) {
-        if self.stack.is_empty() {
-            self.stack.push(HashMap::new())
-        }
-        self.stack
-            .last_mut()
-            .unwrap()
-            .insert(String::from(name), value);
-    }
-
-    pub fn push_frame(&mut self) {
-        self.stack.push(HashMap::new());
-    }
-
-    pub fn get_decimal_places(&self) -> u8 {
-        self.settings.get_decimal_places()
     }
 
     pub fn endpoint(&self, name: &str) -> Option<&HostEndpoint> {

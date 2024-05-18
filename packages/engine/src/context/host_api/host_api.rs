@@ -1,6 +1,10 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::{context::Context, node::Node, Language};
+use crate::{
+    context::{Context, Settings, Stack},
+    node::Node,
+    Language,
+};
 
 use super::host_endpoint::{ConstantEndpoint, FunctionEndpoint, HostEndpoint};
 
@@ -41,7 +45,11 @@ impl HostApi {
                             })
                             .collect(),
                     }
-                    .serialize(&Context::new(Rc::new(self.clone()))),
+                    .serialize(&Context::new(
+                        Stack::new(),
+                        Settings::default(),
+                        Rc::new(self.clone()),
+                    )),
                     description: description
                         .get(language)
                         .and_then(|description| Some(description.clone()))

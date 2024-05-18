@@ -1,3 +1,3 @@
-mod expand;
+mod icons;
 
-pub use expand::*;
+pub use icons::*;

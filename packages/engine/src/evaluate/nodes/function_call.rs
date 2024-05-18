@@ -18,16 +18,21 @@ pub fn evaluate_function_call(
             if call_arguments.len() != arguments.len() {
                 return Err(NodeEvaluationError::InvalidNumberOfArguments);
             }
-            let mut call_context = context.clone();
-            call_context.push_frame();
+            let mut call_stack = context.stack.clone();
+            call_stack.add_frame();
             for (index, call_argument) in call_arguments.iter().enumerate() {
                 let evaluated_call_argument =
                     call_argument.evaluate(context)?;
-                call_context.insert(
+                call_stack.insert(
                     arguments.get(index).unwrap(),
                     evaluated_call_argument,
                 );
             }
+            let call_context = Context::new(
+                call_stack,
+                context.settings.clone(),
+                context.host_api.clone(),
+            );
             expression.evaluate(&call_context)
         }
         Node::HostApiFunctionEndpoint { name } => {

@@ -45,14 +45,13 @@ impl Node {
 mod tests {
     use std::collections::HashMap;
 
-    use crate::context::HostApi;
+    use crate::context::{HostApi, Settings, Stack};
 
     use super::*;
 
     #[test]
     fn evaluate_number() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Number { value: 2.1 }.evaluate(&context).unwrap(),
             Node::Number { value: 2.1 }
@@ -61,8 +60,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_number() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Negate {
                 value: Box::new(Node::Number { value: 2.1 })
@@ -75,8 +73,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Sum {
                 values: vec![
@@ -92,8 +89,7 @@ mod tests {
 
     #[test]
     fn evaluate_product() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Product {
                 values: vec![
@@ -109,8 +105,7 @@ mod tests {
 
     #[test]
     fn evaluate_division() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Division {
                 dividend: Box::new(Node::Number { value: 6.0 }),
@@ -124,8 +119,7 @@ mod tests {
 
     #[test]
     fn evaluate_division_by_zero() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Division {
                 dividend: Box::new(Node::Number { value: 6.0 }),
@@ -140,8 +134,7 @@ mod tests {
 
     #[test]
     fn evaluate_power() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Power {
                 base: Box::new(Node::Number { value: 6.0 }),
@@ -156,8 +149,9 @@ mod tests {
     #[test]
     fn evaluate_symbol() {
         let host_api = HostApi::builder().build();
-        let mut context = Context::new(host_api.into());
-        context.insert("test", Node::Number { value: 36.0 });
+        let mut stack = Stack::new();
+        stack.insert("test", Node::Number { value: 36.0 });
+        let context = Context::new(stack, Settings::default(), host_api.into());
 
         assert_eq!(
             Node::Symbol {
@@ -171,8 +165,7 @@ mod tests {
 
     #[test]
     fn evaluate_function() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Function {
                 arguments: vec![String::from("x")],
@@ -193,8 +186,7 @@ mod tests {
 
     #[test]
     fn evaluate_function_call() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::FunctionCall {
                 target: Box::new(Node::Function {
@@ -213,8 +205,7 @@ mod tests {
 
     #[test]
     fn evaluate_definition() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Definition {
                 symbol: String::from("test"),
@@ -231,8 +222,7 @@ mod tests {
 
     #[test]
     fn evaluate_vector() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Vector {
                 values: vec![
@@ -260,8 +250,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_of_vectors() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Sum {
                 values: vec![
@@ -295,8 +284,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_of_overflowing_numbers() {
-        let host_api = HostApi::builder().build();
-        let context = Context::new(host_api.into());
+        let context = Context::default();
         assert_eq!(
             Node::Sum {
                 values: vec![
@@ -328,7 +316,10 @@ mod tests {
                 HashMap::new(),
             )
             .build();
-        let context = Context::new(host_api.into());
+
+        let context =
+            Context::new(Stack::new(), Settings::default(), host_api.into());
+
         assert_eq!(
             Node::Symbol {
                 name: "test".into()
@@ -356,7 +347,10 @@ mod tests {
                 HashMap::new(),
             )
             .build();
-        let context = Context::new(host_api.into());
+
+        let context =
+            Context::new(Stack::new(), Settings::default(), host_api.into());
+
         assert_eq!(
             Node::FunctionCall {
                 target: Node::Symbol {

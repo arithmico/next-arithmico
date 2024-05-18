@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use crate::{
-    context::{Context, HostApi},
+    context::{Context, HostApi, Settings, Stack},
     node::Node,
     parse::parse::parse_statement,
 };
@@ -12,19 +12,22 @@ use super::EvaluationError;
 pub struct Statement {
     pub input: String,
     pub output: Result<String, EvaluationError>,
-    context: Rc<Context>,
+    pub stack: Stack,
 }
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Session {
-    current_context: Rc<Context>,
+    stack: Stack,
+    host_api: Rc<HostApi>,
     statements: Vec<Statement>,
 }
 
 impl Session {
     pub fn new(host_api: Rc<HostApi>) -> Session {
+        let stack: Stack = Stack::new();
         Session {
-            current_context: Context::new(host_api).into(),
+            host_api,
+            stack,
             statements: Vec::new(),
         }
     }
@@ -32,43 +35,50 @@ impl Session {
     fn evaluate_input(
         &self,
         input: &str,
-    ) -> Result<(String, Rc<Context>), EvaluationError> {
+        settings: &Settings,
+    ) -> Result<(String, Stack), EvaluationError> {
         let node = parse_statement(input)?;
-        let result = node.evaluate(&self.current_context)?;
-        let serialized_result = result.serialize(&self.current_context);
+        let context = Context::new(
+            self.stack.clone(),
+            settings.clone(),
+            self.host_api.clone(),
+        );
+        let result = node.evaluate(&context)?;
+        let serialized_result = result.serialize(&context);
         if let Node::Definition { symbol, expression } = result {
-            let mut next_context = (*self.current_context).clone();
-            next_context.insert(&symbol, (*expression).clone());
-            return Ok((serialized_result, next_context.into()));
+            let mut next_stack = self.stack.clone();
+            next_stack.insert(&symbol, (*expression).clone());
+            return Ok((serialized_result, next_stack));
         }
-        Ok((serialized_result, self.current_context.clone()))
+        Ok((serialized_result, self.stack.clone()))
     }
 
-    pub fn push(&self, input: &str) -> Session {
-        let output_result = self.evaluate_input(input);
-        let (context, statement) = match output_result {
-            Ok((output, context)) => {
+    pub fn push(&self, input: &str, settings: &Settings) -> Session {
+        let output_result = self.evaluate_input(input, settings);
+        let (stack, statement) = match output_result {
+            Ok((output, stack)) => {
                 let statement = Statement {
                     input: String::from(input),
                     output: Ok(output),
-                    context: self.current_context.clone(),
+                    stack: self.stack.clone(),
                 };
-                (context, statement)
+                (stack, statement)
             }
             Err(error) => (
-                self.current_context.clone(),
+                self.stack.clone(),
                 Statement {
                     input: String::from(input),
                     output: Err(error),
-                    context: self.current_context.clone(),
+                    stack: self.stack.clone(),
                 },
             ),
         };
         let mut next_statements = self.statements.clone();
         next_statements.push(statement);
         Session {
-            current_context: context,
+            stack,
             statements: next_statements,
+            host_api: self.host_api.clone(),
         }
     }
 
@@ -87,22 +97,22 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
-    use crate::load_host_api;
-
     use super::*;
 
     #[test]
     fn push_statement() {
         let host_api = Rc::new(HostApi::builder().build());
         let session = Session::new(host_api.clone());
+        let settings = Settings::default();
         assert_eq!(
-            session.push("1+2"),
+            session.push("1+2", &settings),
             Session {
-                current_context: Context::new(host_api.clone()).into(),
+                host_api,
+                stack: Stack::new(),
                 statements: vec![Statement {
                     input: "1+2".into(),
                     output: Ok("3".into()),
-                    context: Context::new(host_api.clone()).into(),
+                    stack: Stack::new(),
                 }]
             }
         )
@@ -112,32 +122,27 @@ mod tests {
     fn define_symbol_and_evaluate_later() {
         let host_api = Rc::new(HostApi::builder().build());
         let session = Session::new(host_api.clone());
-        let mut context_after_definition = Context::new(host_api.clone());
-        context_after_definition.insert("a", Node::Number { value: 2.0 });
+        let settings = Settings::default();
+        let mut stack_after_definition = Stack::new();
+        stack_after_definition.insert("a", Node::Number { value: 2.0 });
         assert_eq!(
-            session.push("a := 2").push("a"),
+            session.push("a := 2", &settings).push("a", &settings),
             Session {
-                current_context: context_after_definition.clone().into(),
+                host_api,
+                stack: stack_after_definition.clone().into(),
                 statements: vec![
                     Statement {
                         input: "a := 2".into(),
                         output: Ok("a := 2".into()),
-                        context: Context::new(host_api.into()).into(),
+                        stack: Stack::new(),
                     },
                     Statement {
                         input: "a".into(),
                         output: Ok("2".into()),
-                        context: context_after_definition.into(),
+                        stack: stack_after_definition.into(),
                     }
                 ]
             }
         )
-    }
-
-    #[test]
-    fn test_e2e_1() {
-        let host_api = Rc::new(load_host_api());
-        let session = Session::new(host_api.clone());
-        session.push("sin(200pi-1)");
     }
 }

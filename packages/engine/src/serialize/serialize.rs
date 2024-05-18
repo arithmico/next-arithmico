@@ -31,7 +31,8 @@ impl Node {
                 if *value < 0.0 {
                     panic!("can not serialize node {}", value);
                 }
-                let decimal_places = context.get_decimal_places() as usize;
+                let decimal_places =
+                    context.settings.get_decimal_places() as usize;
                 let serialized_value = format!("{:.1$}", value, decimal_places);
                 String::from(
                     serialized_value
@@ -141,7 +142,8 @@ impl Node {
                 if *value == 0.0 {
                     return self.clone();
                 }
-                let decimal_places = context.get_decimal_places() as i32;
+                let decimal_places =
+                    context.settings.get_decimal_places() as i32;
                 let magnitude = value.abs().log10().round() as i64;
                 let magnitude_abs =
                     if magnitude < 0 { -magnitude } else { magnitude };
@@ -243,19 +245,14 @@ impl Node {
 
 #[cfg(test)]
 mod tests {
-    use std::rc::Rc;
 
-    use crate::{
-        context::{Context, HostApi},
-        parse::parse::parse_statement,
-    };
+    use crate::{context::Context, parse::parse::parse_statement};
 
     fn compare(input: &str, expected: &str) {
-        let host_api = Rc::new(HostApi::builder().build());
         assert_eq!(
             parse_statement(input)
                 .unwrap()
-                .serialize(&Context::new(host_api)),
+                .serialize(&Context::default()),
             expected
         );
     }

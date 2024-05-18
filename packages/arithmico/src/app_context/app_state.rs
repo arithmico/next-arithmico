@@ -6,6 +6,12 @@ use engine::{load_host_api, HostApi, Session, Statement};
 pub struct AppState {
     pub host_api: Rc<HostApi>,
     pub session: Session,
+    pub settings: Settings,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct Settings {
+    pub decimal_places: u8,
 }
 
 impl Default for AppState {
@@ -14,6 +20,7 @@ impl Default for AppState {
         Self {
             host_api: host_api.clone(),
             session: Session::new(host_api),
+            settings: Settings { decimal_places: 2 },
         }
     }
 }

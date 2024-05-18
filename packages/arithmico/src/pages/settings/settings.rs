@@ -5,7 +5,7 @@ use engine::Language;
 
 use yew::prelude::*;
 
-use icons::ExpandIcon;
+use icons::expand::ExpandIcon;
 
 #[derive(PartialEq, Properties)]
 pub struct SettingsPageProps {}
