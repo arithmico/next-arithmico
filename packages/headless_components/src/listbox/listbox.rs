@@ -19,7 +19,9 @@ pub fn Listbox<T: ListboxValue>(props: &ListboxProps<T>) -> Html {
     let is_open = use_state(|| false);
     let toggle_open = {
         let is_open = is_open.clone();
-        Callback::from(move |_| is_open.set(!*is_open))
+        Callback::from(move |_| {
+            is_open.set(!*is_open);
+        })
     };
     let onchange = {
         let onchange = props.on_change.clone();

@@ -22,7 +22,8 @@ pub fn ListboxOption<T: ListboxValue>(props: &ListboxOptionProps<T>) -> Html {
     let on_click = {
         let on_change = listbox_context.on_change.clone();
         let value = props.value.clone();
-        Callback::from(move |_| {
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
             on_change.emit(value.clone());
         })
     };

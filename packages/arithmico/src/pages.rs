@@ -8,11 +8,8 @@ mod calculator {
 mod help {
     pub mod help;
 }
-mod settings {
-    pub mod settings;
-}
-
+mod settings;
 pub use about::about::*;
 pub use calculator::calculator::*;
 pub use help::help::*;
-pub use settings::settings::*;
+pub use settings::*;

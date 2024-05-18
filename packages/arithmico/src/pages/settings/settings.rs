@@ -1,53 +1,26 @@
-use crate::components::{
-    Listbox, ListboxButton, ListboxOption, ListboxOptions, PageWithNavbar,
-};
-use engine::Language;
-
 use yew::prelude::*;
 
-use icons::expand::ExpandIcon;
+use crate::components::*;
+
+use super::components::interface_language_selector::InterfaceLanguageSelector;
 
 #[derive(PartialEq, Properties)]
 pub struct SettingsPageProps {}
 
 #[function_component]
 pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
-    let language = use_state(|| Language::English);
-    let onchange_language = {
-        let language = language.clone();
-        Callback::from(move |value: Language| language.set(value))
-    };
-
     html! {
         <PageWithNavbar>
-            <p>{"settings"}</p>
-            <Listbox<Language>
-                on_change={onchange_language}
-                value={(*language).clone()}
-            >
-                <ListboxButton<Language>>
-                    {match *language {
-                        Language::German => html!({"Deutsch"}),
-                        Language::English => html!({"Englisch"}),
-                    }}
-                    <ExpandIcon class={classes!(
-                        "w-4",
-                        "h-4",
-                        "ml-auto",
-                        "group-data-[expanded=true]:rotate-180"
-                    )} />
-                </ListboxButton<Language>>
-                <div>
-                    <ListboxOptions<Language>>
-                        <ListboxOption<Language> value={Language::German}>
-                            {"Deutsch"}
-                        </ListboxOption<Language>>
-                        <ListboxOption<Language> value={Language::English}>
-                            {"Englisch"}
-                        </ListboxOption<Language>>
-                    </ListboxOptions<Language>>
-                </div>
-            </Listbox<Language>>
+            <section>
+                <h1 class={classes!("text-3xl", "font-medium", "mt-8")}>
+                    {"Bedienoberfläche"}
+                </h1>
+                <ul class={classes!("pl-8")}>
+                    <li class={classes!("pt-2")}>
+                        <InterfaceLanguageSelector />
+                    </li>
+                </ul>
+            </section>
         </PageWithNavbar>
     }
 }

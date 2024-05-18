@@ -18,7 +18,10 @@ pub fn ListboxButton<T: ListboxValue>(props: &ListboxButtonProps) -> Html {
     let listbox_context = use_context::<ListboxContext<T>>().unwrap();
     let on_click = {
         let toggle_open = listbox_context.toggle_open.clone();
-        Callback::from(move |_| toggle_open.emit(()))
+        Callback::from(move |event: MouseEvent| {
+            event.prevent_default();
+            toggle_open.emit(());
+        })
     };
     let button_ref = use_node_ref();
     let is_open = listbox_context.is_open.clone();

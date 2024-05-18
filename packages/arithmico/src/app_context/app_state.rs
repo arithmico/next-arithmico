@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use engine::{load_host_api, HostApi, Session, Statement};
+use engine::{load_host_api, HostApi, Language, Session, Statement};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct AppState {
@@ -12,6 +12,16 @@ pub struct AppState {
 #[derive(Debug, PartialEq, Clone)]
 pub struct Settings {
     pub decimal_places: u8,
+    pub language: Language,
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            decimal_places: 3,
+            language: Language::English,
+        }
+    }
 }
 
 impl Default for AppState {
@@ -20,7 +30,7 @@ impl Default for AppState {
         Self {
             host_api: host_api.clone(),
             session: Session::new(host_api),
-            settings: Settings { decimal_places: 2 },
+            settings: Settings::default(),
         }
     }
 }
