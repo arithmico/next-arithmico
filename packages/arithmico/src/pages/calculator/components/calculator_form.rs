@@ -5,7 +5,7 @@ use yew::{
     Properties,
 };
 
-use crate::app_context::{AppContext, AppReducerAction};
+use crate::app_context::{AppContext, AppAction};
 
 #[derive(PartialEq, Properties)]
 pub struct CalculatorFormProps {}
@@ -21,7 +21,7 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
         let target = event.target();
         let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
         if let Some(input) = input {
-            context.dispatch(AppReducerAction::Evaluate(input.value()));
+            context.dispatch(AppAction::Evaluate(input.value()));
         }
     });
 

@@ -82,6 +82,7 @@ pub fn ListboxOptions<T: ListboxValue>(props: &ListboxOptionsProps<T>) -> Html {
     html! {
         <HeadlessListboxOptions<T>
             class={classes!(
+                "z-20",
                 "absolute",
                 "bg-neutral-300",
                 "mt-2",

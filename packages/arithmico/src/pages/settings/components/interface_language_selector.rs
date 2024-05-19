@@ -1,8 +1,9 @@
 use engine::Language;
 use yew::prelude::*;
 
-use crate::components::{
-    Listbox, ListboxButton, ListboxOption, ListboxOptions,
+use crate::{
+    app_context::{AppAction, AppContext},
+    components::{Listbox, ListboxButton, ListboxOption, ListboxOptions},
 };
 
 use icons::expand::ExpandIcon;
@@ -14,22 +15,25 @@ pub struct InterfaceLanguageSelectorProps {}
 pub fn InterfaceLanguageSelector(
     _props: &InterfaceLanguageSelectorProps,
 ) -> Html {
-    let language = use_state(|| Language::English);
-    let onchange_language = {
-        let language = language.clone();
-        Callback::from(move |value: Language| language.set(value))
+    let app_context = use_context::<AppContext>().unwrap();
+    let language = app_context.settings.language.clone();
+    let onchange = {
+        let app_context = app_context.clone();
+        Callback::from(move |value: Language| {
+            app_context.dispatch(AppAction::SetInterfaceLanguage(value))
+        })
     };
 
     html! {
         <label class={classes!("flex", "items-center", "text-xl")}>
             {"Sprache"}
             <Listbox<Language>
-                on_change={onchange_language}
-                value={(*language).clone()}
+                on_change={onchange}
+                value={(language).clone()}
                 class={classes!("ml-auto")}
             >
                 <ListboxButton<Language>>
-                    {match *language {
+                    {match language {
                         Language::German => html!({"Deutsch"}),
                         Language::English => html!({"Englisch"}),
                     }}

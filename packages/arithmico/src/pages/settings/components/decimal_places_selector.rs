@@ -4,7 +4,10 @@ use yew::{
     virtual_dom::{VChild, VNode, VText},
 };
 
-use crate::components::{Listbox, ListboxButton, ListboxOptions};
+use crate::{
+    app_context::{AppAction, AppContext},
+    components::{Listbox, ListboxButton, ListboxOptions},
+};
 
 use icons::expand::ExpandIcon;
 
@@ -13,10 +16,13 @@ pub struct DecimalPlacesSelectorProps {}
 
 #[function_component]
 pub fn DecimalPlacesSelector(_props: &DecimalPlacesSelectorProps) -> Html {
-    let decimal_places = use_state(|| 3);
+    let app_context = use_context::<AppContext>().unwrap();
+    let decimal_places = app_context.settings.decimal_places;
     let onchange = {
-        let decimal_places = decimal_places.clone();
-        Callback::from(move |value: u8| decimal_places.set(value))
+        let app_context = app_context.clone();
+        Callback::from(move |value: u8| {
+            app_context.dispatch(AppAction::SetDecimalPlaces(value))
+        })
     };
 
     html! {
@@ -24,11 +30,11 @@ pub fn DecimalPlacesSelector(_props: &DecimalPlacesSelectorProps) -> Html {
             {"Nachkommastellen"}
             <Listbox<u8>
                 on_change={onchange}
-                value={(*decimal_places).clone()}
+                value={decimal_places}
                 class={classes!("ml-auto")}
             >
                 <ListboxButton<u8>>
-                    {(*decimal_places).to_string()}
+                    {decimal_places.to_string()}
                     <ExpandIcon class={classes!(
                         "w-4",
                         "h-4",
