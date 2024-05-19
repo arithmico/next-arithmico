@@ -2,7 +2,10 @@ use yew::prelude::*;
 
 use crate::components::*;
 
-use super::components::interface_language_selector::InterfaceLanguageSelector;
+use super::components::{
+    decimal_places_selector::DecimalPlacesSelector,
+    interface_language_selector::InterfaceLanguageSelector,
+};
 
 #[derive(PartialEq, Properties)]
 pub struct SettingsPageProps {}
@@ -18,6 +21,9 @@ pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
                 <ul class={classes!("pl-8")}>
                     <li class={classes!("pt-2")}>
                         <InterfaceLanguageSelector />
+                    </li>
+                    <li class={classes!("pt-2")}>
+                        <DecimalPlacesSelector />
                     </li>
                 </ul>
             </section>

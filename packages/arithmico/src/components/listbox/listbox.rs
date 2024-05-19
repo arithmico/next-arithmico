@@ -62,7 +62,6 @@ pub fn ListboxOptions<T: ListboxValue>(props: &ListboxOptionsProps<T>) -> Html {
                     children: child.props.children.clone(),
                     value: child.props.value.clone(),
                     class: classes!(
-                        "bg-neutral-300",
                         "px-2",
                         "py-1",
                         "rounded-sm",
@@ -71,6 +70,7 @@ pub fn ListboxOptions<T: ListboxValue>(props: &ListboxOptionsProps<T>) -> Html {
                         "outline-black",
                         "focus:outline-2",
                         "focus-visible:outline-2",
+                        "hover:bg-neutral-400/50",
                         child.props.class.clone()
                     ),
                 },
