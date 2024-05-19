@@ -15,7 +15,7 @@ impl Reducible for AppState {
     type Action = AppAction;
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> std::rc::Rc<Self> {
-        match action {
+        let new_state: Rc<AppState> = match action {
             AppAction::Evaluate(input) => Self {
                 session: self.session.push(
                     input.as_str(),
@@ -40,6 +40,8 @@ impl Reducible for AppState {
                 ..(*self).clone()
             }
             .into(),
-        }
+        };
+        new_state.settings.save().unwrap();
+        new_state
     }
 }

@@ -15,3 +15,5 @@ wasm-logger = "0.2.0"
 engine = { path = "../engine" }
 headless_components = { path = "../headless_components" }
 icons = { path = "../icons" }
+serde = "1.0.202"
+serde_json = "1.0.117"

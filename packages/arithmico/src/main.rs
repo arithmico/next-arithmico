@@ -12,7 +12,7 @@ mod router;
 
 #[function_component]
 fn App() -> Html {
-    let context = use_reducer(|| AppState::default());
+    let context = use_reducer(|| AppState::new());
 
     html! {
         <ContextProvider<AppContext> context={context}>
