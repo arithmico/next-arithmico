@@ -6,7 +6,7 @@ use crate::{
     Language,
 };
 
-use super::host_endpoint::{ConstantEndpoint, FunctionEndpoint, HostEndpoint};
+use super::{host_api_module::HostApiModule, host_endpoint::HostEndpoint};
 
 pub struct Documentation {
     pub synopsis: String,
@@ -84,48 +84,18 @@ impl Default for HostApiBuilder {
 }
 
 impl HostApiBuilder {
-    fn add_endpoint(
+    pub fn module(
         mut self,
-        name: &str,
-        endpoint: HostEndpoint,
+        module_loader: fn() -> HostApiModule,
     ) -> HostApiBuilder {
-        if self.endpoints.contains_key(name) {
-            panic!("endpoint {} is already defined", name);
+        let module = module_loader();
+        for (name, endpoint) in module.get_endpoints().iter() {
+            if self.endpoints.contains_key(name) {
+                panic!("endpoint \"{}\" already exists", name);
+            }
+            self.endpoints.insert(name.clone(), endpoint.clone());
         }
-        self.endpoints.insert(name.into(), endpoint);
         self
-    }
-
-    pub fn add_function_endpoint(
-        self,
-        name: &str,
-        executor: FunctionEndpoint,
-        arguments: Vec<String>,
-        documentation: HashMap<Language, String>,
-    ) -> HostApiBuilder {
-        self.add_endpoint(
-            name,
-            HostEndpoint::Function {
-                executor,
-                arguments,
-                description: documentation,
-            },
-        )
-    }
-
-    pub fn add_constant_endpoint(
-        self,
-        name: &str,
-        executor: ConstantEndpoint,
-        documentation: HashMap<Language, String>,
-    ) -> HostApiBuilder {
-        self.add_endpoint(
-            name,
-            HostEndpoint::Constant {
-                executor,
-                description: documentation,
-            },
-        )
     }
 
     pub fn build(self) -> HostApi {

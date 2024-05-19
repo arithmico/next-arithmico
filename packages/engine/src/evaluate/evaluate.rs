@@ -43,9 +43,7 @@ impl Node {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-
-    use crate::context::{HostApi, Settings, Stack};
+    use crate::context::{HostApi, HostApiModule, Settings, Stack};
 
     use super::*;
 
@@ -310,11 +308,16 @@ mod tests {
     #[test]
     fn evaluate_host_constant_endpoint() {
         let host_api = HostApi::builder()
-            .add_constant_endpoint(
-                "test".into(),
-                |_context| Node::Number { value: 42.0 },
-                HashMap::new(),
-            )
+            .module(|| {
+                HostApiModule::builder()
+                    .name("test")
+                    .endpoint("test", |builder| {
+                        builder
+                            .description(crate::Language::English, "test")
+                            .constant(|_context| Node::Number { value: 42.0 })
+                    })
+                    .build()
+            })
             .build();
 
         let context =
@@ -333,19 +336,25 @@ mod tests {
     #[test]
     fn evaluate_host_function_endpoint() {
         let host_api = HostApi::builder()
-            .add_function_endpoint(
-                "test".into(),
-                |arguments, context| {
-                    let mut result: Vec<Node> = Vec::new();
-                    for argument in arguments.iter() {
-                        let evaluated_argument = argument.evaluate(context)?;
-                        result.push(evaluated_argument);
-                    }
-                    Ok(Node::Vector { values: result })
-                },
-                vec![String::from("x")],
-                HashMap::new(),
-            )
+            .module(|| {
+                HostApiModule::builder()
+                    .name("test")
+                    .endpoint("test", |builder| {
+                        builder
+                            .description(crate::Language::English, "test")
+                            .function(vec!["x"])
+                            .executor(|arguments, context| {
+                                let mut result: Vec<Node> = Vec::new();
+                                for argument in arguments.iter() {
+                                    let evaluated_argument =
+                                        argument.evaluate(context)?;
+                                    result.push(evaluated_argument);
+                                }
+                                Ok(Node::Vector { values: result })
+                            })
+                    })
+                    .build()
+            })
             .build();
 
         let context =

@@ -4,21 +4,21 @@ use crate::{
     context::Context, evaluate::NodeEvaluationError, node::Node, Language,
 };
 
-pub type FunctionEndpoint = fn(
+pub type FunctionExecutor = fn(
     arguments: &Vec<Node>,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError>;
-pub type ConstantEndpoint = fn(context: &Context) -> Node;
+pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum HostEndpoint {
     Function {
-        executor: FunctionEndpoint,
+        executor: FunctionExecutor,
         arguments: Vec<String>,
         description: HashMap<Language, String>,
     },
     Constant {
-        executor: ConstantEndpoint,
+        executor: ConstantExecutor,
         description: HashMap<Language, String>,
     },
 }
