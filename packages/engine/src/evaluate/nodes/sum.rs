@@ -25,7 +25,7 @@ fn add_nodes(
         (
             Node::Number { value: left_value },
             Node::Number { value: right_value },
-        ) => Ok(Node::Number {
+        ) if cfg!(feature = "operator_sum_number_number") => Ok(Node::Number {
             value: left_value + right_value,
         }),
         (
@@ -35,7 +35,7 @@ fn add_nodes(
             Node::Vector {
                 values: right_values,
             },
-        ) => {
+        ) if cfg!(feature = "operator_sum_vector_vector") => {
             if left_values.len() != right_values.len() {
                 return Err(NodeEvaluationError::ArithmeticError(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
