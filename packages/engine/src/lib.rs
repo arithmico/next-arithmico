@@ -31,6 +31,7 @@ mod session {
 }
 mod api;
 mod language;
+mod utils;
 
 pub use api::load_host_api;
 pub use context::{DecimalPlaces, Documentation, HostApi, Settings};
