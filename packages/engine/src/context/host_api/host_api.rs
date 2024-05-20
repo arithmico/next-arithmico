@@ -1,5 +1,7 @@
 use std::{collections::HashMap, rc::Rc};
 
+use log::info;
+
 use crate::{
     context::{Context, Settings, Stack},
     node::Node,
@@ -86,14 +88,19 @@ impl Default for HostApiBuilder {
 impl HostApiBuilder {
     pub fn module(
         mut self,
+        feature_flag: bool,
         module_loader: fn() -> HostApiModule,
     ) -> HostApiBuilder {
-        let module = module_loader();
-        for (name, endpoint) in module.get_endpoints().iter() {
-            if self.endpoints.contains_key(name) {
-                panic!("endpoint \"{}\" already exists", name);
+        if feature_flag {
+            let module = module_loader();
+            for (name, endpoint) in module.get_endpoints().iter() {
+                if self.endpoints.contains_key(name) {
+                    panic!("endpoint \"{}\" already exists", name);
+                }
+                self.endpoints.insert(name.clone(), endpoint.clone());
             }
-            self.endpoints.insert(name.clone(), endpoint.clone());
+        } else {
+            info!("skip module");
         }
         self
     }

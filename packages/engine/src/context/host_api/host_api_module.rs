@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use log::info;
+
 use crate::Language;
 
 use super::{
@@ -42,15 +44,20 @@ pub struct HostApiModuleBuilderEndpointsStage {
 impl HostApiModuleBuilderEndpointsStage {
     pub fn endpoint(
         mut self,
+        feature_flag: bool,
         name: &str,
         endpoint: fn(builder: EndpointBuilder) -> HostEndpoint,
     ) -> HostApiModuleBuilderEndpointsStage {
-        self.endpoints.insert(
-            String::from(name),
-            endpoint(EndpointBuilder {
-                description_map: HashMap::new(),
-            }),
-        );
+        if feature_flag {
+            self.endpoints.insert(
+                String::from(name),
+                endpoint(EndpointBuilder {
+                    description_map: HashMap::new(),
+                }),
+            );
+        } else {
+            info!("skip endpoint");
+        }
         self
     }
 

@@ -308,10 +308,10 @@ mod tests {
     #[test]
     fn evaluate_host_constant_endpoint() {
         let host_api = HostApi::builder()
-            .module(|| {
+            .module(true, || {
                 HostApiModule::builder()
                     .name("test")
-                    .endpoint("test", |builder| {
+                    .endpoint(true, "test", |builder| {
                         builder
                             .description(crate::Language::English, "test")
                             .constant(|_context| Node::Number { value: 42.0 })
@@ -336,10 +336,10 @@ mod tests {
     #[test]
     fn evaluate_host_function_endpoint() {
         let host_api = HostApi::builder()
-            .module(|| {
+            .module(true, || {
                 HostApiModule::builder()
                     .name("test")
-                    .endpoint("test", |builder| {
+                    .endpoint(true, "test", |builder| {
                         builder
                             .description(crate::Language::English, "test")
                             .function(vec!["x"])

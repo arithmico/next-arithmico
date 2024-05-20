@@ -10,3 +10,15 @@ pest = "2.6"
 pest_derive = "2.6"
 serde = "1.0.202"
 thiserror = "1.0"
+log = "0.4.21"
+
+[features]
+default = [
+    "trigonometry_pi",
+    "trigonometry_sin"
+]
+
+# trigonometry
+trigonometry = []
+trigonometry_pi = ["trigonometry"]
+trigonometry_sin = ["trigonometry"]
