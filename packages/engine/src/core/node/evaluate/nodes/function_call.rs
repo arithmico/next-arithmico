@@ -1,6 +1,7 @@
 use crate::core::{
-    context::Context, evaluate::NodeEvaluationError, host_api::HostEndpoint,
-    node::Node,
+    context::Context,
+    host_api::HostEndpoint,
+    node::{evaluate::NodeEvaluationError, Node},
 };
 
 pub fn evaluate_function_call(
