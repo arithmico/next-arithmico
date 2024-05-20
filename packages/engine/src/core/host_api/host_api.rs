@@ -7,7 +7,7 @@ use crate::{
         context::{Context, Settings, Stack},
         node::Node,
     },
-    Language,
+    language::Language,
 };
 
 use super::{host_api_module::HostApiModule, host_endpoint::HostEndpoint};

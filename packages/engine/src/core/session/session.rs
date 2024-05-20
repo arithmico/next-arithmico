@@ -1,7 +1,8 @@
 use std::rc::Rc;
 
 use crate::core::{
-    context::{Context, HostApi, Settings, Stack},
+    context::{Context, Settings, Stack},
+    host_api::HostApi,
     node::Node,
     parse::parse::parse_statement,
 };
