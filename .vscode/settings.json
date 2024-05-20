@@ -3,6 +3,7 @@
         "arithmico",
         "engine",
         "icons",
-        "headless_components"
+        "headless_components",
+        "workspace"
     ]
 }
