@@ -1,4 +1,4 @@
-use crate::node::Node;
+use crate::core::node::Node;
 
 pub fn get_tensor_dimensions(node: &Node) -> Option<Vec<usize>> {
     match node {
