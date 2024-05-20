@@ -1,4 +1,4 @@
-use crate::context::HostApi;
+use crate::core::context::HostApi;
 
 use super::trigonometry::load_trigonometry_module;
 

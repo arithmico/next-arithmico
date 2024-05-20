@@ -1,39 +1,9 @@
-mod evaluate {
-    pub mod evaluate;
-    mod error {
-        pub mod evaluation_error;
-    }
-    mod nodes;
-    pub use error::evaluation_error::NodeEvaluationError;
-}
-mod node {
-    mod node;
-    pub use node::Node;
-}
-mod parse {
-    pub mod parse;
-    pub mod parser;
-    pub mod transform;
-}
-mod serialize {
-    mod parenthesis;
-    pub mod serialize;
-}
-mod context;
-mod session {
-    pub mod session;
-    mod error {
-        mod error;
-        pub use error::EvaluationError;
-    }
-    pub use error::EvaluationError;
-    pub use session::{Session, Statement};
-}
 mod api;
+mod core;
 mod language;
 mod utils;
 
 pub use api::load_host_api;
-pub use context::{DecimalPlaces, Documentation, HostApi, Settings};
+pub use core::context::{DecimalPlaces, Documentation, HostApi, Settings};
+pub use core::session::{EvaluationError, Session, Statement};
 pub use language::Language;
-pub use session::{EvaluationError, Session, Statement};

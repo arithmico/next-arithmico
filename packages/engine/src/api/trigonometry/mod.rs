@@ -1,7 +1,8 @@
 use std::f64::consts::PI;
 
 use crate::{
-    context::HostApiModule, evaluate::NodeEvaluationError, node::Node, Language,
+    core::{context::HostApiModule, evaluate::NodeEvaluationError, node::Node},
+    Language,
 };
 
 pub fn load_trigonometry_module() -> HostApiModule {
