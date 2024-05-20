@@ -3,8 +3,7 @@ use std::rc::Rc;
 use crate::core::{
     context::{Context, Settings, Stack},
     host_api::HostApi,
-    node::Node,
-    parse::parse::parse_statement,
+    node::{parse::parse::parse_statement, Node},
 };
 
 use super::EvaluationError;

@@ -2,7 +2,8 @@ use std::f64::consts::PI;
 
 use crate::{
     core::{
-        evaluate::NodeEvaluationError, host_api::HostApiModule, node::Node,
+        host_api::HostApiModule,
+        node::{evaluate::NodeEvaluationError, Node},
     },
     language::Language,
 };

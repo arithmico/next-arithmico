@@ -1,7 +1,10 @@
 use std::iter::zip;
 
 use crate::{
-    core::{context::Context, evaluate::NodeEvaluationError, node::Node},
+    core::{
+        context::Context,
+        node::{evaluate::NodeEvaluationError, Node},
+    },
     utils::vector_utils::{get_tensor_dimensions, get_tensor_rank},
 };
 

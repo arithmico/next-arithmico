@@ -1,5 +1,6 @@
 use crate::core::{
-    context::Context, evaluate::NodeEvaluationError, node::Node,
+    context::Context,
+    node::{evaluate::NodeEvaluationError, Node},
 };
 
 pub fn evaluate_negate(

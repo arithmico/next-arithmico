@@ -1,7 +1,10 @@
 use std::collections::HashMap;
 
 use crate::{
-    core::{context::Context, evaluate::NodeEvaluationError, node::Node},
+    core::{
+        context::Context,
+        node::{evaluate::NodeEvaluationError, Node},
+    },
     language::Language,
 };
 
