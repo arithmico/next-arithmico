@@ -11,13 +11,19 @@ thiserror = "1.0"
 log = "0.4.21"
 
 [features]
-default = ["group_trigonometry"]
+default = ["datatypes", "group_trigonometry"]
 
 # feature groups
+datatypes = ["datatype_number", "datatype_symbol", "datatype_vector"]
 group_trigonometry = [
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
 ]
+
+# data type features
+datatype_number = []
+datatype_symbol = []
+datatype_vector = []
 
 # host api module features
 api_module_trigonometry = []

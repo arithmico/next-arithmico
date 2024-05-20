@@ -14,7 +14,12 @@ impl Node {
         context: &Context,
     ) -> Result<Node, NodeEvaluationError> {
         match self {
-            Node::Number { value } => evaluate_number(value, context),
+            Node::Number { value } if cfg!(feature = "datatype_number") => {
+                evaluate_number(value, context)
+            }
+            Node::Symbol { name } if cfg!(feature = "datatype_symbol") => {
+                evaluate_symbol(name, context)
+            }
             Node::Negate { value } => evaluate_negate(value, context),
             Node::Sum { values } => evaluate_sum(values, context),
             Node::Product { values } => evaluate_product(values, context),
@@ -24,7 +29,6 @@ impl Node {
             Node::Power { base, exponent } => {
                 evaluate_power(base, exponent, context)
             }
-            Node::Symbol { name } => evaluate_symbol(name, context),
             Node::Function {
                 arguments,
                 expression,
@@ -35,7 +39,9 @@ impl Node {
             Node::Definition { symbol, expression } => {
                 evaluate_definition(symbol, expression, context)
             }
-            Node::Vector { values } => evaluate_vector(values, context),
+            Node::Vector { values } if cfg!(feature = "datatype_vector") => {
+                evaluate_vector(values, context)
+            }
             _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
     }
