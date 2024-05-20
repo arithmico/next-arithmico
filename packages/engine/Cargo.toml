@@ -30,6 +30,7 @@ operators = [
     "operator_function_call",
     "operator_definition",
     "operator_negate_vector",
+    "operator_product_vector_vector"
 ]
 
 # data type features
@@ -44,6 +45,7 @@ operator_negate_vector = ["datatype_vector"]
 operator_sum_number_number = ["datatype_number"]
 operator_sum_vector_vector = ["datatype_vector"]
 operator_product_number_number = ["datatype_number"]
+operator_product_vector_vector = ["datatype_vector"]
 operator_division_number_number = ["datatype_number"]
 operator_power_number_number = ["datatype_number"]
 operator_function_call = [
