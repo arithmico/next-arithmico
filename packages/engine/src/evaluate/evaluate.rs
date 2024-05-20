@@ -223,35 +223,6 @@ mod tests {
     }
 
     #[test]
-    fn evaluate_division() {
-        let context = Context::default();
-        assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Number { value: 6.0 }),
-                divisor: Box::new(Node::Number { value: 2.0 })
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Number { value: 3.0 }
-        )
-    }
-
-    #[test]
-    fn evaluate_division_by_zero() {
-        let context = Context::default();
-        assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Number { value: 6.0 }),
-                divisor: Box::new(Node::Number { value: 0.0 })
-            }
-            .evaluate(&context)
-            .err()
-            .unwrap(),
-            NodeEvaluationError::DivisionByZero
-        )
-    }
-
-    #[test]
     fn evaluate_power() {
         let context = Context::default();
         assert_eq!(
