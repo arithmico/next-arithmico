@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "arithmico",
         "engine",
-        "icons"
+        "icons",
+        "headless_components"
     ]
 }
