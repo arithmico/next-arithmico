@@ -19,3 +19,22 @@ pub fn evaluate_power(
         _ => return Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn evaluate_power() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Power {
+                base: Box::new(Node::Number { value: 6.0 }),
+                exponent: Box::new(Node::Number { value: 2.0 })
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Number { value: 36.0 }
+        )
+    }
+}

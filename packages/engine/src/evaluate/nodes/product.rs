@@ -99,3 +99,108 @@ fn multiply_tensors(
         _ => unreachable!(),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn evaluate_product_numbers() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Product {
+                values: vec![
+                    Node::Number { value: 3.0 },
+                    Node::Number { value: 2.0 }
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Number { value: 6.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_product_vectors() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Product {
+                values: vec![
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 3.0 }
+                        ]
+                    },
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 3.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 1.0 }
+                        ]
+                    }
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Number { value: 10.0 }
+        )
+    }
+
+    #[test]
+    fn evaluate_product_number_vector() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Product {
+                values: vec![
+                    Node::Number { value: 2.0 },
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 3.0 }
+                        ]
+                    },
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 4.0 },
+                    Node::Number { value: 6.0 }
+                ]
+            },
+        )
+    }
+
+    #[test]
+    fn evaluate_product_vector_number() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Product {
+                values: vec![
+                    Node::Vector {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                            Node::Number { value: 3.0 }
+                        ]
+                    },
+                    Node::Number { value: 2.0 },
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 4.0 },
+                    Node::Number { value: 6.0 }
+                ]
+            },
+        )
+    }
+}

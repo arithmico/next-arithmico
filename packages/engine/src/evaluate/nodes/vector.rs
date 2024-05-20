@@ -13,3 +13,36 @@ pub fn evaluate_vector(
         values: evaluated_values,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn evaluate_vector() {
+        let context = Context::default();
+        assert_eq!(
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Sum {
+                        values: vec![
+                            Node::Number { value: 1.0 },
+                            Node::Number { value: 2.0 },
+                        ]
+                    }
+                ]
+            }
+            .evaluate(&context)
+            .unwrap(),
+            Node::Vector {
+                values: vec![
+                    Node::Number { value: 1.0 },
+                    Node::Number { value: 2.0 },
+                    Node::Number { value: 3.0 },
+                ]
+            },
+        )
+    }
+}
