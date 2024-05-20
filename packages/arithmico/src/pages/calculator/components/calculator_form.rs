@@ -5,7 +5,7 @@ use yew::{
     Properties,
 };
 
-use crate::app_context::{AppContext, AppAction};
+use crate::app_context::{AppAction, AppContext};
 
 #[derive(PartialEq, Properties)]
 pub struct CalculatorFormProps {}
