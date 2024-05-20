@@ -1,4 +1,7 @@
-use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
+use crate::{
+    context::Context, evaluate::NodeEvaluationError, node::Node,
+    utils::vector_utils::get_tensor_dimensions,
+};
 
 pub fn evaluate_sum(
     values: &Vec<Node>,
@@ -36,11 +39,12 @@ fn add_nodes(
                 values: right_values,
             },
         ) if cfg!(feature = "operator_sum_vector_vector") => {
-            if left_values.len() != right_values.len() {
+            if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
                 return Err(NodeEvaluationError::ArithmeticError(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
                 ));
             }
+
             Node::Vector {
                 values: left_values
                     .iter()

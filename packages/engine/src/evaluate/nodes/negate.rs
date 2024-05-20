@@ -10,6 +10,15 @@ pub fn evaluate_negate(
         Node::Number { value } if cfg!(feature = "operator_negate_number") => {
             Ok(Node::Number { value: -value })
         }
+        Node::Vector { values } if cfg!(feature = "operator_negate_vector") => {
+            let mut negated_values = Vec::<Node>::new();
+            for value in values {
+                negated_values.push(evaluate_negate(&value, context)?);
+            }
+            Ok(Node::Vector {
+                values: negated_values,
+            })
+        }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
