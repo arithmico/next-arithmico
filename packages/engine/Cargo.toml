@@ -32,6 +32,7 @@ operators = [
     "operator_negate_vector",
     "operator_product_vector_vector",
     "operator_product_number_vector",
+    "operator_division_vector_number",
 ]
 
 # data type features
@@ -49,6 +50,7 @@ operator_product_number_number = ["datatype_number"]
 operator_product_number_vector = ["datatype_number", "datatype_vector"]
 operator_product_vector_vector = ["datatype_vector"]
 operator_division_number_number = ["datatype_number"]
+operator_division_vector_number = ["datatype_vector", "datatype_number"]
 operator_power_number_number = ["datatype_number"]
 operator_function_call = [
 ] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
