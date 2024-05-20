@@ -11,7 +11,7 @@ thiserror = "1.0"
 log = "0.4.21"
 
 [features]
-default = ["datatypes", "operators", "group_trigonometry"]
+default = ["datatypes", "operators", "api_modules"]
 
 # feature groups
 datatypes = [
@@ -28,11 +28,7 @@ operators = [
     "operator_division_number_number",
     "operator_power_number_number",
     "operator_function_call",
-    "operator_definition"
-]
-group_trigonometry = [
-    "api_endpoint_trigonometry_pi",
-    "api_endpoint_trigonometry_sin",
+    "operator_definition",
 ]
 
 # data type features
@@ -52,9 +48,18 @@ operator_function_call = [
 ] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
 operator_definition = ["datatype_symbol"]
 
-# host api module features
-api_module_trigonometry = []
+# API modules
+api_modules = ["api_module_trigonometry"]
 
-# host api endpoint features
-api_endpoint_trigonometry_pi = ["api_module_trigonometry"]
-api_endpoint_trigonometry_sin = ["api_module_trigonometry"]
+## trigonometry
+api_module_trigonometry = [
+    "api_endpoint_trigonometry_pi",
+    "api_endpoint_trigonometry_sin",
+]
+
+### loader
+api_module_loader_trigonometry = []
+
+### endpoints
+api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
