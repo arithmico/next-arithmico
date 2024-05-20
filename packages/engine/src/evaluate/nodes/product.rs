@@ -1,4 +1,11 @@
-use crate::{context::Context, evaluate::NodeEvaluationError, node::Node};
+use std::iter::zip;
+
+use crate::{
+    context::Context,
+    evaluate::NodeEvaluationError,
+    node::Node,
+    utils::vector_utils::{get_tensor_dimensions, get_tensor_rank},
+};
 
 pub fn evaluate_product(
     values: &Vec<Node>,
@@ -10,18 +17,54 @@ pub fn evaluate_product(
     let mut result = values[0].evaluate(context)?;
     for current_node in values[1..].iter() {
         let evaluated_current_node = current_node.evaluate(context)?;
-        match (result, evaluated_current_node) {
-            (
-                Node::Number { value: left_value },
-                Node::Number { value: right_value },
-            ) if cfg!(feature = "operator_product_number_number") => {
-                result = Node::Number {
-                    value: left_value * right_value,
-                }
-            }
-            _ => return Err(NodeEvaluationError::UnsupportedOperation),
-        }
+        result = multiply_nodes(&result, &evaluated_current_node, context)?;
     }
 
     Ok(result)
+}
+
+fn multiply_nodes(
+    left: &Node,
+    right: &Node,
+    context: &Context,
+) -> Result<Node, NodeEvaluationError> {
+    match (left, right) {
+        (
+            Node::Number { value: left_value },
+            Node::Number { value: right_value },
+        ) if cfg!(feature = "operator_product_number_number") => {
+            Ok(Node::Number {
+                value: left_value * right_value,
+            })
+        }
+        (
+            Node::Vector {
+                values: left_values,
+            },
+            Node::Vector {
+                values: right_values,
+            },
+        ) => match (get_tensor_rank(left), get_tensor_rank(right)) {
+            (Some(1), Some(1))
+                if cfg!(feature = "operator_product_vector_vector") =>
+            {
+                if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
+                    return Err(NodeEvaluationError::ArithmeticError(
+                        "Can not multiply vectors with different dimensions"
+                            .into(),
+                    ));
+                }
+                Node::Sum {
+                    values: zip(left_values, right_values)
+                        .map(|(left, right)| Node::Product {
+                            values: vec![left.clone(), right.clone()],
+                        })
+                        .collect(),
+                }
+                .evaluate(context)
+            }
+            _ => Err(NodeEvaluationError::UnsupportedOperation),
+        },
+        _ => Err(NodeEvaluationError::UnsupportedOperation),
+    }
 }
