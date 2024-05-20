@@ -3,8 +3,6 @@ name = "engine"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 pest = "2.6"
 pest_derive = "2.6"
@@ -13,12 +11,17 @@ thiserror = "1.0"
 log = "0.4.21"
 
 [features]
-default = [
-    "trigonometry_pi",
-    "trigonometry_sin"
+default = ["group_trigonometry"]
+
+# feature groups
+group_trigonometry = [
+    "api_endpoint_trigonometry_pi",
+    "api_endpoint_trigonometry_sin",
 ]
 
-# trigonometry
-trigonometry = []
-trigonometry_pi = ["trigonometry"]
-trigonometry_sin = ["trigonometry"]
+# host api module features
+api_module_trigonometry = []
+
+# host api endpoint features
+api_endpoint_trigonometry_pi = ["api_module_trigonometry"]
+api_endpoint_trigonometry_sin = ["api_module_trigonometry"]
