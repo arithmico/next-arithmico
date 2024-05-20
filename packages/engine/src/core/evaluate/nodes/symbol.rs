@@ -14,7 +14,8 @@ pub fn evaluate_symbol(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::context::{HostApiModule, Stack},
+        core::{context::Stack, host_api::HostApiModule},
+        language::Language,
         HostApi, Settings,
     };
 
@@ -45,7 +46,7 @@ mod tests {
                     .name("test")
                     .endpoint(true, "test", |builder| {
                         builder
-                            .description(crate::Language::English, "test")
+                            .description(Language::English, "test")
                             .constant(|_context| Node::Number { value: 42.0 })
                     })
                     .build()

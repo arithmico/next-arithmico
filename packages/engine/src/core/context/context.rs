@@ -1,8 +1,14 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::{core::node::Node, load_host_api};
+use crate::{
+    core::{
+        host_api::{HostApi, HostEndpoint},
+        node::Node,
+    },
+    load_host_api,
+};
 
-use super::{host_api::HostApi, settings::Settings, HostEndpoint};
+use super::settings::Settings;
 
 pub type Stackframe = HashMap<String, Node>;
 

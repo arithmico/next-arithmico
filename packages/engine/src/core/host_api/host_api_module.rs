@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use log::info;
 
-use crate::Language;
+use crate::language::Language;
 
 use super::{
     host_endpoint::{ConstantExecutor, FunctionExecutor},

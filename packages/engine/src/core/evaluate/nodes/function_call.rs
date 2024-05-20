@@ -1,6 +1,5 @@
 use crate::core::{
-    context::{Context, HostEndpoint},
-    evaluate::NodeEvaluationError,
+    context::Context, evaluate::NodeEvaluationError, host_api::HostEndpoint,
     node::Node,
 };
 
@@ -55,7 +54,8 @@ pub fn evaluate_function_call(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::context::{HostApiModule, Stack},
+        core::{context::Stack, host_api::HostApiModule},
+        language::Language,
         HostApi, Settings,
     };
 
@@ -88,7 +88,7 @@ mod tests {
                     .name("test")
                     .endpoint(true, "test", |builder| {
                         builder
-                            .description(crate::Language::English, "test")
+                            .description(Language::English, "test")
                             .function(vec!["x"])
                             .executor(|arguments, context| {
                                 let mut result: Vec<Node> = Vec::new();
