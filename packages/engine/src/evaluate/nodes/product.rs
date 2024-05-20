@@ -37,6 +37,37 @@ fn multiply_nodes(
                 value: left_value * right_value,
             })
         }
+        (Node::Vector { .. }, Node::Vector { .. }) => {
+            multiply_tensors(left, right, context)
+        }
+        (Node::Number { value }, Node::Vector { values })
+        | (Node::Vector { values }, Node::Number { value })
+            if cfg!(feature = "operator_product_number_vector") =>
+        {
+            let mut new_values = Vec::<Node>::new();
+            for vector_value in values {
+                new_values.push(
+                    Node::Product {
+                        values: vec![
+                            Node::Number { value: *value },
+                            vector_value.clone(),
+                        ],
+                    }
+                    .evaluate(context)?,
+                );
+            }
+            Ok(Node::Vector { values: new_values })
+        }
+        _ => Err(NodeEvaluationError::UnsupportedOperation),
+    }
+}
+
+fn multiply_tensors(
+    left: &Node,
+    right: &Node,
+    context: &Context,
+) -> Result<Node, NodeEvaluationError> {
+    match (left, right) {
         (
             Node::Vector {
                 values: left_values,
@@ -65,6 +96,6 @@ fn multiply_nodes(
             }
             _ => Err(NodeEvaluationError::UnsupportedOperation),
         },
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
+        _ => unreachable!(),
     }
 }
