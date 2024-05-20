@@ -14,7 +14,7 @@ pub fn evaluate_product(
             (
                 Node::Number { value: left_value },
                 Node::Number { value: right_value },
-            ) => {
+            ) if cfg!(feature = "operator_product_number_number") => {
                 result = Node::Number {
                     value: left_value * right_value,
                 }

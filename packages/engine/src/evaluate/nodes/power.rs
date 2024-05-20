@@ -11,9 +11,11 @@ pub fn evaluate_power(
         (
             Node::Number { value: left_value },
             Node::Number { value: right_value },
-        ) => Ok(Node::Number {
-            value: left_value.powf(right_value),
-        }),
+        ) if cfg!(feature = "operator_power_number_number") => {
+            Ok(Node::Number {
+                value: left_value.powf(right_value),
+            })
+        }
         _ => return Err(NodeEvaluationError::UnsupportedOperation),
     }
 }

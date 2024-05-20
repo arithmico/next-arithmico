@@ -11,10 +11,25 @@ thiserror = "1.0"
 log = "0.4.21"
 
 [features]
-default = ["datatypes", "group_trigonometry"]
+default = ["datatypes", "operators", "group_trigonometry"]
 
 # feature groups
-datatypes = ["datatype_number", "datatype_symbol", "datatype_vector"]
+datatypes = [
+    "datatype_number",
+    "datatype_symbol",
+    "datatype_vector",
+    "datatype_function",
+]
+operators = [
+    "operator_negate_number",
+    "operator_sum_number_number",
+    "operator_sum_vector_vector",
+    "operator_product_number_number",
+    "operator_division_number_number",
+    "operator_power_number_number",
+    "operator_function_call",
+    "operator_definition"
+]
 group_trigonometry = [
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
@@ -24,6 +39,18 @@ group_trigonometry = [
 datatype_number = []
 datatype_symbol = []
 datatype_vector = []
+datatype_function = []
+
+# operator features
+operator_negate_number = ["datatype_number"]
+operator_sum_number_number = ["datatype_number"]
+operator_sum_vector_vector = ["datatype_vector"]
+operator_product_number_number = ["datatype_number"]
+operator_division_number_number = ["datatype_number"]
+operator_power_number_number = ["datatype_number"]
+operator_function_call = [
+] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
+operator_definition = ["datatype_symbol"]
 
 # host api module features
 api_module_trigonometry = []

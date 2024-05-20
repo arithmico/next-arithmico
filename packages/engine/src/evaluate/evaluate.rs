@@ -32,11 +32,17 @@ impl Node {
             Node::Function {
                 arguments,
                 expression,
-            } => evaluate_function(arguments, expression, context),
-            Node::FunctionCall { target, arguments } => {
+            } if cfg!(feature = "datatype_function") => {
+                evaluate_function(arguments, expression, context)
+            }
+            Node::FunctionCall { target, arguments }
+                if cfg!(feature = "operator_function_call") =>
+            {
                 evaluate_function_call(target, arguments, context)
             }
-            Node::Definition { symbol, expression } => {
+            Node::Definition { symbol, expression }
+                if cfg!(feature = "operator_definition") =>
+            {
                 evaluate_definition(symbol, expression, context)
             }
             Node::Vector { values } if cfg!(feature = "datatype_vector") => {

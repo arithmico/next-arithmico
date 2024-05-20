@@ -7,7 +7,9 @@ pub fn evaluate_negate(
 ) -> Result<Node, NodeEvaluationError> {
     let evaluated_value = value.evaluate(context)?;
     match evaluated_value {
-        Node::Number { value } => Ok(Node::Number { value: -value }),
+        Node::Number { value } if cfg!(feature = "operator_negate_number") => {
+            Ok(Node::Number { value: -value })
+        }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }

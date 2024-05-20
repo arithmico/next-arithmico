@@ -12,7 +12,7 @@ pub fn evaluate_division(
         (
             Node::Number { value: left_value },
             Node::Number { value: right_value },
-        ) => {
+        ) if cfg!(feature = "operator_division_number_number") => {
             if right_value == 0.0 {
                 Err(NodeEvaluationError::DivisionByZero)
             } else {
