@@ -1,3 +1,5 @@
+use std::iter::zip;
+
 use crate::{
     core::{
         context::Context,
@@ -42,17 +44,10 @@ fn add_nodes(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
                 ));
             }
-
             Node::from(Tensor::new(
-                left.elements
-                    .iter()
-                    .enumerate()
-                    .map(|(index, value)| {
-                        Sum::new(vec![
-                            value.clone(),
-                            right.elements.get(index).unwrap().clone(),
-                        ])
-                        .into()
+                zip(&left.elements, &right.elements)
+                    .map(|(left, right)| {
+                        Node::from(Sum::new(vec![left.clone(), right.clone()]))
                     })
                     .collect(),
             ))
