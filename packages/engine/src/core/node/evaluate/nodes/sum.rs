@@ -7,14 +7,14 @@ use crate::{
 };
 
 pub fn evaluate_sum(
-    values: &Vec<Node>,
+    node: &Sum,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    if values.len() < 2 {
+    if node.values.len() < 2 {
         return Err(NodeEvaluationError::InvalidNumberOfValues);
     }
-    let mut result = values[0].evaluate(context)?;
-    for current_node in values[1..].iter() {
+    let mut result = node.values[0].evaluate(context)?;
+    for current_node in node.values[1..].iter() {
         let evaluated_current_node = current_node.evaluate(context)?;
         result = add_nodes(&result, &evaluated_current_node, context)?;
     }
@@ -34,14 +34,9 @@ fn add_nodes(
         ) if cfg!(feature = "operator_sum_number_number") => {
             Ok(Number::new(left_value + right_value).into())
         }
-        (
-            Node::Tensor(Tensor {
-                elements: left_values,
-            }),
-            Node::Tensor(Tensor {
-                elements: right_values,
-            }),
-        ) if cfg!(feature = "operator_sum_vector_vector") => {
+        (Node::Tensor(left), Node::Tensor(right))
+            if cfg!(feature = "operator_sum_vector_vector") =>
+        {
             if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
                 return Err(NodeEvaluationError::ArithmeticError(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
@@ -49,13 +44,13 @@ fn add_nodes(
             }
 
             Node::from(Tensor::new(
-                left_values
+                left.elements
                     .iter()
                     .enumerate()
                     .map(|(index, value)| {
                         Sum::new(vec![
                             value.clone(),
-                            right_values.get(index).unwrap().clone(),
+                            right.elements.get(index).unwrap().clone(),
                         ])
                         .into()
                     })

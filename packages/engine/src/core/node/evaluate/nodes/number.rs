@@ -4,10 +4,10 @@ use crate::core::{
 };
 
 pub fn evaluate_number(
-    value: &f64,
+    node: &Number,
     _context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    Ok(Number::new(*value).into())
+    Ok(Number::new(node.value).into())
 }
 
 #[cfg(test)]

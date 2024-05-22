@@ -4,12 +4,11 @@ use crate::core::{
 };
 
 pub fn evaluate_division(
-    dividend: &Node,
-    divisor: &Node,
+    node: &Division,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let evaluated_dividend = dividend.evaluate(context)?;
-    let evaluated_divisor = divisor.evaluate(context)?;
+    let evaluated_dividend = node.dividend.evaluate(context)?;
+    let evaluated_divisor = node.divisor.evaluate(context)?;
     match (evaluated_dividend, evaluated_divisor) {
         (
             Node::Number(Number { value: left_value }),

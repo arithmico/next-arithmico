@@ -1,13 +1,13 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number, Tensor},
+    node::{evaluate::NodeEvaluationError, Negate, Node, Number, Tensor},
 };
 
 pub fn evaluate_negate(
-    value: &Node,
+    node: &Negate,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let evaluated_value = value.evaluate(context)?;
+    let evaluated_value = node.value.evaluate(context)?;
     match evaluated_value {
         Node::Number(Number { value })
             if cfg!(feature = "operator_negate_number") =>
@@ -19,7 +19,8 @@ pub fn evaluate_negate(
         {
             let mut negated_values = Vec::<Node>::new();
             for value in values {
-                negated_values.push(evaluate_negate(&value, context)?);
+                negated_values
+                    .push(Node::from(Negate::new(value)).evaluate(context)?);
             }
             Ok(Tensor::new(negated_values).into())
         }

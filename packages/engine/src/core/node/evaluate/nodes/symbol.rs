@@ -1,14 +1,14 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Node, Symbol},
 };
 
 pub fn evaluate_symbol(
-    name: &String,
+    node: &Symbol,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
     context
-        .lookup(name)
+        .lookup(&node.name)
         .ok_or_else(|| NodeEvaluationError::UnknownSymbol)
 }
 

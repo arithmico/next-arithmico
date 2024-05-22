@@ -4,11 +4,13 @@ use crate::core::{
 };
 
 pub fn evaluate_function(
-    arguments: &Vec<String>,
-    expression: &Node,
+    node: &Function,
     _context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    Ok(Function::new(arguments.clone(), expression.clone()).into())
+    Ok(
+        Function::new(node.arguments.clone(), (*node.expression).clone())
+            .into(),
+    )
 }
 
 #[cfg(test)]

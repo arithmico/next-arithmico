@@ -1,15 +1,14 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number},
+    node::{evaluate::NodeEvaluationError, Node, Number, Power},
 };
 
 pub fn evaluate_power(
-    base: &Node,
-    exponent: &Node,
+    node: &Power,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let evaluated_base = base.evaluate(context)?;
-    let evaluated_exponent = exponent.evaluate(context)?;
+    let evaluated_base = node.base.evaluate(context)?;
+    let evaluated_exponent = node.exponent.evaluate(context)?;
     match (evaluated_base, evaluated_exponent) {
         (
             Node::Number(Number { value: left_value }),

@@ -4,12 +4,11 @@ use crate::core::{
 };
 
 pub fn evaluate_definition(
-    symbol: &String,
-    expression: &Node,
+    node: &Definition,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let evaluated_expression = expression.evaluate(context)?;
-    Ok(Definition::new(symbol.clone(), evaluated_expression).into())
+    let evaluated_expression = node.expression.evaluate(context)?;
+    Ok(Definition::new(node.symbol.clone(), evaluated_expression).into())
 }
 
 #[cfg(test)]

@@ -2,27 +2,27 @@ use crate::core::{
     context::Context,
     host_api::HostEndpoint,
     node::{
-        evaluate::NodeEvaluationError, Function, HostApiFunctionEndpoint, Node,
+        evaluate::NodeEvaluationError, Function, FunctionCall,
+        HostApiFunctionEndpoint, Node,
     },
 };
 
 pub fn evaluate_function_call(
-    target: &Node,
-    call_arguments: &Vec<Node>,
+    node: &FunctionCall,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let evaluated_target = target.evaluate(context)?;
+    let evaluated_target = node.target.evaluate(context)?;
     match evaluated_target {
         Node::Function(Function {
             arguments,
             expression,
         }) => {
-            if call_arguments.len() != arguments.len() {
+            if node.arguments.len() != arguments.len() {
                 return Err(NodeEvaluationError::InvalidNumberOfArguments);
             }
             let mut call_stack = context.stack.clone();
             call_stack.add_frame();
-            for (index, call_argument) in call_arguments.iter().enumerate() {
+            for (index, call_argument) in node.arguments.iter().enumerate() {
                 let evaluated_call_argument =
                     call_argument.evaluate(context)?;
                 call_stack.insert(
@@ -41,7 +41,7 @@ pub fn evaluate_function_call(
             let endpoint = context.endpoint(&name).unwrap();
             match endpoint {
                 HostEndpoint::Function { executor, .. } => {
-                    executor(&call_arguments, context)
+                    executor(&node.arguments, context)
                 }
                 HostEndpoint::Constant { .. } => {
                     Err(NodeEvaluationError::RuntimeError(

@@ -11,18 +11,17 @@ use crate::{
 };
 
 pub fn evaluate_product(
-    values: &Vec<Node>,
+    node: &Product,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    if values.len() < 2 {
+    if node.values.len() < 2 {
         return Err(NodeEvaluationError::InvalidNumberOfValues);
     }
-    let mut result = values[0].evaluate(context)?;
-    for current_node in values[1..].iter() {
+    let mut result = node.values[0].evaluate(context)?;
+    for current_node in node.values[1..].iter() {
         let evaluated_current_node = current_node.evaluate(context)?;
         result = multiply_nodes(&result, &evaluated_current_node, context)?;
     }
-
     Ok(result)
 }
 
@@ -38,7 +37,7 @@ fn multiply_nodes(
         ) if cfg!(feature = "operator_product_number_number") => {
             Ok(Number::new(left_value * right_value).into())
         }
-        (Node::Tensor { .. }, Node::Tensor { .. }) => {
+        (Node::Tensor(left), Node::Tensor(right)) => {
             multiply_tensors(left, right, context)
         }
         (
@@ -66,41 +65,29 @@ fn multiply_nodes(
 }
 
 fn multiply_tensors(
-    left: &Node,
-    right: &Node,
+    left: &Tensor,
+    right: &Tensor,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    match (left, right) {
-        (
-            Node::Tensor(Tensor {
-                elements: left_values,
-            }),
-            Node::Tensor(Tensor {
-                elements: right_values,
-            }),
-        ) => match (get_tensor_rank(left), get_tensor_rank(right)) {
-            (Some(1), Some(1))
-                if cfg!(feature = "operator_product_vector_vector") =>
-            {
-                if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
-                    return Err(NodeEvaluationError::ArithmeticError(
-                        "Can not multiply vectors with different dimensions"
-                            .into(),
-                    ));
-                }
-                Node::from(Sum::new(
-                    zip(left_values, right_values)
-                        .map(|(left, right)| {
-                            Product::new(vec![left.clone(), right.clone()])
-                                .into()
-                        })
-                        .collect(),
-                ))
-                .evaluate(context)
+    let left_rank = get_tensor_rank(left);
+    let right_rank = get_tensor_rank(right);
+    match (left_rank, right_rank) {
+        (1, 1) if cfg!(feature = "operator_product_vector_vector") => {
+            if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
+                return Err(NodeEvaluationError::ArithmeticError(
+                    "Can not multiply vectors with different dimensions".into(),
+                ));
             }
-            _ => Err(NodeEvaluationError::UnsupportedOperation),
-        },
-        _ => unreachable!(),
+            Node::from(Sum::new(
+                zip(left.elements.iter(), right.elements.iter())
+                    .map(|(left, right)| {
+                        Product::new(vec![left.clone(), right.clone()]).into()
+                    })
+                    .collect(),
+            ))
+            .evaluate(context)
+        }
+        _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
 
