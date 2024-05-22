@@ -1,3 +1,7 @@
+use crate::core::node::{
+    Definition, Division, Function, FunctionCall, Negate, Number, Power,
+    Product, Sum, Symbol, Tensor,
+};
 use crate::core::{context::Context, node::Node};
 
 use super::nodes::{
@@ -13,38 +17,46 @@ impl Node {
         context: &Context,
     ) -> Result<Node, NodeEvaluationError> {
         match self {
-            Node::Number { value } if cfg!(feature = "datatype_number") => {
+            Node::Number(Number { value })
+                if cfg!(feature = "datatype_number") =>
+            {
                 evaluate_number(value, context)
             }
-            Node::Symbol { name } if cfg!(feature = "datatype_symbol") => {
+            Node::Symbol(Symbol { name })
+                if cfg!(feature = "datatype_symbol") =>
+            {
                 evaluate_symbol(name, context)
             }
-            Node::Negate { value } => evaluate_negate(value, context),
-            Node::Sum { values } => evaluate_sum(values, context),
-            Node::Product { values } => evaluate_product(values, context),
-            Node::Division { dividend, divisor } => {
+            Node::Negate(Negate { value }) => evaluate_negate(value, context),
+            Node::Sum(Sum { values }) => evaluate_sum(values, context),
+            Node::Product(Product { values }) => {
+                evaluate_product(values, context)
+            }
+            Node::Division(Division { dividend, divisor }) => {
                 evaluate_division(dividend, divisor, context)
             }
-            Node::Power { base, exponent } => {
+            Node::Power(Power { base, exponent }) => {
                 evaluate_power(base, exponent, context)
             }
-            Node::Function {
+            Node::Function(Function {
                 arguments,
                 expression,
-            } if cfg!(feature = "datatype_function") => {
+            }) if cfg!(feature = "datatype_function") => {
                 evaluate_function(arguments, expression, context)
             }
-            Node::FunctionCall { target, arguments }
+            Node::FunctionCall(FunctionCall { target, arguments })
                 if cfg!(feature = "operator_function_call") =>
             {
                 evaluate_function_call(target, arguments, context)
             }
-            Node::Definition { symbol, expression }
+            Node::Definition(Definition { symbol, expression })
                 if cfg!(feature = "operator_definition") =>
             {
                 evaluate_definition(symbol, expression, context)
             }
-            Node::Vector { values } if cfg!(feature = "datatype_vector") => {
+            Node::Tensor(Tensor { elements: values })
+                if cfg!(feature = "datatype_vector") =>
+            {
                 evaluate_vector(values, context)
             }
             _ => Err(NodeEvaluationError::UnsupportedOperation),

@@ -1,5 +1,12 @@
 use super::parenthesis::ParenthesesBehavior;
-use crate::core::{context::Context, node::Node};
+use crate::core::{
+    context::Context,
+    node::{
+        Boolean, Definition, Division, Function, FunctionCall,
+        HostApiFunctionEndpoint, Negate, Node, Number, Power, Product, Sum,
+        Symbol, Tensor,
+    },
+};
 
 impl Node {
     pub fn serialize(&self, context: &Context) -> String {
@@ -24,7 +31,7 @@ impl Node {
 
     fn serialize_transformed_node(&self, context: &Context) -> String {
         match self {
-            Node::Number { value } => {
+            Node::Number(Number { value }) => {
                 if *value == 0.0 {
                     return "0".into();
                 }
@@ -40,21 +47,21 @@ impl Node {
                         .trim_end_matches("."),
                 )
             }
-            Node::Symbol { name } => String::from(name),
-            Node::Boolean { value } => {
+            Node::Symbol(Symbol { name }) => String::from(name),
+            Node::Boolean(Boolean { value }) => {
                 if *value == true {
                     return String::from("true");
                 } else {
                     return String::from("false");
                 }
             }
-            Node::Negate { value } => {
+            Node::Negate(Negate { value }) => {
                 format!(
                     "-{}",
                     value.serialize_transformed_node_for_parent(self, context)
                 )
             }
-            Node::Sum { values } => {
+            Node::Sum(Sum { values }) => {
                 values.iter().fold(String::new(), |acc, value| {
                     if acc.is_empty() {
                         value.serialize_transformed_node_for_parent(
@@ -62,7 +69,7 @@ impl Node {
                         )
                     } else {
                         match value {
-                            Node::Negate { value } => format!(
+                            Node::Negate(Negate { value }) => format!(
                                 "{} - {}",
                                 acc,
                                 value.serialize_transformed_node_for_parent(
@@ -81,24 +88,24 @@ impl Node {
                 })
             }
 
-            Node::Product { values } => values
+            Node::Product(Product { values }) => values
                 .iter()
                 .map(|value| {
                     value.serialize_transformed_node_for_parent(self, context)
                 })
                 .collect::<Vec<_>>()
                 .join(" * "),
-            Node::Division { dividend, divisor } => format!(
+            Node::Division(Division { dividend, divisor }) => format!(
                 "{} / {}",
                 dividend.serialize_transformed_node_for_parent(self, context),
                 divisor.serialize_transformed_node_for_parent(self, context)
             ),
-            Node::Power { base, exponent } => format!(
+            Node::Power(Power { base, exponent }) => format!(
                 "{}^{}",
                 base.serialize_transformed_node_for_parent(self, context),
                 exponent.serialize_transformed_node_for_parent(self, context)
             ),
-            Node::Vector { values } => format!(
+            Node::Tensor(Tensor { elements: values }) => format!(
                 "[{}]",
                 values
                     .iter()
@@ -107,7 +114,7 @@ impl Node {
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
-            Node::FunctionCall { target, arguments } => format!(
+            Node::FunctionCall(FunctionCall { target, arguments }) => format!(
                 "{}({})",
                 target.serialize_transformed_node_for_parent(self, context),
                 arguments
@@ -117,15 +124,15 @@ impl Node {
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
-            Node::Function {
+            Node::Function(Function {
                 arguments,
                 expression,
-            } => format!(
+            }) => format!(
                 "({}) -> {}",
                 arguments.join(", "),
                 expression.serialize_transformed_node_for_parent(self, context)
             ),
-            Node::Definition { symbol, expression } => format!(
+            Node::Definition(Definition { symbol, expression }) => format!(
                 "{} := {}",
                 symbol,
                 expression.serialize_transformed_node_for_parent(self, context)
@@ -138,7 +145,7 @@ impl Node {
 
     fn pre_serialize_transform(&self, context: &Context) -> Node {
         match self {
-            Node::Number { value } => {
+            Node::Number(Number { value }) => {
                 if *value == 0.0 {
                     return self.clone();
                 }
@@ -149,96 +156,102 @@ impl Node {
                     if magnitude < 0 { -magnitude } else { magnitude };
                 if magnitude_abs <= decimal_places as i64 {
                     return if *value < 0.0 {
-                        Node::Negate {
-                            value: Node::Number { value: value.abs() }.into(),
-                        }
+                        Negate::new(Number::new(value.abs())).into()
                     } else {
                         self.clone()
                     };
                 }
                 let sign = value.signum();
                 let factor = value.abs() * 10_f64.powi(-magnitude as i32);
-                let scientific_notation = Node::Product {
-                    values: vec![
-                        Node::Number { value: factor },
-                        Node::Power {
-                            base: Node::Number { value: 10.0 }.into(),
-                            exponent: if magnitude < 0 {
-                                Node::Negate {
-                                    value: Node::Number {
-                                        value: magnitude.abs() as f64,
-                                    }
-                                    .into(),
-                                }
-                            } else {
-                                Node::Number {
-                                    value: magnitude.abs() as f64,
-                                }
-                            }
-                            .into(),
+                let scientific_notation = Product::new(vec![
+                    Number::new(factor).into(),
+                    Power::new(
+                        Number::new(10.0),
+                        if magnitude < 0 {
+                            Node::from(Negate::new(Number::new(
+                                magnitude.abs() as f64,
+                            )))
+                        } else {
+                            Node::from(Number::new(magnitude.abs() as f64))
                         },
-                    ],
-                };
+                    )
+                    .into(),
+                ])
+                .into();
+
                 if sign > 0.0 {
                     scientific_notation
                 } else {
-                    Node::Negate {
-                        value: scientific_notation.into(),
-                    }
+                    Negate::new(scientific_notation).into()
                 }
             }
             Node::Symbol { .. } => self.clone(),
             Node::Boolean { .. } => self.clone(),
-            Node::Negate { value } => Node::Negate {
-                value: Box::new(value.pre_serialize_transform(context)),
-            },
-            Node::Sum { values } => Node::Sum {
-                values: values
+            Node::Negate(Negate { value }) => {
+                Negate::new(value.pre_serialize_transform(context)).into()
+            }
+            Node::Sum(Sum { values }) => Sum::new(
+                values
                     .iter()
                     .map(|value| value.pre_serialize_transform(context))
                     .collect(),
-            },
-            Node::Product { values } => Node::Product {
-                values: values
+            )
+            .into(),
+            Node::Product(Product { values }) => Product::new(
+                values
                     .iter()
                     .map(|value| value.pre_serialize_transform(context))
                     .collect(),
-            },
-            Node::Division { dividend, divisor } => Node::Division {
-                dividend: dividend.pre_serialize_transform(context).into(),
-                divisor: divisor.pre_serialize_transform(context).into(),
-            },
-            Node::Power { base, exponent } => Node::Power {
-                base: base.pre_serialize_transform(context).into(),
-                exponent: exponent.pre_serialize_transform(context).into(),
-            },
-            Node::Vector { values } => Node::Vector {
-                values: values
+            )
+            .into(),
+            Node::Division(Division { dividend, divisor }) => Division::new(
+                dividend.pre_serialize_transform(context),
+                divisor.pre_serialize_transform(context),
+            )
+            .into(),
+            Node::Power(Power { base, exponent }) => Power::new(
+                base.pre_serialize_transform(context),
+                exponent.pre_serialize_transform(context),
+            )
+            .into(),
+            Node::Tensor(Tensor { elements: values }) => Tensor::new(
+                values
                     .iter()
                     .map(|value| value.pre_serialize_transform(context))
                     .collect(),
-            },
-            Node::FunctionCall { target, arguments } => Node::FunctionCall {
-                target: target.pre_serialize_transform(context).into(),
-                arguments: arguments
-                    .iter()
-                    .map(|argument| argument.pre_serialize_transform(context))
-                    .collect(),
-            },
-            Node::Function {
+            )
+            .into(),
+            Node::FunctionCall(FunctionCall { target, arguments }) => {
+                FunctionCall::new(
+                    target.pre_serialize_transform(context),
+                    arguments
+                        .iter()
+                        .map(|argument| {
+                            argument.pre_serialize_transform(context)
+                        })
+                        .collect(),
+                )
+                .into()
+            }
+            Node::Function(Function {
                 arguments,
                 expression,
-            } => Node::Function {
-                arguments: arguments.clone(),
-                expression: expression.pre_serialize_transform(context).into(),
-            },
-            Node::Definition { symbol, expression } => Node::Definition {
-                symbol: symbol.clone(),
-                expression: expression.pre_serialize_transform(context).into(),
-            },
-            Node::HostApiFunctionEndpoint { name, .. } => {
-                Node::Symbol { name: name.into() }
+            }) => Function::new(
+                arguments.clone(),
+                expression.pre_serialize_transform(context),
+            )
+            .into(),
+            Node::Definition(Definition { symbol, expression }) => {
+                Definition::new(
+                    symbol.clone(),
+                    expression.pre_serialize_transform(context),
+                )
+                .into()
             }
+            Node::HostApiFunctionEndpoint(HostApiFunctionEndpoint {
+                name,
+                ..
+            }) => Symbol::new(name).into(),
         }
     }
 }

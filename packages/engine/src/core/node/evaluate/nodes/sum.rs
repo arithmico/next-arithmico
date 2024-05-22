@@ -1,7 +1,7 @@
 use crate::{
     core::{
         context::Context,
-        node::{evaluate::NodeEvaluationError, Node},
+        node::{evaluate::NodeEvaluationError, Node, Number, Sum, Tensor},
     },
     utils::vector_utils::get_tensor_dimensions,
 };
@@ -29,18 +29,18 @@ fn add_nodes(
 ) -> Result<Node, NodeEvaluationError> {
     match (left, right) {
         (
-            Node::Number { value: left_value },
-            Node::Number { value: right_value },
-        ) if cfg!(feature = "operator_sum_number_number") => Ok(Node::Number {
-            value: left_value + right_value,
-        }),
+            Node::Number(Number { value: left_value }),
+            Node::Number(Number { value: right_value }),
+        ) if cfg!(feature = "operator_sum_number_number") => {
+            Ok(Number::new(left_value + right_value).into())
+        }
         (
-            Node::Vector {
-                values: left_values,
-            },
-            Node::Vector {
-                values: right_values,
-            },
+            Node::Tensor(Tensor {
+                elements: left_values,
+            }),
+            Node::Tensor(Tensor {
+                elements: right_values,
+            }),
         ) if cfg!(feature = "operator_sum_vector_vector") => {
             if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
                 return Err(NodeEvaluationError::ArithmeticError(
@@ -48,18 +48,19 @@ fn add_nodes(
                 ));
             }
 
-            Node::Vector {
-                values: left_values
+            Node::from(Tensor::new(
+                left_values
                     .iter()
                     .enumerate()
-                    .map(|(index, value)| Node::Sum {
-                        values: vec![
+                    .map(|(index, value)| {
+                        Sum::new(vec![
                             value.clone(),
                             right_values.get(index).unwrap().clone(),
-                        ],
+                        ])
+                        .into()
                     })
                     .collect(),
-            }
+            ))
             .evaluate(context)
         }
         _ => return Err(NodeEvaluationError::UnsupportedOperation),
@@ -68,21 +69,21 @@ fn add_nodes(
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::{Negate, Power};
+
     use super::*;
 
     #[test]
     fn evaluate_sum_number_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Sum {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 }
-                ]
-            }
+            Node::from(Sum::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Number { value: 3.0 }
+            Number::new(3.0).into()
         )
     }
 
@@ -90,24 +91,14 @@ mod tests {
     fn evaluate_sum_large_number_large_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Sum {
-                values: vec![
-                    Node::Power {
-                        base: Node::Number { value: 10.0 }.into(),
-                        exponent: Node::Number { value: 32.0 }.into()
-                    },
-                    Node::Negate {
-                        value: Node::Power {
-                            base: Node::Number { value: 10.0 }.into(),
-                            exponent: Node::Number { value: 32.0 }.into()
-                        }
-                        .into(),
-                    }
-                ]
-            }
+            Node::from(Sum::new(vec![
+                Power::new(Number::new(10.0), Number::new(32.0)).into(),
+                Negate::new(Power::new(Number::new(10.0), Number::new(32.0)))
+                    .into()
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Number { value: 0.0 }
+            Number::new(0.0).into()
         )
     }
 
@@ -115,33 +106,28 @@ mod tests {
     fn evaluate_sum_vector_vector() {
         let context = Context::default();
         assert_eq!(
-            Node::Sum {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 },
-                        ]
-                    },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 3.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 1.0 },
-                        ]
-                    },
-                ]
-            }
+            Node::from(Sum::new(vec![
+                Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into(),
+                ])
+                .into(),
+                Tensor::new(vec![
+                    Number::new(3.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(1.0).into(),
+                ])
+                .into(),
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 4.0 },
-                    Node::Number { value: 4.0 },
-                    Node::Number { value: 4.0 },
-                ]
-            },
+            Tensor::new(vec![
+                Number::new(4.0).into(),
+                Number::new(4.0).into(),
+                Number::new(4.0).into(),
+            ])
+            .into(),
         )
     }
 }

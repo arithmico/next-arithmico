@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Function, Node},
 };
 
 pub fn evaluate_function(
@@ -8,34 +8,24 @@ pub fn evaluate_function(
     expression: &Node,
     _context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    Ok(Node::Function {
-        arguments: arguments.clone(),
-        expression: Box::new(expression.clone()),
-    })
+    Ok(Function::new(arguments.clone(), expression.clone()).into())
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::Symbol;
+
     use super::*;
 
     #[test]
     fn evaluate_function() {
         let context = Context::default();
         assert_eq!(
-            Node::Function {
-                arguments: vec![String::from("x")],
-                expression: Box::new(Node::Symbol {
-                    name: String::from("x")
-                })
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Function {
-                arguments: vec![String::from("x")],
-                expression: Box::new(Node::Symbol {
-                    name: String::from("x")
-                })
-            }
+            Node::from(Function::new(vec!["x".into()], Symbol::new("x")))
+                .evaluate(&context)
+                .unwrap(),
+            Node::from(Function::new(vec!["x".into()], Symbol::new("x")))
+                .into()
         )
     }
 }

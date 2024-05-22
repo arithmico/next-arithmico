@@ -1,15 +1,13 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Node, Number},
 };
 
 pub fn evaluate_number(
     value: &f64,
     _context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    Ok(Node::Number {
-        value: f64::clone(value),
-    })
+    Ok(Number::new(*value).into())
 }
 
 #[cfg(test)]
@@ -20,8 +18,8 @@ mod tests {
     fn evaluate_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Number { value: 2.1 }.evaluate(&context).unwrap(),
-            Node::Number { value: 2.1 }
+            Node::from(Number::new(2.1)).evaluate(&context).unwrap(),
+            Node::from(Number::new(2.1))
         )
     }
 }

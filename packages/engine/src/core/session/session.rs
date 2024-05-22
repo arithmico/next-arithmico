@@ -3,7 +3,7 @@ use std::rc::Rc;
 use crate::core::{
     context::{Context, Settings, Stack},
     host_api::HostApi,
-    node::{parse::parse::parse_statement, Node},
+    node::{parse::parse::parse_statement, Definition, Node},
 };
 
 use super::EvaluationError;
@@ -45,7 +45,7 @@ impl Session {
         );
         let result = node.evaluate(&context)?;
         let serialized_result = result.serialize(&context);
-        if let Node::Definition { symbol, expression } = result {
+        if let Node::Definition(Definition { symbol, expression }) = result {
             let mut next_stack = self.stack.clone();
             next_stack.insert(&symbol, (*expression).clone());
             return Ok((serialized_result, next_stack));
@@ -97,6 +97,8 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::Number;
+
     use super::*;
 
     #[test]
@@ -124,7 +126,7 @@ mod tests {
         let session = Session::new(host_api.clone());
         let settings = Settings::default();
         let mut stack_after_definition = Stack::new();
-        stack_after_definition.insert("a", Node::Number { value: 2.0 });
+        stack_after_definition.insert("a", Number::new(2.0).into());
         assert_eq!(
             session.push("a := 2", &settings).push("a", &settings),
             Session {

@@ -3,7 +3,7 @@ use std::f64::consts::PI;
 use crate::{
     core::{
         host_api::HostApiModule,
-        node::{evaluate::NodeEvaluationError, Node},
+        node::{evaluate::NodeEvaluationError, Node, Number},
     },
     language::Language,
 };
@@ -16,7 +16,7 @@ pub fn load_trigonometry_module() -> HostApiModule {
             builder
                 .description(Language::English, "tbd")
                 .description(Language::German, "Die Kreiszahl π ist allgemein definiert als das Verhältnis des Umfangs eines Kreises zu seinem Durchmesser.")
-                .constant(|_context| Node::Number { value: PI })
+                .constant(|_context| Number::new(PI).into())
         })
 
         .endpoint(cfg!(feature = "api_endpoint_trigonometry_sin"),"sin", |builder| {
@@ -33,12 +33,12 @@ pub fn load_trigonometry_module() -> HostApiModule {
                     let argument = arguments.get(0).unwrap();
                     let evaluated_argument = argument.evaluate(context)?;
                     match evaluated_argument {
-                        Node::Number { value } => {
+                        Node::Number(Number { value }) => {
                             if value.rem_euclid(PI).abs() < value * f64::EPSILON
                             {
-                                return Ok(Node::Number { value: 0.0 });
+                                return Ok(Number::new(0.0).into());
                             }
-                            Ok(Node::Number { value: value.sin() })
+                            Ok(Number::new(value.sin()).into())
                         }
                         _ => Err(NodeEvaluationError::RuntimeError(
                             "invalid argument type".into(),

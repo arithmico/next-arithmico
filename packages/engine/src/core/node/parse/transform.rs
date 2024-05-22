@@ -1,4 +1,7 @@
-use crate::core::node::Node;
+use crate::core::node::{
+    Boolean, Definition, Division, Function, FunctionCall, Negate, Node,
+    Number, Power, Product, Sum, Symbol, Tensor,
+};
 
 use super::parser::Rule;
 use pest::iterators::{Pair, Pairs};
@@ -6,86 +9,66 @@ use pest::iterators::{Pair, Pairs};
 pub fn transform(pair: Pair<Rule>) -> Node {
     match pair.as_rule() {
         Rule::statement => transform(pair.into_inner().next().unwrap()),
-        Rule::number => Node::Number {
-            value: pair.as_str().parse().unwrap(),
-        },
-        Rule::boolean => {
-            if pair.as_str() == "true" {
-                Node::Boolean { value: true }
-            } else {
-                Node::Boolean { value: false }
-            }
+        Rule::number => Number::new(pair.as_str().parse().unwrap()).into(),
+        Rule::boolean => Boolean::new(pair.as_str() == "true").into(),
+        Rule::symbol => Symbol::new(pair.as_str().to_string()).into(),
+        Rule::sum => {
+            Sum::new(pair.into_inner().map(|item| transform(item)).collect())
+                .into()
         }
-        Rule::symbol => Node::Symbol {
-            name: pair.as_str().to_string(),
-        },
-        Rule::sum => Node::Sum {
-            values: pair.into_inner().map(|item| transform(item)).collect(),
-        },
-        Rule::negate => Node::Negate {
-            value: Box::new(transform(pair.into_inner().next().unwrap())),
-        },
-        Rule::product => Node::Product {
-            values: pair.into_inner().map(|item| transform(item)).collect(),
-        },
+        Rule::negate => {
+            Negate::new(transform(pair.into_inner().next().unwrap())).into()
+        }
+        Rule::product => Product::new(
+            pair.into_inner().map(|item| transform(item)).collect(),
+        )
+        .into(),
         Rule::division => {
             let mut inner_pairs = pair.into_inner();
             let dividend = transform(inner_pairs.next().unwrap());
             let divisor = transform(inner_pairs.next().unwrap());
-            return Node::Division {
-                dividend: Box::new(dividend),
-                divisor: Box::new(divisor),
-            };
+            Division::new(dividend, divisor).into()
         }
         Rule::power => {
             let mut inner_pairs = pair.into_inner();
             let base = transform(inner_pairs.next().unwrap());
             let exponent = transform(inner_pairs.next().unwrap());
-            return Node::Power {
-                base: Box::new(base),
-                exponent: Box::new(exponent),
-            };
+            Power::new(base, exponent).into()
         }
-        Rule::vector => Node::Vector {
-            values: pair.into_inner().map(|item| transform(item)).collect(),
-        },
+        Rule::vector => {
+            Tensor::new(pair.into_inner().map(|item| transform(item)).collect())
+                .into()
+        }
         Rule::function_call => {
             let mut inner_pairs = pair.into_inner();
-
-            Node::FunctionCall {
-                target: Box::new(transform(
-                    next_pair_of_rule(
-                        &mut inner_pairs,
-                        Rule::function_call_target,
-                    )
+            let target = transform(
+                next_pair_of_rule(&mut inner_pairs, Rule::function_call_target)
                     .into_inner()
                     .next()
                     .unwrap(),
-                )),
-                arguments: next_pair_of_rule(
-                    &mut inner_pairs,
-                    Rule::function_call_arguments,
-                )
-                .into_inner()
-                .map(|argument| transform(argument))
-                .collect(),
-            }
+            );
+            let arguments = next_pair_of_rule(
+                &mut inner_pairs,
+                Rule::function_call_arguments,
+            )
+            .into_inner()
+            .map(|argument| transform(argument))
+            .collect();
+            FunctionCall::new(target, arguments).into()
         }
         Rule::function => {
             let mut inner_pairs = pair.into_inner();
-            Node::Function {
-                arguments: next_pair_of_rule(
-                    &mut inner_pairs,
-                    Rule::function_arguments,
-                )
-                .into_inner()
-                .map(|argument| match argument.as_rule() {
-                    Rule::symbol => String::from(argument.as_str()),
-                    _ => unreachable!(),
-                })
-                .collect(),
-                expression: Box::new(transform(inner_pairs.next().unwrap())),
-            }
+            let arguments =
+                next_pair_of_rule(&mut inner_pairs, Rule::function_arguments)
+                    .into_inner()
+                    .map(|argument| match argument.as_rule() {
+                        Rule::symbol => String::from(argument.as_str()),
+                        _ => unreachable!(),
+                    })
+                    .collect();
+
+            let expression = transform(inner_pairs.next().unwrap());
+            Function::new(arguments, expression).into()
         }
         Rule::function_definition => {
             let mut inner_pairs = pair.into_inner();
@@ -107,22 +90,14 @@ pub fn transform(pair: Pair<Rule>) -> Node {
             .map(|argument| String::from(argument.as_str()))
             .collect();
             let expression = transform(inner_pairs.next().unwrap());
-            Node::Definition {
-                symbol,
-                expression: Box::new(Node::Function {
-                    arguments,
-                    expression: Box::new(expression),
-                }),
-            }
+
+            Definition::new(symbol, Function::new(arguments, expression)).into()
         }
         Rule::symbol_definition => {
             let mut inner_pairs = pair.into_inner();
             let symbol = String::from(inner_pairs.next().unwrap().as_str());
             let expression = transform(inner_pairs.next().unwrap());
-            Node::Definition {
-                symbol,
-                expression: Box::new(expression),
-            }
+            Definition::new(symbol, expression).into()
         }
         _ => unreachable!(),
     }
@@ -147,41 +122,31 @@ mod tests {
     #[test]
     fn transform_float() {
         let result = parse_statement("2.1").unwrap();
-        assert_eq!(result, Node::Number { value: 2.1 });
+        assert_eq!(result, Number::new(2.1).into());
     }
 
     #[test]
     fn transform_true() {
         let result = parse_statement("true").unwrap();
-        assert_eq!(result, Node::Boolean { value: true });
+        assert_eq!(result, Boolean::new(true).into());
     }
 
     #[test]
     fn transform_false() {
         let result = parse_statement("false").unwrap();
-        assert_eq!(result, Node::Boolean { value: false });
+        assert_eq!(result, Boolean::new(false).into());
     }
 
     #[test]
     fn transform_symbol() {
         let result = parse_statement("hello").unwrap();
-        assert_eq!(
-            result,
-            Node::Symbol {
-                name: String::from("hello")
-            }
-        );
+        assert_eq!(result, Symbol::new("hello").into());
     }
 
     #[test]
     fn transform_negate() {
         let result = parse_statement("-1").unwrap();
-        assert_eq!(
-            result,
-            Node::Negate {
-                value: Box::new(Node::Number { value: 1.0 })
-            }
-        );
+        assert_eq!(result, Negate::new(Number::new(1.0)).into());
     }
 
     #[test]
@@ -189,13 +154,12 @@ mod tests {
         let result = parse_statement("1 + 2 + 3").unwrap();
         assert_eq!(
             result,
-            Node::Sum {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }
+            Sum::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         );
     }
 
@@ -204,15 +168,12 @@ mod tests {
         let result = parse_statement("1 + 2 - 3").unwrap();
         assert_eq!(
             result,
-            Node::Sum {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Negate {
-                        value: Box::new(Node::Number { value: 3.0 })
-                    },
-                ]
-            }
+            Sum::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Negate::new(Number::new(3.0)).into()
+            ])
+            .into()
         );
     }
 
@@ -221,12 +182,11 @@ mod tests {
         let result = parse_statement("1 * 2").unwrap();
         assert_eq!(
             result,
-            Node::Product {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                ]
-            }
+            Product::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+            ])
+            .into()
         );
     }
 
@@ -235,17 +195,15 @@ mod tests {
         let result = parse_statement("(1 + 2) * 3").unwrap();
         assert_eq!(
             result,
-            Node::Product {
-                values: vec![
-                    Node::Sum {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                        ]
-                    },
-                    Node::Number { value: 3.0 },
-                ]
-            }
+            Product::new(vec![
+                Sum::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                ])
+                .into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         );
     }
 
@@ -254,10 +212,7 @@ mod tests {
         let result = parse_statement("1 / 2").unwrap();
         assert_eq!(
             result,
-            Node::Division {
-                dividend: Box::new(Node::Number { value: 1.0 },),
-                divisor: Box::new(Node::Number { value: 2.0 },)
-            },
+            Division::new(Number::new(1.0), Number::new(2.0),).into()
         );
     }
 
@@ -266,15 +221,11 @@ mod tests {
         let result = parse_statement("1 / 2 * 3").unwrap();
         assert_eq!(
             result,
-            Node::Product {
-                values: vec![
-                    Node::Division {
-                        dividend: Box::new(Node::Number { value: 1.0 },),
-                        divisor: Box::new(Node::Number { value: 2.0 },)
-                    },
-                    Node::Number { value: 3.0 },
-                ]
-            }
+            Product::new(vec![
+                Division::new(Number::new(1.0), Number::new(2.0)).into(),
+                Number::new(3.0).into()
+            ])
+            .into()
         );
     }
 
@@ -283,10 +234,7 @@ mod tests {
         let result = parse_statement("2 ^ 3").unwrap();
         assert_eq!(
             result,
-            Node::Power {
-                base: Box::new(Node::Number { value: 2.0 },),
-                exponent: Box::new(Node::Number { value: 3.0 },)
-            },
+            Power::new(Number::new(2.0), Number::new(3.0)).into()
         );
     }
 
@@ -295,13 +243,12 @@ mod tests {
         let result = parse_statement("[1, 2, 3]").unwrap();
         assert_eq!(
             result,
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            },
+            Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         );
     }
 
@@ -310,15 +257,11 @@ mod tests {
         let result = parse_statement("f(1, 2)").unwrap();
         assert_eq!(
             result,
-            Node::FunctionCall {
-                target: Box::new(Node::Symbol {
-                    name: String::from("f")
-                }),
-                arguments: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                ]
-            }
+            FunctionCall::new(
+                Symbol::new("f"),
+                vec![Number::new(1.0).into(), Number::new(2.0).into()]
+            )
+            .into()
         );
     }
 
@@ -327,19 +270,14 @@ mod tests {
         let result = parse_statement("(x, y) -> x + y").unwrap();
         assert_eq!(
             result,
-            Node::Function {
-                arguments: vec![String::from("x"), String::from("y")],
-                expression: Box::new(Node::Sum {
-                    values: vec![
-                        Node::Symbol {
-                            name: String::from("x")
-                        },
-                        Node::Symbol {
-                            name: String::from("y")
-                        }
-                    ]
-                })
-            }
+            Function::new(
+                vec!["x".into(), "y".into()],
+                Sum::new(vec![
+                    Symbol::new("x").into(),
+                    Symbol::new("y").into()
+                ])
+            )
+            .into()
         );
     }
 
@@ -348,34 +286,22 @@ mod tests {
         let result = parse_statement("f(x, y) := x + y").unwrap();
         assert_eq!(
             result,
-            Node::Definition {
-                symbol: String::from("f"),
-                expression: Box::new(Node::Function {
-                    arguments: vec![String::from("x"), String::from("y")],
-                    expression: Box::new(Node::Sum {
-                        values: vec![
-                            Node::Symbol {
-                                name: String::from("x")
-                            },
-                            Node::Symbol {
-                                name: String::from("y")
-                            }
-                        ]
-                    })
-                })
-            }
+            Node::from(Definition::new(
+                "f",
+                Function::new(
+                    vec!["x".into(), "y".into()],
+                    Sum::new(vec![
+                        Symbol::new("x").into(),
+                        Symbol::new("y").into()
+                    ])
+                )
+            ))
         );
     }
 
     #[test]
     fn transform_symbol_definition() {
         let result = parse_statement("x := 2").unwrap();
-        assert_eq!(
-            result,
-            Node::Definition {
-                symbol: String::from("x"),
-                expression: Box::new(Node::Number { value: 2.0 })
-            }
-        );
+        assert_eq!(result, Node::from(Definition::new("x", Number::new(2.0))));
     }
 }

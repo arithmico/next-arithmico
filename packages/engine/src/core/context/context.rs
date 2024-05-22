@@ -3,7 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use crate::{
     core::{
         host_api::{HostApi, HostEndpoint},
-        node::Node,
+        node::{HostApiFunctionEndpoint, Node},
     },
     load_host_api,
 };
@@ -87,9 +87,7 @@ impl Context {
         if let Some(endpoint) = self.host_api.endpoint(name) {
             return match endpoint {
                 HostEndpoint::Function { .. } => {
-                    Some(Node::HostApiFunctionEndpoint {
-                        name: name.to_string(),
-                    })
+                    Some(HostApiFunctionEndpoint::new(name).into())
                 }
                 HostEndpoint::Constant { executor, .. } => Some(executor(self)),
             };

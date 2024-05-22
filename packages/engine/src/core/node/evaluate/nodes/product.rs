@@ -3,7 +3,9 @@ use std::iter::zip;
 use crate::{
     core::{
         context::Context,
-        node::{evaluate::NodeEvaluationError, Node},
+        node::{
+            evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor,
+        },
     },
     utils::vector_utils::{get_tensor_dimensions, get_tensor_rank},
 };
@@ -31,33 +33,33 @@ fn multiply_nodes(
 ) -> Result<Node, NodeEvaluationError> {
     match (left, right) {
         (
-            Node::Number { value: left_value },
-            Node::Number { value: right_value },
+            Node::Number(Number { value: left_value }),
+            Node::Number(Number { value: right_value }),
         ) if cfg!(feature = "operator_product_number_number") => {
-            Ok(Node::Number {
-                value: left_value * right_value,
-            })
+            Ok(Number::new(left_value * right_value).into())
         }
-        (Node::Vector { .. }, Node::Vector { .. }) => {
+        (Node::Tensor { .. }, Node::Tensor { .. }) => {
             multiply_tensors(left, right, context)
         }
-        (Node::Number { value }, Node::Vector { values })
-        | (Node::Vector { values }, Node::Number { value })
-            if cfg!(feature = "operator_product_number_vector") =>
-        {
+        (
+            Node::Number(Number { value }),
+            Node::Tensor(Tensor { elements: values }),
+        )
+        | (
+            Node::Tensor(Tensor { elements: values }),
+            Node::Number(Number { value }),
+        ) if cfg!(feature = "operator_product_number_vector") => {
             let mut new_values = Vec::<Node>::new();
             for vector_value in values {
                 new_values.push(
-                    Node::Product {
-                        values: vec![
-                            Node::Number { value: *value },
-                            vector_value.clone(),
-                        ],
-                    }
+                    Node::from(Product::new(vec![
+                        Number::new(*value).into(),
+                        vector_value.clone(),
+                    ]))
                     .evaluate(context)?,
                 );
             }
-            Ok(Node::Vector { values: new_values })
+            Ok(Tensor::new(new_values).into())
         }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
@@ -70,12 +72,12 @@ fn multiply_tensors(
 ) -> Result<Node, NodeEvaluationError> {
     match (left, right) {
         (
-            Node::Vector {
-                values: left_values,
-            },
-            Node::Vector {
-                values: right_values,
-            },
+            Node::Tensor(Tensor {
+                elements: left_values,
+            }),
+            Node::Tensor(Tensor {
+                elements: right_values,
+            }),
         ) => match (get_tensor_rank(left), get_tensor_rank(right)) {
             (Some(1), Some(1))
                 if cfg!(feature = "operator_product_vector_vector") =>
@@ -86,13 +88,14 @@ fn multiply_tensors(
                             .into(),
                     ));
                 }
-                Node::Sum {
-                    values: zip(left_values, right_values)
-                        .map(|(left, right)| Node::Product {
-                            values: vec![left.clone(), right.clone()],
+                Node::from(Sum::new(
+                    zip(left_values, right_values)
+                        .map(|(left, right)| {
+                            Product::new(vec![left.clone(), right.clone()])
+                                .into()
                         })
                         .collect(),
-                }
+                ))
                 .evaluate(context)
             }
             _ => Err(NodeEvaluationError::UnsupportedOperation),
@@ -109,15 +112,13 @@ mod tests {
     fn evaluate_product_numbers() {
         let context = Context::default();
         assert_eq!(
-            Node::Product {
-                values: vec![
-                    Node::Number { value: 3.0 },
-                    Node::Number { value: 2.0 }
-                ]
-            }
+            Node::from(Product::new(vec![
+                Number::new(3.0).into(),
+                Number::new(2.0).into()
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Number { value: 6.0 }
+            Number::new(6.0).into()
         )
     }
 
@@ -125,27 +126,23 @@ mod tests {
     fn evaluate_product_vectors() {
         let context = Context::default();
         assert_eq!(
-            Node::Product {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 }
-                        ]
-                    },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 3.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 1.0 }
-                        ]
-                    }
-                ]
-            }
+            Node::from(Product::new(vec![
+                Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into(),
+                ])
+                .into(),
+                Tensor::new(vec![
+                    Number::new(3.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(1.0).into(),
+                ])
+                .into(),
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Number { value: 10.0 }
+            Number::new(10.0).into()
         )
     }
 
@@ -153,27 +150,23 @@ mod tests {
     fn evaluate_product_number_vector() {
         let context = Context::default();
         assert_eq!(
-            Node::Product {
-                values: vec![
-                    Node::Number { value: 2.0 },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 }
-                        ]
-                    },
-                ]
-            }
+            Node::from(Product::new(vec![
+                Number::new(2.0).into(),
+                Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into(),
+                ])
+                .into(),
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 4.0 },
-                    Node::Number { value: 6.0 }
-                ]
-            },
+            Tensor::new(vec![
+                Number::new(2.0).into(),
+                Number::new(4.0).into(),
+                Number::new(6.0).into(),
+            ])
+            .into(),
         )
     }
 
@@ -181,27 +174,23 @@ mod tests {
     fn evaluate_product_vector_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Product {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 }
-                        ]
-                    },
-                    Node::Number { value: 2.0 },
-                ]
-            }
+            Node::from(Product::new(vec![
+                Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into(),
+                ])
+                .into(),
+                Number::new(2.0).into(),
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 4.0 },
-                    Node::Number { value: 6.0 }
-                ]
-            },
+            Tensor::new(vec![
+                Number::new(2.0).into(),
+                Number::new(4.0).into(),
+                Number::new(6.0).into(),
+            ])
+            .into(),
         )
     }
 }

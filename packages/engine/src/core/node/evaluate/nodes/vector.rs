@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Node, Tensor},
 };
 
 pub fn evaluate_vector(
@@ -12,40 +12,36 @@ pub fn evaluate_vector(
         let evaluated_value = value.evaluate(context)?;
         evaluated_values.push(evaluated_value);
     }
-    Ok(Node::Vector {
-        values: evaluated_values,
-    })
+    Ok(Tensor::new(evaluated_values).into())
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::{Number, Sum};
+
     use super::*;
 
     #[test]
     fn evaluate_vector() {
         let context = Context::default();
         assert_eq!(
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Sum {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                        ]
-                    }
-                ]
-            }
+            Node::from(Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Sum::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                ])
+                .into()
+            ]))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            },
+            Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         )
     }
 }

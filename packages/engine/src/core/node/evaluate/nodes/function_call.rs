@@ -1,7 +1,9 @@
 use crate::core::{
     context::Context,
     host_api::HostEndpoint,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{
+        evaluate::NodeEvaluationError, Function, HostApiFunctionEndpoint, Node,
+    },
 };
 
 pub fn evaluate_function_call(
@@ -11,10 +13,10 @@ pub fn evaluate_function_call(
 ) -> Result<Node, NodeEvaluationError> {
     let evaluated_target = target.evaluate(context)?;
     match evaluated_target {
-        Node::Function {
+        Node::Function(Function {
             arguments,
             expression,
-        } => {
+        }) => {
             if call_arguments.len() != arguments.len() {
                 return Err(NodeEvaluationError::InvalidNumberOfArguments);
             }
@@ -35,7 +37,7 @@ pub fn evaluate_function_call(
             );
             expression.evaluate(&call_context)
         }
-        Node::HostApiFunctionEndpoint { name } => {
+        Node::HostApiFunctionEndpoint(HostApiFunctionEndpoint { name }) => {
             let endpoint = context.endpoint(&name).unwrap();
             match endpoint {
                 HostEndpoint::Function { executor, .. } => {
@@ -55,7 +57,11 @@ pub fn evaluate_function_call(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{context::Stack, host_api::HostApiModule},
+        core::{
+            context::Stack,
+            host_api::HostApiModule,
+            node::{FunctionCall, Number, Symbol, Tensor},
+        },
         language::Language,
         HostApi, Settings,
     };
@@ -66,18 +72,13 @@ mod tests {
     fn evaluate_function_call() {
         let context = Context::default();
         assert_eq!(
-            Node::FunctionCall {
-                target: Box::new(Node::Function {
-                    arguments: vec![String::from("x")],
-                    expression: Box::new(Node::Symbol {
-                        name: String::from("x")
-                    })
-                }),
-                arguments: vec![Node::Number { value: 42.0 }]
-            }
+            Node::from(FunctionCall::new(
+                Function::new(vec!["x".into()], Symbol::new("x")),
+                vec![Number::new(42.0).into()]
+            ))
             .evaluate(&context)
             .unwrap(),
-            Node::Number { value: 42.0 }
+            Number::new(42.0).into()
         )
     }
 
@@ -98,7 +99,7 @@ mod tests {
                                         argument.evaluate(context)?;
                                     result.push(evaluated_argument);
                                 }
-                                Ok(Node::Vector { values: result })
+                                Ok(Tensor::new(result).into())
                             })
                     })
                     .build()
@@ -109,26 +110,22 @@ mod tests {
             Context::new(Stack::new(), Settings::default(), host_api.into());
 
         assert_eq!(
-            Node::FunctionCall {
-                target: Node::Symbol {
-                    name: "test".into()
-                }
-                .into(),
-                arguments: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
+            Node::from(FunctionCall::new(
+                Symbol::new("test"),
+                vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into(),
                 ]
-            }
+            ))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }
+            Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         )
     }
 }

@@ -15,7 +15,11 @@ pub fn evaluate_symbol(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{context::Stack, host_api::HostApiModule},
+        core::{
+            context::Stack,
+            host_api::HostApiModule,
+            node::{Number, Symbol},
+        },
         language::Language,
         HostApi, Settings,
     };
@@ -26,16 +30,12 @@ mod tests {
     fn evaluate_symbol() {
         let host_api = HostApi::builder().build();
         let mut stack = Stack::new();
-        stack.insert("test", Node::Number { value: 36.0 });
+        stack.insert("test", Number::new(36.0).into());
         let context = Context::new(stack, Settings::default(), host_api.into());
 
         assert_eq!(
-            Node::Symbol {
-                name: String::from("test")
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Number { value: 36.0 }
+            Node::from(Symbol::new("test")).evaluate(&context).unwrap(),
+            Number::new(36.0).into()
         )
     }
 
@@ -48,7 +48,7 @@ mod tests {
                     .endpoint(true, "test", |builder| {
                         builder
                             .description(Language::English, "test")
-                            .constant(|_context| Node::Number { value: 42.0 })
+                            .constant(|_context| Number::new(42.0).into())
                     })
                     .build()
             })
@@ -58,12 +58,8 @@ mod tests {
             Context::new(Stack::new(), Settings::default(), host_api.into());
 
         assert_eq!(
-            Node::Symbol {
-                name: "test".into()
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Number { value: 42.0 }
+            Node::from(Symbol::new("test")).evaluate(&context).unwrap(),
+            Number::new(42.0).into()
         )
     }
 }

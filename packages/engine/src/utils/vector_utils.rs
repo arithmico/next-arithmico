@@ -1,8 +1,8 @@
-use crate::core::node::Node;
+use crate::core::node::{Node, Tensor};
 
 pub fn get_tensor_dimensions(node: &Node) -> Option<Vec<usize>> {
     match node {
-        Node::Vector { values } => {
+        Node::Tensor(Tensor { elements: values }) => {
             let mut common_item_dimensions = values
                 .iter()
                 .map(|item| get_tensor_dimensions(item))
@@ -34,25 +34,26 @@ pub fn get_tensor_rank(node: &Node) -> Option<usize> {
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::Number;
+
     use super::*;
 
     #[test]
     fn dimensions_of_non_vector_node() {
-        assert_eq!(get_tensor_dimensions(&Node::Number { value: 42.0 }), None);
+        assert_eq!(get_tensor_dimensions(&Number::new(1.0).into()), None);
     }
 
     #[test]
     fn dimensions_of_1d_vector_with_inconsistent_shape() {
         assert_eq!(
-            get_tensor_dimensions(&Node::Vector {
-                values: vec![
-                    Node::Vector {
-                        values: vec![Node::Number { value: 1.0 },]
-                    },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }),
+            get_tensor_dimensions(
+                &Tensor::new(vec![
+                    Tensor::new(vec![Number::new(1.0).into()]).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into()
+                ])
+                .into()
+            ),
             Some(vec![3])
         );
     }
@@ -60,24 +61,23 @@ mod tests {
     #[test]
     fn dimensions_of_2x3_matrix() {
         assert_eq!(
-            get_tensor_dimensions(&Node::Vector {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 },
-                        ]
-                    },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 4.0 },
-                            Node::Number { value: 5.0 },
-                            Node::Number { value: 6.0 },
-                        ]
-                    },
-                ]
-            }),
+            get_tensor_dimensions(
+                &Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(3.0).into()
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(3.0).into()
+                    ])
+                    .into()
+                ])
+                .into()
+            ),
             Some(vec![2, 3])
         );
     }
@@ -85,32 +85,34 @@ mod tests {
     #[test]
     fn dimensions_of_1d_vector() {
         assert_eq!(
-            get_tensor_dimensions(&Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }),
+            get_tensor_dimensions(
+                &Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into()
+                ])
+                .into(),
+            ),
             Some(vec![3])
         );
     }
 
     #[test]
     fn rank_of_non_vector() {
-        assert_eq!(get_tensor_rank(&Node::Number { value: 1.0 }), None);
+        assert_eq!(get_tensor_rank(&Number::new(1.0).into()), None);
     }
 
     #[test]
     fn rank_of_1d_vector() {
         assert_eq!(
-            get_tensor_rank(&Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }),
+            get_tensor_rank(
+                &Tensor::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                    Number::new(3.0).into()
+                ])
+                .into(),
+            ),
             Some(1)
         );
     }
@@ -118,24 +120,23 @@ mod tests {
     #[test]
     fn rank_of_2x3_matrix() {
         assert_eq!(
-            get_tensor_rank(&Node::Vector {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 },
-                        ]
-                    },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 4.0 },
-                            Node::Number { value: 5.0 },
-                            Node::Number { value: 6.0 },
-                        ]
-                    },
-                ]
-            }),
+            get_tensor_rank(
+                &Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(3.0).into()
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(3.0).into()
+                    ])
+                    .into()
+                ])
+                .into()
+            ),
             Some(2)
         );
     }
@@ -143,23 +144,22 @@ mod tests {
     #[test]
     fn rank_of_1d_vector_with_inconsistent_shape() {
         assert_eq!(
-            get_tensor_rank(&Node::Vector {
-                values: vec![
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 1.0 },
-                            Node::Number { value: 2.0 },
-                            Node::Number { value: 3.0 },
-                        ]
-                    },
-                    Node::Vector {
-                        values: vec![
-                            Node::Number { value: 4.0 },
-                            Node::Number { value: 5.0 },
-                        ]
-                    },
-                ]
-            }),
+            get_tensor_rank(
+                &Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(3.0).into()
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                    ])
+                    .into()
+                ])
+                .into()
+            ),
             Some(1)
         );
     }

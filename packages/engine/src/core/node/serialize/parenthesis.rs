@@ -42,25 +42,25 @@ impl Node {
                 Node::Product { .. }
                 | Node::Division { .. }
                 | Node::Power { .. }
-                | Node::Vector { .. }
+                | Node::Tensor { .. }
                 | Node::FunctionCall { .. },
             ) => ParenthesesBehavior::Optional,
 
             (
                 Node::Division { .. },
                 Node::Power { .. }
-                | Node::Vector { .. }
+                | Node::Tensor { .. }
                 | Node::FunctionCall { .. },
             ) => ParenthesesBehavior::Optional,
 
             (
                 Node::Power { .. },
-                Node::Vector { .. }
+                Node::Tensor { .. }
                 | Node::FunctionCall { .. }
                 | Node::Function { .. },
             ) => ParenthesesBehavior::Optional,
 
-            (Node::Vector { .. }, _) => ParenthesesBehavior::Optional,
+            (Node::Tensor { .. }, _) => ParenthesesBehavior::Optional,
 
             (Node::FunctionCall { .. }, _) => ParenthesesBehavior::Optional,
 

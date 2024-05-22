@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Division, Node, Number, Tensor},
 };
 
 pub fn evaluate_division(
@@ -12,31 +12,32 @@ pub fn evaluate_division(
     let evaluated_divisor = divisor.evaluate(context)?;
     match (evaluated_dividend, evaluated_divisor) {
         (
-            Node::Number { value: left_value },
-            Node::Number { value: right_value },
+            Node::Number(Number { value: left_value }),
+            Node::Number(Number { value: right_value }),
         ) if cfg!(feature = "operator_division_number_number") => {
             if right_value == 0.0 {
                 return Err(NodeEvaluationError::DivisionByZero);
             }
-            Ok(Node::Number {
-                value: left_value / right_value,
-            })
+            Ok(Number::new(left_value / right_value).into())
         }
-        (Node::Vector { values }, Node::Number { value })
-            if cfg!(feature = "operator_division_vector_number") =>
-        {
+        (
+            Node::Tensor(Tensor { elements: values }),
+            Node::Number(Number { value }),
+        ) if cfg!(feature = "operator_division_vector_number") => {
             if value == 0.0 {
                 return Err(NodeEvaluationError::DivisionByZero);
             }
-            Node::Vector {
-                values: values
+            Node::from(Tensor::new(
+                values
                     .iter()
-                    .map(|item| Node::Division {
-                        dividend: item.clone().into(),
-                        divisor: Node::Number { value }.into(),
+                    .map(|item| {
+                        Node::from(Division::new(
+                            item.clone(),
+                            Number::new(value),
+                        ))
                     })
                     .collect(),
-            }
+            ))
             .evaluate(context)
         }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
@@ -51,13 +52,10 @@ mod tests {
     fn evaluate_division_number_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Number { value: 6.0 }),
-                divisor: Box::new(Node::Number { value: 2.0 })
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Number { value: 3.0 }
+            Node::from(Division::new(Number::new(6.0), Number::new(2.0)))
+                .evaluate(&context)
+                .unwrap(),
+            Number::new(3.0).into()
         )
     }
 
@@ -65,13 +63,10 @@ mod tests {
     fn evaluate_division_number_zero() {
         let context = Context::default();
         assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Number { value: 6.0 }),
-                divisor: Box::new(Node::Number { value: 0.0 })
-            }
-            .evaluate(&context)
-            .err()
-            .unwrap(),
+            Node::from(Division::new(Number::new(6.0), Number::new(0.0)))
+                .evaluate(&context)
+                .err()
+                .unwrap(),
             NodeEvaluationError::DivisionByZero
         )
     }
@@ -80,25 +75,22 @@ mod tests {
     fn evaluate_division_vector_number() {
         let context = Context::default();
         assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Vector {
-                    values: vec![
-                        Node::Number { value: 2.0 },
-                        Node::Number { value: 4.0 },
-                        Node::Number { value: 6.0 },
-                    ]
-                }),
-                divisor: Box::new(Node::Number { value: 2.0 })
-            }
+            Node::from(Division::new(
+                Tensor::new(vec![
+                    Number::new(2.0).into(),
+                    Number::new(4.0).into(),
+                    Number::new(6.0).into(),
+                ]),
+                Number::new(2.0)
+            ))
             .evaluate(&context)
             .unwrap(),
-            Node::Vector {
-                values: vec![
-                    Node::Number { value: 1.0 },
-                    Node::Number { value: 2.0 },
-                    Node::Number { value: 3.0 },
-                ]
-            }
+            Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
         )
     }
 
@@ -106,16 +98,14 @@ mod tests {
     fn evaluate_division_vector_zero() {
         let context = Context::default();
         assert_eq!(
-            Node::Division {
-                dividend: Box::new(Node::Vector {
-                    values: vec![
-                        Node::Number { value: 2.0 },
-                        Node::Number { value: 4.0 },
-                        Node::Number { value: 6.0 },
-                    ]
-                }),
-                divisor: Box::new(Node::Number { value: 0.0 })
-            }
+            Node::from(Division::new(
+                Tensor::new(vec![
+                    Number::new(2.0).into(),
+                    Number::new(4.0).into(),
+                    Number::new(6.0).into(),
+                ]),
+                Number::new(0.0)
+            ))
             .evaluate(&context)
             .err()
             .unwrap(),

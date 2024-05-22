@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node},
+    node::{evaluate::NodeEvaluationError, Definition, Node},
 };
 
 pub fn evaluate_definition(
@@ -9,30 +9,23 @@ pub fn evaluate_definition(
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
     let evaluated_expression = expression.evaluate(context)?;
-    Ok(Node::Definition {
-        symbol: symbol.clone(),
-        expression: Box::new(evaluated_expression),
-    })
+    Ok(Definition::new(symbol.clone(), evaluated_expression).into())
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::core::node::Number;
+
     use super::*;
 
     #[test]
     fn evaluate_definition() {
         let context = Context::default();
         assert_eq!(
-            Node::Definition {
-                symbol: String::from("test"),
-                expression: Box::new(Node::Number { value: 42.0 })
-            }
-            .evaluate(&context)
-            .unwrap(),
-            Node::Definition {
-                symbol: String::from("test"),
-                expression: Box::new(Node::Number { value: 42.0 })
-            }
+            Node::from(Definition::new("test", Number::new(42.0)))
+                .evaluate(&context)
+                .unwrap(),
+            Definition::new("test", Number::new(42.0)).into()
         )
     }
 }

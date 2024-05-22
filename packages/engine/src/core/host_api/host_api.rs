@@ -5,7 +5,7 @@ use log::info;
 use crate::{
     core::{
         context::{Context, Settings, Stack},
-        node::Node,
+        node::{FunctionCall, Node, Symbol},
     },
     language::Language,
 };
@@ -40,15 +40,15 @@ impl HostApi {
                     description,
                     ..
                 } => Documentation {
-                    synopsis: Node::FunctionCall {
-                        target: Node::Symbol { name: name.clone() }.into(),
-                        arguments: arguments
+                    synopsis: Node::from(FunctionCall::new(
+                        Symbol::new(name.clone()),
+                        arguments
                             .iter()
-                            .map(|argument| Node::Symbol {
-                                name: argument.clone(),
+                            .map(|argument| {
+                                Symbol::new(argument.clone()).into()
                             })
                             .collect(),
-                    }
+                    ))
                     .serialize(&Context::new(
                         Stack::new(),
                         Settings::default(),
