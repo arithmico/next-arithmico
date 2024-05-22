@@ -20,7 +20,9 @@ pub fn evaluate_division(
             Ok(Number::new(left_value / right_value).into())
         }
         (
-            Node::Tensor(Tensor { elements: values }),
+            Node::Tensor(Tensor {
+                elements: values, ..
+            }),
             Node::Number(Number { value }),
         ) if cfg!(feature = "operator_division_vector_number") => {
             if value == 0.0 {

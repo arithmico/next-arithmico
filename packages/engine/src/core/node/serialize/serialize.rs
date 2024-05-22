@@ -1,3 +1,5 @@
+use std::iter::zip;
+
 use super::parenthesis::ParenthesesBehavior;
 use crate::core::{
     context::Context,
@@ -105,15 +107,55 @@ impl Node {
                 base.serialize_transformed_node_for_parent(self, context),
                 exponent.serialize_transformed_node_for_parent(self, context)
             ),
-            Node::Tensor(Tensor { elements: values }) => format!(
-                "[{}]",
-                values
+            Node::Tensor(tensor) => {
+                let serialized_elements: Vec<_> = tensor
+                    .elements
                     .iter()
-                    .map(|value| value
-                        .serialize_transformed_node_for_parent(self, context))
-                    .collect::<Vec<_>>()
-                    .join(", ")
-            ),
+                    .map(|element| {
+                        element.serialize_transformed_node_for_parent(
+                            self, context,
+                        )
+                    })
+                    .collect();
+                let rank = tensor.get_rank();
+                let mut inner_string = String::new();
+                inner_string.push_str(&String::from("[").repeat(rank));
+                let mut last_inner_index = 0;
+                for (current_inner_index, serialized_element) in
+                    serialized_elements.iter().enumerate()
+                {
+                    let last_outer_index = tensor
+                        .convert_to_outer_index(last_inner_index)
+                        .unwrap();
+                    let current_outer_index = tensor
+                        .convert_to_outer_index(current_inner_index)
+                        .unwrap();
+                    let mut index_delta: Vec<_> =
+                        zip(&last_outer_index, &current_outer_index)
+                            .map(|(&last_index, &current_index)| {
+                                (last_index as isize - current_index as isize)
+                                    .abs()
+                            })
+                            .collect();
+                    index_delta.pop();
+                    let mut separator = String::new();
+                    let sep_count = index_delta.iter().fold(0, |a, b| a + b);
+                    for _ in 0..sep_count {
+                        separator.push_str("]");
+                    }
+                    if current_inner_index != 0 {
+                        separator.push_str(", ");
+                    }
+                    for _ in 0..sep_count {
+                        separator.push_str("[");
+                    }
+                    inner_string.push_str(&separator);
+                    inner_string.push_str(&serialized_element);
+                    last_inner_index = current_inner_index;
+                }
+                inner_string.push_str(&String::from("]").repeat(rank));
+                inner_string
+            }
             Node::FunctionCall(FunctionCall { target, arguments }) => format!(
                 "{}({})",
                 target.serialize_transformed_node_for_parent(self, context),
@@ -214,12 +256,17 @@ impl Node {
                 exponent.pre_serialize_transform(context),
             )
             .into(),
-            Node::Tensor(Tensor { elements: values }) => Tensor::new(
-                values
-                    .iter()
-                    .map(|value| value.pre_serialize_transform(context))
-                    .collect(),
-            )
+            Node::Tensor(tensor) => {
+                Tensor::new_with_shape(
+                    tensor
+                        .elements
+                        .iter()
+                        .map(|value| value.pre_serialize_transform(context))
+                        .collect(),
+                    tensor.shape.clone(),
+                )
+                .unwrap()
+            }
             .into(),
             Node::FunctionCall(FunctionCall { target, arguments }) => {
                 FunctionCall::new(
@@ -368,6 +415,11 @@ mod tests {
     #[test]
     fn serialize_nested_vector() {
         compare("[[1, 2], [3,4]]", "[[1, 2], [3, 4]]");
+        compare("[[1, 2], [3, 4], [5, 6]]", "[[1, 2], [3, 4], [5, 6]]");
+        compare(
+            "[[[1], [2]], [[3], [4]], [[5], [6]]]",
+            "[[[1], [2]], [[3], [4]], [[5], [6]]]",
+        );
     }
 
     #[test]

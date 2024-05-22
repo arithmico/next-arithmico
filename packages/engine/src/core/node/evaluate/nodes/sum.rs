@@ -1,11 +1,8 @@
 use std::iter::zip;
 
-use crate::{
-    core::{
-        context::Context,
-        node::{evaluate::NodeEvaluationError, Node, Number, Sum, Tensor},
-    },
-    utils::vector_utils::get_tensor_dimensions,
+use crate::core::{
+    context::Context,
+    node::{evaluate::NodeEvaluationError, Node, Number, Sum, Tensor},
 };
 
 pub fn evaluate_sum(
@@ -39,7 +36,7 @@ fn add_nodes(
         (Node::Tensor(left), Node::Tensor(right))
             if cfg!(feature = "operator_sum_vector_vector") =>
         {
-            if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
+            if left.shape != right.shape {
                 return Err(NodeEvaluationError::ArithmeticError(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
                 ));

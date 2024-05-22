@@ -1,13 +1,8 @@
 use std::iter::zip;
 
-use crate::{
-    core::{
-        context::Context,
-        node::{
-            evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor,
-        },
-    },
-    utils::vector_utils::{get_tensor_dimensions, get_tensor_rank},
+use crate::core::{
+    context::Context,
+    node::{evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor},
 };
 
 pub fn evaluate_product(
@@ -42,10 +37,14 @@ fn multiply_nodes(
         }
         (
             Node::Number(Number { value }),
-            Node::Tensor(Tensor { elements: values }),
+            Node::Tensor(Tensor {
+                elements: values, ..
+            }),
         )
         | (
-            Node::Tensor(Tensor { elements: values }),
+            Node::Tensor(Tensor {
+                elements: values, ..
+            }),
             Node::Number(Number { value }),
         ) if cfg!(feature = "operator_product_number_vector") => {
             let mut new_values = Vec::<Node>::new();
@@ -69,11 +68,11 @@ fn multiply_tensors(
     right: &Tensor,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
-    let left_rank = get_tensor_rank(left);
-    let right_rank = get_tensor_rank(right);
+    let left_rank = left.get_rank();
+    let right_rank = right.get_rank();
     match (left_rank, right_rank) {
         (1, 1) if cfg!(feature = "operator_product_vector_vector") => {
-            if get_tensor_dimensions(left) != get_tensor_dimensions(right) {
+            if left.shape != right.shape {
                 return Err(NodeEvaluationError::ArithmeticError(
                     "Can not multiply vectors with different dimensions".into(),
                 ));

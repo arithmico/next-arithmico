@@ -14,9 +14,9 @@ pub fn evaluate_negate(
         {
             Ok(Number::new(-value).into())
         }
-        Node::Tensor(Tensor { elements: values })
-            if cfg!(feature = "operator_negate_vector") =>
-        {
+        Node::Tensor(Tensor {
+            elements: values, ..
+        }) if cfg!(feature = "operator_negate_vector") => {
             let mut negated_values = Vec::<Node>::new();
             for value in values {
                 negated_values

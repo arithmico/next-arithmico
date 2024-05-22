@@ -3,7 +3,7 @@ use crate::core::{
     node::{evaluate::NodeEvaluationError, Node, Tensor},
 };
 
-pub fn evaluate_vector(
+pub fn evaluate_tensor(
     node: &Tensor,
     context: &Context,
 ) -> Result<Node, NodeEvaluationError> {
