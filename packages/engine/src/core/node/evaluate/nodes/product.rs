@@ -1,8 +1,13 @@
-use std::iter::zip;
+use std::{iter::zip, rc::Rc};
 
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor},
+use crate::{
+    core::{
+        context::Context,
+        node::{
+            evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor,
+        },
+    },
+    utils::tensor::index_utils::convert_to_outer_index,
 };
 
 pub fn evaluate_product(
@@ -85,6 +90,60 @@ fn multiply_tensors(
                     .collect(),
             ))
             .evaluate(context)
+        }
+        (2, 2) if cfg!(feature = "operator_product_matrix_matrix") => {
+            match (left.shape.get(1), right.shape.get(0)) {
+                (Some(x), Some(y)) if x == y => {
+                    let left = Rc::new(left.clone());
+                    let right = Rc::new(right.clone());
+                    let result_shape = vec![
+                        *left.shape.get(0).unwrap(),
+                        *right.shape.get(1).unwrap(),
+                    ];
+                    let elements: Vec<_> = {
+                        let left = left.clone();
+                        let right = right.clone();
+                        let dim0 = *left.shape.get(0).unwrap();
+                        let dim1 = *right.shape.get(1).unwrap();
+                        let result_shape = result_shape.clone();
+                        (0usize..(dim0 * dim1))
+                            .map(move |inner_index| {
+                                let outer_index = convert_to_outer_index(
+                                    &result_shape,
+                                    inner_index,
+                                )
+                                .unwrap();
+                                let i = *outer_index.get(0).unwrap();
+                                let k = *outer_index.get(1).unwrap();
+                                let left = left.clone();
+                                let right = right.clone();
+                                Node::from(Sum::new(
+                                    (0usize..*x)
+                                        .map(move |j| {
+                                            Node::from(Product::new(vec![
+                                                left.get_element(&vec![i, j])
+                                                    .unwrap()
+                                                    .clone(),
+                                                right
+                                                    .get_element(&vec![j, k])
+                                                    .unwrap()
+                                                    .clone(),
+                                            ]))
+                                        })
+                                        .collect(),
+                                ))
+                            })
+                            .collect()
+                    };
+                    Node::from(
+                        Tensor::new_with_shape(elements, result_shape).unwrap(),
+                    )
+                    .evaluate(context)
+                }
+                _ => Err(NodeEvaluationError::ArithmeticError(
+                    "Incompatible matrix dimensions".into(),
+                )),
+            }
         }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
@@ -175,6 +234,63 @@ mod tests {
                 Number::new(2.0).into(),
                 Number::new(4.0).into(),
                 Number::new(6.0).into(),
+            ])
+            .into(),
+        )
+    }
+
+    #[test]
+    fn evaluate_product_matrix_matrix() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Product::new(vec![
+                Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(3.0).into(),
+                        Number::new(2.0).into(),
+                        Number::new(1.0).into(),
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(0.0).into(),
+                        Number::new(2.0).into(),
+                    ])
+                    .into(),
+                ])
+                .into(),
+                Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(1.0).into(),
+                        Number::new(2.0).into(),
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(0.0).into(),
+                        Number::new(1.0).into(),
+                    ])
+                    .into(),
+                    Tensor::new(vec![
+                        Number::new(4.0).into(),
+                        Number::new(0.0).into(),
+                    ])
+                    .into(),
+                ])
+                .into(),
+            ]))
+            .evaluate(&context)
+            .unwrap(),
+            Tensor::new(vec![
+                Tensor::new(vec![
+                    Number::new(7.0).into(),
+                    Number::new(8.0).into(),
+                ])
+                .into(),
+                Tensor::new(vec![
+                    Number::new(9.0).into(),
+                    Number::new(2.0).into(),
+                ])
+                .into(),
             ])
             .into(),
         )

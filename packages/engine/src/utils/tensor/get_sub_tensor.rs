@@ -43,53 +43,11 @@ impl Tensor {
         }
         Tensor::new_with_shape(new_elements, new_shape)
     }
-
-    pub fn convert_to_outer_index(
-        &self,
-        inner_index: usize,
-    ) -> Option<Vec<usize>> {
-        if inner_index >= self.elements.len() {
-            return None;
-        }
-        let mut rest = inner_index;
-        let mut outer_index = Vec::new();
-        for offset in self.dimension_offsets() {
-            outer_index.push(rest.div_euclid(offset));
-            rest = rest % offset;
-        }
-        Some(outer_index)
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::core::node::{Number, Tensor};
-
-    #[test]
-    fn convert_to_outer_index() {
-        let tensor = Tensor::new(vec![
-            Tensor::new(vec![
-                Number::new(0.0).into(),
-                Number::new(1.0).into(),
-                Number::new(2.0).into(),
-                Number::new(3.0).into(),
-            ])
-            .into(),
-            Tensor::new(vec![
-                Number::new(4.0).into(),
-                Number::new(5.0).into(),
-                Number::new(6.0).into(),
-                Number::new(7.0).into(),
-            ])
-            .into(),
-        ]);
-
-        assert_eq!(tensor.convert_to_outer_index(0).unwrap(), vec![0, 0]);
-        assert_eq!(tensor.convert_to_outer_index(3).unwrap(), vec![0, 3]);
-        assert_eq!(tensor.convert_to_outer_index(4).unwrap(), vec![1, 0]);
-        assert_eq!(tensor.convert_to_outer_index(7).unwrap(), vec![1, 3]);
-        assert_eq!(tensor.convert_to_outer_index(8), None);
-    }
 
     #[test]
     fn get_sub_tensor() {

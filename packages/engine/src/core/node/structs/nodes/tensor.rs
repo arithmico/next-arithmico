@@ -14,9 +14,6 @@ impl Tensor {
                 Node::Tensor(tensor) => Some(tensor.shape.clone()),
                 _ => None,
             })
-            .inspect(|x| {
-                dbg!("inspect: {}", x);
-            })
             .reduce(|acc, element| match (acc, element) {
                 (Some(acc_shape), Some(element_shape)) => {
                     if acc_shape == element_shape {
@@ -28,8 +25,6 @@ impl Tensor {
                 _ => None,
             })
             .unwrap_or_else(|| None);
-
-        dbg!("Inner Shape: {}", &common_inner_shape);
 
         match common_inner_shape {
             Some(inner_shape) => {
