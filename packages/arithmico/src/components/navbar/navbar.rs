@@ -1,7 +1,7 @@
-use yew::{classes, function_component, html, Classes, Html, Properties};
-use yew_router::{components::Link, hooks::use_route};
+use yew::{classes, function_component, html, Html, Properties};
+use yew_router::hooks::use_route;
 
-use crate::router::Route;
+use crate::{components::Link, router::Route};
 
 #[derive(Properties, PartialEq)]
 pub struct NavbarProps {
@@ -44,7 +44,7 @@ pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
 
     html! {
         <li class={classes!("flex", "h-full", "ml-2")}>
-            <LinkWrapper
+            <Link
                 class={classes!(
                     "px-8",
                     "hover:bg-neutral-200",
@@ -56,24 +56,7 @@ pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
                 to={props.to.clone()}
             >
                 {props.children.clone()}
-            </LinkWrapper>
+            </Link>
         </li>
-    }
-}
-
-#[derive(PartialEq, Properties)]
-struct LinkWrapperProps {
-    pub to: Route,
-    pub class: Classes,
-    pub children: Html,
-}
-
-#[function_component]
-fn LinkWrapper(props: &LinkWrapperProps) -> Html {
-    html! {
-        <Link<Route>
-            classes={props.class.clone()}
-            to={props.to.clone()}
-        >{props.children.clone()}</Link<Route>>
     }
 }

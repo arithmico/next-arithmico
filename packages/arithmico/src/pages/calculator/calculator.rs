@@ -1,4 +1,4 @@
-use super::components::CalculatorForm;
+use super::components::{CalculatorForm, Toolbar};
 use yew::prelude::*;
 
 use crate::components::PageWithNavbar;
@@ -10,7 +10,12 @@ pub struct CalculatorPageProps {}
 pub fn CalculatorPage(_props: &CalculatorPageProps) -> Html {
     html! {
         <PageWithNavbar>
-            <CalculatorForm />
+            <div class={classes!("grid", "grid-rows-[1fr_auto]", "w-full", "h-full", "p-4")}>
+                <div class={classes!("py-8", "flex", "flex-col", "w-full", "justify-center")}>
+                    <CalculatorForm />
+                </div>
+                <Toolbar />
+            </div>
         </PageWithNavbar>
     }
 }
