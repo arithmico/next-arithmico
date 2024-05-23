@@ -12,7 +12,9 @@ pub fn evaluate_tensor(
         let evaluated_value = value.evaluate(context)?;
         evaluated_values.push(evaluated_value);
     }
-    Ok(Tensor::new(evaluated_values).into())
+    Ok(Tensor::new_with_shape(evaluated_values, node.shape.clone())
+        .unwrap()
+        .into())
 }
 
 #[cfg(test)]
