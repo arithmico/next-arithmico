@@ -93,6 +93,10 @@ impl Session {
     pub fn last_statement(&self) -> Option<&Statement> {
         self.statements.last()
     }
+
+    pub fn get_statements(&self) -> &Vec<Statement> {
+        &self.statements
+    }
 }
 
 #[cfg(test)]
