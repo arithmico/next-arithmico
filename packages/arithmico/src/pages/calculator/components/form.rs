@@ -2,28 +2,39 @@ use wasm_bindgen::JsCast;
 use web_sys::HtmlInputElement;
 use yew::{
     classes, function_component, html, use_context, Callback, Event, Html,
-    Properties,
+    InputEvent, Properties,
 };
 
 use crate::app_context::{AppAction, AppContext};
 
 #[derive(PartialEq, Properties)]
-pub struct CalculatorFormProps {}
+pub struct FormProps {}
 
 #[function_component]
-pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
+pub fn Form(_props: &FormProps) -> Html {
     let context = use_context::<AppContext>().unwrap();
     let last_statement = context
         .get_last_statement()
         .and_then(|statement| Some(statement.clone()));
 
-    let onchange = Callback::from(move |event: Event| {
-        let target = event.target();
-        let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
-        if let Some(input) = input {
-            context.dispatch(AppAction::Evaluate(input.value()));
-        }
-    });
+    let onchange = {
+        let context = context.clone();
+        Callback::from(move |_event: Event| {
+            context.dispatch(AppAction::Evaluate);
+        })
+    };
+
+    let oninput = {
+        let context = context.clone();
+        Callback::from(move |event: InputEvent| {
+            let target = event
+                .target()
+                .unwrap()
+                .dyn_into::<HtmlInputElement>()
+                .unwrap();
+            context.dispatch(AppAction::SetInput(target.value()))
+        })
+    };
 
     html! {
         <>
@@ -32,6 +43,8 @@ pub fn CalculatorForm(_props: &CalculatorFormProps) -> Html {
                 <input
                     type={"text"}
                     onchange={onchange}
+                    oninput={oninput}
+                    value={context.input.clone()}
                     placeholder={"Eingabe"}
                     class={classes!(
                         "outline-1",

@@ -1,5 +1,5 @@
-mod calculator_form;
+mod form;
 mod toolbar;
 
-pub use calculator_form::*;
+pub use form::*;
 pub use toolbar::*;
