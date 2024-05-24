@@ -9,6 +9,7 @@ pub struct AppState {
     pub host_api: Rc<HostApi>,
     pub session: Session,
     pub settings: Settings,
+    pub input: String,
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -59,6 +60,7 @@ impl AppState {
             host_api: host_api.clone(),
             session: Session::new(host_api),
             settings: Settings::load().unwrap_or_else(|| Settings::default()),
+            input: String::new(),
         }
     }
 
