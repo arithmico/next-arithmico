@@ -42,6 +42,7 @@ pub fn Form(_props: &FormProps) -> Html {
                 <span class={classes!("sr-only")}>{"Eingabe"}</span>
                 <input
                     type={"text"}
+                    data-testid={"calculator-input"}
                     onchange={onchange}
                     oninput={oninput}
                     value={context.input.clone()}
@@ -63,6 +64,7 @@ pub fn Form(_props: &FormProps) -> Html {
                 <span class={classes!("sr-only")}>{"Ausgabe"}</span>
                 <input
                     type={"text"}
+                    data-testid={"calculator-output"}
                     readonly={true}
                     placeholder={"Ausgabe"}
                     value={match last_statement {

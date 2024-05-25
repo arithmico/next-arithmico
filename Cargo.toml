@@ -1,5 +1,6 @@
 [workspace]
+resolver = "2"
 members = [
-    "packages/applications/*",
+    "packages/applications/arithmico",
     "packages/libraries/*"
 ]
