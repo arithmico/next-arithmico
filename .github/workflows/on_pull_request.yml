@@ -14,6 +14,35 @@ jobs:
         shell: bash
       - run: cargo test --all-features
         shell: bash
+  
+  test-e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - uses: cargo-bins/cargo-binstall@main
+    - run: |
+        cargo binstall -y trunk
+        rustup target add wasm32-unknown-unknown
+      shell: bash
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - name: setup e2e tests
+      working-directory: packages/applications/arithmico-e2e
+      run: | 
+        npm ci
+        npx playwright install --with-deps
+    
+    - name: prebuild app
+      working-directory: packages/applications/arithmico
+      run: trunk build
+    
+    - name: setup e2e tests
+      working-directory: packages/applications/arithmico-e2e
+      run: | 
+        npx playwright test
 
   formatting:
     name: Check Formatting
