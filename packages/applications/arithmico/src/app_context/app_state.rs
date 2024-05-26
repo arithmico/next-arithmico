@@ -1,6 +1,9 @@
-use std::rc::Rc;
+use std::{collections::HashMap, rc::Rc};
 
-use engine::{load_host_api, HostApi, Language, Session, Statement};
+use engine::{
+    load_host_api, HostApi, Language, Session, Settings as EngineSettings,
+    Statement,
+};
 use serde::{Deserialize, Serialize};
 use web_sys::Storage;
 
@@ -10,6 +13,7 @@ pub struct AppState {
     pub session: Session,
     pub settings: Settings,
     pub input: String,
+    pub definitions: HashMap<String, String>,
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
@@ -61,10 +65,15 @@ impl AppState {
             session: Session::new(host_api),
             settings: Settings::load().unwrap_or_else(|| Settings::default()),
             input: String::new(),
+            definitions: HashMap::new(),
         }
     }
 
     pub fn get_last_statement(&self) -> Option<&Statement> {
         self.session.last_statement()
+    }
+
+    pub fn get_engine_settings(&self) -> EngineSettings {
+        EngineSettings::new(self.settings.decimal_places)
     }
 }

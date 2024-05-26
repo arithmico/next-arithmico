@@ -15,7 +15,7 @@ pub fn BackIcon(props: &BackIconProps) -> Html {
             viewBox="0 -960 960 960"
             width="24px"
             fill="#e8eaed"
-            aria-hidden="true",
+            aria-hidden="true"
             class={props.class.clone()}
         >
             <path d="m276.85-460 231.69 231.69L480-200 200-480l280-280 28.54 28.31L276.85-500H760v40H276.85Z"/>

@@ -48,6 +48,16 @@ impl Stack {
         }
         None
     }
+
+    pub fn entries(&self) -> HashMap<String, Node> {
+        let mut result = HashMap::new();
+        for frame in self.frames.iter() {
+            for (key, value) in frame {
+                result.insert(key.clone(), value.clone());
+            }
+        }
+        result
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]

@@ -6,6 +6,7 @@ use crate::router::Route;
 #[derive(PartialEq, Properties)]
 pub struct LinkProps {
     pub to: Route,
+    #[prop_or_default]
     pub class: Classes,
     pub children: Html,
 }

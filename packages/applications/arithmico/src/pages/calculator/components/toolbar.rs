@@ -10,15 +10,19 @@ pub fn Toolbar(props: &ToolbarProps) -> Html {
     let ToolbarProps {} = props;
     html! {
         <div class={classes!("w-full", "grid-cols-3", "grid", "gap-2", "mt-8")}>
-            <button class={classes!(
-                "bg-neutral-200",
-                "p-3",
-                "rounded-sm",
-                "cursor-pointer",
-                "hover:bg-neutral-300",
-            )}>
+            <Link class={classes!(
+                    "bg-neutral-200",
+                    "border-neutral-200",
+                    "p-3",
+                    "rounded-sm",
+                    "cursor-pointer",
+                    "hover:bg-neutral-300",
+                    "text-center",
+                )}
+                to={Route::Definitions}
+            >
                 {"Definitionen"}
-            </button>
+            </Link>
             <Link
                 class={classes!(
                     "bg-neutral-200",

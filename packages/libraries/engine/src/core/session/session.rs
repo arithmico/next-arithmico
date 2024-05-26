@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{collections::HashMap, rc::Rc};
 
 use crate::core::{
     context::{Context, Settings, Stack},
@@ -32,17 +32,21 @@ impl Session {
         }
     }
 
+    fn get_context(&self, settings: &Settings) -> Context {
+        Context::new(
+            self.stack.clone(),
+            settings.clone(),
+            self.host_api.clone(),
+        )
+    }
+
     fn evaluate_input(
         &self,
         input: &str,
         settings: &Settings,
     ) -> Result<(String, Stack), EvaluationError> {
         let node = parse_statement(input)?;
-        let context = Context::new(
-            self.stack.clone(),
-            settings.clone(),
-            self.host_api.clone(),
-        );
+        let context = self.get_context(settings);
         let result = node.evaluate(&context)?;
         let serialized_result = result.serialize(&context);
         if let Node::Definition(Definition { symbol, expression }) = result {
@@ -96,6 +100,29 @@ impl Session {
 
     pub fn get_statements(&self) -> &Vec<Statement> {
         &self.statements
+    }
+
+    pub fn get_definitions(
+        &self,
+        settings: &Settings,
+    ) -> HashMap<String, String> {
+        let context = self.get_context(settings);
+        let mut result = HashMap::new();
+        for (key, value) in self.stack.entries() {
+            match value {
+                Node::Function(function) => {
+                    let mut key = key.clone();
+                    key.push_str("(");
+                    key.push_str(&function.arguments.join(", "));
+                    key.push_str(")");
+                    result.insert(key, function.expression.serialize(&context));
+                }
+                _ => {
+                    result.insert(key, value.serialize(&context));
+                }
+            }
+        }
+        result
     }
 }
 

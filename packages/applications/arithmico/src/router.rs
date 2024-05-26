@@ -19,6 +19,9 @@ pub enum Route {
     #[at("/history")]
     History,
 
+    #[at("/definitions")]
+    Definitions,
+
     #[not_found]
     #[at("/not-found")]
     NotFound,
@@ -31,6 +34,7 @@ pub fn switch(route: Route) -> Html {
         Route::Help => html!(<HelpPage />),
         Route::About => html!(<AboutPage />),
         Route::History => html!(<HistoryPage />),
+        Route::Definitions => html!(<DefinitionsPage />),
         Route::NotFound => html!(<p>{"Not Found"}</p>),
     }
 }
