@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use engine::{Language, Settings as EngineSettings};
+use engine::Language;
 use yew::Reducible;
 
 use super::{app_state::Settings, AppState};
@@ -26,11 +26,13 @@ impl Reducible for AppState {
                 if self.input.len() == 0 {
                     return self;
                 }
+                let settings = self.get_engine_settings();
+                let new_session =
+                    self.session.push(self.input.as_str(), &settings);
+                let new_definitions = new_session.get_definitions(&settings);
                 Self {
-                    session: self.session.push(
-                        self.input.as_str(),
-                        &EngineSettings::new(self.settings.decimal_places),
-                    ),
+                    session: new_session,
+                    definitions: new_definitions,
                     ..(*self).clone()
                 }
                 .into()
