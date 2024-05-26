@@ -1,24 +1,40 @@
-use yew::{classes, function_component, html, Html, Properties};
+use yew::{classes, function_component, html, Children, Html, Properties};
 use yew_router::hooks::use_route;
 
 use crate::{components::Link, router::Route};
 
 #[derive(Properties, PartialEq)]
 pub struct NavbarProps {
-    pub children: Html,
+    pub children: Children,
+    #[prop_or_default]
+    pub actions: Children,
 }
 
 #[function_component]
 pub fn Navbar(props: &NavbarProps) -> Html {
     html!(
-        <nav class={classes!("w-full", "flex", "justify-center", "items-center")}>
-            <div class={classes!("w-3/5", "flex", "items-center", "h-full")}>
-                <h1 class={classes!("pr-4", "py-4", "text-3xl")}>{"Arithmico"}</h1>
-                <ul class={classes!("flex", "ml-auto", "h-full")}>
+        <div class={classes!(
+            "w-full",
+            "flex",
+            "flex-col",
+            "bg-white",
+            "border-r",
+            "border-neutral-300",
+            "px-2"
+        )}>
+            <h1 class={classes!("py-4", "pr-10", "text-2xl", "font-light")}>{"Arithmico"}</h1>
+            <h2 class={classes!(
+                "font-bold",
+                "my-2",
+                "text-sm"
+            )}>{"Navigation"}</h2>
+            <nav class={classes!("flex", "w-full")}>
+                <ul class={classes!("flex", "flex-col", "w-full", "gap-1")}>
                     {props.children.clone()}
                 </ul>
-            </div>
-        </nav>
+            </nav>
+            {props.actions.clone()}
+        </div>
     )
 }
 
@@ -43,14 +59,15 @@ pub fn NavbarLink(props: &NavbarLinkProps) -> Html {
     };
 
     html! {
-        <li class={classes!("flex", "h-full", "ml-2")}>
+        <li class={classes!("flex", "flex-col")}>
             <Link
                 class={classes!(
+                    "py-2",
                     "px-8",
                     "hover:bg-neutral-200",
-                    "flex", "items-center",
-                    "h-full",
-                    "rounded-b-md",
+                    "flex",
+                    "items-center",
+                    "rounded-md",
                     active_classes
                 )}
                 to={props.to.clone()}

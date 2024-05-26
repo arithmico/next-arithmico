@@ -14,14 +14,22 @@ pub struct SettingsPageProps {}
 pub fn SettingsPage(_props: &SettingsPageProps) -> Html {
     html! {
         <PageWithNavbar>
+            <PageTitle>{"Einstellungen"}</PageTitle>
             <section>
-                <h1 class={classes!("text-3xl", "font-medium", "mt-8")}>
+                <h2 class={classes!("text-xl", "font-medium", "mt-8")}>
                     {"Bedienoberfläche"}
-                </h1>
+                </h2>
                 <ul class={classes!("pl-8")}>
                     <li class={classes!("pt-2")}>
                         <InterfaceLanguageSelector />
                     </li>
+                </ul>
+            </section>
+            <section>
+                <h2 class={classes!("text-xl", "font-medium", "mt-8")}>
+                    {"Mathematik"}
+                </h2>
+                <ul class={classes!("pl-8")}>
                     <li class={classes!("pt-2")}>
                         <DecimalPlacesSelector />
                     </li>

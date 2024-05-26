@@ -9,15 +9,14 @@ pub struct ToolbarProps {}
 pub fn Toolbar(props: &ToolbarProps) -> Html {
     let ToolbarProps {} = props;
     html! {
-        <div class={classes!("w-full", "grid-cols-3", "grid", "gap-2", "mt-8")}>
+        <div class={classes!("w-full", "flex", "flex-col", "gap-1")}>
             <Link class={classes!(
-                    "bg-neutral-200",
-                    "border-neutral-200",
-                    "p-3",
-                    "rounded-sm",
-                    "cursor-pointer",
-                    "hover:bg-neutral-300",
-                    "text-center",
+                    "py-2",
+                    "px-4",
+                    "hover:bg-neutral-200",
+                    "flex",
+                    "items-center",
+                    "rounded-md",
                 )}
                 to={Route::Definitions}
             >
@@ -25,23 +24,24 @@ pub fn Toolbar(props: &ToolbarProps) -> Html {
             </Link>
             <Link
                 class={classes!(
-                    "bg-neutral-200",
-                    "p-3",
-                    "rounded-sm",
-                    "cursor-pointer",
-                    "hover:bg-neutral-300",
-                    "text-center"
+                    "py-2",
+                    "px-4",
+                    "hover:bg-neutral-200",
+                    "flex",
+                    "items-center",
+                    "rounded-md",
                 )}
                 to={Route::History}
             >
                 {"Verlauf"}
             </Link>
             <button class={classes!(
-                "bg-neutral-200",
-                "p-3",
-                "rounded-sm",
-                "cursor-pointer",
-                "hover:bg-neutral-300",
+                "py-2",
+                "px-4",
+                "hover:bg-neutral-200",
+                "flex",
+                "items-center",
+                "rounded-md",
             )}>
                 {"Zurücksetzen"}
             </button>
