@@ -1,7 +1,7 @@
 use super::components::{Form, Toolbar};
 use yew::prelude::*;
 
-use crate::components::PageWithNavbar;
+use crate::components::{PageTitle, PageWithNavbar};
 
 #[derive(PartialEq, Properties)]
 pub struct CalculatorPageProps {}
@@ -9,12 +9,22 @@ pub struct CalculatorPageProps {}
 #[function_component]
 pub fn CalculatorPage(_props: &CalculatorPageProps) -> Html {
     html! {
-        <PageWithNavbar>
-            <div class={classes!("grid", "grid-rows-[1fr_auto]", "w-full", "h-full", "p-4")}>
+        <PageWithNavbar nav_actions={html!(
+            <>
+                <h2 class={classes!(
+                    "font-bold",
+                    "my-2",
+                    "text-sm",
+                    "mt-4"
+                )}>{"Aktionen"}</h2>
+                <Toolbar />
+            </>
+        )}>
+            <div class={classes!("grid", "grid-rows-[auto_1fr]", "w-full", "h-full")}>
+                <PageTitle>{"Rechner"}</PageTitle>
                 <div class={classes!("py-8", "flex", "flex-col", "w-full", "justify-center")}>
                     <Form />
                 </div>
-                <Toolbar />
             </div>
         </PageWithNavbar>
     }

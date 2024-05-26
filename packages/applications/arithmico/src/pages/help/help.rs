@@ -1,7 +1,7 @@
 use engine::Language;
 use yew::{classes, function_component, html, use_context, Html, Properties};
 
-use crate::{app_context::AppContext, components::PageWithNavbar};
+use crate::{app_context::AppContext, components::*};
 
 #[derive(PartialEq, Properties)]
 pub struct HelpPageProps {}
@@ -15,7 +15,7 @@ pub fn HelpPage(_props: &HelpPageProps) -> Html {
 
     html! {
         <PageWithNavbar>
-            <h1 class={classes!("text-3xl", "mt-4", "mb-8")}>{"Hilfe"}</h1>
+            <PageTitle>{"Hilfe"}</PageTitle>
             <ul>
             {
                 documentation.iter().map(|item| html!(

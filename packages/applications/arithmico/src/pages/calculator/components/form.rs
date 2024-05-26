@@ -48,15 +48,16 @@ pub fn Form(_props: &FormProps) -> Html {
                     value={context.input.clone()}
                     placeholder={"Eingabe"}
                     class={classes!(
-                        "outline-1",
-                        "outline-black",
+                        "outline-0",
+                        "border-2",
+                        "focus:border-neutral-500",
+                        "border-neutral-300",
                         "w-full",
                         "outline-none",
                         "p-4",
                         "rounded-sm",
                         "text-3xl",
-                        "focus:outline-2",
-                        "bg-neutral-100"
+                        "bg-white"
                     )}
                 />
             </label>
@@ -77,15 +78,16 @@ pub fn Form(_props: &FormProps) -> Html {
                         None => "".to_string(),
                     }}
                     class={classes!(
-                        "outline-1",
-                        "outline-black",
+                        "outline-0",
+                        "border-2",
+                        "focus:border-neutral-500",
+                        "border-neutral-300",
                         "w-full",
                         "outline-none",
                         "p-4",
                         "rounded-sm",
                         "text-3xl",
-                        "focus:outline-2",
-                        "bg-neutral-100"
+                        "bg-white"
                     )}
                 />
             </label>

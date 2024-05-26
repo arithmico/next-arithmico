@@ -14,9 +14,7 @@ pub fn Page(props: &PageProps) -> Html {
             "max-h-full",
             "absolute",
             "inset-0",
-            "grid",
-            "grid-rows-[auto_1fr]",
-            "overflow-hidden",
+            "bg-neutral-100",
             props.class.clone()
         )}>
             {props.children.clone()}

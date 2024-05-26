@@ -1,6 +1,6 @@
 use yew::{function_component, html, Html, Properties};
 
-use crate::components::PageWithNavbar;
+use crate::components::*;
 
 #[derive(PartialEq, Properties)]
 pub struct AboutPageProps {}
@@ -9,7 +9,7 @@ pub struct AboutPageProps {}
 pub fn AboutPage(_props: &AboutPageProps) -> Html {
     html! {
         <PageWithNavbar>
-            <p>{"about"}</p>
+            <PageTitle>{"Über"}</PageTitle>
         </PageWithNavbar>
     }
 }
