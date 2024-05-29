@@ -1,5 +1,5 @@
 use crate::core::node::{
-    Boolean, Definition, Division, Function, FunctionCall, Negate, Node,
+    And, Boolean, Definition, Division, Function, FunctionCall, Negate, Node,
     Number, Power, Product, Sum, Symbol, Tensor,
 };
 
@@ -98,6 +98,10 @@ pub fn transform(pair: Pair<Rule>) -> Node {
             let symbol = String::from(inner_pairs.next().unwrap().as_str());
             let expression = transform(inner_pairs.next().unwrap());
             Definition::new(symbol, expression).into()
+        }
+        Rule::and => {
+            And::new(pair.into_inner().map(|item| transform(item)).collect())
+                .into()
         }
         _ => unreachable!(),
     }
@@ -239,7 +243,7 @@ mod tests {
     }
 
     #[test]
-    fn transform_vector() {
+    fn transform_tensor() {
         let result = parse_statement("[1, 2, 3]").unwrap();
         assert_eq!(
             result,
@@ -247,6 +251,30 @@ mod tests {
                 Number::new(1.0).into(),
                 Number::new(2.0).into(),
                 Number::new(3.0).into(),
+            ])
+            .into()
+        );
+    }
+
+    #[test]
+    fn transform_and_with_2_values() {
+        let result = parse_statement("a & b").unwrap();
+        assert_eq!(
+            result,
+            And::new(vec![Symbol::new("a").into(), Symbol::new("b").into(),])
+                .into()
+        );
+    }
+
+    #[test]
+    fn transform_and_with_3_values() {
+        let result = parse_statement("a & b & c").unwrap();
+        assert_eq!(
+            result,
+            And::new(vec![
+                Symbol::new("a").into(),
+                Symbol::new("b").into(),
+                Symbol::new("c").into()
             ])
             .into()
         );
