@@ -1,12 +1,6 @@
 use yew::prelude::*;
 
-use icons::back::BackIcon;
-
-use crate::{
-    app_context::AppContext,
-    components::{Link, PageWithNavbar},
-    router::Route,
-};
+use crate::{app_context::AppContext, components::*, router::Route};
 
 #[derive(PartialEq, Properties)]
 pub struct DefinitionsPageProps {}
@@ -17,35 +11,10 @@ pub fn DefinitionsPage(_props: &DefinitionsPageProps) -> Html {
 
     html! {
         <PageWithNavbar class={classes!("grid", "grid-rows-[auto_1fr]")}>
-            <div class={classes!(
-                "grid",
-                "grid-cols-[auto_1fr]",
-                "gap-2",
-                "bg-neutral-200",
-                "p-2",
-                "my-4",
-                "rounded-sm",
-                "items-center"
-            )}>
-                <h1 class={classes!("text-xl", "font-light")}>{"Definitionen"}</h1>
-                <Link
-                    to={Route::Calculator}
-                    class={classes!(
-                        "col-start-1",
-                        "row-start-1",
-                        "flex",
-                        "items-center",
-                        "justify-center",
-                        "hover:bg-neutral-300",
-                        "p-2",
-                        "rounded-sm",
-                        "group"
-                    )}
-                >
-                    <span class={classes!("sr-only")}>{"Zurück"}</span>
-                    <BackIcon class={classes!("fill-black/50", "group-hover:fill-black")} />
-                </Link>
-            </div>
+            <Breadcrumbs>
+                <BreadcrumbsItem to={Route::Calculator}>{"Rechner"}</BreadcrumbsItem>
+                <BreadcrumbsItem to={Route::Definitions}>{"Definitionen"}</BreadcrumbsItem>
+            </Breadcrumbs>
             <table class={classes!(
                 "w-full",
                 "border-spacing-y-1",
@@ -55,8 +24,7 @@ pub fn DefinitionsPage(_props: &DefinitionsPageProps) -> Html {
                     context.definitions.iter().map(|(key, value)| {
                         html!(
                             <tr class={classes!(
-                                "bg-neutral-100",
-                                "hover:bg-neutral-200",
+                                "bg-white",
                                 "rounded-sm",
                                 "group",
                             )}>
@@ -70,7 +38,7 @@ pub fn DefinitionsPage(_props: &DefinitionsPageProps) -> Html {
                                         "border",
                                         "border-r-0",
                                         "border-neutral-300",
-                                        "group-hover:border-neutral-400",
+                                        "group-hover:border-neutral-500",
                                     )}
                                 >
                                     <span class={classes!("pr-4")}>

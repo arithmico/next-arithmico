@@ -16,7 +16,11 @@ mod link {
 mod page_title {
     pub mod page_title;
 }
+mod breadcrumbs {
+    pub mod breadcrumbs;
+}
 
+pub use breadcrumbs::breadcrumbs::*;
 pub use link::link::*;
 pub use listbox::listbox::*;
 pub use navbar::navbar::*;

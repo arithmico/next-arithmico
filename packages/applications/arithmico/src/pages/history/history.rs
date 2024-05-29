@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::{app_context::AppContext, components::PageWithNavbar};
+use crate::{app_context::AppContext, components::*, router::Route};
 
 #[derive(PartialEq, Properties)]
 pub struct HistoryPageProps {}
@@ -11,19 +11,15 @@ pub fn HistoryPage(_props: &HistoryPageProps) -> Html {
 
     html! {
         <PageWithNavbar class={classes!("grid", "grid-rows-[auto_1fr]")}>
-            <div class={classes!(
-                "flex",
-                "bg-neutral-100",
-                "p-2",
-                "my-4",
-                "rounded-sm"
-            )}>
-                <h1 class={classes!("text-3xl", "font-light")}>{"Verlauf"}</h1>
-            </div>
+            <Breadcrumbs>
+                <BreadcrumbsItem to={Route::Calculator}>{"Rechner"}</BreadcrumbsItem>
+                <BreadcrumbsItem to={Route::History}>{"Verlauf"}</BreadcrumbsItem>
+            </Breadcrumbs>
             <ul class={classes!(
                 "flex",
                 "flex-col",
-                "gap-2",
+                "gap-1",
+                "mb-2",
             )}>
                 {
                     context.session.get_statements().iter().map(|statement| {
@@ -31,8 +27,10 @@ pub fn HistoryPage(_props: &HistoryPageProps) -> Html {
                             <li class={classes!(
                                 "flex",
                                 "flex-col",
-                                "bg-neutral-100",
-                                "hover:bg-neutral-200",
+                                "bg-white",
+                                "border",
+                                "border-neutral-300",
+                                "hover:border-neutral-500",
                                 "rounded-sm",
                                 "p-2"
                             )}>
@@ -42,9 +40,9 @@ pub fn HistoryPage(_props: &HistoryPageProps) -> Html {
                                     "gap-x-4",
                                     "gap-y-2"
                                 )}>
-                                    <dt class={classes!("text-right")}>{"Eingabe"}</dt>
+                                    <dt class={classes!("text-right", "text-black/50")}>{"Eingabe"}</dt>
                                     <dd>{statement.input.clone()}</dd>
-                                    <dt class={classes!("text-right")}>{"Ausgabe"}</dt>
+                                    <dt class={classes!("text-right", "text-black/50")}>{"Ausgabe"}</dt>
                                     <dd>{match &statement.output {
                                         Ok(value) => value.clone(),
                                         Err(error) => error.clone().to_string(),
