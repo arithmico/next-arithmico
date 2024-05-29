@@ -19,6 +19,7 @@ datatypes = [
     "datatype_symbol",
     "datatype_vector",
     "datatype_function",
+    "datatype_boolean"
 ]
 operators = [
     "operator_negate_number",
@@ -41,6 +42,7 @@ datatype_number = []
 datatype_symbol = []
 datatype_vector = []
 datatype_function = []
+datatype_boolean = []
 
 # operator features
 operator_negate_number = ["datatype_number"]

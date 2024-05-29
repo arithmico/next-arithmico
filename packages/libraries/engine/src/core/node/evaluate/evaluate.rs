@@ -1,9 +1,10 @@
 use crate::core::{context::Context, node::Node};
 
 use super::nodes::{
-    evaluate_definition, evaluate_division, evaluate_function,
-    evaluate_function_call, evaluate_negate, evaluate_number, evaluate_power,
-    evaluate_product, evaluate_sum, evaluate_symbol, evaluate_tensor,
+    evaluate_boolean, evaluate_definition, evaluate_division,
+    evaluate_function, evaluate_function_call, evaluate_negate,
+    evaluate_number, evaluate_power, evaluate_product, evaluate_sum,
+    evaluate_symbol, evaluate_tensor,
 };
 use super::NodeEvaluationError;
 
@@ -18,6 +19,9 @@ impl Node {
             }
             Node::Symbol(node) if cfg!(feature = "datatype_symbol") => {
                 evaluate_symbol(node, context)
+            }
+            Node::Boolean(node) if cfg!(feature = "datatype_boolean") => {
+                evaluate_boolean(node, context)
             }
             Node::Negate(node) => evaluate_negate(node, context),
             Node::Sum(node) => evaluate_sum(node, context),
