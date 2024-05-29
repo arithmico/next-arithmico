@@ -1,3 +1,4 @@
+mod boolean;
 mod definition;
 mod division;
 mod function;
@@ -10,6 +11,7 @@ mod sum;
 mod symbol;
 mod tensor;
 
+pub use boolean::evaluate_boolean;
 pub use definition::evaluate_definition;
 pub use division::evaluate_division;
 pub use function::evaluate_function;
