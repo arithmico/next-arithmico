@@ -1,6 +1,8 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Negate, Node, Number, Tensor},
+    node::{
+        evaluate::NodeEvaluationError, Boolean, Negate, Node, Number, Tensor,
+    },
 };
 
 pub fn evaluate_negate(
@@ -23,6 +25,9 @@ pub fn evaluate_negate(
                     .push(Node::from(Negate::new(value)).evaluate(context)?);
             }
             Ok(Tensor::new(negated_values).into())
+        }
+        Node::Boolean(node) if cfg!(feature = "operator_negate_boolean") => {
+            Ok(Boolean::new(!node.value).into())
         }
         _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
@@ -62,6 +67,28 @@ mod tests {
                 Number::new(-3.0).into()
             ])
             .into()
+        )
+    }
+
+    #[test]
+    fn evaluate_negate_boolean_1() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Negate::new(Boolean::new(true)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(false).into()
+        )
+    }
+
+    #[test]
+    fn evaluate_negate_boolean_2() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Negate::new(Boolean::new(false)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(true).into()
         )
     }
 }

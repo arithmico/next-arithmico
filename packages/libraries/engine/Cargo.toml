@@ -36,6 +36,7 @@ operators = [
     "operator_division_vector_number",
     "operator_product_matrix_matrix",
     "operator_and_boolean_boolean",
+    "operator_negate_boolean"
 ]
 
 # data type features
@@ -48,6 +49,7 @@ datatype_boolean = []
 # operator features
 operator_negate_number = ["datatype_number"]
 operator_negate_vector = ["datatype_vector"]
+operator_negate_boolean = ["datatype_boolean"]
 operator_sum_number_number = ["datatype_number"]
 operator_sum_vector_vector = ["datatype_vector"]
 operator_product_number_number = ["datatype_number"]
