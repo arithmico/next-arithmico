@@ -1,4 +1,5 @@
 pub mod back;
+pub mod chevron_right;
 pub mod expand;
 pub mod functions;
 pub mod help;

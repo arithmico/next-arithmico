@@ -20,7 +20,8 @@ pub fn Navbar(props: &NavbarProps) -> Html {
             "bg-white",
             "border-r",
             "border-neutral-300",
-            "px-2"
+            "px-2",
+            "h-screen",
         )}>
             <h1 class={classes!("py-4", "pr-10", "text-2xl", "font-light")}>{"Arithmico"}</h1>
             <h2 class={classes!(
