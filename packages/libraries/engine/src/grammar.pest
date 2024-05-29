@@ -27,8 +27,8 @@ function_definition_arguments = { (symbol ~ ("," ~ symbol)*)? }
 
 // expression
 expression = _{ 
-	| and
-    | and_item
+	| or
+    | or_item
     | negate
     | sub_expression
 }
@@ -37,6 +37,13 @@ sub_expression = _{
 }
 
 // boolean algebra
+// |
+or = { or_item ~ ("|" ~ or_item)+ }
+or_item = _{
+    | and
+    | and_item
+}
+
 // &
 and = { and_item ~ ("&" ~ and_item)+ } 
 and_item = _{

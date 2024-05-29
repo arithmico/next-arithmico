@@ -36,7 +36,8 @@ operators = [
     "operator_division_vector_number",
     "operator_product_matrix_matrix",
     "operator_and_boolean_boolean",
-    "operator_negate_boolean"
+    "operator_negate_boolean",
+    "operator_or_boolean_boolean"
 ]
 
 # data type features
@@ -63,6 +64,7 @@ operator_function_call = [
 operator_definition = ["datatype_symbol"]
 operator_product_matrix_matrix = ["datatype_vector"]
 operator_and_boolean_boolean = ["datatype_boolean"]
+operator_or_boolean_boolean = ["datatype_boolean"]
 
 # API modules
 api_modules = ["api_module_trigonometry"]

@@ -4,7 +4,7 @@ use super::{
         HostApiFunctionEndpoint, Negate, Number, Power, Product, Sum, Symbol,
         Tensor,
     },
-    And,
+    And, Or,
 };
 
 #[derive(PartialEq, Debug, Clone)]
@@ -23,6 +23,7 @@ pub enum Node {
     HostApiFunctionEndpoint(HostApiFunctionEndpoint),
     Definition(Definition),
     And(And),
+    Or(Or),
 }
 
 impl From<Number> for Node {
@@ -106,5 +107,11 @@ impl From<Definition> for Node {
 impl From<And> for Node {
     fn from(value: And) -> Node {
         Node::And(value)
+    }
+}
+
+impl From<Or> for Node {
+    fn from(value: Or) -> Node {
+        Node::Or(value)
     }
 }
