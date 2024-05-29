@@ -60,6 +60,8 @@ impl Node {
                 ParenthesesBehavior::Optional
             }
 
+            (Node::Or(_), _) => ParenthesesBehavior::Optional,
+            (Node::And(_), Node::Or(_)) => ParenthesesBehavior::Required,
             (Node::And(_), _) => ParenthesesBehavior::Optional,
 
             _ => ParenthesesBehavior::Required,

@@ -5,7 +5,7 @@ use crate::core::{
     context::Context,
     node::{
         And, Boolean, Definition, Division, Function, FunctionCall, Negate,
-        Node, Number, Power, Product, Sum, Symbol, Tensor,
+        Node, Number, Or, Power, Product, Sum, Symbol, Tensor,
     },
 };
 
@@ -189,6 +189,15 @@ impl Node {
                 })
                 .collect::<Vec<_>>()
                 .join(" & "),
+
+            Node::Or(node) => node
+                .values
+                .iter()
+                .map(|value| {
+                    value.serialize_transformed_node_for_parent(self, context)
+                })
+                .collect::<Vec<_>>()
+                .join(" | "),
         }
     }
 
@@ -304,6 +313,13 @@ impl Node {
                 Symbol::new(endpoint.name.clone()).into()
             }
             Node::And(node) => And::new(
+                node.values
+                    .iter()
+                    .map(|value| value.pre_serialize_transform(context))
+                    .collect(),
+            )
+            .into(),
+            Node::Or(node) => Or::new(
                 node.values
                     .iter()
                     .map(|value| value.pre_serialize_transform(context))
@@ -461,5 +477,25 @@ mod tests {
     #[test]
     fn serialize_and() {
         compare("a&b&c", "a & b & c");
+    }
+
+    #[test]
+    fn serialize_or_1() {
+        compare("a|b|c", "a | b | c");
+    }
+
+    #[test]
+    fn serialize_or_and_1() {
+        compare("a & b | c", "a & b | c");
+    }
+
+    #[test]
+    fn serialize_or_and_2() {
+        compare("a & (b | c)", "a & (b | c)");
+    }
+
+    #[test]
+    fn serialize_or_and_3() {
+        compare("(a & b) | c", "a & b | c");
     }
 }

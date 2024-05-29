@@ -1,6 +1,6 @@
 use crate::core::node::{
     And, Boolean, Definition, Division, Function, FunctionCall, Negate, Node,
-    Number, Power, Product, Sum, Symbol, Tensor,
+    Number, Or, Power, Product, Sum, Symbol, Tensor,
 };
 
 use super::parser::Rule;
@@ -101,6 +101,10 @@ pub fn transform(pair: Pair<Rule>) -> Node {
         }
         Rule::and => {
             And::new(pair.into_inner().map(|item| transform(item)).collect())
+                .into()
+        }
+        Rule::or => {
+            Or::new(pair.into_inner().map(|item| transform(item)).collect())
                 .into()
         }
         _ => unreachable!(),
@@ -272,6 +276,30 @@ mod tests {
         assert_eq!(
             result,
             And::new(vec![
+                Symbol::new("a").into(),
+                Symbol::new("b").into(),
+                Symbol::new("c").into()
+            ])
+            .into()
+        );
+    }
+
+    #[test]
+    fn transform_or_with_2_values() {
+        let result = parse_statement("a | b").unwrap();
+        assert_eq!(
+            result,
+            Or::new(vec![Symbol::new("a").into(), Symbol::new("b").into(),])
+                .into()
+        );
+    }
+
+    #[test]
+    fn transform_or_with_3_values() {
+        let result = parse_statement("a | b | c").unwrap();
+        assert_eq!(
+            result,
+            Or::new(vec![
                 Symbol::new("a").into(),
                 Symbol::new("b").into(),
                 Symbol::new("c").into()
