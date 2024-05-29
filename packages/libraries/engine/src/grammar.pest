@@ -27,13 +27,22 @@ function_definition_arguments = { (symbol ~ ("," ~ symbol)*)? }
 
 // expression
 expression = _{ 
-	| sum
-    | sum_item
+	| and
+    | and_item
     | negate
     | sub_expression
 }
 sub_expression = _{
 	"(" ~ expression ~ ")"
+}
+
+// boolean algebra
+// &
+and = { and_item ~ ("&" ~ and_item)+ } 
+and_item = _{
+    | sum
+    | sum_item
+    | negate
 }
 
 // algebraic operators
