@@ -4,9 +4,8 @@ use super::parenthesis::ParenthesesBehavior;
 use crate::core::{
     context::Context,
     node::{
-        Boolean, Definition, Division, Function, FunctionCall,
-        HostApiFunctionEndpoint, Negate, Node, Number, Power, Product, Sum,
-        Symbol, Tensor,
+        And, Boolean, Definition, Division, Function, FunctionCall, Negate,
+        Node, Number, Power, Product, Sum, Symbol, Tensor,
     },
 };
 
@@ -182,6 +181,14 @@ impl Node {
             Node::HostApiFunctionEndpoint { .. } => {
                 panic!("cannot serialize function endpoint");
             }
+            Node::And(node) => node
+                .values
+                .iter()
+                .map(|value| {
+                    value.serialize_transformed_node_for_parent(self, context)
+                })
+                .collect::<Vec<_>>()
+                .join(" & "),
         }
     }
 
@@ -227,8 +234,8 @@ impl Node {
                     Negate::new(scientific_notation).into()
                 }
             }
-            Node::Symbol { .. } => self.clone(),
-            Node::Boolean { .. } => self.clone(),
+            Node::Symbol(_) => self.clone(),
+            Node::Boolean(_) => self.clone(),
             Node::Negate(Negate { value }) => {
                 Negate::new(value.pre_serialize_transform(context)).into()
             }
@@ -288,17 +295,21 @@ impl Node {
                 expression.pre_serialize_transform(context),
             )
             .into(),
-            Node::Definition(Definition { symbol, expression }) => {
-                Definition::new(
-                    symbol.clone(),
-                    expression.pre_serialize_transform(context),
-                )
-                .into()
+            Node::Definition(definition) => Definition::new(
+                definition.symbol.clone(),
+                definition.expression.pre_serialize_transform(context),
+            )
+            .into(),
+            Node::HostApiFunctionEndpoint(endpoint) => {
+                Symbol::new(endpoint.name.clone()).into()
             }
-            Node::HostApiFunctionEndpoint(HostApiFunctionEndpoint {
-                name,
-                ..
-            }) => Symbol::new(name).into(),
+            Node::And(node) => And::new(
+                node.values
+                    .iter()
+                    .map(|value| value.pre_serialize_transform(context))
+                    .collect(),
+            )
+            .into(),
         }
     }
 }
@@ -445,5 +456,10 @@ mod tests {
     #[test]
     fn serialize_definition() {
         compare("a:=2", "a := 2");
+    }
+
+    #[test]
+    fn serialize_and() {
+        compare("a&b&c", "a & b & c");
     }
 }

@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::Node};
 
 use super::nodes::{
-    evaluate_boolean, evaluate_definition, evaluate_division,
+    evaluate_and, evaluate_boolean, evaluate_definition, evaluate_division,
     evaluate_function, evaluate_function_call, evaluate_negate,
     evaluate_number, evaluate_power, evaluate_product, evaluate_sum,
     evaluate_symbol, evaluate_tensor,
@@ -42,6 +42,7 @@ impl Node {
             Node::Tensor(node) if cfg!(feature = "datatype_vector") => {
                 evaluate_tensor(node, context)
             }
+            Node::And(node) => evaluate_and(node, context),
             _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
     }

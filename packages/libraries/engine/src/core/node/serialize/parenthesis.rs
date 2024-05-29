@@ -8,69 +8,59 @@ pub enum ParenthesesBehavior {
 impl Node {
     pub fn requires_parenthesis(&self, node: &Node) -> ParenthesesBehavior {
         match (self, node) {
-            (
-                Node::Number { .. }
-                | Node::Symbol { .. }
-                | Node::Boolean { .. },
-                _,
-            ) => ParenthesesBehavior::Optional,
-            (
-                _,
-                Node::Number { .. }
-                | Node::Symbol { .. }
-                | Node::Boolean { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (
-                Node::Negate { .. },
-                Node::Product { .. }
-                | Node::Division { .. }
-                | Node::Power { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (
-                Node::Sum { .. },
-                Node::Sum { .. }
-                | Node::Negate { .. }
-                | Node::Product { .. }
-                | Node::Division { .. }
-                | Node::Power { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (
-                Node::Product { .. },
-                Node::Product { .. }
-                | Node::Division { .. }
-                | Node::Power { .. }
-                | Node::Tensor { .. }
-                | Node::FunctionCall { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (
-                Node::Division { .. },
-                Node::Power { .. }
-                | Node::Tensor { .. }
-                | Node::FunctionCall { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (
-                Node::Power { .. },
-                Node::Tensor { .. }
-                | Node::FunctionCall { .. }
-                | Node::Function { .. },
-            ) => ParenthesesBehavior::Optional,
-
-            (Node::Tensor { .. }, _) => ParenthesesBehavior::Optional,
-
-            (Node::FunctionCall { .. }, _) => ParenthesesBehavior::Optional,
-
-            (Node::Function { .. }, _) => ParenthesesBehavior::Optional,
-
-            (Node::Definition { .. }, _) => ParenthesesBehavior::Optional,
-
-            (Node::HostApiFunctionEndpoint { .. }, _) => {
+            (Node::Number(_) | Node::Symbol(_) | Node::Boolean(_), _) => {
                 ParenthesesBehavior::Optional
             }
+            (_, Node::Number(_) | Node::Symbol(_) | Node::Boolean(_)) => {
+                ParenthesesBehavior::Optional
+            }
+
+            (
+                Node::Negate(_),
+                Node::Product(_) | Node::Division(_) | Node::Power(_),
+            ) => ParenthesesBehavior::Optional,
+
+            (
+                Node::Sum(_),
+                Node::Sum(_)
+                | Node::Negate(_)
+                | Node::Product(_)
+                | Node::Division(_)
+                | Node::Power(_),
+            ) => ParenthesesBehavior::Optional,
+
+            (
+                Node::Product(_),
+                Node::Product(_)
+                | Node::Division(_)
+                | Node::Power(_)
+                | Node::Tensor(_)
+                | Node::FunctionCall(_),
+            ) => ParenthesesBehavior::Optional,
+
+            (
+                Node::Division(_),
+                Node::Power(_) | Node::Tensor(_) | Node::FunctionCall(_),
+            ) => ParenthesesBehavior::Optional,
+
+            (
+                Node::Power(_),
+                Node::Tensor(_) | Node::FunctionCall(_) | Node::Function(_),
+            ) => ParenthesesBehavior::Optional,
+
+            (Node::Tensor(_), _) => ParenthesesBehavior::Optional,
+
+            (Node::FunctionCall(_), _) => ParenthesesBehavior::Optional,
+
+            (Node::Function(_), _) => ParenthesesBehavior::Optional,
+
+            (Node::Definition(_), _) => ParenthesesBehavior::Optional,
+
+            (Node::HostApiFunctionEndpoint(_), _) => {
+                ParenthesesBehavior::Optional
+            }
+
+            (Node::And(_), _) => ParenthesesBehavior::Optional,
 
             _ => ParenthesesBehavior::Required,
         }

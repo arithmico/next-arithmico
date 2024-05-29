@@ -1,7 +1,10 @@
-use super::structs::{
-    Boolean, Definition, Division, Function, FunctionCall,
-    HostApiFunctionEndpoint, Negate, Number, Power, Product, Sum, Symbol,
-    Tensor,
+use super::{
+    structs::{
+        Boolean, Definition, Division, Function, FunctionCall,
+        HostApiFunctionEndpoint, Negate, Number, Power, Product, Sum, Symbol,
+        Tensor,
+    },
+    And,
 };
 
 #[derive(PartialEq, Debug, Clone)]
@@ -19,6 +22,7 @@ pub enum Node {
     Function(Function),
     HostApiFunctionEndpoint(HostApiFunctionEndpoint),
     Definition(Definition),
+    And(And),
 }
 
 impl From<Number> for Node {
@@ -96,5 +100,11 @@ impl From<HostApiFunctionEndpoint> for Node {
 impl From<Definition> for Node {
     fn from(value: Definition) -> Node {
         Node::Definition(value)
+    }
+}
+
+impl From<And> for Node {
+    fn from(value: And) -> Node {
+        Node::And(value)
     }
 }
