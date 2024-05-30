@@ -23,7 +23,7 @@ pub fn load_trigonometry_module() -> HostApiModule {
                 .function(vec!["x"])
                 .executor(|arguments, context| {
                     if arguments.len() != 1 {
-                        return Err(NodeEvaluationError::RuntimeError(
+                        return Err(EvaluateNodeError::RuntimeError(
                             "invalid number of arguments".into(),
                         ));
                     }
@@ -37,7 +37,7 @@ pub fn load_trigonometry_module() -> HostApiModule {
                             }
                             Ok(Number::new(value.sin()).into())
                         }
-                        _ => Err(NodeEvaluationError::RuntimeError(
+                        _ => Err(EvaluateNodeError::RuntimeError(
                             "invalid argument type".into(),
                         )),
                     }

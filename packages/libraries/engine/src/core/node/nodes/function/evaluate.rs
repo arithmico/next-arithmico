@@ -4,7 +4,7 @@ impl EvaluateNode for Function {
     fn evaluate(
         &self,
         _context: &Context,
-    ) -> Result<Node, NodeEvaluationError> {
+    ) -> Result<Node, EvaluateNodeError> {
         Ok(
             Function::new(self.arguments.clone(), (*self.expression).clone())
                 .into(),

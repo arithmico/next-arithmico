@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Node {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         match self {
             Node::Number(node) if cfg!(feature = "datatype_number") => {
                 node.evaluate(context)
@@ -33,7 +33,7 @@ impl EvaluateNode for Node {
             }
             Node::And(node) => node.evaluate(context),
             Node::Or(node) => node.evaluate(context),
-            _ => Err(NodeEvaluationError::UnsupportedOperation),
+            _ => Err(EvaluateNodeError::UnsupportedOperation),
         }
     }
 }

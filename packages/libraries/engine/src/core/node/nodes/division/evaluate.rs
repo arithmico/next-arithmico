@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Division {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let evaluated_dividend = self.dividend.evaluate(context)?;
         let evaluated_divisor = self.divisor.evaluate(context)?;
 
@@ -11,7 +11,7 @@ impl EvaluateNode for Division {
                 Node::Number(Number { value: right_value }),
             ) if cfg!(feature = "operator_division_number_number") => {
                 if right_value == 0.0 {
-                    return Err(NodeEvaluationError::DivisionByZero);
+                    return Err(EvaluateNodeError::DivisionByZero);
                 }
                 Ok(Number::new(left_value / right_value).into())
             }
@@ -22,7 +22,7 @@ impl EvaluateNode for Division {
                 Node::Number(Number { value }),
             ) if cfg!(feature = "operator_division_vector_number") => {
                 if value == 0.0 {
-                    return Err(NodeEvaluationError::DivisionByZero);
+                    return Err(EvaluateNodeError::DivisionByZero);
                 }
                 Node::from(Tensor::new(
                     values
@@ -37,7 +37,7 @@ impl EvaluateNode for Division {
                 ))
                 .evaluate(context)
             }
-            _ => Err(NodeEvaluationError::UnsupportedOperation),
+            _ => Err(EvaluateNodeError::UnsupportedOperation),
         }
     }
 }
@@ -65,7 +65,7 @@ mod tests {
                 .evaluate(&context)
                 .err()
                 .unwrap(),
-            NodeEvaluationError::DivisionByZero
+            EvaluateNodeError::DivisionByZero
         )
     }
 
@@ -107,7 +107,7 @@ mod tests {
             .evaluate(&context)
             .err()
             .unwrap(),
-            NodeEvaluationError::DivisionByZero
+            EvaluateNodeError::DivisionByZero
         )
     }
 }

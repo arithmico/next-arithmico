@@ -1,7 +1,7 @@
 use crate::core::{context::Context, host_api::HostEndpoint, node::*};
 
 impl EvaluateNode for FunctionCall {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let evaluated_target = self.target.evaluate(context)?;
         match evaluated_target {
             Node::Function(Function {
@@ -9,7 +9,7 @@ impl EvaluateNode for FunctionCall {
                 expression,
             }) => {
                 if self.arguments.len() != arguments.len() {
-                    return Err(NodeEvaluationError::InvalidNumberOfArguments);
+                    return Err(EvaluateNodeError::InvalidNumberOfArguments);
                 }
                 let mut call_stack = context.stack.clone();
                 call_stack.add_frame();
@@ -36,13 +36,13 @@ impl EvaluateNode for FunctionCall {
                         executor(&self.arguments, context)
                     }
                     HostEndpoint::Constant { .. } => {
-                        Err(NodeEvaluationError::RuntimeError(
+                        Err(EvaluateNodeError::RuntimeError(
                             "Can not call constant".into(),
                         ))
                     }
                 }
             }
-            _ => Err(NodeEvaluationError::UnsupportedOperation),
+            _ => Err(EvaluateNodeError::UnsupportedOperation),
         }
     }
 }

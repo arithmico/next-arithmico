@@ -1,114 +1,13 @@
-use crate::core::node::{nodes::*, Node};
+use crate::core::node::Node;
 
 use super::parser::Rule;
 use pest::iterators::{Pair, Pairs};
 
 pub fn transform(pair: Pair<Rule>) -> Node {
-    match pair.as_rule() {
-        Rule::statement => transform(pair.into_inner().next().unwrap()),
-        Rule::number => Number::new(pair.as_str().parse().unwrap()).into(),
-        Rule::boolean => Boolean::new(pair.as_str() == "true").into(),
-        Rule::symbol => Symbol::new(pair.as_str().to_string()).into(),
-        Rule::sum => {
-            Sum::new(pair.into_inner().map(|item| transform(item)).collect())
-                .into()
-        }
-        Rule::negate => {
-            Negate::new(transform(pair.into_inner().next().unwrap())).into()
-        }
-        Rule::product => Product::new(
-            pair.into_inner().map(|item| transform(item)).collect(),
-        )
-        .into(),
-        Rule::division => {
-            let mut inner_pairs = pair.into_inner();
-            let dividend = transform(inner_pairs.next().unwrap());
-            let divisor = transform(inner_pairs.next().unwrap());
-            Division::new(dividend, divisor).into()
-        }
-        Rule::power => {
-            let mut inner_pairs = pair.into_inner();
-            let base = transform(inner_pairs.next().unwrap());
-            let exponent = transform(inner_pairs.next().unwrap());
-            Power::new(base, exponent).into()
-        }
-        Rule::vector => {
-            Tensor::new(pair.into_inner().map(|item| transform(item)).collect())
-                .into()
-        }
-        Rule::function_call => {
-            let mut inner_pairs = pair.into_inner();
-            let target = transform(
-                next_pair_of_rule(&mut inner_pairs, Rule::function_call_target)
-                    .into_inner()
-                    .next()
-                    .unwrap(),
-            );
-            let arguments = next_pair_of_rule(
-                &mut inner_pairs,
-                Rule::function_call_arguments,
-            )
-            .into_inner()
-            .map(|argument| transform(argument))
-            .collect();
-            FunctionCall::new(target, arguments).into()
-        }
-        Rule::function => {
-            let mut inner_pairs = pair.into_inner();
-            let arguments =
-                next_pair_of_rule(&mut inner_pairs, Rule::function_arguments)
-                    .into_inner()
-                    .map(|argument| match argument.as_rule() {
-                        Rule::symbol => String::from(argument.as_str()),
-                        _ => unreachable!(),
-                    })
-                    .collect();
-
-            let expression = transform(inner_pairs.next().unwrap());
-            Function::new(arguments, expression).into()
-        }
-        Rule::function_definition => {
-            let mut inner_pairs = pair.into_inner();
-            let symbol = String::from(
-                next_pair_of_rule(
-                    &mut inner_pairs,
-                    Rule::function_definition_target,
-                )
-                .into_inner()
-                .next()
-                .unwrap()
-                .as_str(),
-            );
-            let arguments = next_pair_of_rule(
-                &mut inner_pairs,
-                Rule::function_definition_arguments,
-            )
-            .into_inner()
-            .map(|argument| String::from(argument.as_str()))
-            .collect();
-            let expression = transform(inner_pairs.next().unwrap());
-
-            Definition::new(symbol, Function::new(arguments, expression)).into()
-        }
-        Rule::symbol_definition => {
-            let mut inner_pairs = pair.into_inner();
-            let symbol = String::from(inner_pairs.next().unwrap().as_str());
-            let expression = transform(inner_pairs.next().unwrap());
-            Definition::new(symbol, expression).into()
-        }
-        Rule::and => {
-            And::new(pair.into_inner().map(|item| transform(item)).collect())
-                .into()
-        }
-        Rule::or => {
-            Or::new(pair.into_inner().map(|item| transform(item)).collect())
-                .into()
-        }
-        _ => unreachable!(),
-    }
+    Node::try_from(pair).unwrap()
 }
 
-fn next_pair_of_rule<'a>(
+pub fn next_pair_of_rule<'a>(
     pairs: &'a mut Pairs<Rule>,
     rule: Rule,
 ) -> Pair<'a, Rule> {
@@ -121,8 +20,8 @@ fn next_pair_of_rule<'a>(
 
 #[cfg(test)]
 mod tests {
-    use super::super::parse::parse_statement;
-    use super::*;
+    use crate::core::node::parse::parse::parse_statement;
+    use crate::core::node::*;
 
     #[test]
     fn transform_float() {

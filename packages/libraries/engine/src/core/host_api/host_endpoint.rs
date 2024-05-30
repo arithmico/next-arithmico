@@ -8,7 +8,7 @@ use crate::{
 pub type FunctionExecutor = fn(
     arguments: &Vec<Node>,
     context: &Context,
-) -> Result<Node, NodeEvaluationError>;
+) -> Result<Node, EvaluateNodeError>;
 pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 #[derive(Debug, Clone, PartialEq)]
