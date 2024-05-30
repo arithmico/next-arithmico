@@ -1,8 +1,9 @@
 use pest::iterators::Pair;
 
 use crate::{
-    core::node::{
-        errors::TransformParseTreeError, parse::parser::Rule, Function, Node,
+    core::{
+        node::{errors::TransformParseTreeError, Function, Node},
+        parse::Rule,
     },
     utils::parse_utils::next_pair_of_rule,
 };

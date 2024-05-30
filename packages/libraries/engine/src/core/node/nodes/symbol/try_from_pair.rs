@@ -1,7 +1,8 @@
 use pest::iterators::Pair;
 
-use crate::core::node::{
-    errors::TransformParseTreeError, parse::parser::Rule, Symbol,
+use crate::core::{
+    node::{errors::TransformParseTreeError, Symbol},
+    parse::Rule,
 };
 
 impl TryFrom<Pair<'_, Rule>> for Symbol {

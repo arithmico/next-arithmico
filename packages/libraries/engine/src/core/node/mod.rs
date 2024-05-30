@@ -2,7 +2,6 @@ mod errors;
 mod node;
 mod nodes;
 mod operations;
-pub mod parse;
 pub mod serialize;
 
 pub use errors::EvaluateNodeError;

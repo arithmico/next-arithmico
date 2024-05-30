@@ -1,8 +1,7 @@
+use errors::TransformParseTreeError;
 use pest::iterators::Pair;
 
-use crate::core::node::{
-    errors::TransformParseTreeError, parse::parser::Rule, *,
-};
+use crate::core::{node::*, parse::Rule};
 
 use super::Node;
 

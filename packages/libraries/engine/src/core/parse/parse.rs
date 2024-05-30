@@ -14,8 +14,7 @@ pub fn parse_statement(input: &str) -> Result<Node, Error<Rule>> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::parse::parse::parse_statement;
-    use crate::core::node::*;
+    use crate::core::{node::*, parse::parse::parse_statement};
 
     #[test]
     fn transform_float() {

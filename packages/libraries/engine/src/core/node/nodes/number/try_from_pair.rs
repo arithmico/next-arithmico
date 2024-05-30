@@ -1,6 +1,6 @@
 use pest::iterators::Pair;
 
-use crate::core::node::{errors::TransformParseTreeError, parse::parser::Rule};
+use crate::core::{node::errors::TransformParseTreeError, parse::Rule};
 
 use super::Number;
 
