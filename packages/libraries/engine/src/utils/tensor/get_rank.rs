@@ -1,4 +1,4 @@
-use crate::core::node::nodes::Tensor;
+use crate::core::node::*;
 
 impl Tensor {
     pub fn get_rank(&self) -> usize {
@@ -8,7 +8,7 @@ impl Tensor {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::nodes::*;
+    use crate::core::node::*;
 
     #[test]
     fn get_rank_1() {

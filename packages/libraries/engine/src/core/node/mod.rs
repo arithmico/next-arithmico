@@ -1,6 +1,11 @@
+mod errors;
 mod node;
-pub use node::Node;
-pub mod evaluate;
-pub mod nodes;
+mod nodes;
+mod operations;
 pub mod parse;
 pub mod serialize;
+
+pub use errors::NodeEvaluationError;
+pub use node::Node;
+pub use nodes::*;
+pub use operations::*;

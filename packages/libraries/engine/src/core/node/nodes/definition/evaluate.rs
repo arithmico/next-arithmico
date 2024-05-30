@@ -1,15 +1,10 @@
-use crate::core::{
-    context::Context,
-    node::nodes::Definition,
-    node::{evaluate::NodeEvaluationError, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_definition(
-    node: &Definition,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    let evaluated_expression = node.expression.evaluate(context)?;
-    Ok(Definition::new(node.symbol.clone(), evaluated_expression).into())
+impl EvaluateNode for Definition {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        let evaluated_expression = self.expression.evaluate(context)?;
+        Ok(Definition::new(self.symbol.clone(), evaluated_expression).into())
+    }
 }
 
 #[cfg(test)]

@@ -1,24 +1,20 @@
 use std::iter::zip;
 
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_sum(
-    node: &Sum,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    if node.values.len() < 2 {
-        return Err(NodeEvaluationError::InvalidNumberOfValues);
-    }
-    let mut result = node.values[0].evaluate(context)?;
-    for current_node in node.values[1..].iter() {
-        let evaluated_current_node = current_node.evaluate(context)?;
-        result = add_nodes(&result, &evaluated_current_node, context)?;
-    }
+impl EvaluateNode for Sum {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        if self.values.len() < 2 {
+            return Err(NodeEvaluationError::InvalidNumberOfValues);
+        }
+        let mut result = self.values[0].evaluate(context)?;
+        for current_node in self.values[1..].iter() {
+            let evaluated_current_node = current_node.evaluate(context)?;
+            result = add_nodes(&result, &evaluated_current_node, context)?;
+        }
 
-    Ok(result)
+        Ok(result)
+    }
 }
 
 fn add_nodes(

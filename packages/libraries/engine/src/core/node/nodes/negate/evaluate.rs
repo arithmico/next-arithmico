@@ -1,33 +1,32 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_negate(
-    node: &Negate,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    let evaluated_value = node.value.evaluate(context)?;
-    match evaluated_value {
-        Node::Number(Number { value })
-            if cfg!(feature = "operator_negate_number") =>
-        {
-            Ok(Number::new(-value).into())
-        }
-        Node::Tensor(Tensor {
-            elements: values, ..
-        }) if cfg!(feature = "operator_negate_vector") => {
-            let mut negated_values = Vec::<Node>::new();
-            for value in values {
-                negated_values
-                    .push(Node::from(Negate::new(value)).evaluate(context)?);
+impl EvaluateNode for Negate {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        let evaluated_value = self.value.evaluate(context)?;
+        match evaluated_value {
+            Node::Number(Number { value })
+                if cfg!(feature = "operator_negate_number") =>
+            {
+                Ok(Number::new(-value).into())
             }
-            Ok(Tensor::new(negated_values).into())
+            Node::Tensor(Tensor {
+                elements: values, ..
+            }) if cfg!(feature = "operator_negate_vector") => {
+                let mut negated_values = Vec::<Node>::new();
+                for value in values {
+                    negated_values.push(
+                        Node::from(Negate::new(value)).evaluate(context)?,
+                    );
+                }
+                Ok(Tensor::new(negated_values).into())
+            }
+            Node::Boolean(node)
+                if cfg!(feature = "operator_negate_boolean") =>
+            {
+                Ok(Boolean::new(!node.value).into())
+            }
+            _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
-        Node::Boolean(node) if cfg!(feature = "operator_negate_boolean") => {
-            Ok(Boolean::new(!node.value).into())
-        }
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
 

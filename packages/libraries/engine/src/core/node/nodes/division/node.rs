@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Division {
@@ -7,9 +7,9 @@ pub struct Division {
 }
 
 impl Division {
-    pub fn new<L: Into<Node>, R: Into<Node>>(
-        dividend: L,
-        divisor: R,
+    pub fn new(
+        dividend: impl Into<Node>,
+        divisor: impl Into<Node>,
     ) -> Division {
         Division {
             dividend: dividend.into().into(),
@@ -23,3 +23,5 @@ impl From<Division> for Node {
         Node::Division(value)
     }
 }
+
+impl BaseNode for Division {}

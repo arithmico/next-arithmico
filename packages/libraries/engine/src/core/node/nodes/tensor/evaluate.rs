@@ -1,20 +1,16 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_tensor(
-    node: &Tensor,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    let mut evaluated_values = Vec::<Node>::new();
-    for value in &node.elements {
-        let evaluated_value = value.evaluate(context)?;
-        evaluated_values.push(evaluated_value);
+impl EvaluateNode for Tensor {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        let mut evaluated_values = Vec::<Node>::new();
+        for value in self.elements.iter() {
+            let evaluated_value = value.evaluate(context)?;
+            evaluated_values.push(evaluated_value);
+        }
+        Ok(Tensor::new_with_shape(evaluated_values, self.shape.clone())
+            .unwrap()
+            .into())
     }
-    Ok(Tensor::new_with_shape(evaluated_values, node.shape.clone())
-        .unwrap()
-        .into())
 }
 
 #[cfg(test)]

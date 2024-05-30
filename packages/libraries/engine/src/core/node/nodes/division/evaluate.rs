@@ -1,47 +1,44 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_division(
-    node: &Division,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    let evaluated_dividend = node.dividend.evaluate(context)?;
-    let evaluated_divisor = node.divisor.evaluate(context)?;
-    match (evaluated_dividend, evaluated_divisor) {
-        (
-            Node::Number(Number { value: left_value }),
-            Node::Number(Number { value: right_value }),
-        ) if cfg!(feature = "operator_division_number_number") => {
-            if right_value == 0.0 {
-                return Err(NodeEvaluationError::DivisionByZero);
+impl EvaluateNode for Division {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        let evaluated_dividend = self.dividend.evaluate(context)?;
+        let evaluated_divisor = self.divisor.evaluate(context)?;
+
+        match (evaluated_dividend, evaluated_divisor) {
+            (
+                Node::Number(Number { value: left_value }),
+                Node::Number(Number { value: right_value }),
+            ) if cfg!(feature = "operator_division_number_number") => {
+                if right_value == 0.0 {
+                    return Err(NodeEvaluationError::DivisionByZero);
+                }
+                Ok(Number::new(left_value / right_value).into())
             }
-            Ok(Number::new(left_value / right_value).into())
-        }
-        (
-            Node::Tensor(Tensor {
-                elements: values, ..
-            }),
-            Node::Number(Number { value }),
-        ) if cfg!(feature = "operator_division_vector_number") => {
-            if value == 0.0 {
-                return Err(NodeEvaluationError::DivisionByZero);
+            (
+                Node::Tensor(Tensor {
+                    elements: values, ..
+                }),
+                Node::Number(Number { value }),
+            ) if cfg!(feature = "operator_division_vector_number") => {
+                if value == 0.0 {
+                    return Err(NodeEvaluationError::DivisionByZero);
+                }
+                Node::from(Tensor::new(
+                    values
+                        .iter()
+                        .map(|item| {
+                            Node::from(Division::new(
+                                item.clone(),
+                                Number::new(value),
+                            ))
+                        })
+                        .collect(),
+                ))
+                .evaluate(context)
             }
-            Node::from(Tensor::new(
-                values
-                    .iter()
-                    .map(|item| {
-                        Node::from(Division::new(
-                            item.clone(),
-                            Number::new(value),
-                        ))
-                    })
-                    .collect(),
-            ))
-            .evaluate(context)
+            _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
 

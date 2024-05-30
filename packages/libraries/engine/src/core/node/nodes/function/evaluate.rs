@@ -1,16 +1,15 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_function(
-    node: &Function,
-    _context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    Ok(
-        Function::new(node.arguments.clone(), (*node.expression).clone())
-            .into(),
-    )
+impl EvaluateNode for Function {
+    fn evaluate(
+        &self,
+        _context: &Context,
+    ) -> Result<Node, NodeEvaluationError> {
+        Ok(
+            Function::new(self.arguments.clone(), (*self.expression).clone())
+                .into(),
+        )
+    }
 }
 
 #[cfg(test)]

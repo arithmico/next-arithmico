@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
@@ -68,6 +68,8 @@ impl From<Tensor> for Node {
         Node::Tensor(value)
     }
 }
+
+impl BaseNode for Tensor {}
 
 #[cfg(test)]
 mod tests {

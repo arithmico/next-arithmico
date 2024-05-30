@@ -3,7 +3,7 @@ use std::{
     iter::zip,
 };
 
-use crate::core::node::nodes::Tensor;
+use crate::core::node::*;
 
 impl Tensor {
     pub fn get_sub_tensor(&self, range: Vec<(usize, usize)>) -> Option<Self> {
@@ -47,7 +47,7 @@ impl Tensor {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::nodes::*;
+    use crate::core::node::*;
 
     #[test]
     fn get_sub_tensor() {
