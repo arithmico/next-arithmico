@@ -1,10 +1,7 @@
 use crate::core::{
     context::Context,
     host_api::HostEndpoint,
-    node::{
-        evaluate::NodeEvaluationError, Function, FunctionCall,
-        HostApiFunctionEndpoint, Node,
-    },
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_function_call(
@@ -37,7 +34,7 @@ pub fn evaluate_function_call(
             );
             expression.evaluate(&call_context)
         }
-        Node::HostApiFunctionEndpoint(HostApiFunctionEndpoint { name }) => {
+        Node::HostApiFunctionEndpoint(HostFunction { name }) => {
             let endpoint = context.endpoint(&name).unwrap();
             match endpoint {
                 HostEndpoint::Function { executor, .. } => {
@@ -57,11 +54,7 @@ pub fn evaluate_function_call(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{
-            context::Stack,
-            host_api::HostApiModule,
-            node::{FunctionCall, Number, Symbol, Tensor},
-        },
+        core::{context::Stack, host_api::HostApiModule},
         language::Language,
         HostApi, Settings,
     };

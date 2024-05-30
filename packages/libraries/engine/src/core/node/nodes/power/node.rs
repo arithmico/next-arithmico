@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Power {
@@ -14,3 +14,11 @@ impl Power {
         }
     }
 }
+
+impl From<Power> for Node {
+    fn from(value: Power) -> Node {
+        Node::Power(value)
+    }
+}
+
+impl BaseNode for Power {}

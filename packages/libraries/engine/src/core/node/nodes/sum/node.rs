@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Sum {
@@ -10,3 +10,11 @@ impl Sum {
         Sum { values }
     }
 }
+
+impl From<Sum> for Node {
+    fn from(value: Sum) -> Node {
+        Node::Sum(value)
+    }
+}
+
+impl BaseNode for Sum {}

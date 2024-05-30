@@ -1,10 +1,9 @@
+use crate::core::context::Context;
+use std::fmt::Debug;
+
 use super::{
-    structs::{
-        Boolean, Definition, Division, Function, FunctionCall,
-        HostApiFunctionEndpoint, Negate, Number, Power, Product, Sum, Symbol,
-        Tensor,
-    },
-    And, Or,
+    evaluate::NodeEvaluationError, nodes::*,
+    serialize::parenthesis::ParenthesesBehavior,
 };
 
 #[derive(PartialEq, Debug, Clone)]
@@ -20,98 +19,18 @@ pub enum Node {
     Tensor(Tensor),
     FunctionCall(FunctionCall),
     Function(Function),
-    HostApiFunctionEndpoint(HostApiFunctionEndpoint),
+    HostApiFunctionEndpoint(HostFunction),
     Definition(Definition),
     And(And),
     Or(Or),
 }
 
-impl From<Number> for Node {
-    fn from(value: Number) -> Node {
-        Node::Number(value)
-    }
+pub trait BaseNode: Into<Node> + PartialEq + Debug + Clone {}
+pub trait ComputableNode: BaseNode {
+    fn compute(&self, context: &Context) -> Result<Node, NodeEvaluationError>;
 }
 
-impl From<Symbol> for Node {
-    fn from(value: Symbol) -> Node {
-        Node::Symbol(value)
-    }
-}
-
-impl From<Boolean> for Node {
-    fn from(value: Boolean) -> Node {
-        Node::Boolean(value)
-    }
-}
-
-impl From<Negate> for Node {
-    fn from(value: Negate) -> Node {
-        Node::Negate(value)
-    }
-}
-
-impl From<Sum> for Node {
-    fn from(value: Sum) -> Node {
-        Node::Sum(value)
-    }
-}
-
-impl From<Product> for Node {
-    fn from(value: Product) -> Node {
-        Node::Product(value)
-    }
-}
-
-impl From<Division> for Node {
-    fn from(value: Division) -> Node {
-        Node::Division(value)
-    }
-}
-
-impl From<Power> for Node {
-    fn from(value: Power) -> Node {
-        Node::Power(value)
-    }
-}
-
-impl From<Tensor> for Node {
-    fn from(value: Tensor) -> Node {
-        Node::Tensor(value)
-    }
-}
-
-impl From<FunctionCall> for Node {
-    fn from(value: FunctionCall) -> Node {
-        Node::FunctionCall(value)
-    }
-}
-
-impl From<Function> for Node {
-    fn from(value: Function) -> Node {
-        Node::Function(value)
-    }
-}
-
-impl From<HostApiFunctionEndpoint> for Node {
-    fn from(value: HostApiFunctionEndpoint) -> Node {
-        Node::HostApiFunctionEndpoint(value)
-    }
-}
-
-impl From<Definition> for Node {
-    fn from(value: Definition) -> Node {
-        Node::Definition(value)
-    }
-}
-
-impl From<And> for Node {
-    fn from(value: And) -> Node {
-        Node::And(value)
-    }
-}
-
-impl From<Or> for Node {
-    fn from(value: Or) -> Node {
-        Node::Or(value)
-    }
+pub trait SerializeableNode: BaseNode {
+    fn child_requires_parenthesis(&self, child: &Node) -> ParenthesesBehavior;
+    fn pre_serialize_transform(&self, context: &Context) -> Node;
 }

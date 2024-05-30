@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number},
+    node::{evaluate::NodeEvaluationError, nodes::Number, Node},
 };
 
 pub fn evaluate_number(

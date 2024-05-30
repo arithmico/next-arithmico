@@ -2,7 +2,7 @@ use std::iter::zip;
 
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number, Sum, Tensor},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_sum(
@@ -56,8 +56,6 @@ fn add_nodes(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::{Negate, Power};
-
     use super::*;
 
     #[test]

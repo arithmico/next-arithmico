@@ -3,7 +3,7 @@ use std::f64::consts::PI;
 use crate::{
     core::{
         host_api::HostApiModule,
-        node::{evaluate::NodeEvaluationError, Node, Number},
+        node::{evaluate::NodeEvaluationError, nodes::Number, Node},
     },
     language::Language,
 };

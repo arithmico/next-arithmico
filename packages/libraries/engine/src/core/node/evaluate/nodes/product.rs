@@ -3,9 +3,7 @@ use std::{iter::zip, rc::Rc};
 use crate::{
     core::{
         context::Context,
-        node::{
-            evaluate::NodeEvaluationError, Node, Number, Product, Sum, Tensor,
-        },
+        node::{evaluate::NodeEvaluationError, nodes::*, Node},
     },
     utils::tensor::index_utils::convert_to_outer_index,
 };

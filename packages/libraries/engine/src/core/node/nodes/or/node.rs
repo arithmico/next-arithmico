@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Or {
@@ -10,3 +10,11 @@ impl Or {
         Or { values }
     }
 }
+
+impl From<Or> for Node {
+    fn from(value: Or) -> Node {
+        Node::Or(value)
+    }
+}
+
+impl BaseNode for Or {}

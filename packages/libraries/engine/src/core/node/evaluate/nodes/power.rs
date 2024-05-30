@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Number, Power},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_power(
@@ -22,8 +22,6 @@ pub fn evaluate_power(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::Power;
-
     use super::*;
 
     #[test]

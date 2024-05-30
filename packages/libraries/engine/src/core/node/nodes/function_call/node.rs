@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct FunctionCall {
@@ -14,3 +14,11 @@ impl FunctionCall {
         }
     }
 }
+
+impl From<FunctionCall> for Node {
+    fn from(value: FunctionCall) -> Node {
+        Node::FunctionCall(value)
+    }
+}
+
+impl BaseNode for FunctionCall {}

@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct And {
@@ -10,3 +10,11 @@ impl And {
         And { values }
     }
 }
+
+impl From<And> for Node {
+    fn from(value: And) -> Node {
+        Node::And(value)
+    }
+}
+
+impl BaseNode for And {}

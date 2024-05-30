@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Function, Node},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_function(
@@ -15,8 +15,6 @@ pub fn evaluate_function(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::Symbol;
-
     use super::*;
 
     #[test]

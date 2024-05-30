@@ -1,2 +1,2 @@
-mod parenthesis;
+pub mod parenthesis;
 pub mod serialize;

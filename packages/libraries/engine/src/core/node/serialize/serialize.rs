@@ -3,10 +3,7 @@ use std::iter::zip;
 use super::parenthesis::ParenthesesBehavior;
 use crate::core::{
     context::Context,
-    node::{
-        And, Boolean, Definition, Division, Function, FunctionCall, Negate,
-        Node, Number, Or, Power, Product, Sum, Symbol, Tensor,
-    },
+    node::{nodes::*, Node},
 };
 
 impl Node {

@@ -17,3 +17,9 @@ impl Definition {
         }
     }
 }
+
+impl From<Definition> for Node {
+    fn from(value: Definition) -> Node {
+        Node::Definition(value)
+    }
+}
