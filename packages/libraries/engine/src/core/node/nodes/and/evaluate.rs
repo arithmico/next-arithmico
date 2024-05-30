@@ -3,7 +3,7 @@ use operations::EvaluateNode;
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for And {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         self.values
             .iter()
             .map(|value| value.evaluate(context))
@@ -16,10 +16,10 @@ impl EvaluateNode for And {
                     {
                         Ok(Boolean::new(left.value && right.value).into())
                     }
-                    _ => Err(NodeEvaluationError::UnsupportedOperation),
+                    _ => Err(EvaluateNodeError::UnsupportedOperation),
                 }
             })
-            .unwrap_or(Err(NodeEvaluationError::InvalidNumberOfValues))
+            .unwrap_or(Err(EvaluateNodeError::InvalidNumberOfValues))
     }
 }
 

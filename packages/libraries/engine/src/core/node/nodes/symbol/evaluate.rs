@@ -1,10 +1,10 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Symbol {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         context
             .lookup(&self.name)
-            .ok_or_else(|| NodeEvaluationError::UnknownSymbol)
+            .ok_or_else(|| EvaluateNodeError::UnknownSymbol)
     }
 }
 

@@ -3,9 +3,9 @@ use std::iter::zip;
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Sum {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if self.values.len() < 2 {
-            return Err(NodeEvaluationError::InvalidNumberOfValues);
+            return Err(EvaluateNodeError::InvalidNumberOfValues);
         }
         let mut result = self.values[0].evaluate(context)?;
         for current_node in self.values[1..].iter() {
@@ -21,7 +21,7 @@ fn add_nodes(
     left: &Node,
     right: &Node,
     context: &Context,
-) -> Result<Node, NodeEvaluationError> {
+) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (
             Node::Number(Number { value: left_value }),
@@ -33,7 +33,7 @@ fn add_nodes(
             if cfg!(feature = "operator_sum_vector_vector") =>
         {
             if left.shape != right.shape {
-                return Err(NodeEvaluationError::ArithmeticError(
+                return Err(EvaluateNodeError::ArithmeticError(
                     "Unable to perform vector addition due to mismatching dimensions".into(),
                 ));
             }
@@ -46,7 +46,7 @@ fn add_nodes(
             ))
             .evaluate(context)
         }
-        _ => return Err(NodeEvaluationError::UnsupportedOperation),
+        _ => return Err(EvaluateNodeError::UnsupportedOperation),
     }
 }
 

@@ -7,7 +7,7 @@ use std::fmt::Debug;
 
 pub trait BaseNode: Into<Node> + PartialEq + Debug + Clone {}
 pub trait EvaluateNode: BaseNode {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError>;
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError>;
 }
 
 #[allow(dead_code)]

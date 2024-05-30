@@ -6,9 +6,9 @@ use crate::{
 };
 
 impl EvaluateNode for Product {
-    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if self.values.len() < 2 {
-            return Err(NodeEvaluationError::InvalidNumberOfValues);
+            return Err(EvaluateNodeError::InvalidNumberOfValues);
         }
         let mut result = self.values[0].evaluate(context)?;
         for current_node in self.values[1..].iter() {
@@ -23,7 +23,7 @@ fn multiply_nodes(
     left: &Node,
     right: &Node,
     context: &Context,
-) -> Result<Node, NodeEvaluationError> {
+) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (
             Node::Number(Number { value: left_value }),
@@ -58,7 +58,7 @@ fn multiply_nodes(
             }
             Ok(Tensor::new(new_values).into())
         }
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
+        _ => Err(EvaluateNodeError::UnsupportedOperation),
     }
 }
 
@@ -66,13 +66,13 @@ fn multiply_tensors(
     left: &Tensor,
     right: &Tensor,
     context: &Context,
-) -> Result<Node, NodeEvaluationError> {
+) -> Result<Node, EvaluateNodeError> {
     let left_rank = left.get_rank();
     let right_rank = right.get_rank();
     match (left_rank, right_rank) {
         (1, 1) if cfg!(feature = "operator_product_vector_vector") => {
             if left.shape != right.shape {
-                return Err(NodeEvaluationError::ArithmeticError(
+                return Err(EvaluateNodeError::ArithmeticError(
                     "Can not multiply vectors with different dimensions".into(),
                 ));
             }
@@ -134,12 +134,12 @@ fn multiply_tensors(
                     )
                     .evaluate(context)
                 }
-                _ => Err(NodeEvaluationError::ArithmeticError(
+                _ => Err(EvaluateNodeError::ArithmeticError(
                     "Incompatible matrix dimensions".into(),
                 )),
             }
         }
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
+        _ => Err(EvaluateNodeError::UnsupportedOperation),
     }
 }
 

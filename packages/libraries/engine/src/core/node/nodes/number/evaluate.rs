@@ -3,10 +3,7 @@ use crate::core::{context::Context, node::*};
 use super::Number;
 
 impl EvaluateNode for Number {
-    fn evaluate(
-        &self,
-        _context: &Context,
-    ) -> Result<Node, NodeEvaluationError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
         Ok(Number::new(self.value).into())
     }
 }
