@@ -1,13 +1,14 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_boolean(
-    node: &Boolean,
-    _context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    Ok(Boolean::new(node.value).into())
+use super::Boolean;
+
+impl EvaluateNode for Boolean {
+    fn evaluate(
+        &self,
+        _context: &Context,
+    ) -> Result<Node, NodeEvaluationError> {
+        Ok(Boolean::new(self.value).into())
+    }
 }
 
 #[cfg(test)]

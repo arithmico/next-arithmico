@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Definition {
@@ -23,3 +23,5 @@ impl From<Definition> for Node {
         Node::Definition(value)
     }
 }
+
+impl BaseNode for Definition {}

@@ -1,53 +1,49 @@
-use crate::core::{
-    context::Context,
-    host_api::HostEndpoint,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, host_api::HostEndpoint, node::*};
 
-pub fn evaluate_function_call(
-    node: &FunctionCall,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    let evaluated_target = node.target.evaluate(context)?;
-    match evaluated_target {
-        Node::Function(Function {
-            arguments,
-            expression,
-        }) => {
-            if node.arguments.len() != arguments.len() {
-                return Err(NodeEvaluationError::InvalidNumberOfArguments);
-            }
-            let mut call_stack = context.stack.clone();
-            call_stack.add_frame();
-            for (index, call_argument) in node.arguments.iter().enumerate() {
-                let evaluated_call_argument =
-                    call_argument.evaluate(context)?;
-                call_stack.insert(
-                    arguments.get(index).unwrap(),
-                    evaluated_call_argument,
+impl EvaluateNode for FunctionCall {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        let evaluated_target = self.target.evaluate(context)?;
+        match evaluated_target {
+            Node::Function(Function {
+                arguments,
+                expression,
+            }) => {
+                if self.arguments.len() != arguments.len() {
+                    return Err(NodeEvaluationError::InvalidNumberOfArguments);
+                }
+                let mut call_stack = context.stack.clone();
+                call_stack.add_frame();
+                for (index, call_argument) in self.arguments.iter().enumerate()
+                {
+                    let evaluated_call_argument =
+                        call_argument.evaluate(context)?;
+                    call_stack.insert(
+                        arguments.get(index).unwrap(),
+                        evaluated_call_argument,
+                    );
+                }
+                let call_context = Context::new(
+                    call_stack,
+                    context.settings.clone(),
+                    context.host_api.clone(),
                 );
+                expression.evaluate(&call_context)
             }
-            let call_context = Context::new(
-                call_stack,
-                context.settings.clone(),
-                context.host_api.clone(),
-            );
-            expression.evaluate(&call_context)
-        }
-        Node::HostApiFunctionEndpoint(HostFunction { name }) => {
-            let endpoint = context.endpoint(&name).unwrap();
-            match endpoint {
-                HostEndpoint::Function { executor, .. } => {
-                    executor(&node.arguments, context)
-                }
-                HostEndpoint::Constant { .. } => {
-                    Err(NodeEvaluationError::RuntimeError(
-                        "Can not call constant".into(),
-                    ))
+            Node::HostApiFunctionEndpoint(HostFunction { name }) => {
+                let endpoint = context.endpoint(&name).unwrap();
+                match endpoint {
+                    HostEndpoint::Function { executor, .. } => {
+                        executor(&self.arguments, context)
+                    }
+                    HostEndpoint::Constant { .. } => {
+                        Err(NodeEvaluationError::RuntimeError(
+                            "Can not call constant".into(),
+                        ))
+                    }
                 }
             }
+            _ => Err(NodeEvaluationError::UnsupportedOperation),
         }
-        _ => Err(NodeEvaluationError::UnsupportedOperation),
     }
 }
 

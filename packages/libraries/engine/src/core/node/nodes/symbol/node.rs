@@ -1,4 +1,4 @@
-use crate::core::node::{node::BaseNode, Node};
+use crate::core::node::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Symbol {
@@ -17,4 +17,4 @@ impl From<Symbol> for Node {
     }
 }
 
-impl BaseNode for Node {}
+impl BaseNode for Symbol {}

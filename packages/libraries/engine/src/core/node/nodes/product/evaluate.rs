@@ -1,26 +1,22 @@
 use std::{iter::zip, rc::Rc};
 
 use crate::{
-    core::{
-        context::Context,
-        node::{evaluate::NodeEvaluationError, nodes::*, Node},
-    },
+    core::{context::Context, node::*},
     utils::tensor::index_utils::convert_to_outer_index,
 };
 
-pub fn evaluate_product(
-    node: &Product,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    if node.values.len() < 2 {
-        return Err(NodeEvaluationError::InvalidNumberOfValues);
+impl EvaluateNode for Product {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        if self.values.len() < 2 {
+            return Err(NodeEvaluationError::InvalidNumberOfValues);
+        }
+        let mut result = self.values[0].evaluate(context)?;
+        for current_node in self.values[1..].iter() {
+            let evaluated_current_node = current_node.evaluate(context)?;
+            result = multiply_nodes(&result, &evaluated_current_node, context)?;
+        }
+        Ok(result)
     }
-    let mut result = node.values[0].evaluate(context)?;
-    for current_node in node.values[1..].iter() {
-        let evaluated_current_node = current_node.evaluate(context)?;
-        result = multiply_nodes(&result, &evaluated_current_node, context)?;
-    }
-    Ok(result)
 }
 
 fn multiply_nodes(

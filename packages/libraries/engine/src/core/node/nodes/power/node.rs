@@ -1,4 +1,4 @@
-use crate::core::node::{node::BaseNode, Node};
+use crate::core::node::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Power {

@@ -1,28 +1,26 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use operations::EvaluateNode;
 
-pub fn evaluate_and(
-    node: &And,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    node.values
-        .iter()
-        .map(|value| value.evaluate(context))
-        .reduce(|acc, val| {
-            let left = acc?;
-            let right = val?;
-            match (left, right) {
-                (Node::Boolean(left), Node::Boolean(right))
-                    if cfg!(feature = "operator_and_boolean_boolean") =>
-                {
-                    Ok(Boolean::new(left.value && right.value).into())
+use crate::core::{context::Context, node::*};
+
+impl EvaluateNode for And {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        self.values
+            .iter()
+            .map(|value| value.evaluate(context))
+            .reduce(|acc, val| {
+                let left = acc?;
+                let right = val?;
+                match (left, right) {
+                    (Node::Boolean(left), Node::Boolean(right))
+                        if cfg!(feature = "operator_and_boolean_boolean") =>
+                    {
+                        Ok(Boolean::new(left.value && right.value).into())
+                    }
+                    _ => Err(NodeEvaluationError::UnsupportedOperation),
                 }
-                _ => Err(NodeEvaluationError::UnsupportedOperation),
-            }
-        })
-        .unwrap_or(Err(NodeEvaluationError::InvalidNumberOfValues))
+            })
+            .unwrap_or(Err(NodeEvaluationError::InvalidNumberOfValues))
+    }
 }
 
 #[cfg(test)]

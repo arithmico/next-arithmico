@@ -1,13 +1,14 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::Number, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_number(
-    node: &Number,
-    _context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    Ok(Number::new(node.value).into())
+use super::Number;
+
+impl EvaluateNode for Number {
+    fn evaluate(
+        &self,
+        _context: &Context,
+    ) -> Result<Node, NodeEvaluationError> {
+        Ok(Number::new(self.value).into())
+    }
 }
 
 #[cfg(test)]

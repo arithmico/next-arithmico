@@ -1,15 +1,11 @@
-use crate::core::{
-    context::Context,
-    node::{evaluate::NodeEvaluationError, nodes::*, Node},
-};
+use crate::core::{context::Context, node::*};
 
-pub fn evaluate_symbol(
-    node: &Symbol,
-    context: &Context,
-) -> Result<Node, NodeEvaluationError> {
-    context
-        .lookup(&node.name)
-        .ok_or_else(|| NodeEvaluationError::UnknownSymbol)
+impl EvaluateNode for Symbol {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeEvaluationError> {
+        context
+            .lookup(&self.name)
+            .ok_or_else(|| NodeEvaluationError::UnknownSymbol)
+    }
 }
 
 #[cfg(test)]

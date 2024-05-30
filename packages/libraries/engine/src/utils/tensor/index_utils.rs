@@ -1,6 +1,6 @@
 use core::iter::zip;
 
-use crate::core::node::nodes::Tensor;
+use crate::core::node::*;
 
 pub fn get_capacity(shape: &Vec<usize>) -> usize {
     shape.iter().fold(1, |a, &b| a * b)
@@ -80,7 +80,7 @@ impl Tensor {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::nodes::*;
+    use crate::core::node::*;
 
     #[test]
     fn convert_to_outer_index() {

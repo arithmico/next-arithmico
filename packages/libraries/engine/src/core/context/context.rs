@@ -3,7 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use crate::{
     core::{
         host_api::{HostApi, HostEndpoint},
-        node::{nodes::*, Node},
+        node::*,
     },
     load_host_api,
 };

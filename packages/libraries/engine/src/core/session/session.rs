@@ -1,9 +1,11 @@
 use std::{collections::HashMap, rc::Rc};
 
+use parse::parse::parse_statement;
+
 use crate::core::{
     context::{Context, Settings, Stack},
     host_api::HostApi,
-    node::{nodes::*, parse::parse::parse_statement, Node},
+    node::*,
 };
 
 use super::EvaluationError;
