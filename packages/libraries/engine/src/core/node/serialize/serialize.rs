@@ -330,7 +330,7 @@ impl Node {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{context::Context, node::parse::parse::parse_statement};
+    use crate::core::{context::Context, parse::parse_statement};
 
     fn compare(input: &str, expected: &str) {
         assert_eq!(
