@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Tensor},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_tensor(
@@ -19,8 +19,6 @@ pub fn evaluate_tensor(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::{Number, Sum};
-
     use super::*;
 
     #[test]

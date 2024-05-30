@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Node, Symbol},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_symbol(
@@ -15,11 +15,7 @@ pub fn evaluate_symbol(
 #[cfg(test)]
 mod tests {
     use crate::{
-        core::{
-            context::Stack,
-            host_api::HostApiModule,
-            node::{Number, Symbol},
-        },
+        core::{context::Stack, host_api::HostApiModule},
         language::Language,
         HostApi, Settings,
     };

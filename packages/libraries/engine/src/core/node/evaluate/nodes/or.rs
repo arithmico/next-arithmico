@@ -1,6 +1,6 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Boolean, Node, Or},
+    node::{evaluate::NodeEvaluationError, nodes::*, Node},
 };
 
 pub fn evaluate_or(
@@ -27,7 +27,6 @@ pub fn evaluate_or(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::Boolean;
 
     use super::*;
 

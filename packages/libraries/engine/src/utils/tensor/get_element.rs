@@ -1,4 +1,4 @@
-use crate::core::node::{Node, Tensor};
+use crate::core::node::{nodes::*, Node};
 
 impl Tensor {
     pub fn get_element(&self, index: &Vec<usize>) -> Option<&Node> {
@@ -11,7 +11,7 @@ impl Tensor {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::{Number, Tensor};
+    use crate::core::node::nodes::*;
 
     #[test]
     fn get_item_1d() {

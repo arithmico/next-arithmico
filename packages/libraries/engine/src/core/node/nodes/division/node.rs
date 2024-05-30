@@ -17,3 +17,9 @@ impl Division {
         }
     }
 }
+
+impl From<Division> for Node {
+    fn from(value: Division) -> Node {
+        Node::Division(value)
+    }
+}

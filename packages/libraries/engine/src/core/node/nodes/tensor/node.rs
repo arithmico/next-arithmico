@@ -63,9 +63,15 @@ impl Tensor {
     }
 }
 
+impl From<Tensor> for Node {
+    fn from(value: Tensor) -> Node {
+        Node::Tensor(value)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::core::node::{Number, Tensor};
+    use crate::core::node::nodes::*;
 
     #[test]
     fn flatten_nested_tensors() {

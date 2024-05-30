@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Product {
@@ -10,3 +10,11 @@ impl Product {
         Product { values }
     }
 }
+
+impl From<Product> for Node {
+    fn from(value: Product) -> Node {
+        Node::Product(value)
+    }
+}
+
+impl BaseNode for Product {}

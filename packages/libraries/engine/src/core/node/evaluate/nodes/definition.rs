@@ -1,6 +1,7 @@
 use crate::core::{
     context::Context,
-    node::{evaluate::NodeEvaluationError, Definition, Node},
+    node::nodes::Definition,
+    node::{evaluate::NodeEvaluationError, Node},
 };
 
 pub fn evaluate_definition(
@@ -13,7 +14,7 @@ pub fn evaluate_definition(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::Number;
+    use crate::core::node::nodes::Number;
 
     use super::*;
 

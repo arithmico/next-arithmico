@@ -3,7 +3,7 @@ use std::{collections::HashMap, rc::Rc};
 use crate::core::{
     context::{Context, Settings, Stack},
     host_api::HostApi,
-    node::{parse::parse::parse_statement, Definition, Node},
+    node::{nodes::*, parse::parse::parse_statement, Node},
 };
 
 use super::EvaluationError;
@@ -128,8 +128,6 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::node::Number;
-
     use super::*;
 
     #[test]

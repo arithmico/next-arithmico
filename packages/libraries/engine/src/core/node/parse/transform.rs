@@ -1,7 +1,4 @@
-use crate::core::node::{
-    And, Boolean, Definition, Division, Function, FunctionCall, Negate, Node,
-    Number, Or, Power, Product, Sum, Symbol, Tensor,
-};
+use crate::core::node::{nodes::*, Node};
 
 use super::parser::Rule;
 use pest::iterators::{Pair, Pairs};

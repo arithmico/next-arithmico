@@ -1,4 +1,4 @@
-use crate::core::node::Node;
+use crate::core::node::{node::BaseNode, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Negate {
@@ -12,3 +12,11 @@ impl Negate {
         }
     }
 }
+
+impl From<Negate> for Node {
+    fn from(value: Negate) -> Node {
+        Node::Negate(value)
+    }
+}
+
+impl BaseNode for Negate {}
