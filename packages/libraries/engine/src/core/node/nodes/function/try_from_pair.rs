@@ -1,9 +1,10 @@
 use pest::iterators::Pair;
 
-use crate::core::node::{
-    errors::TransformParseTreeError,
-    parse::{parser::Rule, transform::next_pair_of_rule},
-    Node, Symbol,
+use crate::{
+    core::node::{
+        errors::TransformParseTreeError, parse::parser::Rule, Node, Symbol,
+    },
+    utils::parse_utils::next_pair_of_rule,
 };
 
 use super::Function;
