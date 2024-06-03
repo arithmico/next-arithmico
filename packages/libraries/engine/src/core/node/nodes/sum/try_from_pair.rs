@@ -20,3 +20,36 @@ impl TryFrom<Pair<'_, Rule>> for Sum {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_sum() {
+        let result = Node::parse("1 + 2 + 3").unwrap();
+        assert_eq!(
+            result,
+            Sum::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
+        );
+    }
+
+    #[test]
+    fn parse_sum_with_negate() {
+        let result = Node::parse("1 + 2 - 3").unwrap();
+        assert_eq!(
+            result,
+            Sum::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Negate::new(Number::new(3.0)).into()
+            ])
+            .into()
+        );
+    }
+}

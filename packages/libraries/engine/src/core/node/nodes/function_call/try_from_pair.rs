@@ -38,3 +38,21 @@ impl TryFrom<Pair<'_, Rule>> for FunctionCall {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_function_call() {
+        let result = Node::parse("f(1, 2)").unwrap();
+        assert_eq!(
+            result,
+            FunctionCall::new(
+                Symbol::new("f"),
+                vec![Number::new(1.0).into(), Number::new(2.0).into()]
+            )
+            .into()
+        );
+    }
+}

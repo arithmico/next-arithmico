@@ -50,3 +50,32 @@ impl TryFrom<Pair<'_, Rule>> for Definition {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_function_definition() {
+        let result = Node::parse("f(x, y) := x + y").unwrap();
+        assert_eq!(
+            result,
+            Node::from(Definition::new(
+                "f",
+                Function::new(
+                    vec!["x".into(), "y".into()],
+                    Sum::new(vec![
+                        Symbol::new("x").into(),
+                        Symbol::new("y").into()
+                    ])
+                )
+            ))
+        );
+    }
+
+    #[test]
+    fn parse_symbol_definition() {
+        let result = Node::parse("x := 2").unwrap();
+        assert_eq!(result, Node::from(Definition::new("x", Number::new(2.0))));
+    }
+}

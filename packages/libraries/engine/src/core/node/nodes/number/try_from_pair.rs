@@ -20,3 +20,14 @@ impl TryFrom<Pair<'_, Rule>> for Number {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_float() {
+        let result = Node::parse("2.1").unwrap();
+        assert_eq!(result, Number::new(2.1).into());
+    }
+}

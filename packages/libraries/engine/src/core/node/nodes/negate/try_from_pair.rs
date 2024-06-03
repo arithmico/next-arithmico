@@ -18,3 +18,14 @@ impl TryFrom<Pair<'_, Rule>> for Negate {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_negate() {
+        let result = Node::parse("-1").unwrap();
+        assert_eq!(result, Negate::new(Number::new(1.0)).into());
+    }
+}

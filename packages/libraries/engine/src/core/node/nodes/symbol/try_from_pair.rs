@@ -14,3 +14,14 @@ impl TryFrom<Pair<'_, Rule>> for Symbol {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_symbol() {
+        let result = Node::parse("hello").unwrap();
+        assert_eq!(result, Symbol::new("hello").into());
+    }
+}
