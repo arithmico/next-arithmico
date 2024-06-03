@@ -34,3 +34,18 @@ impl SerializeNode for Negate {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_negate() {
+        serialization_test("-2", "-2");
+    }
+
+    #[test]
+    fn serialize_nested_negate() {
+        serialization_test("-(-2)", "-(-2)");
+    }
+}

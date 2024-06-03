@@ -32,3 +32,28 @@ impl SerializeNode for Or {
             .join(" | ")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_or_1() {
+        serialization_test("a|b|c", "a | b | c");
+    }
+
+    #[test]
+    fn serialize_or_and_1() {
+        serialization_test("a & b | c", "a & b | c");
+    }
+
+    #[test]
+    fn serialize_or_and_2() {
+        serialization_test("a & (b | c)", "a & (b | c)");
+    }
+
+    #[test]
+    fn serialize_or_and_3() {
+        serialization_test("(a & b) | c", "a & b | c");
+    }
+}

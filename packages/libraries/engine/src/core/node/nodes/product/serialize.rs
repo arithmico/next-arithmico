@@ -40,3 +40,18 @@ impl SerializeNode for Product {
             .join(" * ")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_product() {
+        serialization_test("1 * 2 * 3", "1 * 2 * 3");
+    }
+
+    #[test]
+    fn serialize_product_with_division() {
+        serialization_test("1 * 2 / 3", "1 * 2 / 3");
+    }
+}

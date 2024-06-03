@@ -14,3 +14,13 @@ impl SerializeNode for Symbol {
         self.name.clone()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_symbol() {
+        serialization_test("abc", "abc");
+    }
+}

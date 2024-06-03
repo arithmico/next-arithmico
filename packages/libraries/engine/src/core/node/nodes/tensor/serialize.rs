@@ -55,3 +55,31 @@ impl SerializeNode for Tensor {
         inner_string
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_tensor() {
+        serialization_test("[1,2,3]", "[1, 2, 3]");
+    }
+
+    #[test]
+    fn serialize_empty_tensor() {
+        serialization_test("[]", "[]");
+    }
+
+    #[test]
+    fn serialize_nested_tensor() {
+        serialization_test("[[1, 2], [3,4]]", "[[1, 2], [3, 4]]");
+        serialization_test(
+            "[[1, 2], [3, 4], [5, 6]]",
+            "[[1, 2], [3, 4], [5, 6]]",
+        );
+        serialization_test(
+            "[[[1], [2]], [[3], [4]], [[5], [6]]]",
+            "[[[1], [2]], [[3], [4]], [[5], [6]]]",
+        );
+    }
+}

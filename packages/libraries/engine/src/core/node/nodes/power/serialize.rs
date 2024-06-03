@@ -43,3 +43,28 @@ impl SerializeNode for Power {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_power() {
+        serialization_test("2 ^ 3", "2^3");
+    }
+
+    #[test]
+    fn serialize_power_with_sum_and_product() {
+        serialization_test("(1+2) ^ (3 * 4)", "(1 + 2)^(3 * 4)");
+    }
+
+    #[test]
+    fn serialize_nested_power_1() {
+        serialization_test("1^(2^3)", "1^(2^3)");
+    }
+
+    #[test]
+    fn serialize_nested_power_2() {
+        serialization_test("(1^2)^3", "(1^2)^3");
+    }
+}
