@@ -1,4 +1,7 @@
+use pest::error::Error as PestError;
 use thiserror::Error;
+
+use super::node::Rule;
 
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum NodeError {
@@ -10,4 +13,7 @@ pub enum NodeError {
 
     #[error("ParsingError: {0}")]
     ParsingError(String),
+
+    #[error("SyntaxError: {0}")]
+    SyntaxError(#[from] PestError<Rule>),
 }

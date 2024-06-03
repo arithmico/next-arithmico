@@ -1,6 +1,6 @@
 use pest::iterators::{Pair, Pairs};
 
-use crate::core::parse::Rule;
+use crate::core::node::Rule;
 
 pub fn next_pair_of_rule<'a>(
     pairs: &'a mut Pairs<Rule>,

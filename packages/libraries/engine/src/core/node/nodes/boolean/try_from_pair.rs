@@ -1,6 +1,6 @@
 use pest::iterators::Pair;
 
-use crate::core::{node::NodeError, parse::Rule};
+use crate::core::node::{NodeError, Rule};
 
 use super::Boolean;
 

@@ -1,10 +1,7 @@
 use pest::iterators::Pair;
 
 use crate::{
-    core::{
-        node::{Function, Node, NodeError},
-        parse::Rule,
-    },
+    core::node::{Function, Node, NodeError, Rule},
     utils::parse_utils::next_pair_of_rule,
 };
 

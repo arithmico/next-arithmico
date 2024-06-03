@@ -1,6 +1,7 @@
+use node::Rule;
 use pest::iterators::Pair;
 
-use crate::core::{node::*, parse::Rule};
+use crate::core::node::*;
 
 use super::Node;
 

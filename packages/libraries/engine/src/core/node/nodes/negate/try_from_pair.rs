@@ -1,9 +1,6 @@
 use pest::iterators::Pair;
 
-use crate::core::{
-    node::{Node, NodeError},
-    parse::Rule,
-};
+use crate::core::node::{Node, NodeError, Rule};
 
 use super::Negate;
 

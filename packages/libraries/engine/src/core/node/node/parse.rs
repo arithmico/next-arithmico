@@ -1,54 +1,58 @@
-use pest::{error::Error, Parser};
+use crate::core::node::{Node, NodeError};
+use pest_derive::Parser;
 
-use crate::core::node::Node;
+#[derive(Parser)]
+#[grammar = "grammar.pest"]
+pub struct ArithmicoParser;
+use pest::Parser;
 
-use super::parser::{ArithmicoParser, Rule};
+impl Node {
+    pub fn parse(input: &str) -> Result<Self, NodeError> {
+        let pairs = ArithmicoParser::parse(Rule::statement, input)?
+            .next()
+            .unwrap();
 
-pub fn parse_statement(input: &str) -> Result<Node, Error<Rule>> {
-    let pairs = ArithmicoParser::parse(Rule::statement, input)?
-        .next()
-        .unwrap();
-
-    Ok(Node::try_from(pairs).unwrap())
+        Ok(Self::try_from(pairs).unwrap())
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{node::*, parse::parse::parse_statement};
+    use crate::core::node::*;
 
     #[test]
     fn transform_float() {
-        let result = parse_statement("2.1").unwrap();
+        let result = Node::parse("2.1").unwrap();
         assert_eq!(result, Number::new(2.1).into());
     }
 
     #[test]
     fn transform_true() {
-        let result = parse_statement("true").unwrap();
+        let result = Node::parse("true").unwrap();
         assert_eq!(result, Boolean::new(true).into());
     }
 
     #[test]
     fn transform_false() {
-        let result = parse_statement("false").unwrap();
+        let result = Node::parse("false").unwrap();
         assert_eq!(result, Boolean::new(false).into());
     }
 
     #[test]
     fn transform_symbol() {
-        let result = parse_statement("hello").unwrap();
+        let result = Node::parse("hello").unwrap();
         assert_eq!(result, Symbol::new("hello").into());
     }
 
     #[test]
     fn transform_negate() {
-        let result = parse_statement("-1").unwrap();
+        let result = Node::parse("-1").unwrap();
         assert_eq!(result, Negate::new(Number::new(1.0)).into());
     }
 
     #[test]
     fn transform_sum() {
-        let result = parse_statement("1 + 2 + 3").unwrap();
+        let result = Node::parse("1 + 2 + 3").unwrap();
         assert_eq!(
             result,
             Sum::new(vec![
@@ -62,7 +66,7 @@ mod tests {
 
     #[test]
     fn transform_sum_with_negate() {
-        let result = parse_statement("1 + 2 - 3").unwrap();
+        let result = Node::parse("1 + 2 - 3").unwrap();
         assert_eq!(
             result,
             Sum::new(vec![
@@ -76,7 +80,7 @@ mod tests {
 
     #[test]
     fn transform_product() {
-        let result = parse_statement("1 * 2").unwrap();
+        let result = Node::parse("1 * 2").unwrap();
         assert_eq!(
             result,
             Product::new(vec![
@@ -89,7 +93,7 @@ mod tests {
 
     #[test]
     fn transform_product_with_inner_sum() {
-        let result = parse_statement("(1 + 2) * 3").unwrap();
+        let result = Node::parse("(1 + 2) * 3").unwrap();
         assert_eq!(
             result,
             Product::new(vec![
@@ -106,7 +110,7 @@ mod tests {
 
     #[test]
     fn transform_division() {
-        let result = parse_statement("1 / 2").unwrap();
+        let result = Node::parse("1 / 2").unwrap();
         assert_eq!(
             result,
             Division::new(Number::new(1.0), Number::new(2.0),).into()
@@ -115,7 +119,7 @@ mod tests {
 
     #[test]
     fn transform_product_with_division() {
-        let result = parse_statement("1 / 2 * 3").unwrap();
+        let result = Node::parse("1 / 2 * 3").unwrap();
         assert_eq!(
             result,
             Product::new(vec![
@@ -128,7 +132,7 @@ mod tests {
 
     #[test]
     fn transform_power() {
-        let result = parse_statement("2 ^ 3").unwrap();
+        let result = Node::parse("2 ^ 3").unwrap();
         assert_eq!(
             result,
             Power::new(Number::new(2.0), Number::new(3.0)).into()
@@ -137,7 +141,7 @@ mod tests {
 
     #[test]
     fn transform_tensor() {
-        let result = parse_statement("[1, 2, 3]").unwrap();
+        let result = Node::parse("[1, 2, 3]").unwrap();
         assert_eq!(
             result,
             Tensor::new(vec![
@@ -151,7 +155,7 @@ mod tests {
 
     #[test]
     fn transform_and_with_2_values() {
-        let result = parse_statement("a & b").unwrap();
+        let result = Node::parse("a & b").unwrap();
         assert_eq!(
             result,
             And::new(vec![Symbol::new("a").into(), Symbol::new("b").into(),])
@@ -161,7 +165,7 @@ mod tests {
 
     #[test]
     fn transform_and_with_3_values() {
-        let result = parse_statement("a & b & c").unwrap();
+        let result = Node::parse("a & b & c").unwrap();
         assert_eq!(
             result,
             And::new(vec![
@@ -175,7 +179,7 @@ mod tests {
 
     #[test]
     fn transform_or_with_2_values() {
-        let result = parse_statement("a | b").unwrap();
+        let result = Node::parse("a | b").unwrap();
         assert_eq!(
             result,
             Or::new(vec![Symbol::new("a").into(), Symbol::new("b").into(),])
@@ -185,7 +189,7 @@ mod tests {
 
     #[test]
     fn transform_or_with_3_values() {
-        let result = parse_statement("a | b | c").unwrap();
+        let result = Node::parse("a | b | c").unwrap();
         assert_eq!(
             result,
             Or::new(vec![
@@ -199,7 +203,7 @@ mod tests {
 
     #[test]
     fn transform_function_call() {
-        let result = parse_statement("f(1, 2)").unwrap();
+        let result = Node::parse("f(1, 2)").unwrap();
         assert_eq!(
             result,
             FunctionCall::new(
@@ -212,7 +216,7 @@ mod tests {
 
     #[test]
     fn transform_function() {
-        let result = parse_statement("(x, y) -> x + y").unwrap();
+        let result = Node::parse("(x, y) -> x + y").unwrap();
         assert_eq!(
             result,
             Function::new(
@@ -228,7 +232,7 @@ mod tests {
 
     #[test]
     fn transform_function_definition() {
-        let result = parse_statement("f(x, y) := x + y").unwrap();
+        let result = Node::parse("f(x, y) := x + y").unwrap();
         assert_eq!(
             result,
             Node::from(Definition::new(
@@ -246,7 +250,7 @@ mod tests {
 
     #[test]
     fn transform_symbol_definition() {
-        let result = parse_statement("x := 2").unwrap();
+        let result = Node::parse("x := 2").unwrap();
         assert_eq!(result, Node::from(Definition::new("x", Number::new(2.0))));
     }
 }
