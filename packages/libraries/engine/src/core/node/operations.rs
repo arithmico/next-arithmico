@@ -1,5 +1,3 @@
-use serialize::parenthesis::ParenthesesBehavior;
-
 use crate::core::context::Context;
 
 use super::*;
@@ -12,6 +10,10 @@ pub trait EvaluateNode: BaseNode {
 
 #[allow(dead_code)]
 pub trait SerializeNode: BaseNode {
-    fn child_requires_parenthesis(&self, child: &Node) -> ParenthesesBehavior;
-    fn pre_serialize_transform(&self, context: &Context) -> Node;
+    fn transform_before_serialization(&self, context: &Context) -> Node;
+    fn serialize(&self, context: &Context) -> String;
+
+    fn serialize_with_parenthesis(&self, context: &Context) -> String {
+        format!("({})", self.serialize(context))
+    }
 }

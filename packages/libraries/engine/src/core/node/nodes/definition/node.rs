@@ -7,9 +7,9 @@ pub struct Definition {
 }
 
 impl Definition {
-    pub fn new<S: Into<String>, T: Into<Node>>(
-        symbol: S,
-        expression: T,
+    pub fn new(
+        symbol: impl Into<String>,
+        expression: impl Into<Node>,
     ) -> Definition {
         Definition {
             symbol: symbol.into(),
