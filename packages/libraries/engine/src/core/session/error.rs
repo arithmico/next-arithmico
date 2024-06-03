@@ -1,7 +1,7 @@
 use pest::error::Error;
 use thiserror::Error;
 
-use crate::core::{node::*, parse::Rule};
+use crate::core::node::*;
 
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum EvaluationError {

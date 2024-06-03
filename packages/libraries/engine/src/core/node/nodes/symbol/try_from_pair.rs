@@ -1,9 +1,6 @@
 use pest::iterators::Pair;
 
-use crate::core::{
-    node::{NodeError, Symbol},
-    parse::Rule,
-};
+use crate::core::node::{NodeError, Rule, Symbol};
 
 impl TryFrom<Pair<'_, Rule>> for Symbol {
     type Error = NodeError;

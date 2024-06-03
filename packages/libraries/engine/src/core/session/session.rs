@@ -4,7 +4,6 @@ use crate::core::{
     context::{Context, Settings, Stack},
     host_api::HostApi,
     node::*,
-    parse::parse_statement,
 };
 
 use super::EvaluationError;
@@ -46,7 +45,7 @@ impl Session {
         input: &str,
         settings: &Settings,
     ) -> Result<(String, Stack), EvaluationError> {
-        let node = parse_statement(input)?;
+        let node = Node::parse(input)?;
         let context = self.get_context(settings);
         let result = node.evaluate(&context)?;
         let serialized_result = result.serialize(&context);
