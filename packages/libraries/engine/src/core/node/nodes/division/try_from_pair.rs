@@ -23,3 +23,17 @@ impl TryFrom<Pair<'_, Rule>> for Division {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_division() {
+        let result = Node::parse("1 / 2").unwrap();
+        assert_eq!(
+            result,
+            Division::new(Number::new(1.0), Number::new(2.0),).into()
+        );
+    }
+}

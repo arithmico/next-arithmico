@@ -22,3 +22,17 @@ impl TryFrom<Pair<'_, Rule>> for Power {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_power() {
+        let result = Node::parse("2 ^ 3").unwrap();
+        assert_eq!(
+            result,
+            Power::new(Number::new(2.0), Number::new(3.0)).into()
+        );
+    }
+}

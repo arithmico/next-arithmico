@@ -20,3 +20,51 @@ impl TryFrom<Pair<'_, Rule>> for Product {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_product() {
+        let result = Node::parse("1 * 2").unwrap();
+        assert_eq!(
+            result,
+            Product::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+            ])
+            .into()
+        );
+    }
+
+    #[test]
+    fn parse_product_with_inner_sum() {
+        let result = Node::parse("(1 + 2) * 3").unwrap();
+        assert_eq!(
+            result,
+            Product::new(vec![
+                Sum::new(vec![
+                    Number::new(1.0).into(),
+                    Number::new(2.0).into(),
+                ])
+                .into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
+        );
+    }
+
+    #[test]
+    fn parse_product_with_division() {
+        let result = Node::parse("1 / 2 * 3").unwrap();
+        assert_eq!(
+            result,
+            Product::new(vec![
+                Division::new(Number::new(1.0), Number::new(2.0)).into(),
+                Number::new(3.0).into()
+            ])
+            .into()
+        );
+    }
+}

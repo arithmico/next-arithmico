@@ -20,3 +20,22 @@ impl TryFrom<Pair<'_, Rule>> for Tensor {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_tensor() {
+        let result = Node::parse("[1, 2, 3]").unwrap();
+        assert_eq!(
+            result,
+            Tensor::new(vec![
+                Number::new(1.0).into(),
+                Number::new(2.0).into(),
+                Number::new(3.0).into(),
+            ])
+            .into()
+        );
+    }
+}

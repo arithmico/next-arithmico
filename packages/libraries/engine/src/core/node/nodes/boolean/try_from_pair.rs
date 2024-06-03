@@ -16,3 +16,20 @@ impl TryFrom<Pair<'_, Rule>> for Boolean {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_true() {
+        let result = Node::parse("true").unwrap();
+        assert_eq!(result, Boolean::new(true).into());
+    }
+
+    #[test]
+    fn parse_false() {
+        let result = Node::parse("false").unwrap();
+        assert_eq!(result, Boolean::new(false).into());
+    }
+}

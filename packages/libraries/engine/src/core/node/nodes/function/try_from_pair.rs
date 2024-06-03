@@ -37,15 +37,21 @@ impl TryFrom<Pair<'_, Rule>> for Function {
 
 #[cfg(test)]
 mod tests {
-    use crate::utils::test_utils::serialization_test;
+    use crate::core::node::*;
 
     #[test]
-    fn serialize_function_1() {
-        serialization_test("() -> 2", "() -> 2");
-    }
-
-    #[test]
-    fn serialize_function_2() {
-        serialization_test("(x) -> x^2", "(x) -> x^2");
+    fn parse_function() {
+        let result = Node::parse("(x, y) -> x + y").unwrap();
+        assert_eq!(
+            result,
+            Function::new(
+                vec!["x".into(), "y".into()],
+                Sum::new(vec![
+                    Symbol::new("x").into(),
+                    Symbol::new("y").into()
+                ])
+            )
+            .into()
+        );
     }
 }

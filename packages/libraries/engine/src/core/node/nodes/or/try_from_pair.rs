@@ -23,3 +23,32 @@ impl TryFrom<Pair<'_, Rule>> for Or {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::node::*;
+
+    #[test]
+    fn parse_or_with_2_values() {
+        let result = Node::parse("a | b").unwrap();
+        assert_eq!(
+            result,
+            Or::new(vec![Symbol::new("a").into(), Symbol::new("b").into(),])
+                .into()
+        );
+    }
+
+    #[test]
+    fn parse_or_with_3_values() {
+        let result = Node::parse("a | b | c").unwrap();
+        assert_eq!(
+            result,
+            Or::new(vec![
+                Symbol::new("a").into(),
+                Symbol::new("b").into(),
+                Symbol::new("c").into()
+            ])
+            .into()
+        );
+    }
+}

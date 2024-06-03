@@ -20,3 +20,18 @@ impl SerializeNode for Function {
         format!("({}) -> {}", arguments, expression)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_function_1() {
+        serialization_test("() -> 2", "() -> 2");
+    }
+
+    #[test]
+    fn serialize_function_2() {
+        serialization_test("(x) -> x^2", "(x) -> x^2");
+    }
+}
