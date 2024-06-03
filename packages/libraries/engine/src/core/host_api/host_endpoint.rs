@@ -5,10 +5,8 @@ use crate::{
     language::Language,
 };
 
-pub type FunctionExecutor = fn(
-    arguments: &Vec<Node>,
-    context: &Context,
-) -> Result<Node, EvaluateNodeError>;
+pub type FunctionExecutor =
+    fn(arguments: &Vec<Node>, context: &Context) -> Result<Node, NodeError>;
 pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 #[derive(Debug, Clone, PartialEq)]

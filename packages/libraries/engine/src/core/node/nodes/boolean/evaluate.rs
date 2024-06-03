@@ -3,7 +3,7 @@ use crate::core::{context::Context, node::*};
 use super::Boolean;
 
 impl EvaluateNode for Boolean {
-    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, NodeError> {
         Ok(Boolean::new(self.value).into())
     }
 }

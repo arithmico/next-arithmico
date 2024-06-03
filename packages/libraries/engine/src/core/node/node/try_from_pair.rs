@@ -1,4 +1,3 @@
-use errors::TransformParseTreeError;
 use pest::iterators::Pair;
 
 use crate::core::{node::*, parse::Rule};
@@ -6,7 +5,7 @@ use crate::core::{node::*, parse::Rule};
 use super::Node;
 
 impl TryFrom<Pair<'_, Rule>> for Node {
-    type Error = TransformParseTreeError;
+    type Error = NodeError;
 
     fn try_from(pair: Pair<Rule>) -> Result<Self, Self::Error> {
         match pair.as_rule() {
@@ -29,7 +28,9 @@ impl TryFrom<Pair<'_, Rule>> for Node {
             }
             Rule::and => Ok(And::try_from(pair)?.into()),
             Rule::or => Ok(Or::try_from(pair)?.into()),
-            _ => Err(TransformParseTreeError::ConversionFailed),
+            _ => Err(NodeError::ParsingError(String::from(
+                "failed to convert parse tree to syntax tree",
+            ))),
         }
     }
 }

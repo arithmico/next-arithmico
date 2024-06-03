@@ -2,7 +2,7 @@ use pest::iterators::Pair;
 
 use crate::{
     core::{
-        node::{errors::TransformParseTreeError, Node, Symbol},
+        node::{Node, NodeError, Symbol},
         parse::Rule,
     },
     utils::parse_utils::next_pair_of_rule,
@@ -11,7 +11,7 @@ use crate::{
 use super::Function;
 
 impl TryFrom<Pair<'_, Rule>> for Function {
-    type Error = TransformParseTreeError;
+    type Error = NodeError;
 
     fn try_from(pair: Pair<Rule>) -> Result<Self, Self::Error> {
         match pair.as_rule() {
@@ -31,7 +31,9 @@ impl TryFrom<Pair<'_, Rule>> for Function {
                 let expression = Node::try_from(inner_pairs.next().unwrap())?;
                 Ok(Function::new(arguments, expression))
             }
-            _ => Err(TransformParseTreeError::ConversionFailed),
+            _ => Err(NodeError::ParsingError(String::from(
+                "failed to convert parse tree to syntax tree",
+            ))),
         }
     }
 }

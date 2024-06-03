@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Division {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         let evaluated_dividend = self.dividend.evaluate(context)?;
         let evaluated_divisor = self.divisor.evaluate(context)?;
 
@@ -11,7 +11,9 @@ impl EvaluateNode for Division {
                 Node::Number(Number { value: right_value }),
             ) if cfg!(feature = "operator_division_number_number") => {
                 if right_value == 0.0 {
-                    return Err(EvaluateNodeError::DivisionByZero);
+                    return Err(NodeError::RuntimeError(String::from(
+                        "division by zero is not allowed",
+                    )));
                 }
                 Ok(Number::new(left_value / right_value).into())
             }
@@ -22,7 +24,9 @@ impl EvaluateNode for Division {
                 Node::Number(Number { value }),
             ) if cfg!(feature = "operator_division_vector_number") => {
                 if value == 0.0 {
-                    return Err(EvaluateNodeError::DivisionByZero);
+                    return Err(NodeError::RuntimeError(String::from(
+                        "division by zero is not allowed",
+                    )));
                 }
                 Node::from(Tensor::new(
                     values
@@ -37,7 +41,7 @@ impl EvaluateNode for Division {
                 ))
                 .evaluate(context)
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            _ => Err(NodeError::UnsupportedOperation),
         }
     }
 }
@@ -65,7 +69,9 @@ mod tests {
                 .evaluate(&context)
                 .err()
                 .unwrap(),
-            EvaluateNodeError::DivisionByZero
+            NodeError::RuntimeError(String::from(
+                "division by zero is not allowed"
+            ))
         )
     }
 
@@ -107,7 +113,9 @@ mod tests {
             .evaluate(&context)
             .err()
             .unwrap(),
-            EvaluateNodeError::DivisionByZero
+            NodeError::RuntimeError(String::from(
+                "division by zero is not allowed"
+            ))
         )
     }
 }

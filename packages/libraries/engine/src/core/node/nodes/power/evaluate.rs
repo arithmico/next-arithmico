@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Power {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         let evaluated_base = self.base.evaluate(context)?;
         let evaluated_exponent = self.exponent.evaluate(context)?;
         match (evaluated_base, evaluated_exponent) {
@@ -11,7 +11,7 @@ impl EvaluateNode for Power {
             ) if cfg!(feature = "operator_power_number_number") => {
                 Ok(Number::new(left_value.powf(right_value)).into())
             }
-            _ => return Err(EvaluateNodeError::UnsupportedOperation),
+            _ => return Err(NodeError::UnsupportedOperation),
         }
     }
 }

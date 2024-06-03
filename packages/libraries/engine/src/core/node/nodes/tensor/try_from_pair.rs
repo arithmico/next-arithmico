@@ -1,14 +1,14 @@
 use pest::iterators::Pair;
 
 use crate::core::{
-    node::{errors::TransformParseTreeError, Node},
+    node::{Node, NodeError},
     parse::Rule,
 };
 
 use super::Tensor;
 
 impl TryFrom<Pair<'_, Rule>> for Tensor {
-    type Error = TransformParseTreeError;
+    type Error = NodeError;
 
     fn try_from(pair: Pair<Rule>) -> Result<Self, Self::Error> {
         match pair.as_rule() {
@@ -17,7 +17,9 @@ impl TryFrom<Pair<'_, Rule>> for Tensor {
                     .map(|item| Node::try_from(item))
                     .collect::<Result<Vec<_>, _>>()?,
             )),
-            _ => Err(TransformParseTreeError::ConversionFailed),
+            _ => Err(NodeError::ParsingError(String::from(
+                "failed to convert parse tree to syntax tree",
+            ))),
         }
     }
 }
