@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Tensor {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         let mut evaluated_values = Vec::<Node>::new();
         for value in self.elements.iter() {
             let evaluated_value = value.evaluate(context)?;

@@ -9,7 +9,7 @@ pub enum EvaluationError {
     SyntaxError(Error<Rule>),
 
     #[error("RuntimeError: {0}")]
-    RuntimeError(EvaluateNodeError),
+    RuntimeError(NodeError),
 }
 
 impl From<Error<Rule>> for EvaluationError {
@@ -18,8 +18,8 @@ impl From<Error<Rule>> for EvaluationError {
     }
 }
 
-impl From<EvaluateNodeError> for EvaluationError {
-    fn from(value: EvaluateNodeError) -> Self {
+impl From<NodeError> for EvaluationError {
+    fn from(value: NodeError) -> Self {
         EvaluationError::RuntimeError(value)
     }
 }

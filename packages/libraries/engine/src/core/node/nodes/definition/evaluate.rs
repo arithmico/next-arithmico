@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Definition {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         let evaluated_expression = self.expression.evaluate(context)?;
         Ok(Definition::new(self.symbol.clone(), evaluated_expression).into())
     }

@@ -1,7 +1,7 @@
 use crate::core::{context::Context, node::*};
 
 impl EvaluateNode for Negate {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         let evaluated_value = self.value.evaluate(context)?;
         match evaluated_value {
             Node::Number(Number { value })
@@ -25,7 +25,7 @@ impl EvaluateNode for Negate {
             {
                 Ok(Boolean::new(!node.value).into())
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            _ => Err(NodeError::UnsupportedOperation),
         }
     }
 }

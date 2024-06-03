@@ -6,9 +6,11 @@ use crate::{
 };
 
 impl EvaluateNode for Product {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, NodeError> {
         if self.values.len() < 2 {
-            return Err(EvaluateNodeError::InvalidNumberOfValues);
+            return Err(NodeError::RuntimeError(String::from(
+                "invalid number of operands",
+            )));
         }
         let mut result = self.values[0].evaluate(context)?;
         for current_node in self.values[1..].iter() {
@@ -23,7 +25,7 @@ fn multiply_nodes(
     left: &Node,
     right: &Node,
     context: &Context,
-) -> Result<Node, EvaluateNodeError> {
+) -> Result<Node, NodeError> {
     match (left, right) {
         (
             Node::Number(Number { value: left_value }),
@@ -58,7 +60,7 @@ fn multiply_nodes(
             }
             Ok(Tensor::new(new_values).into())
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        _ => Err(NodeError::UnsupportedOperation),
     }
 }
 
@@ -66,14 +68,14 @@ fn multiply_tensors(
     left: &Tensor,
     right: &Tensor,
     context: &Context,
-) -> Result<Node, EvaluateNodeError> {
+) -> Result<Node, NodeError> {
     let left_rank = left.get_rank();
     let right_rank = right.get_rank();
     match (left_rank, right_rank) {
         (1, 1) if cfg!(feature = "operator_product_vector_vector") => {
             if left.shape != right.shape {
-                return Err(EvaluateNodeError::ArithmeticError(
-                    "Can not multiply vectors with different dimensions".into(),
+                return Err(NodeError::RuntimeError(
+                    "can not multiply vectors with different dimensions".into(),
                 ));
             }
             Node::from(Sum::new(
@@ -134,12 +136,13 @@ fn multiply_tensors(
                     )
                     .evaluate(context)
                 }
-                _ => Err(EvaluateNodeError::ArithmeticError(
-                    "Incompatible matrix dimensions".into(),
+                _ => Err(NodeError::RuntimeError(
+                    "Can not multiply matrices with icompatible dimensions"
+                        .into(),
                 )),
             }
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        _ => Err(NodeError::UnsupportedOperation),
     }
 }
 
