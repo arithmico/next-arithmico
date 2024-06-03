@@ -33,6 +33,7 @@ impl EvaluateNode for Node {
             }
             Node::And(node) => node.evaluate(context),
             Node::Or(node) => node.evaluate(context),
+            Node::Equals(node) => node.evaluate(context),
             _ => Err(NodeError::UnsupportedOperation),
         }
     }

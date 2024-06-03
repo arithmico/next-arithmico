@@ -19,6 +19,7 @@ pub enum Node {
     Definition(Definition),
     And(And),
     Or(Or),
+    Equals(Equals),
 }
 
 impl BaseNode for Node {}
