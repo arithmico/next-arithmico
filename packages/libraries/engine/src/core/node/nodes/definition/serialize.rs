@@ -18,3 +18,13 @@ impl SerializeNode for Definition {
         format!("{} := {}", self.symbol, self.expression.serialize(context))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_definition() {
+        serialization_test("a:=2", "a := 2");
+    }
+}

@@ -57,3 +57,23 @@ impl SerializeNode for Number {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_number_integer() {
+        serialization_test("2", "2");
+    }
+
+    #[test]
+    fn serialize_number_float() {
+        serialization_test("2.3", "2.3");
+    }
+
+    #[test]
+    fn serialize_number_to_scientific_notation() {
+        serialization_test("11234567", "1.12346 * 10^7");
+    }
+}

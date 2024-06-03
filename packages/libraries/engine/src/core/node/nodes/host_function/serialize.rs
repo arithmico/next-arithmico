@@ -14,3 +14,22 @@ impl SerializeNode for HostFunction {
         self.name.clone()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::core::{
+        context::Context,
+        node::{HostFunction, SerializeNode},
+    };
+
+    #[test]
+    fn serialize_host_function() {
+        let context = Context::default();
+        assert_eq!(
+            HostFunction::new("fooo")
+                .transform_before_serialization(&context)
+                .serialize(&context),
+            "fooo"
+        )
+    }
+}

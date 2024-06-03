@@ -55,3 +55,13 @@ impl SerializeNode for Division {
         format!("{} / {}", dividend, divisor)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_division() {
+        serialization_test("2 / 3", "2 / 3");
+    }
+}

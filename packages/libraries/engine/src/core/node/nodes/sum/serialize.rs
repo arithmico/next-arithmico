@@ -48,3 +48,18 @@ impl SerializeNode for Sum {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_sum() {
+        serialization_test("1 + 2 + 3", "1 + 2 + 3");
+    }
+
+    #[test]
+    fn serialize_sum_with_negate() {
+        serialization_test("1 - 2 + 3", "1 - 2 + 3");
+    }
+}

@@ -39,3 +39,13 @@ impl SerializeNode for And {
             .join(" & ")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_and() {
+        serialization_test("a&b&c", "a & b & c");
+    }
+}

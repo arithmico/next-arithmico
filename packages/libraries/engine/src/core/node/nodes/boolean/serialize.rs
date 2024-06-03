@@ -18,3 +18,18 @@ impl SerializeNode for Boolean {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_boolean_true() {
+        serialization_test("true", "true");
+    }
+
+    #[test]
+    fn serialize_boolean_false() {
+        serialization_test("false", "false");
+    }
+}

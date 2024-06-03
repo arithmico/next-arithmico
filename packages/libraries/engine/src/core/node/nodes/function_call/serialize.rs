@@ -44,3 +44,18 @@ impl SerializeNode for FunctionCall {
         format!("{}({})", target, arguments)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::utils::test_utils::serialization_test;
+
+    #[test]
+    fn serialize_function_call_1() {
+        serialization_test("func()", "func()");
+    }
+
+    #[test]
+    fn serialize_function_call_2() {
+        serialization_test("f(x,y)", "f(x, y)");
+    }
+}
