@@ -47,6 +47,14 @@ or_item = _{
 // &
 and = { and_item ~ ("&" ~ and_item)+ } 
 and_item = _{
+    | equals
+    | equals_item
+}
+
+// relations
+// = 
+equals = { equals_item ~ "=" ~ equals_item}
+equals_item = _{
     | sum
     | sum_item
     | negate
