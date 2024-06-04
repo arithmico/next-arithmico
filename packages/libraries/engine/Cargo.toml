@@ -37,7 +37,11 @@ operators = [
     "operator_product_matrix_matrix",
     "operator_and_boolean_boolean",
     "operator_negate_boolean",
-    "operator_or_boolean_boolean"
+    "operator_or_boolean_boolean",
+    "operator_equals_number_number",
+    "operator_equals_tensor_tensor",
+    "operator_equals_boolean_boolean",
+    "operator_less_than_number_number",
 ]
 
 # data type features
@@ -65,6 +69,10 @@ operator_definition = ["datatype_symbol"]
 operator_product_matrix_matrix = ["datatype_vector"]
 operator_and_boolean_boolean = ["datatype_boolean"]
 operator_or_boolean_boolean = ["datatype_boolean"]
+operator_equals_number_number = ["datatype_boolean", "datatype_number"]
+operator_equals_tensor_tensor = ["datatype_boolean", "datatype_vector"]
+operator_equals_boolean_boolean = ["datatype_boolean"]
+operator_less_than_number_number = ["datatype_boolean", "datatype_number"]
 
 # API modules
 api_modules = ["api_module_trigonometry"]
