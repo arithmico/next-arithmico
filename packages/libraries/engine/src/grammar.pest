@@ -47,25 +47,39 @@ or_item = _{
 // &
 and = { and_item ~ ("&" ~ and_item)+ } 
 and_item = _{
-    | equals
-    | equals_item
+    | relation
+    | relation_item
 }
 
 // relations
-// = 
-equals = { equals_item ~ "=" ~ equals_item}
-equals_item = _{
+relation = _{
+    | equals
     | less_than
-    | less_than_item
+    | greater_than
+    | less_than_or_equals
+    | greater_than_or_equals
 }
-
-// <
-less_than = { less_than_item ~ "<" ~ less_than_item}
-less_than_item = _{
+relation_item = _{
     | sum
     | sum_item
     | negate
 }
+
+// = 
+equals = { relation_item ~ "=" ~ relation_item }
+
+// <
+less_than = { relation_item ~ "<" ~ relation_item }
+
+// >
+greater_than = { relation_item ~ ">" ~ relation_item }
+
+// <=
+less_than_or_equals = { relation_item ~ "<=" ~ relation_item }
+
+// >=
+greater_than_or_equals = { relation_item ~ ">=" ~ relation_item }
+
 
 // algebraic operators
 // + -
