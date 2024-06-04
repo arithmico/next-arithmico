@@ -11,6 +11,7 @@ impl LessThan {
             Node::And(_)
             | Node::Or(_)
             | Node::LessThan(_)
+            | Node::LessThanOrEquals(_)
             | Node::Equals(_)
             | Node::GreaterThan(_) => true,
             _ => false,

@@ -22,6 +22,7 @@ pub enum Node {
     Equals(Equals),
     LessThan(LessThan),
     GreaterThan(GreaterThan),
+    LessThanOrEquals(LessThanOrEquals),
 }
 
 impl BaseNode for Node {}
