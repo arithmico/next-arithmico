@@ -55,6 +55,13 @@ and_item = _{
 // = 
 equals = { equals_item ~ "=" ~ equals_item}
 equals_item = _{
+    | less_than
+    | less_than_item
+}
+
+// <
+less_than = { less_than_item ~ "<" ~ less_than_item}
+less_than_item = _{
     | sum
     | sum_item
     | negate
