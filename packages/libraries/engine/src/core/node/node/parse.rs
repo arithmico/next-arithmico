@@ -46,6 +46,9 @@ impl TryFrom<Pair<'_, Rule>> for Node {
             Rule::less_than_or_equals => {
                 Ok(LessThanOrEquals::try_from(pair)?.into())
             }
+            Rule::greater_than_or_equals => {
+                Ok(GreaterThanOrEquals::try_from(pair)?.into())
+            }
             _ => Err(NodeError::ParsingError(String::from(
                 "failed to convert parse tree to syntax tree",
             ))),

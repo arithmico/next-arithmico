@@ -10,10 +10,11 @@ impl LessThan {
         match node {
             Node::And(_)
             | Node::Or(_)
-            | Node::LessThan(_)
-            | Node::LessThanOrEquals(_)
             | Node::Equals(_)
-            | Node::GreaterThan(_) => true,
+            | Node::GreaterThan(_)
+            | Node::GreaterThanOrEquals(_)
+            | Node::LessThan(_)
+            | Node::LessThanOrEquals(_) => true,
             _ => false,
         }
     }

@@ -3,9 +3,9 @@ use crate::core::{
     node::{Node, SerializeNode},
 };
 
-use super::Equals;
+use super::GreaterThanOrEquals;
 
-impl Equals {
+impl GreaterThanOrEquals {
     fn child_requires_parenthesis(node: &Node) -> bool {
         match node {
             Node::And(_)
@@ -20,7 +20,7 @@ impl Equals {
     }
 
     fn serialize_child(node: &Node, context: &Context) -> String {
-        if Equals::child_requires_parenthesis(node) {
+        if GreaterThanOrEquals::child_requires_parenthesis(node) {
             format!("({})", node.serialize(context))
         } else {
             node.serialize(context)
@@ -28,16 +28,16 @@ impl Equals {
     }
 }
 
-impl SerializeNode for Equals {
+impl SerializeNode for GreaterThanOrEquals {
     fn transform_before_serialization(&self, _context: &Context) -> Node {
         self.clone().into()
     }
 
     fn serialize(&self, context: &Context) -> String {
         format!(
-            "{} = {}",
-            Equals::serialize_child(&self.left, context),
-            Equals::serialize_child(&self.right, context)
+            "{} >= {}",
+            GreaterThanOrEquals::serialize_child(&self.left, context),
+            GreaterThanOrEquals::serialize_child(&self.right, context)
         )
     }
 }
@@ -47,7 +47,7 @@ mod tests {
     use crate::utils::test_utils::serialization_test;
 
     #[test]
-    fn serialize_equals() {
-        serialization_test("a = b", "a = b");
+    fn serialize_less_than() {
+        serialization_test("a >= b", "a >= b");
     }
 }
