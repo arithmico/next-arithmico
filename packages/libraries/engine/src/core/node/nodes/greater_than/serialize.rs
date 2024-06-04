@@ -3,22 +3,22 @@ use crate::core::{
     node::{Node, SerializeNode},
 };
 
-use super::LessThan;
+use super::GreaterThan;
 
-impl LessThan {
+impl GreaterThan {
     fn child_requires_parenthesis(node: &Node) -> bool {
         match node {
             Node::And(_)
             | Node::Or(_)
-            | Node::LessThan(_)
+            | Node::GreaterThan(_)
             | Node::Equals(_)
-            | Node::GreaterThan(_) => true,
+            | Node::LessThan(_) => true,
             _ => false,
         }
     }
 
     fn serialize_child(node: &Node, context: &Context) -> String {
-        if LessThan::child_requires_parenthesis(node) {
+        if GreaterThan::child_requires_parenthesis(node) {
             format!("({})", node.serialize(context))
         } else {
             node.serialize(context)
@@ -26,16 +26,16 @@ impl LessThan {
     }
 }
 
-impl SerializeNode for LessThan {
+impl SerializeNode for GreaterThan {
     fn transform_before_serialization(&self, _context: &Context) -> Node {
         self.clone().into()
     }
 
     fn serialize(&self, context: &Context) -> String {
         format!(
-            "{} < {}",
-            LessThan::serialize_child(&self.left, context),
-            LessThan::serialize_child(&self.right, context)
+            "{} > {}",
+            GreaterThan::serialize_child(&self.left, context),
+            GreaterThan::serialize_child(&self.right, context)
         )
     }
 }
@@ -46,6 +46,6 @@ mod tests {
 
     #[test]
     fn serialize_less_than() {
-        serialization_test("a < b", "a < b");
+        serialization_test("a > b", "a > b");
     }
 }
