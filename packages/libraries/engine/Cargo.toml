@@ -43,7 +43,8 @@ operators = [
     "operator_equals_boolean_boolean",
     "operator_less_than_number_number",
     "operator_greater_than_number_number",
-    "operator_less_than_or_equals_number_number"
+    "operator_less_than_or_equals_number_number",
+    "operator_greater_than_or_equals_number_number"
 ]
 
 # data type features
@@ -77,6 +78,7 @@ operator_equals_boolean_boolean = ["datatype_boolean"]
 operator_less_than_number_number = ["datatype_boolean", "datatype_number"]
 operator_greater_than_number_number = ["datatype_boolean", "datatype_number"]
 operator_less_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
+operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
 
 # API modules
 api_modules = ["api_module_trigonometry"]
