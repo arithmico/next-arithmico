@@ -37,6 +37,9 @@ impl SerializeNode for Node {
             Node::GreaterThan(node) => {
                 node.transform_before_serialization(context)
             }
+            Node::LessThanOrEquals(node) => {
+                node.transform_before_serialization(context)
+            }
         }
     }
 
@@ -60,6 +63,7 @@ impl SerializeNode for Node {
             Node::Equals(node) => node.serialize(context),
             Node::LessThan(node) => node.serialize(context),
             Node::GreaterThan(node) => node.serialize(context),
+            Node::LessThanOrEquals(node) => node.serialize(context),
         }
     }
 }

@@ -36,6 +36,7 @@ impl EvaluateNode for Node {
             Node::Equals(node) => node.evaluate(context),
             Node::LessThan(node) => node.evaluate(context),
             Node::GreaterThan(node) => node.evaluate(context),
+            Node::LessThanOrEquals(node) => node.evaluate(context),
             _ => Err(NodeError::UnsupportedOperation),
         }
     }

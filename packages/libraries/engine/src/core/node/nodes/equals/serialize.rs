@@ -12,6 +12,7 @@ impl Equals {
             | Node::Or(_)
             | Node::Equals(_)
             | Node::LessThan(_)
+            | Node::LessThanOrEquals(_)
             | Node::GreaterThan(_) => true,
             _ => false,
         }
