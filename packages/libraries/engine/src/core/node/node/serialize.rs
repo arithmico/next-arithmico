@@ -31,6 +31,9 @@ impl SerializeNode for Node {
             Node::And(node) => node.transform_before_serialization(context),
             Node::Or(node) => node.transform_before_serialization(context),
             Node::Equals(node) => node.transform_before_serialization(context),
+            Node::LessThan(node) => {
+                node.transform_before_serialization(context)
+            }
         }
     }
 
@@ -52,6 +55,7 @@ impl SerializeNode for Node {
             Node::And(node) => node.serialize(context),
             Node::Or(node) => node.serialize(context),
             Node::Equals(node) => node.serialize(context),
+            Node::LessThan(node) => node.serialize(context),
         }
     }
 }

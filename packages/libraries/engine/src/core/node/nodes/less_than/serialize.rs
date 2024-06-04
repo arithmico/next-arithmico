@@ -3,21 +3,21 @@ use crate::core::{
     node::{Node, SerializeNode},
 };
 
-use super::Equals;
+use super::LessThan;
 
-impl Equals {
+impl LessThan {
     fn child_requires_parenthesis(node: &Node) -> bool {
         match node {
             Node::And(_)
             | Node::Or(_)
-            | Node::Equals(_)
-            | Node::LessThan(_) => true,
+            | Node::LessThan(_)
+            | Node::Equals(_) => true,
             _ => false,
         }
     }
 
     fn serialize_child(node: &Node, context: &Context) -> String {
-        if Equals::child_requires_parenthesis(node) {
+        if LessThan::child_requires_parenthesis(node) {
             format!("({})", node.serialize(context))
         } else {
             node.serialize(context)
@@ -25,16 +25,16 @@ impl Equals {
     }
 }
 
-impl SerializeNode for Equals {
+impl SerializeNode for LessThan {
     fn transform_before_serialization(&self, _context: &Context) -> Node {
         self.clone().into()
     }
 
     fn serialize(&self, context: &Context) -> String {
         format!(
-            "{} = {}",
-            Equals::serialize_child(&self.left, context),
-            Equals::serialize_child(&self.right, context)
+            "{} < {}",
+            LessThan::serialize_child(&self.left, context),
+            LessThan::serialize_child(&self.right, context)
         )
     }
 }
@@ -44,7 +44,7 @@ mod tests {
     use crate::utils::test_utils::serialization_test;
 
     #[test]
-    fn serialize_equals() {
-        serialization_test("a = b", "a = b");
+    fn serialize_less_than() {
+        serialization_test("a < b", "a < b");
     }
 }
