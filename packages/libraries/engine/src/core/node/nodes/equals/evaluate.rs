@@ -18,6 +18,11 @@ impl EvaluateNode for Equals {
             {
                 compare_numbers(left, right)
             }
+            (Node::Boolean(left), Node::Boolean(right))
+                if cfg!(feature = "operator_equals_boolean_boolean") =>
+            {
+                compare_booleans(left, right)
+            }
             (Node::Tensor(left), Node::Tensor(right))
                 if cfg!(feature = "operator_equals_tensor_tensor") =>
             {
@@ -29,6 +34,10 @@ impl EvaluateNode for Equals {
 }
 
 fn compare_numbers(left: Number, right: Number) -> Result<Node, NodeError> {
+    Ok(Boolean::new(left.value == right.value).into())
+}
+
+fn compare_booleans(left: Boolean, right: Boolean) -> Result<Node, NodeError> {
     Ok(Boolean::new(left.value == right.value).into())
 }
 
@@ -69,6 +78,50 @@ mod tests {
         let context = Context::default();
         assert_eq!(
             Node::from(Equals::new(Number::new(6.0), Number::new(5.0)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(false).into()
+        )
+    }
+
+    #[test]
+    fn evaluate_equals_boolean_boolean_true_1() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Equals::new(Boolean::new(true), Boolean::new(true)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(true).into()
+        )
+    }
+
+    #[test]
+    fn evaluate_equals_boolean_boolean_true_2() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Equals::new(Boolean::new(false), Boolean::new(false)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(true).into()
+        )
+    }
+
+    #[test]
+    fn evaluate_equals_boolean_boolean_false_1() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Equals::new(Boolean::new(false), Boolean::new(true)))
+                .evaluate(&context)
+                .unwrap(),
+            Boolean::new(false).into()
+        )
+    }
+
+    #[test]
+    fn evaluate_equals_boolean_boolean_false_2() {
+        let context = Context::default();
+        assert_eq!(
+            Node::from(Equals::new(Boolean::new(true), Boolean::new(false)))
                 .evaluate(&context)
                 .unwrap(),
             Boolean::new(false).into()
