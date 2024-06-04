@@ -11,7 +11,9 @@ impl EvaluateNode for LessThan {
         let right = self.right.evaluate(context)?;
 
         match (left, right) {
-            (Node::Number(left), Node::Number(right)) => {
+            (Node::Number(left), Node::Number(right))
+                if cfg!(feature = "operator_less_than_number_number") =>
+            {
                 compare_numbers(left, right)
             }
             _ => Err(NodeError::UnsupportedOperation),

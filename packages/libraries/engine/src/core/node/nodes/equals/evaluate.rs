@@ -13,10 +13,14 @@ impl EvaluateNode for Equals {
         let right = self.right.evaluate(context)?;
 
         match (left, right) {
-            (Node::Number(left), Node::Number(right)) => {
+            (Node::Number(left), Node::Number(right))
+                if cfg!(feature = "operator_equals_number_number") =>
+            {
                 compare_numbers(left, right)
             }
-            (Node::Tensor(left), Node::Tensor(right)) => {
+            (Node::Tensor(left), Node::Tensor(right))
+                if cfg!(feature = "operator_equals_tensor_tensor") =>
+            {
                 compare_tensors(left, right, context)
             }
             _ => Err(NodeError::UnsupportedOperation),
