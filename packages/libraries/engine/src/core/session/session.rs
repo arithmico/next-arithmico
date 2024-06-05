@@ -1,9 +1,12 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::core::{
-    context::{Context, Settings, Stack},
-    host_api::HostApi,
-    node::*,
+use crate::{
+    core::{
+        context::{Context, Settings, Stack},
+        host_api::HostApi,
+        node::*,
+    },
+    Language,
 };
 
 use super::EvaluationError;
@@ -45,7 +48,11 @@ impl Session {
         input: &str,
         settings: &Settings,
     ) -> Result<(String, Stack), EvaluationError> {
-        let node = Node::parse(input)?;
+        let transformed_input = match settings.get_language() {
+            Language::German => input.replace(",", ".").replace(";", ","),
+            Language::English => input.into(),
+        };
+        let node = Node::parse(&transformed_input)?;
         let context = self.get_context(settings);
         let result = node.evaluate(&context)?;
         let serialized_result = result.serialize(&context);
@@ -143,6 +150,25 @@ mod tests {
                 statements: vec![Statement {
                     input: "1+2".into(),
                     output: Ok("3".into()),
+                    stack: Stack::new(),
+                }]
+            }
+        )
+    }
+
+    #[test]
+    fn push_statement_german() {
+        let host_api = Rc::new(HostApi::builder().build());
+        let session = Session::new(host_api.clone());
+        let settings = Settings::new(5, Language::German);
+        assert_eq!(
+            session.push("1,1+2,2", &settings),
+            Session {
+                host_api,
+                stack: Stack::new(),
+                statements: vec![Statement {
+                    input: "1,1+2,2".into(),
+                    output: Ok("3,3".into()),
                     stack: Stack::new(),
                 }]
             }
