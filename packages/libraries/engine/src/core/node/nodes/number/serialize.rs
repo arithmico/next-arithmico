@@ -1,6 +1,9 @@
-use crate::core::{
-    context::Context,
-    node::{Negate, Node, Power, Product, SerializeNode},
+use crate::{
+    core::{
+        context::Context,
+        node::{Negate, Node, Power, Product, SerializeNode},
+    },
+    utils::serialize_utils::get_decimal_separator,
 };
 
 use super::Number;
@@ -53,14 +56,23 @@ impl SerializeNode for Number {
         let decimal_places = context.settings.get_decimal_places() as usize;
         let serialized_value = format!("{:.1$}", self.value, decimal_places);
         String::from(
-            serialized_value.trim_end_matches("0").trim_end_matches("."),
+            serialized_value
+                .trim_end_matches("0")
+                .trim_end_matches(".")
+                .replace(".", &get_decimal_separator(context)),
         )
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::utils::test_utils::serialization_test;
+    use crate::{
+        core::context::Context,
+        utils::test_utils::{
+            serialization_test, serialization_test_with_context,
+        },
+        Language, Settings,
+    };
 
     #[test]
     fn serialize_number_integer() {
@@ -75,5 +87,14 @@ mod tests {
     #[test]
     fn serialize_number_to_scientific_notation() {
         serialization_test("11234567", "1.12346 * 10^7");
+    }
+
+    #[test]
+    fn serialize_number_float_german() {
+        let context = Context {
+            settings: Settings::new(5, Language::German),
+            ..Context::default()
+        };
+        serialization_test_with_context("2.3", "2,3", &context);
     }
 }

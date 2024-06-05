@@ -74,6 +74,9 @@ impl AppState {
     }
 
     pub fn get_engine_settings(&self) -> EngineSettings {
-        EngineSettings::new(self.settings.decimal_places)
+        EngineSettings::new(
+            self.settings.decimal_places,
+            self.settings.language.clone(),
+        )
     }
 }

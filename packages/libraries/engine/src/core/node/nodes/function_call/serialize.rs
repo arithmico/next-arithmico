@@ -1,6 +1,9 @@
-use crate::core::{
-    context::Context,
-    node::{Node, SerializeNode},
+use crate::{
+    core::{
+        context::Context,
+        node::{Node, SerializeNode},
+    },
+    utils::serialize_utils::get_argument_separator,
 };
 
 use super::FunctionCall;
@@ -39,7 +42,7 @@ impl SerializeNode for FunctionCall {
             .iter()
             .map(|argument| argument.serialize(context))
             .collect::<Vec<_>>()
-            .join(", ");
+            .join(&format!("{} ", get_argument_separator(context)));
 
         format!("{}({})", target, arguments)
     }
@@ -47,7 +50,13 @@ impl SerializeNode for FunctionCall {
 
 #[cfg(test)]
 mod tests {
-    use crate::utils::test_utils::serialization_test;
+    use crate::{
+        core::context::Context,
+        utils::test_utils::{
+            serialization_test, serialization_test_with_context,
+        },
+        Language, Settings,
+    };
 
     #[test]
     fn serialize_function_call_1() {
@@ -57,5 +66,14 @@ mod tests {
     #[test]
     fn serialize_function_call_2() {
         serialization_test("f(x,y)", "f(x, y)");
+    }
+
+    #[test]
+    fn serialize_function_call_german() {
+        let context = Context {
+            settings: Settings::new(5, Language::German),
+            ..Context::default()
+        };
+        serialization_test_with_context("f(x,y)", "f(x; y)", &context);
     }
 }
