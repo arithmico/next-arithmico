@@ -1,8 +1,11 @@
 use std::iter::zip;
 
-use crate::core::{
-    context::Context,
-    node::{Node, SerializeNode},
+use crate::{
+    core::{
+        context::Context,
+        node::{Node, SerializeNode},
+    },
+    utils::serialize_utils::get_argument_separator,
 };
 
 use super::Tensor;
@@ -42,7 +45,8 @@ impl SerializeNode for Tensor {
                 separator.push_str("]");
             }
             if current_inner_index != 0 {
-                separator.push_str(", ");
+                separator
+                    .push_str(&format!("{} ", get_argument_separator(context)));
             }
             for _ in 0..sep_count {
                 separator.push_str("[");
@@ -58,7 +62,13 @@ impl SerializeNode for Tensor {
 
 #[cfg(test)]
 mod tests {
-    use crate::utils::test_utils::serialization_test;
+    use crate::{
+        core::context::Context,
+        utils::test_utils::{
+            serialization_test, serialization_test_with_context,
+        },
+        Language, Settings,
+    };
 
     #[test]
     fn serialize_tensor() {
@@ -81,5 +91,14 @@ mod tests {
             "[[[1], [2]], [[3], [4]], [[5], [6]]]",
             "[[[1], [2]], [[3], [4]], [[5], [6]]]",
         );
+    }
+
+    #[test]
+    fn serialize_tensor_german() {
+        let context = Context {
+            settings: Settings::new(5, Language::German),
+            ..Context::default()
+        };
+        serialization_test_with_context("[1,2,3]", "[1; 2; 3]", &context);
     }
 }
