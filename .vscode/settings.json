@@ -5,5 +5,6 @@
         "icons",
         "headless_components",
         "workspace"
-    ]
+    ],
+    "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
