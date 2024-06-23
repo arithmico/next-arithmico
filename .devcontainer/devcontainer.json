@@ -5,7 +5,8 @@
         "vscode": {
             "extensions": [
                 "rust-lang.rust-analyzer",
-                "vivaxy.vscode-conventional-commits"
+                "vivaxy.vscode-conventional-commits",
+                "bradlc.vscode-tailwindcss"
             ]
         }
     },
