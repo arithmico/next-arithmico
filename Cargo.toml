@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
 members = [
-    "packages/applications/arithmico",
+    "packages/applications/arithmico", "packages/applications/leptos_arithmico",
     "packages/libraries/*"
 ]
