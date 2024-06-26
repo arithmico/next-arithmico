@@ -3,22 +3,19 @@ use leptos::*;
 
 use crate::state::AppState;
 
-#[derive(Clone)]
-pub enum DispatchAction {
-    Evaluate(String),
-}
+use super::AppAction;
 
 #[derive(Clone)]
-pub struct Dispatcher(pub Callback<DispatchAction>);
+pub struct Dispatcher(pub Callback<AppAction>);
 
 #[component]
 pub fn StateProvider(children: Children) -> impl IntoView {
     let (app_state, set_app_state) = create_signal(AppState::new());
 
-    provide_context::<Dispatcher>(Dispatcher(Callback::<DispatchAction>::new(
+    provide_context::<Dispatcher>(Dispatcher(Callback::<AppAction>::new(
         move |action| {
             match action {
-                DispatchAction::Evaluate(input) => {
+                AppAction::Evaluate(input) => {
                     let next_session = app_state
                         .get()
                         .session
