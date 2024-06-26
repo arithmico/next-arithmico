@@ -1,3 +1,5 @@
-mod state;
+mod app_state;
+mod provider;
 
-pub use state::{DispatchAction, Dispatcher, StateProvider};
+pub use app_state::AppState;
+pub use provider::{DispatchAction, Dispatcher, StateProvider};

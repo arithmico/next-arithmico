@@ -1,16 +1,15 @@
 use crate::{
     components::*,
-    state::{DispatchAction, Dispatcher},
+    state::{AppState, DispatchAction, Dispatcher},
 };
-use engine::Session;
 use leptos::*;
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
     let dispatch = expect_context::<Dispatcher>().0;
-    let session = expect_context::<ReadSignal<Session>>();
+    let app_state = expect_context::<ReadSignal<AppState>>();
     let value = move || -> String {
-        session.get().get_statements().last().map_or(
+        app_state.get().session.get_statements().last().map_or(
             String::new(),
             |statement| match statement.output.clone() {
                 Ok(value) => value,
