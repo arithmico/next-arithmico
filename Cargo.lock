@@ -1040,6 +1040,7 @@ name = "leptos_arithmico"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
+ "engine",
  "leptos",
  "leptos_router",
 ]
