@@ -9,5 +9,5 @@
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "tailwindCSS.includeLanguages": {
         "rust": "html"
-    },
+    }
 }

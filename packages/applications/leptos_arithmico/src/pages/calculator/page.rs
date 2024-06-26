@@ -3,34 +3,59 @@ use crate::{
     state::AppAction,
     utils::{expect_app_state, expect_dispatch},
 };
+use engine::EvaluationError;
 use leptos::*;
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
     let dispatch = expect_dispatch();
     let app_state = expect_app_state();
-    let value = move || -> String {
-        app_state.get().session.get_statements().last().map_or(
-            String::new(),
-            |statement| match statement.output.clone() {
-                Ok(value) => value,
-                Err(error) => error.to_string(),
-            },
-        )
-    };
+    let output = Signal::derive(move || {
+        app_state
+            .get()
+            .session
+            .last_statement()
+            .and_then(|statement| Some(statement.output.clone()))
+    });
 
     view! {
         <PageWithSidebar>
             <h1 class="text-3xl font-bold">Calculator</h1>
-            <input
-                class="border border-black"
-                type="text"
-                on:change=move |event| {
-                    dispatch.call(AppAction::Evaluate(event_target_value(&event)))
-                }
-            />
+            <div class="flex flex-col gap-4">
+                <input
+                    class="border border-black"
+                    type="text"
+                    on:change=move |event| {
+                        dispatch.call(AppAction::Evaluate(event_target_value(&event)))
+                    }
+                />
 
-            <input readonly value=value/>
+                <OutputField value=output/>
+            </div>
         </PageWithSidebar>
+    }
+}
+
+#[component]
+pub fn OutputField(
+    value: Signal<Option<Result<String, EvaluationError>>>,
+) -> impl IntoView {
+    let output = move || match value.get() {
+        None => (String::new(), false),
+        Some(result) => match result {
+            Ok(result) => (result, false),
+            Err(error) => (error.to_string(), true),
+        },
+    };
+    let content = move || output().0;
+    let is_error = move || output().1;
+    view! {
+        <input
+            class="border"
+            class=("border-black", move || !is_error())
+            class=("border-red-500", is_error)
+            readonly
+            value=content
+        />
     }
 }
