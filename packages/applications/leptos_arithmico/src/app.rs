@@ -1,9 +1,8 @@
 use engine::{load_host_api, Session, Settings};
 use leptos::*;
-use leptos_router::*;
 
 use crate::{
-    pages::*,
+    router::Router,
     state::{DispatchAction, Dispatcher},
 };
 
@@ -26,14 +25,5 @@ pub fn App() -> impl IntoView {
 
     provide_context(session);
 
-    view! {
-        <Router>
-            <Routes>
-                <Route path="/" view=CalculatorPage/>
-                <Route path="/settings" view=SettingsPage/>
-                <Route path="/reference" view=ReferencePage/>
-                <Route path="/about" view=AboutPage/>
-            </Routes>
-        </Router>
-    }
+    view! { <Router/> }
 }
