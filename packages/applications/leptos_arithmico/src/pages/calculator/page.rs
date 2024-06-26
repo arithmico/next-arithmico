@@ -1,6 +1,6 @@
 use crate::{
     components::*,
-    state::{AppState, DispatchAction, Dispatcher},
+    state::{AppAction, AppState, Dispatcher},
 };
 use leptos::*;
 
@@ -25,7 +25,7 @@ pub fn CalculatorPage() -> impl IntoView {
                 class="border border-black"
                 type="text"
                 on:change=move |event| {
-                    dispatch.call(DispatchAction::Evaluate(event_target_value(&event)))
+                    dispatch.call(AppAction::Evaluate(event_target_value(&event)))
                 }
             />
 
