@@ -3,7 +3,7 @@ use leptos::*;
 use leptos_router::*;
 
 use crate::{
-    pages::calculator::CalculatorPage,
+    pages::*,
     state::{DispatchAction, Dispatcher},
 };
 
@@ -30,6 +30,9 @@ pub fn App() -> impl IntoView {
         <Router>
             <Routes>
                 <Route path="/" view=CalculatorPage/>
+                <Route path="/settings" view=SettingsPage/>
+                <Route path="/reference" view=ReferencePage/>
+                <Route path="/about" view=AboutPage/>
             </Routes>
         </Router>
     }
