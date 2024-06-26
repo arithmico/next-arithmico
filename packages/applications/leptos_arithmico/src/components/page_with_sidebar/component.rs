@@ -13,7 +13,7 @@ pub fn PageWithSidebar(children: Children) -> impl IntoView {
                     <NavigationItem to="/about".to_string()>About</NavigationItem>
                 </Navigation>
             </Sidebar>
-            <main>{children()}</main>
+            <main class="px-4">{children()}</main>
         </Page>
     }
 }

@@ -1,4 +1,5 @@
 use leptos::*;
+use logging::log;
 
 use crate::state::{AppAction, AppState};
 
@@ -14,6 +15,8 @@ pub fn StateProvider(children: Children) -> impl IntoView {
     )));
 
     provide_context(app_state);
+
+    logging::log!("provider");
 
     view! { <>{children()}</> }
 }

@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use engine::{load_host_api, Session, Settings};
+use leptos::*;
 
 use super::AppAction;
 
@@ -19,8 +20,10 @@ impl AppState {
     pub(super) fn reduce(&self, action: AppAction) -> Self {
         match action {
             AppAction::Evaluate(input) => {
+                logging::log!("reduce");
                 let next_session =
                     self.session.push(&input, &Settings::default());
+                logging::log!("{:?}", next_session);
                 AppState {
                     session: next_session,
                 }
