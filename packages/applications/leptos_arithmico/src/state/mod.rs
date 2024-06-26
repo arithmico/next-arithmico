@@ -1,3 +1,3 @@
 mod state;
 
-pub use state::{DispatchAction, Dispatcher};
+pub use state::{DispatchAction, Dispatcher, StateProvider};
