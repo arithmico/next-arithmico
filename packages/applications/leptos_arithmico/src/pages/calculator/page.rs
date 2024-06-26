@@ -20,9 +20,8 @@ pub fn CalculatorPage() -> impl IntoView {
     };
 
     view! {
-        <Page>
+        <PageWithSidebar>
             <h1 class="text-3xl font-bold">Calculator</h1>
-
             <input
                 class="border border-black"
                 type="text"
@@ -32,7 +31,6 @@ pub fn CalculatorPage() -> impl IntoView {
             />
 
             <input readonly value=value/>
-
-        </Page>
+        </PageWithSidebar>
     }
 }
