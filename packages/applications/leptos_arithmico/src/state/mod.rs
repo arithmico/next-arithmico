@@ -4,4 +4,4 @@ mod provider;
 
 pub use action::AppAction;
 pub use app_state::AppState;
-pub use provider::{Dispatcher, StateProvider};
+pub use provider::{Dispatch, StateProvider};
