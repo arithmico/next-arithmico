@@ -1,6 +1,6 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, multi::many1,
-    sequence::tuple, IResult,
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::tuple, IResult,
 };
 
 use crate::{parse_number, Node};
@@ -13,6 +13,10 @@ pub struct Product {
 impl Product {
     pub fn new(elements: Vec<Node>) -> Node {
         Node::Product(Self { elements })
+    }
+
+    pub fn parse(input: &str) -> IResult<&str, Node> {
+        alt((parse_product, parse_product_element))(input)
     }
 }
 
@@ -31,12 +35,14 @@ fn parse_product_item(input: &str) -> IResult<&str, Node> {
     Ok((remaining_input, element))
 }
 
-fn parse_product_element(input: &str) -> IResult<&str, Node> {
+pub fn parse_product_element(input: &str) -> IResult<&str, Node> {
     parse_number(input)
 }
 
 #[cfg(test)]
 mod tests {
+    use nom::combinator::all_consuming;
+
     use crate::Number;
 
     use super::*;
@@ -44,13 +50,13 @@ mod tests {
     #[test]
     fn parse_error_product_1() {
         let result: Result<(&str, Node), nom::Err<nom::error::Error<&str>>> =
-            parse_product("1*");
+            all_consuming(Product::parse)("1*");
         assert!(result.is_err());
     }
 
     #[test]
     fn parse_product_2() {
-        let result = parse_product("1*2").unwrap();
+        let result = Product::parse("1*2").unwrap();
         assert_eq!(
             result,
             ("", Product::new(vec![Number::new(1.), Number::new(2.)]))
@@ -59,7 +65,7 @@ mod tests {
 
     #[test]
     fn parse_product_3() {
-        let result = parse_product("1*2*3").unwrap();
+        let result = Product::parse("1*2*3").unwrap();
         assert_eq!(
             result,
             (
@@ -75,7 +81,7 @@ mod tests {
 
     #[test]
     fn parse_product_3_space() {
-        let result = parse_product("1* 2  *   3").unwrap();
+        let result = Product::parse("1* 2  *   3").unwrap();
         assert_eq!(
             result,
             (
