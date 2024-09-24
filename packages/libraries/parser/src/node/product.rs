@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{parse_number, Node};
+use crate::{Division, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Product {
@@ -36,7 +36,7 @@ fn parse_product_item(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn parse_product_element(input: &str) -> IResult<&str, Node> {
-    parse_number(input)
+    Division::parse(input)
 }
 
 #[cfg(test)]
@@ -89,6 +89,21 @@ mod tests {
                 Product::new(vec![
                     Number::new(1.),
                     Number::new(2.),
+                    Number::new(3.)
+                ])
+            )
+        );
+    }
+
+    #[test]
+    fn parse_product_with_division() {
+        let result = Product::parse("1 / 2 *3").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Product::new(vec![
+                    Division::new(Number::new(1.), Number::new(2.)),
                     Number::new(3.)
                 ])
             )
