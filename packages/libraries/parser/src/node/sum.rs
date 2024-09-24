@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{Node, Product};
+use crate::{Negate, Node, Product};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Sum {
@@ -16,13 +16,15 @@ impl Sum {
     }
 
     pub fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_sum, parse_sum_element))(input)
+        alt((parse_sum, Negate::parse))(input)
     }
 }
 
 fn parse_sum(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (first, mut rest)) =
-        tuple((parse_sum_element, many1(parse_sum_item)))(input)?;
+    let (remaining_input, (first, mut rest)) = tuple((
+        Product::parse,
+        many1(alt((parse_sum_item, Negate::parse))),
+    ))(input)?;
 
     let mut elements = vec![first];
     elements.append(&mut rest);
@@ -31,12 +33,8 @@ fn parse_sum(input: &str) -> IResult<&str, Node> {
 
 fn parse_sum_item(input: &str) -> IResult<&str, Node> {
     let (remaining_input, (_, _, _, element)) =
-        tuple((space0, tag("+"), space0, parse_sum_element))(input)?;
+        tuple((space0, tag("+"), space0, Product::parse))(input)?;
     Ok((remaining_input, element))
-}
-
-fn parse_sum_element(input: &str) -> IResult<&str, Node> {
-    Product::parse(input)
 }
 
 #[cfg(test)]
@@ -105,6 +103,22 @@ mod tests {
                 Sum::new(vec![
                     Number::new(1.),
                     Product::new(vec![Number::new(2.), Number::new(3.),])
+                ])
+            )
+        )
+    }
+
+    #[test]
+    fn parse_sum_with_negate() {
+        let result = Sum::parse("1 + 2 - 3").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Sum::new(vec![
+                    Number::new(1.),
+                    Number::new(2.),
+                    Negate::new(Number::new(3.))
                 ])
             )
         )
