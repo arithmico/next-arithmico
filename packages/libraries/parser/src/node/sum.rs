@@ -1,4 +1,7 @@
-use nom::{bytes::complete::tag, multi::many1, sequence::tuple, IResult};
+use nom::{
+    bytes::complete::tag, character::complete::space0, multi::many1,
+    sequence::tuple, IResult,
+};
 
 use crate::{parse_number, Node};
 
@@ -23,8 +26,8 @@ pub fn parse_sum(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn parse_sum_item(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (_, element)) =
-        tuple((tag("+"), parse_number))(input)?;
+    let (remaining_input, (_, _, _, element)) =
+        tuple((space0, tag("+"), space0, parse_number))(input)?;
     Ok((remaining_input, element))
 }
 
@@ -61,6 +64,22 @@ mod tests {
     #[test]
     fn parse_sum_3() {
         let result = parse_sum("1+2+3").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Sum::new(vec![
+                    Number::new(1.),
+                    Number::new(2.),
+                    Number::new(3.)
+                ])
+            )
+        );
+    }
+
+    #[test]
+    fn parse_sum_3_space() {
+        let result = parse_sum("1+ 2  +   3").unwrap();
         assert_eq!(
             result,
             (
