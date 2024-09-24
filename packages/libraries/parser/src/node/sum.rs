@@ -1,9 +1,9 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, multi::many1,
-    sequence::tuple, IResult,
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{parse_number, Node};
+use crate::{Node, Product};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Sum {
@@ -14,9 +14,13 @@ impl Sum {
     pub fn new(elements: Vec<Node>) -> Node {
         Node::Sum(Self { elements })
     }
+
+    pub fn parse(input: &str) -> IResult<&str, Node> {
+        alt((parse_sum, parse_sum_element))(input)
+    }
 }
 
-pub fn parse_sum(input: &str) -> IResult<&str, Node> {
+fn parse_sum(input: &str) -> IResult<&str, Node> {
     let (remaining_input, (first, mut rest)) =
         tuple((parse_sum_element, many1(parse_sum_item)))(input)?;
 
@@ -32,33 +36,27 @@ fn parse_sum_item(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_sum_element(input: &str) -> IResult<&str, Node> {
-    parse_number(input)
+    Product::parse(input)
 }
 
 #[cfg(test)]
 mod tests {
-    use nom::error::ErrorKind;
+    use nom::combinator::all_consuming;
 
-    use crate::Number;
+    use crate::{Number, Product};
 
     use super::*;
 
     #[test]
     fn parse_error_sum_1() {
         let result: Result<(&str, Node), nom::Err<nom::error::Error<&str>>> =
-            parse_sum("1+");
-        assert_eq!(
-            result,
-            Err(nom::Err::Error(nom::error::Error::new(
-                "",
-                ErrorKind::Float
-            )))
-        );
+            all_consuming(Sum::parse)("1+");
+        assert!(result.is_err());
     }
 
     #[test]
     fn parse_sum_2() {
-        let result = parse_sum("1+2").unwrap();
+        let result = Sum::parse("1+2").unwrap();
         assert_eq!(
             result,
             ("", Sum::new(vec![Number::new(1.), Number::new(2.)]))
@@ -67,7 +65,7 @@ mod tests {
 
     #[test]
     fn parse_sum_3() {
-        let result = parse_sum("1+2+3").unwrap();
+        let result = Sum::parse("1+2+3").unwrap();
         assert_eq!(
             result,
             (
@@ -83,7 +81,7 @@ mod tests {
 
     #[test]
     fn parse_sum_3_space() {
-        let result = parse_sum("1+ 2  +   3").unwrap();
+        let result = Sum::parse("1+ 2  +   3").unwrap();
         assert_eq!(
             result,
             (
@@ -95,5 +93,20 @@ mod tests {
                 ])
             )
         );
+    }
+
+    #[test]
+    fn parse_sum_with_product() {
+        let result = Sum::parse("1 + 2 * 3").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Sum::new(vec![
+                    Number::new(1.),
+                    Product::new(vec![Number::new(2.), Number::new(3.),])
+                ])
+            )
+        )
     }
 }
