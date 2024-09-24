@@ -1,17 +1,19 @@
 use nom::{number::complete::double, IResult};
 
-#[derive(PartialEq, Debug)]
+use crate::Node;
+
+#[derive(PartialEq, Debug, Clone)]
 pub struct Number {
     pub value: f64,
 }
 
 impl Number {
-    pub fn new(value: f64) -> Self {
-        Self { value }
+    pub fn new(value: f64) -> Node {
+        Node::Number(Self { value })
     }
 }
 
-pub fn parse_number(input: &str) -> IResult<&str, Number> {
+pub fn parse_number(input: &str) -> IResult<&str, Node> {
     let (remaining_input, value) = double(input)?;
 
     Ok((remaining_input, Number::new(value)))

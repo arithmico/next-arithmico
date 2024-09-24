@@ -1,17 +1,19 @@
 use nom::{branch::alt, bytes::complete::tag, IResult, Parser};
 
-#[derive(PartialEq, Debug)]
+use crate::Node;
+
+#[derive(PartialEq, Debug, Clone)]
 pub struct Boolean {
     pub value: bool,
 }
 
 impl Boolean {
-    pub fn new(value: bool) -> Self {
-        Self { value }
+    pub fn new(value: bool) -> Node {
+        Node::Boolean(Self { value })
     }
 }
 
-pub fn parse_boolean(input: &str) -> IResult<&str, Boolean> {
+pub fn parse_boolean(input: &str) -> IResult<&str, Node> {
     let (remaining_input, value) =
         alt((tag("true"), tag("false"))).parse(input)?;
 
