@@ -11,9 +11,13 @@ impl Boolean {
     pub fn new(value: bool) -> Node {
         Node::Boolean(Self { value })
     }
+
+    pub fn parse(input: &str) -> IResult<&str, Node> {
+        parse_boolean(input)
+    }
 }
 
-pub fn parse_boolean(input: &str) -> IResult<&str, Node> {
+fn parse_boolean(input: &str) -> IResult<&str, Node> {
     let (remaining_input, value) =
         alt((tag("true"), tag("false"))).parse(input)?;
 
