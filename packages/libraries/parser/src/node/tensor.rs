@@ -5,7 +5,7 @@ use nom::{
     multi::many0, sequence::tuple, IResult,
 };
 
-use super::{Boolean, Node, Number, Symbol};
+use super::{parse_literal, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
@@ -76,13 +76,7 @@ impl Tensor {
     }
 
     pub fn parse(input: &str) -> IResult<&str, Node> {
-        alt((
-            parse_empty_tensor,
-            parse_tensor,
-            Number::parse,
-            Boolean::parse,
-            Symbol::parse,
-        ))(input)
+        alt((parse_empty_tensor, parse_tensor, parse_literal))(input)
     }
 }
 
