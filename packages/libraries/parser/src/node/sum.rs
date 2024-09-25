@@ -16,7 +16,7 @@ impl Sum {
     }
 
     pub fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_sum, Negate::parse))(input)
+        alt((parse_sum, Negate::parse, Product::parse))(input)
     }
 }
 

@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::tuple, IResult,
 };
 
-use super::{Node, Number, Symbol};
+use super::{Node, Tensor};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Power {
@@ -43,12 +43,12 @@ fn parse_power_item(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_power_element(input: &str) -> IResult<&str, Node> {
-    alt((Number::parse, Symbol::parse))(input)
+    Tensor::parse(input)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::Number;
+    use crate::{Number, Symbol};
 
     use super::*;
 
