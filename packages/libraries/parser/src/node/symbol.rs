@@ -27,12 +27,18 @@ impl Symbol {
 }
 
 fn parse_symbol(input: &str) -> IResult<&str, Node> {
+    let (remaining_input, name) = parse_raw_symbol(input)?;
+    Ok((remaining_input, Symbol::new(&name)))
+}
+
+pub fn parse_raw_symbol(input: &str) -> IResult<&str, String> {
     let (remaining_input, (start, rest)) =
         tuple((alpha1, many0(alt((alphanumeric1, tag("_"))))))(input)?;
 
-    let name = format!("{}{}", start, rest.into_iter().collect::<String>());
-
-    Ok((remaining_input, Symbol::new(&name)))
+    Ok((
+        remaining_input,
+        format!("{}{}", start, rest.into_iter().collect::<String>()),
+    ))
 }
 
 #[cfg(test)]

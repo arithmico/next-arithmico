@@ -1,5 +1,6 @@
 mod boolean;
 mod division;
+mod function;
 mod negate;
 mod number;
 mod power;
@@ -10,8 +11,9 @@ mod tensor;
 
 pub use boolean::*;
 pub use division::*;
+pub use function::*;
 pub use negate::*;
-use nom::IResult;
+use nom::{branch::alt, IResult};
 pub use number::*;
 pub use power::*;
 pub use product::*;
@@ -30,10 +32,15 @@ pub enum Node {
     Tensor(Tensor),
     Number(Number),
     Symbol(Symbol),
+    Function(Function),
 }
 
 impl Node {
     pub fn parse(input: &str) -> IResult<&str, Node> {
-        Sum::parse(input)
+        Function::parse(input)
     }
+}
+
+pub(crate) fn parse_literal(input: &str) -> IResult<&str, Node> {
+    alt((Number::parse, Boolean::parse, Symbol::parse))(input)
 }
