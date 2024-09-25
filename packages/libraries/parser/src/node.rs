@@ -5,6 +5,7 @@ mod number;
 mod power;
 mod product;
 mod sum;
+mod symbol;
 
 pub use boolean::*;
 pub use division::*;
@@ -13,6 +14,7 @@ pub use number::*;
 pub use power::*;
 pub use product::*;
 pub use sum::*;
+pub use symbol::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Node {
@@ -23,4 +25,5 @@ pub enum Node {
     Product(Product),
     Division(Division),
     Power(Power),
+    Symbol(Symbol),
 }

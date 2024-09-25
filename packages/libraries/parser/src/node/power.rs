@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::tuple, IResult,
 };
 
-use super::{Node, Number};
+use super::{Node, Number, Symbol};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Power {
@@ -43,7 +43,7 @@ fn parse_power_item(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_power_element(input: &str) -> IResult<&str, Node> {
-    Number::parse(input)
+    alt((Number::parse, Symbol::parse))(input)
 }
 
 #[cfg(test)]
@@ -70,6 +70,15 @@ mod tests {
                     Number::new(3.)
                 )
             )
+        );
+    }
+
+    #[test]
+    fn parse_power_with_symbol() {
+        let result = Power::parse("a ^ b").unwrap();
+        assert_eq!(
+            result,
+            ("", Power::new(Symbol::new("a"), Symbol::new("b")))
         );
     }
 }
