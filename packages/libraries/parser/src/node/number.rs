@@ -11,9 +11,13 @@ impl Number {
     pub fn new(value: f64) -> Node {
         Node::Number(Self { value })
     }
+
+    pub fn parse(input: &str) -> IResult<&str, Node> {
+        parse_number(input)
+    }
 }
 
-pub fn parse_number(input: &str) -> IResult<&str, Node> {
+fn parse_number(input: &str) -> IResult<&str, Node> {
     let (remaining_input, value) = double(input)?;
 
     Ok((remaining_input, Number::new(value)))

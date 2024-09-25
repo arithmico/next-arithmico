@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{parse_number, Node};
+use super::{Node, Power};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Division {
@@ -43,7 +43,7 @@ fn parse_division_item(input: &str) -> IResult<&str, Node> {
 }
 
 pub fn parse_division_element(input: &str) -> IResult<&str, Node> {
-    parse_number(input)
+    Power::parse(input)
 }
 
 #[cfg(test)]
@@ -58,6 +58,21 @@ mod tests {
         assert_eq!(
             result,
             ("", Division::new(Number::new(1.), Number::new(2.)))
+        );
+    }
+
+    #[test]
+    fn parse_division_with_power() {
+        let result = Division::parse("1 / 2^3").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Division::new(
+                    Number::new(1.),
+                    Power::new(Number::new(2.), Number::new(3.),)
+                )
+            )
         );
     }
 
