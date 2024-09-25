@@ -2,6 +2,7 @@ mod boolean;
 mod division;
 mod negate;
 mod number;
+mod power;
 mod product;
 mod sum;
 
@@ -9,6 +10,7 @@ pub use boolean::*;
 pub use division::*;
 pub use negate::*;
 pub use number::*;
+pub use power::*;
 pub use product::*;
 pub use sum::*;
 
@@ -20,4 +22,5 @@ pub enum Node {
     Negate(Negate),
     Product(Product),
     Division(Division),
+    Power(Power),
 }
