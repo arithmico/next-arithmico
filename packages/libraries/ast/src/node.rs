@@ -1,3 +1,4 @@
+mod and;
 mod boolean;
 mod division;
 mod function;
@@ -10,12 +11,12 @@ mod sum;
 mod symbol;
 mod tensor;
 
+pub use and::*;
 pub use boolean::*;
 pub use division::*;
 pub use function::*;
 pub use function_call::*;
 pub use negate::*;
-
 pub use number::*;
 pub use power::*;
 pub use product::*;
@@ -36,4 +37,5 @@ pub enum Node {
     Symbol(Symbol),
     Function(Function),
     FunctionCall(FunctionCall),
+    And(And),
 }

@@ -4,7 +4,7 @@ use nom::{
     combinator::opt, multi::many0, sequence::tuple, IResult,
 };
 
-use super::{parse_raw_symbol, ParseNode};
+use super::{symbol::parse_raw_symbol, ParseNode};
 
 impl ParseNode for Function {
     fn parse(input: &str) -> IResult<&str, Node> {
