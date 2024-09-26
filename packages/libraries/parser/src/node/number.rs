@@ -1,18 +1,10 @@
+use ast::{Node, Number};
 use nom::{number::complete::double, IResult};
 
-use crate::Node;
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Number {
-    pub value: f64,
-}
-
-impl Number {
-    pub fn new(value: f64) -> Node {
-        Node::Number(Self { value })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Number {
+    fn parse(input: &str) -> IResult<&str, Node> {
         parse_number(input)
     }
 }

@@ -1,25 +1,13 @@
+use ast::{Function, Node, Sum};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::opt, multi::many0, sequence::tuple, IResult,
 };
 
-use super::{parse_raw_symbol, Node, Sum};
+use super::{parse_raw_symbol, ParseNode};
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Function {
-    pub arguments: Vec<String>,
-    pub expression: Box<Node>,
-}
-
-impl Function {
-    pub fn new(arguments: Vec<String>, expression: Node) -> Node {
-        Node::Function(Function {
-            arguments,
-            expression: Box::new(expression),
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Function {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_function, Sum::parse))(input)
     }
 }
@@ -60,7 +48,8 @@ fn parse_function_argument_item(input: &str) -> IResult<&str, String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Number, Symbol};
+
+    use ast::{Number, Symbol};
 
     use super::*;
 

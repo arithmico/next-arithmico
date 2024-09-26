@@ -10,11 +10,8 @@ mod sum;
 mod symbol;
 mod tensor;
 
-pub use boolean::*;
+use ast::{Boolean, Function, Node, Number, Symbol};
 pub use division::*;
-pub use function::*;
-pub use function_call::*;
-pub use negate::*;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -22,30 +19,15 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
-pub use number::*;
-pub use power::*;
 pub use product::*;
-pub use sum::*;
 pub use symbol::*;
-pub use tensor::*;
 
-#[derive(PartialEq, Debug, Clone)]
-pub enum Node {
-    Boolean(Boolean),
-    Sum(Sum),
-    Negate(Negate),
-    Product(Product),
-    Division(Division),
-    Power(Power),
-    Tensor(Tensor),
-    Number(Number),
-    Symbol(Symbol),
-    Function(Function),
-    FunctionCall(FunctionCall),
+pub trait ParseNode {
+    fn parse(input: &str) -> IResult<&str, Node>;
 }
 
-impl Node {
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Node {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((Function::parse, parse_sub_expression))(input)
     }
 }

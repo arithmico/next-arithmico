@@ -1,22 +1,12 @@
+use ast::{Negate, Node, Product};
 use nom::{
     bytes::complete::tag, character::complete::space0, sequence::tuple, IResult,
 };
 
-use crate::{Node, Product};
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Negate {
-    pub value: Box<Node>,
-}
-
-impl Negate {
-    pub fn new(value: Node) -> Node {
-        Node::Negate(Self {
-            value: Box::new(value),
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Negate {
+    fn parse(input: &str) -> IResult<&str, Node> {
         parse_negate(input)
     }
 }
@@ -29,7 +19,8 @@ fn parse_negate(input: &str) -> IResult<&str, Node> {
 
 #[cfg(test)]
 mod tests {
-    use crate::Number;
+
+    use ast::Number;
 
     use super::*;
 

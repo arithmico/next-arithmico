@@ -1,21 +1,13 @@
+use ast::{Negate, Node, Product, Sum};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{Negate, Node, Product};
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Sum {
-    pub elements: Vec<Node>,
-}
-
-impl Sum {
-    pub fn new(elements: Vec<Node>) -> Node {
-        Node::Sum(Self { elements })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Sum {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_sum, Negate::parse, Product::parse))(input)
     }
 }
@@ -39,9 +31,8 @@ fn parse_sum_item(input: &str) -> IResult<&str, Node> {
 
 #[cfg(test)]
 mod tests {
+    use ast::Number;
     use nom::combinator::all_consuming;
-
-    use crate::{Number, Product};
 
     use super::*;
 

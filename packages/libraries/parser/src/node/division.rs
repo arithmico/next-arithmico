@@ -1,30 +1,18 @@
+use ast::{Division, Node, Power};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::tuple, IResult,
 };
 
-use super::{Node, Power};
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Division {
-    pub dividend: Box<Node>,
-    pub divisor: Box<Node>,
-}
-
-impl Division {
-    pub fn new(dividend: Node, divisor: Node) -> Node {
-        Node::Division(Self {
-            dividend: Box::new(dividend),
-            divisor: Box::new(divisor),
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Division {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_division, parse_division_element))(input)
     }
 }
 
-pub fn parse_division(input: &str) -> IResult<&str, Node> {
+fn parse_division(input: &str) -> IResult<&str, Node> {
     let (remaining_input, (first, rest)) =
         tuple((parse_division_element, many1(parse_division_item)))(input)?;
 
@@ -48,7 +36,8 @@ pub fn parse_division_element(input: &str) -> IResult<&str, Node> {
 
 #[cfg(test)]
 mod tests {
-    use crate::Number;
+
+    use ast::Number;
 
     use super::*;
 

@@ -1,3 +1,4 @@
+use ast::{Node, Symbol};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -7,21 +8,10 @@ use nom::{
     IResult,
 };
 
-use crate::Node;
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Symbol {
-    pub name: String,
-}
-
-impl Symbol {
-    pub fn new(name: &str) -> Node {
-        Node::Symbol(Self {
-            name: name.to_string(),
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Symbol {
+    fn parse(input: &str) -> IResult<&str, Node> {
         parse_symbol(input)
     }
 }

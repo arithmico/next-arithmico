@@ -1,25 +1,13 @@
+use ast::{Node, Power, Tensor};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::tuple, IResult,
 };
 
-use super::{Node, Tensor};
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Power {
-    pub base: Box<Node>,
-    pub exponent: Box<Node>,
-}
-
-impl Power {
-    pub fn new(dividend: Node, divisor: Node) -> Node {
-        Node::Power(Self {
-            base: Box::new(dividend),
-            exponent: Box::new(divisor),
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Power {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_power, parse_power_element))(input)
     }
 }
@@ -48,7 +36,8 @@ fn parse_power_element(input: &str) -> IResult<&str, Node> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Number, Symbol};
+
+    use ast::{Number, Symbol};
 
     use super::*;
 
