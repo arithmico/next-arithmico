@@ -1,18 +1,10 @@
+use ast::{Boolean, Node};
 use nom::{branch::alt, bytes::complete::tag, IResult, Parser};
 
-use crate::Node;
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Boolean {
-    pub value: bool,
-}
-
-impl Boolean {
-    pub fn new(value: bool) -> Node {
-        Node::Boolean(Self { value })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Boolean {
+    fn parse(input: &str) -> IResult<&str, Node> {
         parse_boolean(input)
     }
 }

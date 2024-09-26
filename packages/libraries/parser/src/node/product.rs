@@ -1,21 +1,13 @@
+use ast::{Division, Node, Product};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::tuple, IResult,
 };
 
-use crate::{Division, Node};
+use super::ParseNode;
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct Product {
-    pub elements: Vec<Node>,
-}
-
-impl Product {
-    pub fn new(elements: Vec<Node>) -> Node {
-        Node::Product(Self { elements })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for Product {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_product, parse_product_element))(input)
     }
 }
@@ -41,9 +33,8 @@ pub fn parse_product_element(input: &str) -> IResult<&str, Node> {
 
 #[cfg(test)]
 mod tests {
+    use ast::{Number, Sum, Symbol};
     use nom::combinator::all_consuming;
-
-    use crate::{Number, Sum, Symbol};
 
     use super::*;
 

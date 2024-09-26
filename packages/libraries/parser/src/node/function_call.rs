@@ -1,3 +1,4 @@
+use ast::{FunctionCall, Node, Symbol};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -8,25 +9,12 @@ use nom::{
     IResult,
 };
 
-use crate::{node::parse_sub_expression, Symbol};
+use crate::node::parse_sub_expression;
 
-use super::{parse_literal, Node};
+use super::{parse_literal, ParseNode};
 
-#[derive(PartialEq, Debug, Clone)]
-pub struct FunctionCall {
-    pub target: Box<Node>,
-    pub arguments: Vec<Node>,
-}
-
-impl FunctionCall {
-    pub fn new(target: Node, arguments: Vec<Node>) -> Node {
-        Node::FunctionCall(FunctionCall {
-            target: target.into(),
-            arguments,
-        })
-    }
-
-    pub fn parse(input: &str) -> IResult<&str, Node> {
+impl ParseNode for FunctionCall {
+    fn parse(input: &str) -> IResult<&str, Node> {
         alt((parse_function_call, parse_literal))(input)
     }
 }
