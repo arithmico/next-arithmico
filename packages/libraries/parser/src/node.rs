@@ -1,3 +1,4 @@
+mod and;
 mod boolean;
 mod division;
 mod function;
@@ -11,7 +12,6 @@ mod symbol;
 mod tensor;
 
 use ast::{Boolean, Function, Node, Number, Symbol};
-pub use division::*;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -19,8 +19,6 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
-pub use product::*;
-pub use symbol::*;
 
 pub trait ParseNode {
     fn parse(input: &str) -> IResult<&str, Node>;
