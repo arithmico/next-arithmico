@@ -1,6 +1,7 @@
 mod boolean;
 mod division;
 mod function;
+mod function_call;
 mod negate;
 mod number;
 mod power;
@@ -12,6 +13,7 @@ mod tensor;
 pub use boolean::*;
 pub use division::*;
 pub use function::*;
+pub use function_call::*;
 pub use negate::*;
 use nom::{
     branch::alt,
@@ -39,6 +41,7 @@ pub enum Node {
     Number(Number),
     Symbol(Symbol),
     Function(Function),
+    FunctionCall(FunctionCall),
 }
 
 impl Node {
