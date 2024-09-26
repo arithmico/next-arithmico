@@ -3,7 +3,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
-    combinator::opt,
+    combinator::{cut, opt},
     multi::many0,
     sequence::{delimited, preceded, tuple},
     IResult,
@@ -24,7 +24,7 @@ fn parse_function_call(input: &str) -> IResult<&str, Node> {
         parse_function_call_target,
         delimited(
             tuple((space0, tag("("), space0)),
-            opt(parse_function_call_arguments),
+            cut(opt(parse_function_call_arguments)),
             tuple((space0, tag(")"))),
         ),
     ))(input)?;

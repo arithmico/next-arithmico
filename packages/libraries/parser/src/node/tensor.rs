@@ -1,7 +1,12 @@
 use ast::{FunctionCall, Node, Tensor};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many0, sequence::tuple, IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    combinator::cut,
+    multi::separated_list0,
+    sequence::{delimited, tuple},
+    IResult,
 };
 
 use super::ParseNode;
@@ -18,26 +23,16 @@ fn parse_empty_tensor(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_tensor(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (_, _, first, _, mut rest, _, _)) = tuple((
-        tag("["),
-        space0,
-        Node::parse,
-        space0,
-        many0(parse_tensor_item),
-        space0,
-        tag("]"),
-    ))(input)?;
-
-    let mut elements = vec![first];
-    elements.append(&mut rest);
+    let (remaining_input, elements) = delimited(
+        tuple((tag("["), space0)),
+        cut(separated_list0(
+            tuple((space0, tag(","), space0)),
+            Node::parse,
+        )),
+        tuple((space0, tag("]"))),
+    )(input)?;
 
     Ok((remaining_input, Tensor::new(elements)))
-}
-
-fn parse_tensor_item(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (_, _, _, node)) =
-        tuple((space0, tag(","), space0, Node::parse))(input)?;
-    Ok((remaining_input, node))
 }
 
 #[cfg(test)]

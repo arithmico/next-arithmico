@@ -1,7 +1,12 @@
 use ast::{Negate, Node, Product, Sum};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::tuple, IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    combinator::cut,
+    multi::many1,
+    sequence::{preceded, tuple},
+    IResult,
 };
 
 use super::ParseNode;
@@ -24,8 +29,10 @@ fn parse_sum(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_sum_item(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (_, _, _, element)) =
-        tuple((space0, tag("+"), space0, Product::parse))(input)?;
+    let (remaining_input, element) = preceded(
+        tuple((space0, tag("+"), space0)),
+        cut(Product::parse),
+    )(input)?;
     Ok((remaining_input, element))
 }
 

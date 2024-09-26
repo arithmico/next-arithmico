@@ -1,20 +1,25 @@
 use ast::{Division, Node, Product};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::tuple, IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    combinator::cut,
+    multi::many1,
+    sequence::{preceded, tuple},
+    IResult,
 };
 
 use super::ParseNode;
 
 impl ParseNode for Product {
     fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_product, parse_product_element))(input)
+        alt((parse_product, Division::parse))(input)
     }
 }
 
 pub fn parse_product(input: &str) -> IResult<&str, Node> {
     let (remaining_input, (first, mut rest)) =
-        tuple((parse_product_element, many1(parse_product_item)))(input)?;
+        tuple((Division::parse, many1(parse_product_item)))(input)?;
 
     let mut elements = vec![first];
     elements.append(&mut rest);
@@ -22,13 +27,11 @@ pub fn parse_product(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_product_item(input: &str) -> IResult<&str, Node> {
-    let (remaining_input, (_, _, _, element)) =
-        tuple((space0, tag("*"), space0, parse_product_element))(input)?;
+    let (remaining_input, element) = preceded(
+        tuple((space0, tag("*"), space0)),
+        cut(Division::parse),
+    )(input)?;
     Ok((remaining_input, element))
-}
-
-pub fn parse_product_element(input: &str) -> IResult<&str, Node> {
-    Division::parse(input)
 }
 
 #[cfg(test)]
