@@ -43,7 +43,7 @@ pub fn parse_product_element(input: &str) -> IResult<&str, Node> {
 mod tests {
     use nom::combinator::all_consuming;
 
-    use crate::Number;
+    use crate::{Number, Sum, Symbol};
 
     use super::*;
 
@@ -105,6 +105,21 @@ mod tests {
                 Product::new(vec![
                     Division::new(Number::new(1.), Number::new(2.)),
                     Number::new(3.)
+                ])
+            )
+        );
+    }
+
+    #[test]
+    fn parse_product_with_sums() {
+        let result = Product::parse("(a + b) * (c + d)").unwrap();
+        assert_eq!(
+            result,
+            (
+                "",
+                Product::new(vec![
+                    Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ])
             )
         );

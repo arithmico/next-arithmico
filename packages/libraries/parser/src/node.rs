@@ -13,7 +13,13 @@ pub use boolean::*;
 pub use division::*;
 pub use function::*;
 pub use negate::*;
-use nom::{branch::alt, IResult};
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    sequence::{delimited, tuple},
+    IResult,
+};
 pub use number::*;
 pub use power::*;
 pub use product::*;
@@ -37,10 +43,23 @@ pub enum Node {
 
 impl Node {
     pub fn parse(input: &str) -> IResult<&str, Node> {
-        Function::parse(input)
+        alt((Function::parse, parse_sub_expression))(input)
     }
 }
 
+fn parse_sub_expression(input: &str) -> IResult<&str, Node> {
+    delimited(
+        tuple((tag("("), space0)),
+        Node::parse,
+        tuple((space0, tag(")"))),
+    )(input)
+}
+
 pub(crate) fn parse_literal(input: &str) -> IResult<&str, Node> {
-    alt((Number::parse, Boolean::parse, Symbol::parse))(input)
+    alt((
+        Number::parse,
+        Boolean::parse,
+        Symbol::parse,
+        parse_sub_expression,
+    ))(input)
 }
