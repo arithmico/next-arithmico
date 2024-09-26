@@ -5,6 +5,7 @@ mod function;
 mod function_call;
 mod negate;
 mod number;
+mod or;
 mod power;
 mod product;
 mod sum;
@@ -18,6 +19,7 @@ pub use function::*;
 pub use function_call::*;
 pub use negate::*;
 pub use number::*;
+pub use or::*;
 pub use power::*;
 pub use product::*;
 pub use sum::*;
@@ -38,4 +40,5 @@ pub enum Node {
     Function(Function),
     FunctionCall(FunctionCall),
     And(And),
+    Or(Or),
 }

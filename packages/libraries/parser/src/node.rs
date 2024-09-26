@@ -5,6 +5,7 @@ mod function;
 mod function_call;
 mod negate;
 mod number;
+mod or;
 mod power;
 mod product;
 mod sum;

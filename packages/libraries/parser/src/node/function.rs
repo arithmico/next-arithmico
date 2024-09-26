@@ -1,4 +1,4 @@
-use ast::{Function, Node, Sum};
+use ast::{Function, Node, Or};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::opt, multi::many0, sequence::tuple, IResult,
@@ -8,7 +8,7 @@ use super::{symbol::parse_raw_symbol, ParseNode};
 
 impl ParseNode for Function {
     fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_function, Sum::parse))(input)
+        alt((parse_function, Or::parse))(input)
     }
 }
 
@@ -49,7 +49,7 @@ fn parse_function_argument_item(input: &str) -> IResult<&str, String> {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Number, Symbol};
+    use ast::{Number, Sum, Symbol};
 
     use super::*;
 
