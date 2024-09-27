@@ -1,17 +1,18 @@
 use ast::{Negate, Node, Product};
 use nom::{
-    bytes::complete::tag, character::complete::space0, sequence::tuple, IResult,
+    bytes::complete::tag, character::complete::space0, error::VerboseError,
+    sequence::tuple, IResult,
 };
 
 use super::ParseNode;
 
 impl ParseNode for Negate {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         parse_negate(input)
     }
 }
 
-fn parse_negate(input: &str) -> IResult<&str, Node> {
+fn parse_negate(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (_, _, _, value)) =
         tuple((space0, tag("-"), space0, Product::parse))(input)?;
     Ok((remaining_input, Negate::new(value)))

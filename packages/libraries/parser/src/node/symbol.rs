@@ -3,6 +3,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
+    error::VerboseError,
     multi::many0,
     sequence::tuple,
     IResult,
@@ -11,17 +12,19 @@ use nom::{
 use super::ParseNode;
 
 impl ParseNode for Symbol {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         parse_symbol(input)
     }
 }
 
-fn parse_symbol(input: &str) -> IResult<&str, Node> {
+fn parse_symbol(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, name) = parse_raw_symbol(input)?;
     Ok((remaining_input, Symbol::new(&name)))
 }
 
-pub fn parse_raw_symbol(input: &str) -> IResult<&str, String> {
+pub fn parse_raw_symbol(
+    input: &str,
+) -> IResult<&str, String, VerboseError<&str>> {
     let (remaining_input, (start, rest)) =
         tuple((alpha1, many0(alt((alphanumeric1, tag("_"))))))(input)?;
 

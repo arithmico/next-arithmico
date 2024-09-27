@@ -1,18 +1,19 @@
 use ast::{Function, Node, Or};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::opt, multi::many0, sequence::tuple, IResult,
+    combinator::opt, error::VerboseError, multi::many0, sequence::tuple,
+    IResult,
 };
 
 use super::{symbol::parse_raw_symbol, ParseNode};
 
 impl ParseNode for Function {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_function, Or::parse))(input)
     }
 }
 
-fn parse_function(input: &str) -> IResult<&str, Node> {
+fn parse_function(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (_, _, arguments, _, _, _, _, _, expression)) =
         tuple((
             tag("("),
@@ -32,14 +33,18 @@ fn parse_function(input: &str) -> IResult<&str, Node> {
     ))
 }
 
-fn parse_function_arguments(input: &str) -> IResult<&str, Vec<String>> {
+fn parse_function_arguments(
+    input: &str,
+) -> IResult<&str, Vec<String>, VerboseError<&str>> {
     let (remaining_input, (first, mut rest)) =
         tuple((parse_raw_symbol, many0(parse_function_argument_item)))(input)?;
     rest.insert(0, first);
     Ok((remaining_input, rest))
 }
 
-fn parse_function_argument_item(input: &str) -> IResult<&str, String> {
+fn parse_function_argument_item(
+    input: &str,
+) -> IResult<&str, String, VerboseError<&str>> {
     let (remaining_input, (_, _, _, name)) =
         tuple((space0, tag(","), space0, parse_raw_symbol))(input)?;
 

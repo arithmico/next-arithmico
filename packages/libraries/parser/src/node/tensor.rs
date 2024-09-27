@@ -4,6 +4,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
+    error::VerboseError,
     multi::separated_list0,
     sequence::{delimited, tuple},
     IResult,
@@ -12,17 +13,17 @@ use nom::{
 use super::ParseNode;
 
 impl ParseNode for Tensor {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))(input)
     }
 }
 
-fn parse_empty_tensor(input: &str) -> IResult<&str, Node> {
+fn parse_empty_tensor(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, _) = tuple((tag("["), space0, tag("]")))(input)?;
     Ok((remaining_input, Tensor::new(vec![])))
 }
 
-fn parse_tensor(input: &str) -> IResult<&str, Node> {
+fn parse_tensor(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, elements) = delimited(
         tuple((tag("["), space0)),
         cut(separated_list0(
