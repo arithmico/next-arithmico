@@ -41,6 +41,8 @@ impl TryFrom<Pair<'_, Rule>> for FunctionCall {
 
 #[cfg(test)]
 mod tests {
+    use std::{sync::mpsc, thread, time::Duration};
+
     use crate::core::node::*;
 
     #[test]
@@ -51,6 +53,49 @@ mod tests {
             FunctionCall::new(
                 Symbol::new("f"),
                 vec![Number::new(1.0).into(), Number::new(2.0).into()]
+            )
+            .into()
+        );
+    }
+
+    fn panic_after<T, F>(d: Duration, f: F) -> T
+    where
+        T: Send + 'static,
+        F: FnOnce() -> T,
+        F: Send + 'static,
+    {
+        let (done_tx, done_rx) = mpsc::channel();
+        let handle = thread::spawn(move || {
+            let val = f();
+            done_tx.send(()).expect("Unable to send completion signal");
+            val
+        });
+
+        match done_rx.recv_timeout(d) {
+            Ok(_) => handle.join().expect("Thread panicked"),
+            Err(_) => panic!("Thread took too long"),
+        }
+    }
+
+    #[test]
+    fn parse_nested_function_call() {
+        let result =
+            panic_after(Duration::from_secs(5), || Node::parse("f(f(f(x)))"))
+                .unwrap();
+
+        assert_eq!(
+            result,
+            FunctionCall::new(
+                Symbol::new("f"),
+                vec![FunctionCall::new(
+                    Symbol::new("f"),
+                    vec![FunctionCall::new(
+                        Symbol::new("f"),
+                        vec![Symbol::new("x").into()]
+                    )
+                    .into()]
+                )
+                .into()]
             )
             .into()
         );
