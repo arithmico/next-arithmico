@@ -9,6 +9,7 @@ mod number;
 mod or;
 mod power;
 mod product;
+mod relation;
 mod sub_expression;
 mod sum;
 mod symbol;

@@ -1,4 +1,4 @@
-use ast::{And, Node, Or, Sum};
+use ast::{And, Node, Or};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -12,7 +12,7 @@ use super::ParseNode;
 
 impl ParseNode for Or {
     fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_or, Sum::parse))(input)
+        alt((parse_or, And::parse))(input)
     }
 }
 
