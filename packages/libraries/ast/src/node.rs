@@ -1,8 +1,13 @@
 mod and;
 mod boolean;
 mod division;
+mod equals;
 mod function;
 mod function_call;
+mod greater_than;
+mod greater_than_or_equals;
+mod less_than;
+mod less_than_or_equals;
 mod negate;
 mod number;
 mod or;
@@ -15,8 +20,13 @@ mod tensor;
 pub use and::*;
 pub use boolean::*;
 pub use division::*;
+pub use equals::*;
 pub use function::*;
 pub use function_call::*;
+pub use greater_than::*;
+pub use greater_than_or_equals::*;
+pub use less_than::*;
+pub use less_than_or_equals::*;
 pub use negate::*;
 pub use number::*;
 pub use or::*;
@@ -41,4 +51,9 @@ pub enum Node {
     FunctionCall(FunctionCall),
     And(And),
     Or(Or),
+    Equals(Equals),
+    LessThan(LessThan),
+    LessThanOrEquals(LessThanOrEquals),
+    GreaterThan(GreaterThan),
+    GreaterThanOrEquals(GreaterThanOrEquals),
 }
