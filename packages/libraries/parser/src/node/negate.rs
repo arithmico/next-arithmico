@@ -1,18 +1,15 @@
-use ast::{Negate, Node, Product};
-use nom::{
-    bytes::complete::tag, character::complete::space0, error::VerboseError,
-    sequence::tuple, IResult,
-};
+use ast::{Negate, Product};
+use nom::{bytes::complete::tag, character::complete::space0, sequence::tuple};
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Negate {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         parse_negate(input)
     }
 }
 
-fn parse_negate(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_negate(input: &str) -> ParseResult {
     let (remaining_input, (_, _, _, value)) =
         tuple((space0, tag("-"), space0, Product::parse))(input)?;
     Ok((remaining_input, Negate::new(value)))

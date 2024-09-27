@@ -5,15 +5,15 @@ use nom::{
     IResult,
 };
 
-use super::{symbol::parse_raw_symbol, ParseNode};
+use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
 
 impl ParseNode for Function {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_function, Or::parse))(input)
     }
 }
 
-fn parse_function(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_function(input: &str) -> ParseResult {
     let (remaining_input, (_, _, arguments, _, _, _, _, _, expression)) =
         tuple((
             tag("("),

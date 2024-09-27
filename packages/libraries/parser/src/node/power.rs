@@ -1,18 +1,18 @@
-use ast::{Node, Power, Tensor};
+use ast::{Power, Tensor};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    error::VerboseError, multi::many1, sequence::tuple, IResult,
+    multi::many1, sequence::tuple,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Power {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_power, parse_power_element))(input)
     }
 }
 
-fn parse_power(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_power(input: &str) -> ParseResult {
     let (remaining_input, (first, rest)) =
         tuple((parse_power_element, many1(parse_power_item)))(input)?;
 
@@ -23,14 +23,14 @@ fn parse_power(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     ))
 }
 
-fn parse_power_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_power_item(input: &str) -> ParseResult {
     let (remaining_input, (_, _, _, node)) =
         tuple((space0, tag("^"), space0, parse_power_element))(input)?;
 
     Ok((remaining_input, node))
 }
 
-fn parse_power_element(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_power_element(input: &str) -> ParseResult {
     Tensor::parse(input)
 }
 

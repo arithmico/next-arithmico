@@ -19,8 +19,10 @@ use ast::{Function, Node};
 use nom::{branch::alt, error::VerboseError, IResult};
 use sub_expression::parse_sub_expression;
 
+pub type ParseResult<'a> = IResult<&'a str, Node, VerboseError<&'a str>>;
+
 pub trait ParseNode {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>>;
+    fn parse(input: &str) -> ParseResult;
 }
 
 impl ParseNode for Node {

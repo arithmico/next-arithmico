@@ -1,4 +1,4 @@
-use ast::{Node, Symbol};
+use ast::Symbol;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -9,15 +9,15 @@ use nom::{
     IResult,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Symbol {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         parse_symbol(input)
     }
 }
 
-fn parse_symbol(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_symbol(input: &str) -> ParseResult {
     let (remaining_input, name) = parse_raw_symbol(input)?;
     Ok((remaining_input, Symbol::new(&name)))
 }

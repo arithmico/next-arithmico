@@ -1,23 +1,21 @@
-use ast::{And, Node, Or};
+use ast::{And, Or};
 use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
-    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
-    IResult,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Or {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_or, And::parse))(input)
     }
 }
 
-fn parse_or(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_or(input: &str) -> ParseResult {
     let (remaining_input, (first, mut rest)) =
         tuple((And::parse, many1(parse_or_item)))(input)?;
 
@@ -25,7 +23,7 @@ fn parse_or(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     Ok((remaining_input, Or::new(rest)))
 }
 
-fn parse_or_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_or_item(input: &str) -> ParseResult {
     preceded(tuple((space0, tag("|"), space0)), And::parse)(input)
 }
 

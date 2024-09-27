@@ -12,15 +12,15 @@ use nom::{
 
 use crate::node::parse_sub_expression;
 
-use super::{literal::parse_literal, ParseNode};
+use super::{literal::parse_literal, ParseNode, ParseResult};
 
 impl ParseNode for FunctionCall {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_function_call, parse_literal))(input)
     }
 }
 
-fn parse_function_call(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_function_call(input: &str) -> ParseResult {
     let (remaining_input, (target, arguments)) = tuple((
         parse_function_call_target,
         delimited(
@@ -36,9 +36,7 @@ fn parse_function_call(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     ))
 }
 
-fn parse_function_call_target(
-    input: &str,
-) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_function_call_target(input: &str) -> ParseResult {
     alt((Symbol::parse, parse_sub_expression))(input)
 }
 
@@ -52,9 +50,7 @@ fn parse_function_call_arguments(
     Ok((remaining_input, rest))
 }
 
-fn parse_function_call_arguments_item(
-    input: &str,
-) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_function_call_arguments_item(input: &str) -> ParseResult {
     preceded(tuple((space0, tag(","), space0)), Node::parse)(input)
 }
 

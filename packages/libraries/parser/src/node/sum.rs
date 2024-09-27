@@ -1,24 +1,22 @@
-use ast::{Negate, Node, Product, Sum};
+use ast::{Negate, Product, Sum};
 use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
-    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
-    IResult,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Sum {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_sum, Negate::parse, Product::parse))(input)
     }
 }
 
-fn parse_sum(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_sum(input: &str) -> ParseResult {
     let (remaining_input, (first, mut rest)) = tuple((
         Product::parse,
         many1(alt((parse_sum_item, Negate::parse))),
@@ -29,7 +27,7 @@ fn parse_sum(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     Ok((remaining_input, Sum::new(elements)))
 }
 
-fn parse_sum_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_sum_item(input: &str) -> ParseResult {
     let (remaining_input, element) = preceded(
         tuple((space0, tag("+"), space0)),
         cut(Product::parse),
@@ -39,8 +37,8 @@ fn parse_sum_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
-    use nom::combinator::all_consuming;
+    use ast::{Node, Number};
+    use nom::{combinator::all_consuming, error::VerboseError};
 
     use super::*;
 
