@@ -6,6 +6,7 @@ mod function;
 mod function_call;
 mod greater_than;
 mod greater_than_or_equals;
+mod host_function;
 mod less_than;
 mod less_than_or_equals;
 mod negate;
@@ -25,6 +26,7 @@ pub use function::*;
 pub use function_call::*;
 pub use greater_than::*;
 pub use greater_than_or_equals::*;
+pub use host_function::*;
 pub use less_than::*;
 pub use less_than_or_equals::*;
 pub use negate::*;
@@ -56,4 +58,5 @@ pub enum Node {
     LessThanOrEquals(LessThanOrEquals),
     GreaterThan(GreaterThan),
     GreaterThanOrEquals(GreaterThanOrEquals),
+    HostFunction(HostFunction),
 }
