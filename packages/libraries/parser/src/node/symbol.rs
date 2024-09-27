@@ -3,17 +3,18 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
-    error::VerboseError,
     multi::many0,
     sequence::tuple,
     IResult,
 };
 
+use crate::{cache::with_cache, error::ParserError};
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Symbol {
     fn parse(input: &str) -> ParseResult {
-        parse_symbol(input)
+        with_cache("Symbol::parse", input, |input| parse_symbol(input))
     }
 }
 
@@ -22,9 +23,7 @@ fn parse_symbol(input: &str) -> ParseResult {
     Ok((remaining_input, Symbol::new(&name)))
 }
 
-pub fn parse_raw_symbol(
-    input: &str,
-) -> IResult<&str, String, VerboseError<&str>> {
+pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParserError> {
     let (remaining_input, (start, rest)) =
         tuple((alpha1, many0(alt((alphanumeric1, tag("_"))))))(input)?;
 

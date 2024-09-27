@@ -1,11 +1,13 @@
 use ast::{Negate, Product};
 use nom::{bytes::complete::tag, character::complete::space0, sequence::tuple};
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Negate {
     fn parse(input: &str) -> ParseResult {
-        parse_negate(input)
+        with_cache("Negate::parse", input, |input| parse_negate(input))
     }
 }
 

@@ -7,11 +7,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Or {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_or, And::parse))(input)
+        with_cache("Or::parse", input, |input| {
+            alt((parse_or, And::parse))(input)
+        })
     }
 }
 

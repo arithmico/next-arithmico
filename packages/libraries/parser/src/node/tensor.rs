@@ -8,11 +8,15 @@ use nom::{
     sequence::{delimited, tuple},
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Tensor {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))(input)
+        with_cache("Tensor::parse", input, |input| {
+            alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))(input)
+        })
     }
 }
 

@@ -1,11 +1,13 @@
 use ast::Number;
 use nom::number::complete::double;
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Number {
     fn parse(input: &str) -> ParseResult {
-        parse_number(input)
+        with_cache("Number::parse", input, |input| parse_number(input))
     }
 }
 
