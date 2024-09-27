@@ -3,6 +3,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
+    combinator::cut,
     multi::many1,
     sequence::{preceded, tuple},
     IResult,
@@ -25,7 +26,7 @@ fn parse_and(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_and_item(input: &str) -> IResult<&str, Node> {
-    preceded(tuple((space0, tag("&"), space0)), parse_relation)(input)
+    preceded(tuple((space0, tag("&"), space0)), cut(parse_relation))(input)
 }
 
 #[cfg(test)]
