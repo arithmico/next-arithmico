@@ -6,6 +6,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
+    combinator::cut,
     multi::many1,
     sequence::{delimited, tuple},
     IResult,
@@ -52,7 +53,7 @@ fn parse_relation_chain(input: &str) -> IResult<&str, Node> {
 fn parse_relation_chain_item(input: &str) -> IResult<&str, (&str, Node)> {
     tuple((
         delimited(space0, parse_relation_operator, space0),
-        parse_relation_element,
+        cut(parse_relation_element),
     ))(input)
 }
 
