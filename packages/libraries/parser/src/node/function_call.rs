@@ -4,19 +4,22 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
-    error::VerboseError,
     multi::many0,
     sequence::{delimited, preceded, tuple},
     IResult,
 };
 
-use crate::node::parse_sub_expression;
+use crate::{
+    cache::with_cache, error::ParserError, node::parse_sub_expression,
+};
 
 use super::{literal::parse_literal, ParseNode, ParseResult};
 
 impl ParseNode for FunctionCall {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_function_call, parse_literal))(input)
+        with_cache("FunctionCall:parse", input, |input| {
+            alt((parse_function_call, parse_literal))(input)
+        })
     }
 }
 
@@ -42,7 +45,7 @@ fn parse_function_call_target(input: &str) -> ParseResult {
 
 fn parse_function_call_arguments(
     input: &str,
-) -> IResult<&str, Vec<Node>, VerboseError<&str>> {
+) -> IResult<&str, Vec<Node>, ParserError> {
     let (remaining_input, (first, mut rest)) =
         tuple((Node::parse, many0(parse_function_call_arguments_item)))(input)?;
 

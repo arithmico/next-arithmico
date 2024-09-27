@@ -4,11 +4,15 @@ use nom::{
     multi::many1, sequence::tuple,
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Power {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_power, parse_power_element))(input)
+        with_cache("Power::parse", input, |input| {
+            alt((parse_power, parse_power_element))(input)
+        })
     }
 }
 

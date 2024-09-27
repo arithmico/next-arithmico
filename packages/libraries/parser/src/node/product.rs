@@ -8,11 +8,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Product {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_product, Division::parse))(input)
+        with_cache("Product::parse", input, |input| {
+            alt((parse_product, Division::parse))(input)
+        })
     }
 }
 
@@ -36,13 +40,15 @@ fn parse_product_item(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use ast::{Node, Number, Sum, Symbol};
-    use nom::{combinator::all_consuming, error::VerboseError};
+    use nom::combinator::all_consuming;
+
+    use crate::error::ParserError;
 
     use super::*;
 
     #[test]
     fn parse_error_product_1() {
-        let result: Result<(&str, Node), nom::Err<VerboseError<&str>>> =
+        let result: Result<(&str, Node), nom::Err<ParserError>> =
             all_consuming(Product::parse)("1*");
         assert!(result.is_err());
     }

@@ -16,17 +16,19 @@ mod symbol;
 mod tensor;
 
 use ast::{Function, Node};
-use nom::{branch::alt, error::VerboseError, IResult};
+use nom::{branch::alt, IResult};
 use sub_expression::parse_sub_expression;
 
-pub type ParseResult<'a> = IResult<&'a str, Node, VerboseError<&'a str>>;
+use crate::error::ParserError;
+
+pub type ParseResult<'a> = IResult<&'a str, Node, ParserError>;
 
 pub trait ParseNode {
     fn parse(input: &str) -> ParseResult;
 }
 
 impl ParseNode for Node {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((Function::parse, parse_sub_expression))(input)
     }
 }

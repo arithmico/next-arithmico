@@ -8,11 +8,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
+use crate::cache::with_cache;
+
 use super::{relation::parse_relation, ParseNode, ParseResult};
 
 impl ParseNode for And {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_and, parse_relation))(input)
+        with_cache("And::parse", input, |input| {
+            alt((parse_and, parse_relation))(input)
+        })
     }
 }
 

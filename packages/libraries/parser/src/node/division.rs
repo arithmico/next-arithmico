@@ -4,11 +4,15 @@ use nom::{
     multi::many1, sequence::tuple,
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Division {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_division, parse_division_element))(input)
+        with_cache("Division::parse", input, |input| {
+            alt((parse_division, parse_division_element))(input)
+        })
     }
 }
 

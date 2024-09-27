@@ -1,11 +1,13 @@
 use ast::Boolean;
 use nom::{branch::alt, bytes::complete::tag, Parser};
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Boolean {
     fn parse(input: &str) -> ParseResult {
-        parse_boolean(input)
+        with_cache("Boolean::parse", input, |input| parse_boolean(input))
     }
 }
 

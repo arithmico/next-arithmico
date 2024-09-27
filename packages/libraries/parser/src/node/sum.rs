@@ -8,11 +8,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
+use crate::cache::with_cache;
+
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Sum {
     fn parse(input: &str) -> ParseResult {
-        alt((parse_sum, Negate::parse, Product::parse))(input)
+        with_cache("Sum::parse", input, |input| {
+            alt((parse_sum, Negate::parse, Product::parse))(input)
+        })
     }
 }
 
@@ -38,13 +42,15 @@ fn parse_sum_item(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use ast::{Node, Number};
-    use nom::{combinator::all_consuming, error::VerboseError};
+    use nom::combinator::all_consuming;
+
+    use crate::error::ParserError;
 
     use super::*;
 
     #[test]
     fn parse_error_sum_1() {
-        let result: Result<(&str, Node), nom::Err<VerboseError<&str>>> =
+        let result: Result<(&str, Node), nom::Err<ParserError>> =
             all_consuming(Sum::parse)("1+");
         assert!(result.is_err());
     }
