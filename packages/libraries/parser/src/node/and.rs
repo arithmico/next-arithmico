@@ -8,11 +8,11 @@ use nom::{
     IResult,
 };
 
-use super::ParseNode;
+use super::{relation::parse_relation, ParseNode};
 
 impl ParseNode for And {
     fn parse(input: &str) -> IResult<&str, Node> {
-        alt((parse_and, Sum::parse))(input)
+        alt((parse_and, parse_relation))(input)
     }
 }
 
@@ -25,7 +25,7 @@ fn parse_and(input: &str) -> IResult<&str, Node> {
 }
 
 fn parse_and_item(input: &str) -> IResult<&str, Node> {
-    preceded(tuple((space0, tag("&"), space0)), Sum::parse)(input)
+    preceded(tuple((space0, tag("&"), space0)), parse_relation)(input)
 }
 
 #[cfg(test)]
