@@ -1,15 +1,15 @@
-use ast::{Node, Number};
-use nom::{error::VerboseError, number::complete::double, IResult};
+use ast::Number;
+use nom::number::complete::double;
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Number {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         parse_number(input)
     }
 }
 
-fn parse_number(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_number(input: &str) -> ParseResult {
     let (remaining_input, value) = double(input)?;
 
     Ok((remaining_input, Number::new(value)))

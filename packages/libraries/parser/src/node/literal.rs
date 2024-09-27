@@ -1,9 +1,9 @@
-use ast::{Boolean, Node, Number, Symbol};
-use nom::{branch::alt, error::VerboseError, IResult};
+use ast::{Boolean, Number, Symbol};
+use nom::branch::alt;
 
-use super::{sub_expression::parse_sub_expression, ParseNode};
+use super::{sub_expression::parse_sub_expression, ParseNode, ParseResult};
 
-pub fn parse_literal(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+pub fn parse_literal(input: &str) -> ParseResult {
     alt((
         Number::parse,
         Boolean::parse,

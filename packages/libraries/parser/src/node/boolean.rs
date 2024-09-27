@@ -1,17 +1,15 @@
-use ast::{Boolean, Node};
-use nom::{
-    branch::alt, bytes::complete::tag, error::VerboseError, IResult, Parser,
-};
+use ast::Boolean;
+use nom::{branch::alt, bytes::complete::tag, Parser};
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Boolean {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         parse_boolean(input)
     }
 }
 
-fn parse_boolean(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_boolean(input: &str) -> ParseResult {
     let (remaining_input, value) =
         alt((tag("true"), tag("false"))).parse(input)?;
 

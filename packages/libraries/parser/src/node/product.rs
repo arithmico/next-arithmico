@@ -1,24 +1,22 @@
-use ast::{Division, Node, Product};
+use ast::{Division, Product};
 use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
-    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
-    IResult,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Product {
-    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+    fn parse(input: &str) -> ParseResult {
         alt((parse_product, Division::parse))(input)
     }
 }
 
-pub fn parse_product(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+pub fn parse_product(input: &str) -> ParseResult {
     let (remaining_input, (first, mut rest)) =
         tuple((Division::parse, many1(parse_product_item)))(input)?;
 
@@ -27,7 +25,7 @@ pub fn parse_product(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     Ok((remaining_input, Product::new(elements)))
 }
 
-fn parse_product_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
+fn parse_product_item(input: &str) -> ParseResult {
     let (remaining_input, element) = preceded(
         tuple((space0, tag("*"), space0)),
         cut(Division::parse),
@@ -37,8 +35,8 @@ fn parse_product_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Sum, Symbol};
-    use nom::combinator::all_consuming;
+    use ast::{Node, Number, Sum, Symbol};
+    use nom::{combinator::all_consuming, error::VerboseError};
 
     use super::*;
 

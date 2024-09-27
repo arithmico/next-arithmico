@@ -2,16 +2,12 @@ use ast::Node;
 use nom::{
     bytes::complete::tag,
     character::complete::space0,
-    error::VerboseError,
     sequence::{delimited, tuple},
-    IResult,
 };
 
-use super::ParseNode;
+use super::{ParseNode, ParseResult};
 
-pub fn parse_sub_expression(
-    input: &str,
-) -> IResult<&str, Node, VerboseError<&str>> {
+pub fn parse_sub_expression(input: &str) -> ParseResult {
     delimited(
         tuple((tag("("), space0)),
         Node::parse,
