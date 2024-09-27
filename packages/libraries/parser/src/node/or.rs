@@ -3,6 +3,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
+    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
     IResult,
@@ -11,12 +12,12 @@ use nom::{
 use super::ParseNode;
 
 impl ParseNode for Or {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_or, And::parse))(input)
     }
 }
 
-fn parse_or(input: &str) -> IResult<&str, Node> {
+fn parse_or(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (first, mut rest)) =
         tuple((And::parse, many1(parse_or_item)))(input)?;
 
@@ -24,7 +25,7 @@ fn parse_or(input: &str) -> IResult<&str, Node> {
     Ok((remaining_input, Or::new(rest)))
 }
 
-fn parse_or_item(input: &str) -> IResult<&str, Node> {
+fn parse_or_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     preceded(tuple((space0, tag("|"), space0)), And::parse)(input)
 }
 

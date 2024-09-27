@@ -4,6 +4,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
+    error::VerboseError,
     multi::many0,
     sequence::{delimited, preceded, tuple},
     IResult,
@@ -14,12 +15,12 @@ use crate::node::parse_sub_expression;
 use super::{literal::parse_literal, ParseNode};
 
 impl ParseNode for FunctionCall {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_function_call, parse_literal))(input)
     }
 }
 
-fn parse_function_call(input: &str) -> IResult<&str, Node> {
+fn parse_function_call(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (target, arguments)) = tuple((
         parse_function_call_target,
         delimited(
@@ -35,11 +36,15 @@ fn parse_function_call(input: &str) -> IResult<&str, Node> {
     ))
 }
 
-fn parse_function_call_target(input: &str) -> IResult<&str, Node> {
+fn parse_function_call_target(
+    input: &str,
+) -> IResult<&str, Node, VerboseError<&str>> {
     alt((Symbol::parse, parse_sub_expression))(input)
 }
 
-fn parse_function_call_arguments(input: &str) -> IResult<&str, Vec<Node>> {
+fn parse_function_call_arguments(
+    input: &str,
+) -> IResult<&str, Vec<Node>, VerboseError<&str>> {
     let (remaining_input, (first, mut rest)) =
         tuple((Node::parse, many0(parse_function_call_arguments_item)))(input)?;
 
@@ -47,7 +52,9 @@ fn parse_function_call_arguments(input: &str) -> IResult<&str, Vec<Node>> {
     Ok((remaining_input, rest))
 }
 
-fn parse_function_call_arguments_item(input: &str) -> IResult<&str, Node> {
+fn parse_function_call_arguments_item(
+    input: &str,
+) -> IResult<&str, Node, VerboseError<&str>> {
     preceded(tuple((space0, tag(","), space0)), Node::parse)(input)
 }
 

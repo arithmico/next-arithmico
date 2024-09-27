@@ -4,6 +4,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
+    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
     IResult,
@@ -12,12 +13,12 @@ use nom::{
 use super::ParseNode;
 
 impl ParseNode for Product {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_product, Division::parse))(input)
     }
 }
 
-pub fn parse_product(input: &str) -> IResult<&str, Node> {
+pub fn parse_product(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (first, mut rest)) =
         tuple((Division::parse, many1(parse_product_item)))(input)?;
 
@@ -26,7 +27,7 @@ pub fn parse_product(input: &str) -> IResult<&str, Node> {
     Ok((remaining_input, Product::new(elements)))
 }
 
-fn parse_product_item(input: &str) -> IResult<&str, Node> {
+fn parse_product_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, element) = preceded(
         tuple((space0, tag("*"), space0)),
         cut(Division::parse),
@@ -43,7 +44,7 @@ mod tests {
 
     #[test]
     fn parse_error_product_1() {
-        let result: Result<(&str, Node), nom::Err<nom::error::Error<&str>>> =
+        let result: Result<(&str, Node), nom::Err<VerboseError<&str>>> =
             all_consuming(Product::parse)("1*");
         assert!(result.is_err());
     }

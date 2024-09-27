@@ -7,6 +7,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
+    error::VerboseError,
     multi::many1,
     sequence::{delimited, tuple},
     IResult,
@@ -14,11 +15,13 @@ use nom::{
 
 use super::ParseNode;
 
-pub fn parse_relation(input: &str) -> IResult<&str, Node> {
+pub fn parse_relation(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     alt((parse_relation_chain, parse_relation_element))(input)
 }
 
-fn parse_relation_chain(input: &str) -> IResult<&str, Node> {
+fn parse_relation_chain(
+    input: &str,
+) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (first, rest)) = tuple((
         parse_relation_element,
         many1(parse_relation_chain_item),
@@ -50,18 +53,24 @@ fn parse_relation_chain(input: &str) -> IResult<&str, Node> {
     Ok((remaining_input, And::new(relations)))
 }
 
-fn parse_relation_chain_item(input: &str) -> IResult<&str, (&str, Node)> {
+fn parse_relation_chain_item(
+    input: &str,
+) -> IResult<&str, (&str, Node), VerboseError<&str>> {
     tuple((
         delimited(space0, parse_relation_operator, space0),
         cut(parse_relation_element),
     ))(input)
 }
 
-fn parse_relation_operator(input: &str) -> IResult<&str, &str> {
+fn parse_relation_operator(
+    input: &str,
+) -> IResult<&str, &str, VerboseError<&str>> {
     alt((tag("="), tag("<="), tag(">="), tag("<"), tag(">")))(input)
 }
 
-fn parse_relation_element(input: &str) -> IResult<&str, Node> {
+fn parse_relation_element(
+    input: &str,
+) -> IResult<&str, Node, VerboseError<&str>> {
     Sum::parse(input)
 }
 

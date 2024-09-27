@@ -1,18 +1,18 @@
 use ast::{Division, Node, Power};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::tuple, IResult,
+    error::VerboseError, multi::many1, sequence::tuple, IResult,
 };
 
 use super::ParseNode;
 
 impl ParseNode for Division {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_division, parse_division_element))(input)
     }
 }
 
-fn parse_division(input: &str) -> IResult<&str, Node> {
+fn parse_division(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (first, rest)) =
         tuple((parse_division_element, many1(parse_division_item)))(input)?;
 
@@ -23,14 +23,16 @@ fn parse_division(input: &str) -> IResult<&str, Node> {
     ))
 }
 
-fn parse_division_item(input: &str) -> IResult<&str, Node> {
+fn parse_division_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (_, _, _, node)) =
         tuple((space0, tag("/"), space0, parse_division_element))(input)?;
 
     Ok((remaining_input, node))
 }
 
-pub fn parse_division_element(input: &str) -> IResult<&str, Node> {
+pub fn parse_division_element(
+    input: &str,
+) -> IResult<&str, Node, VerboseError<&str>> {
     Power::parse(input)
 }
 

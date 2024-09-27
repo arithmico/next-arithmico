@@ -4,6 +4,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
+    error::VerboseError,
     multi::many1,
     sequence::{preceded, tuple},
     IResult,
@@ -12,12 +13,12 @@ use nom::{
 use super::ParseNode;
 
 impl ParseNode for Sum {
-    fn parse(input: &str) -> IResult<&str, Node> {
+    fn parse(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
         alt((parse_sum, Negate::parse, Product::parse))(input)
     }
 }
 
-fn parse_sum(input: &str) -> IResult<&str, Node> {
+fn parse_sum(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, (first, mut rest)) = tuple((
         Product::parse,
         many1(alt((parse_sum_item, Negate::parse))),
@@ -28,7 +29,7 @@ fn parse_sum(input: &str) -> IResult<&str, Node> {
     Ok((remaining_input, Sum::new(elements)))
 }
 
-fn parse_sum_item(input: &str) -> IResult<&str, Node> {
+fn parse_sum_item(input: &str) -> IResult<&str, Node, VerboseError<&str>> {
     let (remaining_input, element) = preceded(
         tuple((space0, tag("+"), space0)),
         cut(Product::parse),
@@ -45,7 +46,7 @@ mod tests {
 
     #[test]
     fn parse_error_sum_1() {
-        let result: Result<(&str, Node), nom::Err<nom::error::Error<&str>>> =
+        let result: Result<(&str, Node), nom::Err<VerboseError<&str>>> =
             all_consuming(Sum::parse)("1+");
         assert!(result.is_err());
     }
