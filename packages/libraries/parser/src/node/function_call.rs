@@ -11,7 +11,7 @@ use nom::{
 
 use crate::node::parse_sub_expression;
 
-use super::{parse_literal, ParseNode};
+use super::{literal::parse_literal, ParseNode};
 
 impl ParseNode for FunctionCall {
     fn parse(input: &str) -> IResult<&str, Node> {
