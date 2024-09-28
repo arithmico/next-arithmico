@@ -1,5 +1,6 @@
 mod and;
 mod boolean;
+mod definition;
 mod division;
 mod equals;
 mod function;
@@ -20,6 +21,7 @@ mod tensor;
 
 pub use and::*;
 pub use boolean::*;
+pub use definition::*;
 pub use division::*;
 pub use equals::*;
 pub use function::*;
@@ -59,4 +61,5 @@ pub enum Node {
     GreaterThan(GreaterThan),
     GreaterThanOrEquals(GreaterThanOrEquals),
     HostFunction(HostFunction),
+    Definition(Definition),
 }
