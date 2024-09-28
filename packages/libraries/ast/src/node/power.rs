@@ -7,10 +7,10 @@ pub struct Power {
 }
 
 impl Power {
-    pub fn new(dividend: Node, divisor: Node) -> Node {
+    pub fn new(base: Node, exponent: Node) -> Node {
         Node::Power(Self {
-            base: Box::new(dividend),
-            exponent: Box::new(divisor),
+            base: Box::new(base),
+            exponent: Box::new(exponent),
         })
     }
 }
