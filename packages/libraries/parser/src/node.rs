@@ -1,5 +1,6 @@
 mod and;
 mod boolean;
+mod definition;
 mod division;
 mod function;
 mod function_call;
