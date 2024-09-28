@@ -6,7 +6,8 @@
         "headless_components",
         "workspace",
         "parser",
-        "ast"
+        "ast",
+        "evaluator"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "tailwindCSS.includeLanguages": {
