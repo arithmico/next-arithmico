@@ -7,9 +7,9 @@ use nom::{
     sequence::{delimited, terminated, tuple},
 };
 
-use crate::{cache::with_cache, node::symbol::parse_raw_symbol, ParseNode};
+use crate::{cache::with_cache, node::symbol::parse_raw_symbol};
 
-use super::ParseResult;
+use super::{ParseNode, ParseResult};
 
 impl ParseNode for Definition {
     fn parse(input: &str) -> ParseResult {
