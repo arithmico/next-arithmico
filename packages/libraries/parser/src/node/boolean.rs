@@ -24,13 +24,13 @@ mod tests {
 
     #[test]
     fn parse_true() {
-        let result = parse_boolean("true").unwrap();
+        let result = Boolean::parse("true").unwrap();
         assert_eq!(result, ("", Boolean::new(true)));
     }
 
     #[test]
     fn parse_false() {
-        let result = parse_boolean("false").unwrap();
+        let result = Boolean::parse("false").unwrap();
         assert_eq!(result, ("", Boolean::new(false)));
     }
 }
