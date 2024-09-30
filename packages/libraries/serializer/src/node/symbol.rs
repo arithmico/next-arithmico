@@ -23,3 +23,22 @@ impl SerializeNode for Symbol {
         Ok(self.name.clone())
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use ast::Symbol;
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_symbol() {
+        assert_eq!(
+            serialize_node(Symbol::new("a"), &SerializeNodeOptions::default())
+                .unwrap(),
+            "a"
+        );
+    }
+}
