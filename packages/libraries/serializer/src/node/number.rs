@@ -74,3 +74,78 @@ impl SerializeNode for Number {
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use common::DecimalPlaces;
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_number_int() {
+        assert_eq!(
+            serialize_node(Number::new(1.), &SerializeNodeOptions::default())
+                .unwrap(),
+            "1"
+        );
+    }
+
+    #[test]
+    fn serialize_negative_number() {
+        assert_eq!(
+            Number::new(-1.).serialize(&SerializeNodeOptions::default()),
+            Err(SerializeNodeError::InvalidNode)
+        );
+    }
+
+    #[test]
+    fn serialize_number_float_dot() {
+        assert_eq!(
+            serialize_node(Number::new(1.23), &SerializeNodeOptions::default())
+                .unwrap(),
+            "1.23"
+        );
+    }
+
+    #[test]
+    fn serialize_number_float_comma() {
+        assert_eq!(
+            serialize_node(
+                Number::new(1.23),
+                &SerializeNodeOptions {
+                    decimal_format: common::DecimalFormat::Comma,
+                    decimal_places: DecimalPlaces::from(5)
+                }
+            )
+            .unwrap(),
+            "1,23"
+        );
+    }
+
+    #[test]
+    fn serialize_number_scientific_notation() {
+        assert_eq!(
+            serialize_node(
+                Number::new(112345678.),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "1.12346 * 10 ^ 8"
+        );
+    }
+
+    #[test]
+    fn serialize_number_scientific_notation_negative() {
+        assert_eq!(
+            serialize_node(
+                Number::new(-112345678.),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "-1.12346 * 10 ^ 8"
+        );
+    }
+}
