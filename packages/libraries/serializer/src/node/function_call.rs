@@ -48,3 +48,70 @@ impl SerializeNode for FunctionCall {
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use ast::{Function, Sum, Symbol};
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_function_call_no_arguments() {
+        assert_eq!(
+            serialize_node(
+                FunctionCall::new(Symbol::new("f"), vec![]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "f()"
+        );
+    }
+
+    #[test]
+    fn serialize_function_call_1_argument() {
+        assert_eq!(
+            serialize_node(
+                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "f(x)"
+        );
+    }
+
+    #[test]
+    fn serialize_function_call_2_arguments() {
+        assert_eq!(
+            serialize_node(
+                FunctionCall::new(
+                    Symbol::new("f"),
+                    vec![Symbol::new("x"), Symbol::new("y")]
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "f(x, y)"
+        );
+    }
+
+    #[test]
+    fn serialize_in_place_function_call() {
+        assert_eq!(
+            serialize_node(
+                FunctionCall::new(
+                    Function::new(
+                        vec![String::from("x"), String::from("y")],
+                        Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
+                    ),
+                    vec![Symbol::new("x"), Symbol::new("y")]
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "((x, y) -> x + y)(x, y)"
+        );
+    }
+}
