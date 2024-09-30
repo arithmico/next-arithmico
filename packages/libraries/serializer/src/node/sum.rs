@@ -41,6 +41,10 @@ impl SerializeNode for Sum {
         &self,
         options: &SerializeNodeOptions,
     ) -> Result<String, SerializeNodeError> {
+        if self.elements.len() < 2 {
+            return Err(SerializeNodeError::InvalidNode);
+        }
+
         let elements: Result<Vec<(String, bool)>, SerializeNodeError> = self
             .elements
             .iter()
@@ -78,5 +82,85 @@ impl SerializeNode for Sum {
                 }
             },
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use ast::{Negate, Sum, Symbol};
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_invalid_sum() {
+        assert_eq!(
+            serialize_node(
+                Sum::new(vec![Symbol::new("a")]),
+                &SerializeNodeOptions::default()
+            ),
+            Err(SerializeNodeError::InvalidNode)
+        );
+    }
+
+    #[test]
+    fn serialize_sum_symbol() {
+        assert_eq!(
+            serialize_node(
+                Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a + b"
+        );
+    }
+
+    #[test]
+    fn serialize_nested_sum() {
+        assert_eq!(
+            serialize_node(
+                Sum::new(vec![
+                    Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
+                    Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
+                ]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a + b + c + d"
+        );
+    }
+
+    #[test]
+    fn serialize_sum_with_negate() {
+        assert_eq!(
+            serialize_node(
+                Sum::new(vec![
+                    Symbol::new("a"),
+                    Symbol::new("b"),
+                    Negate::new(Symbol::new("c"))
+                ]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a + b - c"
+        );
+    }
+
+    #[test]
+    fn serialize_sum_starting_with_negate() {
+        assert_eq!(
+            serialize_node(
+                Sum::new(vec![
+                    Negate::new(Symbol::new("a")),
+                    Symbol::new("b"),
+                    Symbol::new("c"),
+                ]),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "-a + b + c"
+        );
     }
 }
