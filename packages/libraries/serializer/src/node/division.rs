@@ -24,7 +24,6 @@ fn dividend_requires_parenthesis(node: &Node) -> bool {
         Node::Negate(_)
         | Node::Sum(_)
         | Node::Function(_)
-        | Node::Definition(_)
         | Node::And(_)
         | Node::Or(_) => true,
         _ => false,
@@ -36,8 +35,8 @@ fn divisor_requires_parenthesis(node: &Node) -> bool {
         Node::Negate(_)
         | Node::Sum(_)
         | Node::Division(_)
+        | Node::Product(_)
         | Node::Function(_)
-        | Node::Definition(_)
         | Node::And(_)
         | Node::Or(_) => true,
         _ => false,
@@ -62,5 +61,131 @@ impl SerializeNode for Division {
                 divisor_requires_parenthesis
             )?
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use ast::{And, Function, Or, Product, Sum, Symbol};
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_division() {
+        assert_eq!(
+            serialize_node(
+                Division::new(Symbol::new("a"), Symbol::new("b")),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a / b"
+        );
+    }
+
+    #[test]
+    fn serialize_left_nested_division() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Division::new(Symbol::new("a"), Symbol::new("b"),),
+                    Symbol::new("c")
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a / b / c"
+        );
+    }
+
+    #[test]
+    fn serialize_right_nested_division() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Symbol::new("a"),
+                    Division::new(Symbol::new("b"), Symbol::new("c"),)
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a / (b / c)"
+        );
+    }
+
+    #[test]
+    fn serialize_division_with_sum() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a + b) / (c + d)"
+        );
+    }
+
+    #[test]
+    fn serialize_division_with_product() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Product::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    Product::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a * b / (c * d)"
+        );
+    }
+
+    #[test]
+    fn serialize_division_with_and() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a & b) / (c & d)"
+        );
+    }
+
+    #[test]
+    fn serialize_division_with_or() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a | b) / (c | d)"
+        );
+    }
+
+    #[test]
+    fn serialize_division_with_function() {
+        assert_eq!(
+            serialize_node(
+                Division::new(
+                    Function::new(vec![String::from("x")], Symbol::new("x")),
+                    Function::new(vec![String::from("y")], Symbol::new("y")),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "((x) -> x) / ((y) -> y)"
+        );
     }
 }

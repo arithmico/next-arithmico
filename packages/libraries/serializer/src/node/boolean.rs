@@ -27,3 +27,34 @@ impl SerializeNode for Boolean {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_boolean_true() {
+        assert_eq!(
+            serialize_node(
+                Boolean::new(true),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "true"
+        );
+    }
+
+    #[test]
+    fn serialize_boolean_false() {
+        assert_eq!(
+            serialize_node(
+                Boolean::new(false),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "false"
+        );
+    }
+}

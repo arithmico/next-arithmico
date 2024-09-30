@@ -69,6 +69,8 @@ impl SerializeNode for Sum {
             |acc, (element, is_negative)| {
                 if acc.is_empty() && *is_negative {
                     format!("-{}", element)
+                } else if acc.is_empty() {
+                    element.clone()
                 } else if *is_negative {
                     format!("{} - {}", acc, element)
                 } else {

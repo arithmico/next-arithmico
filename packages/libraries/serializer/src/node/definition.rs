@@ -39,3 +39,39 @@ impl SerializeNode for Definition {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use ast::{Function, Number, Symbol};
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_define_constant() {
+        assert_eq!(
+            serialize_node(
+                Definition::new("a", Number::new(1.)),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "a := 1"
+        );
+    }
+
+    #[test]
+    fn serialize_define_function() {
+        assert_eq!(
+            serialize_node(
+                Definition::new(
+                    "f",
+                    Function::new(vec![String::from("x")], Symbol::new("x"))
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "f(x) := x"
+        );
+    }
+}
