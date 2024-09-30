@@ -23,3 +23,22 @@ impl SerializeNode for HostFunction {
         Err(SerializeNodeError::UnsupportedNode)
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_host_function() {
+        assert_eq!(
+            serialize_node(
+                HostFunction::new("f"),
+                &SerializeNodeOptions::default()
+            ),
+            Err(SerializeNodeError::UnsupportedNode)
+        );
+    }
+}

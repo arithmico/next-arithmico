@@ -44,3 +44,70 @@ impl SerializeNode for GreaterThan {
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+
+    use ast::{And, Equals, Or, Symbol};
+
+    use crate::serialize_node;
+
+    use super::*;
+
+    #[test]
+    fn serialize_greater_than_with_symbols() {
+        assert_eq!(
+            serialize_node(
+                GreaterThan::new(Symbol::new("x"), Symbol::new("y")),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "x > y"
+        );
+    }
+
+    #[test]
+    fn serialize_greater_than_with_or() {
+        assert_eq!(
+            serialize_node(
+                GreaterThan::new(
+                    Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a | b) > (c | d)"
+        );
+    }
+
+    #[test]
+    fn serialize_greater_than_with_and() {
+        assert_eq!(
+            serialize_node(
+                GreaterThan::new(
+                    And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                    And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a & b) > (c & d)"
+        );
+    }
+
+    #[test]
+    fn serialize_greater_than_with_equals() {
+        assert_eq!(
+            serialize_node(
+                GreaterThan::new(
+                    Equals::new(Symbol::new("a"), Symbol::new("b"),),
+                    Equals::new(Symbol::new("c"), Symbol::new("d"),),
+                ),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
+            "(a = b) > (c = d)"
+        );
+    }
+}
