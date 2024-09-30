@@ -1,0 +1,9 @@
+[package]
+name = "serializer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ast = { path = "../ast"}
+common = { path = "../common" }
+thiserror = "1.0.64"

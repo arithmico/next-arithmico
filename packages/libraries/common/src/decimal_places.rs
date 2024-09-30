@@ -17,3 +17,15 @@ impl From<&DecimalPlaces> for u8 {
         value.0
     }
 }
+
+impl From<&DecimalPlaces> for i32 {
+    fn from(value: &DecimalPlaces) -> Self {
+        value.0 as i32
+    }
+}
+
+impl From<&DecimalPlaces> for usize {
+    fn from(value: &DecimalPlaces) -> Self {
+        value.0 as usize
+    }
+}
