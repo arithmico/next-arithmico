@@ -3,12 +3,12 @@ use std::collections::HashMap;
 use ast::Node;
 use common::Language;
 
-use crate::{context::Context, error::EvaluationError};
+use crate::{context::Context, error::EvaluateNodeError};
 
 pub type FunctionExecutor = fn(
     arguments: &Vec<Node>,
     context: &Context,
-) -> Result<Node, EvaluationError>;
+) -> Result<Node, EvaluateNodeError>;
 pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 #[derive(Debug, Clone, PartialEq)]
