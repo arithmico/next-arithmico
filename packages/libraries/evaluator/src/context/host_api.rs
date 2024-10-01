@@ -1,8 +1,12 @@
 use std::collections::HashMap;
 
-use ast::{FunctionCall, Node, Symbol};
-use common::Language;
-use endpoint::HostEndpoint;
+use ast::{FunctionCall, Symbol};
+use common::{DecimalFormat, DecimalPlaces, Language};
+use log::info;
+use serializer::{serialize_node, SerializeNodeOptions};
+
+pub use endpoint::HostEndpoint;
+pub use module::HostApiModule;
 
 mod endpoint;
 mod module;
@@ -18,6 +22,12 @@ pub struct HostApi {
 }
 
 impl HostApi {
+    pub fn empty() -> Self {
+        Self {
+            endpoints: HashMap::new(),
+        }
+    }
+
     pub fn builder() -> HostApiBuilder {
         HostApiBuilder::default()
     }
@@ -35,20 +45,20 @@ impl HostApi {
                     description,
                     ..
                 } => Documentation {
-                    synopsis: FunctionCall::new(
-                        Symbol::new(name.clone()),
-                        arguments
-                            .iter()
-                            .map(|argument| {
-                                Symbol::new(argument.clone()).into()
-                            })
-                            .collect(),
+                    synopsis: serialize_node(
+                        FunctionCall::new(
+                            Symbol::new(name),
+                            arguments
+                                .iter()
+                                .map(|argument| Symbol::new(argument).into())
+                                .collect(),
+                        ),
+                        &SerializeNodeOptions::new(
+                            DecimalPlaces::from(5),
+                            DecimalFormat::from(language),
+                        ),
                     )
-                    .serialize(&Context::new(
-                        Stack::new(),
-                        Settings::default(),
-                        Rc::new(self.clone()),
-                    )),
+                    .unwrap(),
                     description: description
                         .get(language)
                         .and_then(|description| Some(description.clone()))
