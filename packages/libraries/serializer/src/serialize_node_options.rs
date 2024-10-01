@@ -13,3 +13,15 @@ impl Default for SerializeNodeOptions {
         }
     }
 }
+
+impl SerializeNodeOptions {
+    pub fn new(
+        decimal_places: DecimalPlaces,
+        decimal_format: DecimalFormat,
+    ) -> Self {
+        Self {
+            decimal_format,
+            decimal_places,
+        }
+    }
+}

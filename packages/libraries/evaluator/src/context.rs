@@ -1,3 +1,7 @@
+use std::rc::Rc;
+
+use ast::{HostFunction, Node};
+use host_api::{HostApi, HostEndpoint};
 use settings::Settings;
 use stack::Stack;
 
@@ -17,7 +21,7 @@ impl Default for Context {
         Self {
             stack: Stack::new(),
             settings: Settings::default(),
-            host_api: load_host_api().into(),
+            host_api: HostApi::empty().into(),
         }
     }
 }
