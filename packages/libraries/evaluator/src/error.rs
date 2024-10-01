@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq, Clone)]
-pub enum EvaluationError {
+pub enum EvaluateNodeError {
     #[error("unsupported operation")]
     UnsupportedOperation,
 
