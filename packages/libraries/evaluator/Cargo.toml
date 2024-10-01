@@ -17,7 +17,7 @@ default = ["datatypes", "operators"]
 datatypes = [
     "datatype_number",
     "datatype_symbol",
-    "datatype_vector",
+    "datatype_tensor",
     "datatype_function",
     "datatype_boolean"
 ]
@@ -50,30 +50,30 @@ operators = [
 # data type features
 datatype_number = []
 datatype_symbol = []
-datatype_vector = []
+datatype_tensor = []
 datatype_function = []
 datatype_boolean = []
 
 # operator features
 operator_negate_number = ["datatype_number"]
-operator_negate_vector = ["datatype_vector"]
+operator_negate_vector = ["datatype_tensor"]
 operator_negate_boolean = ["datatype_boolean"]
 operator_sum_number_number = ["datatype_number"]
-operator_sum_vector_vector = ["datatype_vector"]
+operator_sum_vector_vector = ["datatype_tensor"]
 operator_product_number_number = ["datatype_number"]
-operator_product_number_vector = ["datatype_number", "datatype_vector"]
-operator_product_vector_vector = ["datatype_vector"]
+operator_product_number_vector = ["datatype_number", "datatype_tensor"]
+operator_product_vector_vector = ["datatype_tensor"]
 operator_division_number_number = ["datatype_number"]
-operator_division_vector_number = ["datatype_vector", "datatype_number"]
+operator_division_vector_number = ["datatype_tensor", "datatype_number"]
 operator_power_number_number = ["datatype_number"]
 operator_function_call = [
 ] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
 operator_definition = ["datatype_symbol"]
-operator_product_matrix_matrix = ["datatype_vector"]
+operator_product_matrix_matrix = ["datatype_tensor"]
 operator_and_boolean_boolean = ["datatype_boolean"]
 operator_or_boolean_boolean = ["datatype_boolean"]
 operator_equals_number_number = ["datatype_boolean", "datatype_number"]
-operator_equals_tensor_tensor = ["datatype_boolean", "datatype_vector"]
+operator_equals_tensor_tensor = ["datatype_boolean", "datatype_tensor"]
 operator_equals_boolean_boolean = ["datatype_boolean"]
 operator_less_than_number_number = ["datatype_boolean", "datatype_number"]
 operator_greater_than_number_number = ["datatype_boolean", "datatype_number"]
