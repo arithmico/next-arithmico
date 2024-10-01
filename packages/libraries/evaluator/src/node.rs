@@ -6,13 +6,14 @@ use crate::{
 
 mod boolean;
 mod number;
+mod sum;
 mod symbol;
 
 impl EvaluateNode for Node {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         match self {
             Node::Boolean(boolean) => boolean.evaluate(context),
-            Node::Sum(sum) => todo!(),
+            Node::Sum(sum) => sum.evaluate(context),
             Node::Negate(negate) => todo!(),
             Node::Product(product) => todo!(),
             Node::Division(division) => todo!(),
