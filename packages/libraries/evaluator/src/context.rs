@@ -1,9 +1,12 @@
 use std::rc::Rc;
 
 use ast::{HostFunction, Node};
-use host_api::{HostApi, HostEndpoint};
-use settings::Settings;
-use stack::Stack;
+use host_api::HostEndpoint;
+
+pub use host_api::HostApi;
+pub use host_api::HostApiModule;
+pub use settings::Settings;
+pub use stack::Stack;
 
 mod host_api;
 mod settings;

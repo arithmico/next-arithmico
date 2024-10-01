@@ -8,6 +8,9 @@ pub enum EvaluateNodeError {
     #[error("unsupported data type '{0}'")]
     UnsupportedDataType(String),
 
+    #[error("unknown symbol '{0}'")]
+    UnknownSymbol(String),
+
     #[error("RuntimeError: {0}")]
     RuntimeError(String),
 }

@@ -19,7 +19,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn evaluate_boolean_true() {
+    fn evaluate_number() {
         let context = Context::default();
         let result = Number::new(1.2345).evaluate(&context).unwrap();
         assert_eq!(result, Number::new(1.2345));
