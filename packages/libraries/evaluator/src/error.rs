@@ -13,4 +13,7 @@ pub enum EvaluateNodeError {
 
     #[error("RuntimeError: {0}")]
     RuntimeError(String),
+
+    #[error("invalid node")]
+    InvalidNode,
 }
