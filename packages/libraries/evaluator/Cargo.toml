@@ -9,3 +9,22 @@ common = { path = "../common" }
 serializer = { path = "../serializer" }
 log = "0.4.22"
 thiserror = "1.0.64"
+
+[features]
+default = ["datatypes"]
+
+# feature groups
+datatypes = [
+    "datatype_number",
+    "datatype_symbol",
+    "datatype_vector",
+    "datatype_function",
+    "datatype_boolean"
+]
+
+# data type features
+datatype_number = []
+datatype_symbol = []
+datatype_vector = []
+datatype_function = []
+datatype_boolean = []
