@@ -1,4 +1,6 @@
-use ast::{Node, Number, Sum};
+use std::iter::zip;
+
+use ast::{Node, Number, Sum, Tensor};
 
 use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
 
@@ -15,7 +17,8 @@ impl EvaluateNode for Sum {
 
         let mut accumulator = elements.next().unwrap()?;
         for current_element in elements {
-            accumulator = add_sum_elements(&accumulator, &current_element?)?;
+            accumulator =
+                add_sum_elements(&accumulator, &current_element?, context)?;
         }
 
         Ok(accumulator)
@@ -25,14 +28,47 @@ impl EvaluateNode for Sum {
 fn add_sum_elements(
     left: &Node,
     right: &Node,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
-            if !cfg!(feature = "datatype_number") {
+            if !cfg!(feature = "operator_sum_number_number") {
                 return Err(EvaluateNodeError::UnsupportedOperation);
             }
 
             Ok(Number::new(left.value + right.value))
+        }
+        (Node::Tensor(left), Node::Tensor(right)) => {
+            let left_rank = left.get_rank();
+            let right_rank = right.get_rank();
+
+            match (left_rank, right_rank) {
+                (1, 1) => {
+                    if !cfg!(feature = "operator_sum_vector_vector") {
+                        return Err(EvaluateNodeError::UnsupportedOperation);
+                    }
+
+                    if left.elements.len() != right.elements.len() {
+                        return Err(
+                            EvaluateNodeError::IncompatibleVectorDimensions(
+                                left.elements.len(),
+                                right.elements.len(),
+                            ),
+                        );
+                    }
+
+                    Ok(Tensor::new_with_shape(
+                        left.shape.clone(),
+                        zip(left.elements.iter(), right.elements.iter())
+                            .map(|(left, right)| {
+                                Sum::new(vec![left.clone(), right.clone()])
+                                    .evaluate(context)
+                            })
+                            .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
+                    ))
+                }
+                _ => Err(EvaluateNodeError::UnsupportedOperation),
+            }
         }
         _ => Err(EvaluateNodeError::UnsupportedOperation),
     }
@@ -66,5 +102,14 @@ mod tests {
                 .evaluate(&context)
                 .unwrap();
         assert_eq!(result, Number::new(6.));
+    }
+
+    #[test]
+    fn evaluate_sum_empty_vectors() {
+        let context = Context::default();
+        let result = Sum::new(vec![Tensor::new(vec![]), Tensor::new(vec![])])
+            .evaluate(&context)
+            .unwrap();
+        assert_eq!(result, Tensor::new(vec![]));
     }
 }
