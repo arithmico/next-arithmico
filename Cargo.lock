@@ -371,12 +371,15 @@ checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 [[package]]
 name = "evaluator"
 version = "0.1.0"
+<<<<<<< Updated upstream
 dependencies = [
  "ast",
  "common",
  "log",
  "thiserror",
 ]
+=======
+>>>>>>> Stashed changes
 
 [[package]]
 name = "fnv"
