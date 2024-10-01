@@ -8,6 +8,7 @@ mod boolean;
 mod number;
 mod sum;
 mod symbol;
+mod tensor;
 
 impl EvaluateNode for Node {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -18,7 +19,7 @@ impl EvaluateNode for Node {
             Node::Product(product) => todo!(),
             Node::Division(division) => todo!(),
             Node::Power(power) => todo!(),
-            Node::Tensor(tensor) => todo!(),
+            Node::Tensor(tensor) => tensor.evaluate(context),
             Node::Number(number) => number.evaluate(context),
             Node::Symbol(symbol) => symbol.evaluate(context),
             Node::Function(function) => todo!(),

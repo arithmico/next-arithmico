@@ -16,4 +16,7 @@ pub enum EvaluateNodeError {
 
     #[error("invalid node")]
     InvalidNode,
+
+    #[error("incompatible vector dimensions: {0}, {1}")]
+    IncompatibleVectorDimensions(usize, usize),
 }
