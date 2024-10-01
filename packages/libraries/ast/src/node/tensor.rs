@@ -17,6 +17,19 @@ impl Tensor {
         })
     }
 
+    pub fn new_with_shape(shape: Vec<usize>, elements: Vec<Node>) -> Node {
+        assert!(
+            shape
+                .clone()
+                .into_iter()
+                .reduce(|acc, val| acc * val)
+                .unwrap_or(0)
+                == elements.len()
+        );
+
+        Node::Tensor(Self { elements, shape })
+    }
+
     pub fn get_rank(&self) -> usize {
         self.shape.len()
     }
