@@ -6,6 +6,7 @@ use crate::{
 
 mod boolean;
 mod number;
+mod symbol;
 
 impl EvaluateNode for Node {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -18,7 +19,7 @@ impl EvaluateNode for Node {
             Node::Power(power) => todo!(),
             Node::Tensor(tensor) => todo!(),
             Node::Number(number) => number.evaluate(context),
-            Node::Symbol(symbol) => todo!(),
+            Node::Symbol(symbol) => symbol.evaluate(context),
             Node::Function(function) => todo!(),
             Node::FunctionCall(function_call) => todo!(),
             Node::And(and) => todo!(),
