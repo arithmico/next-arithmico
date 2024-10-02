@@ -19,4 +19,7 @@ pub enum EvaluateNodeError {
 
     #[error("incompatible vector dimensions: {0}, {1}")]
     IncompatibleVectorDimensions(usize, usize),
+
+    #[error("incompatible vector dimensions: {0:?}, {1:?}")]
+    IncompatibleMatrixDimensions(Vec<usize>, Vec<usize>),
 }

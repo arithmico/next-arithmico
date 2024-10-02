@@ -49,6 +49,13 @@ impl Tensor {
         convert_to_outer_index(&self.shape, inner_index)
     }
 
+    pub fn get_element(&self, index: &Vec<usize>) -> Option<&Node> {
+        match self.convert_to_inner_index(index) {
+            Some(inner_index) => self.elements.get(inner_index),
+            None => None,
+        }
+    }
+
     fn get_shape(elements: &Vec<Node>) -> Vec<usize> {
         let inner_shape = elements
             .iter()

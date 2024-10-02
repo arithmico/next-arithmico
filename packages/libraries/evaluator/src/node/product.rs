@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use ast::{Node, Number, Product, Sum, Tensor};
+use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
 
 use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
 
@@ -91,27 +91,78 @@ fn multiply_tensors(
     let right_rank = right.get_rank();
 
     match (left_rank, right_rank) {
-        (1, 1) => {
-            if !cfg!(feature = "operator_product_number_number") {
-                return Err(EvaluateNodeError::UnsupportedOperation);
-            }
-
-            if left.elements.len() != right.elements.len() {
-                return Err(EvaluateNodeError::IncompatibleVectorDimensions(
-                    left.elements.len(),
-                    right.elements.len(),
-                ));
-            }
-
-            let elements = zip(left.elements.iter(), right.elements.iter())
-                .map(|(left, right)| {
-                    Product::new(vec![left.clone(), right.clone()])
-                });
-
-            Sum::new(elements.collect()).evaluate(context)
-        }
+        (1, 1) => multiply_vectors(left, right, context),
+        (2, 2) => multiply_matrices(left, right, context),
         _ => Err(EvaluateNodeError::UnsupportedOperation),
     }
+}
+
+fn multiply_vectors(
+    left: &Tensor,
+    right: &Tensor,
+    context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    debug_assert_eq!(left.get_rank(), 1);
+    debug_assert_eq!(right.get_rank(), 1);
+
+    if !cfg!(feature = "operator_product_number_number") {
+        return Err(EvaluateNodeError::UnsupportedOperation);
+    }
+
+    if left.elements.len() != right.elements.len() {
+        return Err(EvaluateNodeError::IncompatibleVectorDimensions(
+            left.elements.len(),
+            right.elements.len(),
+        ));
+    }
+
+    let elements = zip(left.elements.iter(), right.elements.iter())
+        .map(|(left, right)| Product::new(vec![left.clone(), right.clone()]));
+
+    Sum::new(elements.collect()).evaluate(context)
+}
+
+fn multiply_matrices(
+    left: &Tensor,
+    right: &Tensor,
+    context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    debug_assert_eq!(left.get_rank(), 2);
+    debug_assert_eq!(right.get_rank(), 2);
+
+    if left.shape.get(1).unwrap() != right.shape.get(0).unwrap() {
+        return Err(EvaluateNodeError::IncompatibleMatrixDimensions(
+            left.shape.clone(),
+            right.shape.clone(),
+        ));
+    }
+
+    let x = *left.shape.get(1).unwrap();
+    let dim0 = *left.shape.get(0).unwrap();
+    let dim1 = *right.shape.get(1).unwrap();
+    let result_shape = vec![dim0, dim1];
+
+    let elements = (0usize..(dim0 * dim1))
+        .map(|index| {
+            let outer_index =
+                convert_to_outer_index(&result_shape, index).unwrap();
+            let i = *outer_index.get(0).unwrap();
+            let k = *outer_index.get(1).unwrap();
+
+            Sum::new(
+                (0usize..x)
+                    .map(|j| {
+                        Product::new(vec![
+                            left.get_element(&vec![i, j]).unwrap().clone(),
+                            right.get_element(&vec![j, k]).unwrap().clone(),
+                        ])
+                    })
+                    .collect(),
+            )
+        })
+        .collect();
+
+    Tensor::new_with_shape(result_shape, elements).evaluate(context)
 }
 
 #[cfg(test)]
@@ -212,5 +263,37 @@ mod tests {
                 ]
             ),
         );
+    }
+
+    #[test]
+    fn evaluate_product_matrix_matrix() {
+        let context = Context::default();
+        assert_eq!(
+            Product::new(vec![
+                Tensor::new(vec![
+                    Tensor::new(vec![
+                        Number::new(3.0),
+                        Number::new(2.0),
+                        Number::new(1.0),
+                    ]),
+                    Tensor::new(vec![
+                        Number::new(1.0),
+                        Number::new(0.0),
+                        Number::new(2.0),
+                    ]),
+                ]),
+                Tensor::new(vec![
+                    Tensor::new(vec![Number::new(1.0), Number::new(2.0),]),
+                    Tensor::new(vec![Number::new(0.0), Number::new(1.0),]),
+                    Tensor::new(vec![Number::new(4.0), Number::new(0.0),]),
+                ]),
+            ])
+            .evaluate(&context)
+            .unwrap(),
+            Tensor::new(vec![
+                Tensor::new(vec![Number::new(7.0), Number::new(8.0),]),
+                Tensor::new(vec![Number::new(9.0), Number::new(2.0),]),
+            ]),
+        )
     }
 }
