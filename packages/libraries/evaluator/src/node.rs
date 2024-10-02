@@ -8,6 +8,7 @@ mod boolean;
 mod division;
 mod negate;
 mod number;
+mod power;
 mod product;
 mod sum;
 mod symbol;
@@ -21,7 +22,7 @@ impl EvaluateNode for Node {
             Node::Negate(negate) => negate.evaluate(context),
             Node::Product(product) => product.evaluate(context),
             Node::Division(division) => division.evaluate(context),
-            Node::Power(power) => todo!(),
+            Node::Power(power) => power.evaluate(context),
             Node::Tensor(tensor) => tensor.evaluate(context),
             Node::Number(number) => number.evaluate(context),
             Node::Symbol(symbol) => symbol.evaluate(context),
