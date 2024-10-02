@@ -7,6 +7,7 @@ use crate::{
 mod boolean;
 mod negate;
 mod number;
+mod product;
 mod sum;
 mod symbol;
 mod tensor;
@@ -17,7 +18,7 @@ impl EvaluateNode for Node {
             Node::Boolean(boolean) => boolean.evaluate(context),
             Node::Sum(sum) => sum.evaluate(context),
             Node::Negate(negate) => negate.evaluate(context),
-            Node::Product(product) => todo!(),
+            Node::Product(product) => product.evaluate(context),
             Node::Division(division) => todo!(),
             Node::Power(power) => todo!(),
             Node::Tensor(tensor) => tensor.evaluate(context),
