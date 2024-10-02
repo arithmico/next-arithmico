@@ -22,4 +22,7 @@ pub enum EvaluateNodeError {
 
     #[error("incompatible vector dimensions: {0:?}, {1:?}")]
     IncompatibleMatrixDimensions(Vec<usize>, Vec<usize>),
+
+    #[error("division by zero")]
+    DivisionByZero,
 }

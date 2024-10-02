@@ -5,6 +5,7 @@ use crate::{
 };
 
 mod boolean;
+mod division;
 mod negate;
 mod number;
 mod product;
@@ -19,7 +20,7 @@ impl EvaluateNode for Node {
             Node::Sum(sum) => sum.evaluate(context),
             Node::Negate(negate) => negate.evaluate(context),
             Node::Product(product) => product.evaluate(context),
-            Node::Division(division) => todo!(),
+            Node::Division(division) => division.evaluate(context),
             Node::Power(power) => todo!(),
             Node::Tensor(tensor) => tensor.evaluate(context),
             Node::Number(number) => number.evaluate(context),
