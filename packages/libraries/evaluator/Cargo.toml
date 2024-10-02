@@ -30,7 +30,7 @@ operators = [
     "operator_power_number_number",
     "operator_function_call",
     "operator_definition",
-    "operator_negate_vector",
+    "operator_negate_tensor",
     "operator_product_vector_vector",
     "operator_product_number_vector",
     "operator_division_vector_number",
@@ -56,7 +56,7 @@ datatype_boolean = []
 
 # operator features
 operator_negate_number = ["datatype_number"]
-operator_negate_vector = ["datatype_tensor"]
+operator_negate_tensor = ["datatype_tensor"]
 operator_negate_boolean = ["datatype_boolean"]
 operator_sum_number_number = ["datatype_number"]
 operator_sum_vector_vector = ["datatype_tensor"]
