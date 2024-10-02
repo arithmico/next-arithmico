@@ -6,6 +6,7 @@ use crate::{
 
 mod boolean;
 mod division;
+mod function;
 mod negate;
 mod number;
 mod power;
@@ -26,7 +27,7 @@ impl EvaluateNode for Node {
             Node::Tensor(tensor) => tensor.evaluate(context),
             Node::Number(number) => number.evaluate(context),
             Node::Symbol(symbol) => symbol.evaluate(context),
-            Node::Function(function) => todo!(),
+            Node::Function(function) => function.evaluate(context),
             Node::FunctionCall(function_call) => todo!(),
             Node::And(and) => todo!(),
             Node::Or(or) => todo!(),
