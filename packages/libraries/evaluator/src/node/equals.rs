@@ -141,4 +141,43 @@ mod tests {
         .unwrap();
         assert_eq!(result, Boolean::new(false));
     }
+
+    #[test]
+    fn evaluate_equals_tensor_tensor_false_shape() {
+        let context = Context::default();
+        let result = Equals::new(
+            Tensor::new(vec![
+                Number::new(1.),
+                Number::new(2.),
+                Number::new(3.),
+            ]),
+            Tensor::new(vec![
+                Tensor::new(vec![Number::new(1.)]),
+                Tensor::new(vec![Number::new(2.)]),
+                Tensor::new(vec![Number::new(3.)]),
+            ]),
+        )
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Boolean::new(false));
+    }
+
+    #[test]
+    fn evaluate_equals_tensor_tensor_false_incompatible_data_types() {
+        let context = Context::default();
+        let result = Equals::new(
+            Tensor::new(vec![
+                Number::new(1.),
+                Number::new(2.),
+                Number::new(3.),
+            ]),
+            Tensor::new(vec![
+                Number::new(1.),
+                Number::new(2.),
+                Boolean::new(true),
+            ]),
+        )
+        .evaluate(&context);
+        assert_eq!(result, Err(EvaluateNodeError::UnsupportedOperation));
+    }
 }
