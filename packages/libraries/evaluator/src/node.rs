@@ -4,6 +4,7 @@ use crate::{
     context::Context, error::EvaluateNodeError, evaluate::EvaluateNode,
 };
 
+mod and;
 mod boolean;
 mod division;
 mod function;
@@ -30,7 +31,7 @@ impl EvaluateNode for Node {
             Node::Symbol(symbol) => symbol.evaluate(context),
             Node::Function(function) => function.evaluate(context),
             Node::FunctionCall(function_call) => todo!(),
-            Node::And(and) => todo!(),
+            Node::And(and) => and.evaluate(context),
             Node::Or(or) => or.evaluate(context),
             Node::Equals(equals) => todo!(),
             Node::LessThan(less_than) => todo!(),
