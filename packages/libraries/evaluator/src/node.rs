@@ -7,6 +7,7 @@ use crate::{
 mod and;
 mod boolean;
 mod division;
+mod equals;
 mod function;
 mod negate;
 mod number;
@@ -33,7 +34,7 @@ impl EvaluateNode for Node {
             Node::FunctionCall(function_call) => todo!(),
             Node::And(and) => and.evaluate(context),
             Node::Or(or) => or.evaluate(context),
-            Node::Equals(equals) => todo!(),
+            Node::Equals(equals) => equals.evaluate(context),
             Node::LessThan(less_than) => todo!(),
             Node::LessThanOrEquals(less_than_or_equals) => todo!(),
             Node::GreaterThan(greater_than) => todo!(),
