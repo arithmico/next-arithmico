@@ -9,6 +9,7 @@ mod division;
 mod function;
 mod negate;
 mod number;
+mod or;
 mod power;
 mod product;
 mod sum;
@@ -30,7 +31,7 @@ impl EvaluateNode for Node {
             Node::Function(function) => function.evaluate(context),
             Node::FunctionCall(function_call) => todo!(),
             Node::And(and) => todo!(),
-            Node::Or(or) => todo!(),
+            Node::Or(or) => or.evaluate(context),
             Node::Equals(equals) => todo!(),
             Node::LessThan(less_than) => todo!(),
             Node::LessThanOrEquals(less_than_or_equals) => todo!(),
