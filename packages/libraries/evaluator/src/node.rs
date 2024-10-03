@@ -6,6 +6,7 @@ use crate::{
 
 mod and;
 mod boolean;
+mod definition;
 mod division;
 mod equals;
 mod function;
@@ -40,7 +41,7 @@ impl EvaluateNode for Node {
             Node::GreaterThan(greater_than) => todo!(),
             Node::GreaterThanOrEquals(greater_than_or_equals) => todo!(),
             Node::HostFunction(host_function) => todo!(),
-            Node::Definition(definition) => todo!(),
+            Node::Definition(definition) => definition.evaluate(context),
         }
     }
 }
