@@ -3,7 +3,10 @@ use ast::{Node, Tensor};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Tensor {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_tensor") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "tensor",

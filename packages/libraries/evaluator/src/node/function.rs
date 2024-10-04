@@ -3,7 +3,10 @@ use ast::{Function, Node};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Function {
-    fn evaluate(&self, _context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        _context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_function") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "function",

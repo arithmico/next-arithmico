@@ -1,7 +1,8 @@
 use ast::Node;
 
 use crate::{
-    context::EvaluateNodeContext, error::EvaluateNodeError, evaluate::EvaluateNode,
+    context::EvaluateNodeContext, error::EvaluateNodeError,
+    evaluate::EvaluateNode,
 };
 
 mod and;
@@ -26,7 +27,10 @@ mod symbol;
 mod tensor;
 
 impl EvaluateNode for Node {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         match self {
             Node::Boolean(boolean) => boolean.evaluate(context),
             Node::Sum(sum) => sum.evaluate(context),

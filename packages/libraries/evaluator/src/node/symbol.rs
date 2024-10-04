@@ -3,7 +3,10 @@ use ast::{Node, Symbol};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Symbol {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "symbol",
@@ -23,7 +26,7 @@ mod tests {
     use ast::Number;
     use common::Language;
 
-    use crate::context::{HostApi, HostApiModule, EvaluateNodeOptions, Stack};
+    use crate::context::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
 
     use super::*;
 
@@ -38,8 +41,11 @@ mod tests {
     fn evaluate_symbol_from_stack() {
         let mut stack = Stack::new();
         stack.insert("x", Number::new(42.));
-        let context =
-            EvaluateNodeContext::new(stack, EvaluateNodeOptions::default(), Rc::new(HostApi::empty()));
+        let context = EvaluateNodeContext::new(
+            stack,
+            EvaluateNodeOptions::default(),
+            Rc::new(HostApi::empty()),
+        );
         let result = Symbol::new("x").evaluate(&context).unwrap();
         assert_eq!(result, Number::new(42.));
     }
@@ -59,8 +65,11 @@ mod tests {
             })
             .build();
 
-        let context =
-            EvaluateNodeContext::new(Stack::new(), EvaluateNodeOptions::default(), host_api.into());
+        let context = EvaluateNodeContext::new(
+            Stack::new(),
+            EvaluateNodeOptions::default(),
+            host_api.into(),
+        );
 
         let result = Symbol::new("test").evaluate(&context).unwrap();
         assert_eq!(result, Number::new(42.));
