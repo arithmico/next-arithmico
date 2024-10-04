@@ -36,7 +36,7 @@ mod tests {
     #[test]
     fn serialize_symbol() {
         assert_eq!(
-            serialize_node(Symbol::new("a"), &SerializeNodeOptions::default())
+            serialize_node(&Symbol::new("a"), &SerializeNodeOptions::default())
                 .unwrap(),
             "a"
         );

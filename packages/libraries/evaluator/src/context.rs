@@ -5,39 +5,39 @@ use ast::{HostFunction, Node};
 pub use host_api::HostApi;
 pub use host_api::HostApiModule;
 pub use host_api::HostEndpoint;
-pub use settings::Settings;
+pub use options::EvaluateNodeOptions;
 pub use stack::Stack;
 
 mod host_api;
-mod settings;
+mod options;
 mod stack;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Context {
+pub struct EvaluateNodeContext {
     pub stack: Stack,
-    pub settings: Settings,
+    pub options: EvaluateNodeOptions,
     pub host_api: Rc<HostApi>,
 }
 
-impl Default for Context {
+impl Default for EvaluateNodeContext {
     fn default() -> Self {
         Self {
             stack: Stack::new(),
-            settings: Settings::default(),
+            options: EvaluateNodeOptions::default(),
             host_api: HostApi::empty().into(),
         }
     }
 }
 
-impl Context {
+impl EvaluateNodeContext {
     pub fn new(
         stack: Stack,
-        settings: Settings,
+        options: EvaluateNodeOptions,
         host_api: Rc<HostApi>,
-    ) -> Context {
-        Context {
+    ) -> EvaluateNodeContext {
+        EvaluateNodeContext {
             stack,
-            settings,
+            options,
             host_api,
         }
     }

@@ -1,9 +1,9 @@
 use ast::{Definition, Node};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Definition {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_definition") {
             return Err(EvaluateNodeError::UnsupportedOperation);
         }
@@ -21,7 +21,7 @@ mod tests {
 
     #[test]
     fn evaluate_definition() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Definition::new(
             "test",
             Sum::new(vec![Number::new(1.), Number::new(2.)]),

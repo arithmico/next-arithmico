@@ -62,7 +62,7 @@ mod tests {
     fn serialize_invalid_and() {
         assert_eq!(
             serialize_node(
-                And::new(vec![Symbol::new("a")]),
+                &And::new(vec![Symbol::new("a")]),
                 &SerializeNodeOptions::default()
             ),
             Err(SerializeNodeError::InvalidNode)
@@ -73,7 +73,7 @@ mod tests {
     fn serialize_and_2() {
         assert_eq!(
             serialize_node(
-                And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
+                &And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -85,7 +85,7 @@ mod tests {
     fn serialize_and_3() {
         assert_eq!(
             serialize_node(
-                And::new(vec![
+                &And::new(vec![
                     Symbol::new("a"),
                     Symbol::new("b"),
                     Symbol::new("c")
@@ -101,7 +101,7 @@ mod tests {
     fn serialize_and_with_nested_or() {
         assert_eq!(
             serialize_node(
-                And::new(vec![
+                &And::new(vec![
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ]),

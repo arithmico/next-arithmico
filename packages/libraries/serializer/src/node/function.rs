@@ -45,7 +45,7 @@ mod tests {
     fn serialize_function_with_no_arguments() {
         assert_eq!(
             serialize_node(
-                Function::new(vec![], Number::new(1.)),
+                &Function::new(vec![], Number::new(1.)),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -57,7 +57,7 @@ mod tests {
     fn serialize_function_with_1_argument() {
         assert_eq!(
             serialize_node(
-                Function::new(vec![String::from("x")], Symbol::new("x")),
+                &Function::new(vec![String::from("x")], Symbol::new("x")),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -69,7 +69,7 @@ mod tests {
     fn serialize_function_with_2_arguments() {
         assert_eq!(
             serialize_node(
-                Function::new(
+                &Function::new(
                     vec![String::from("x"), String::from("y")],
                     Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                 ),
@@ -84,7 +84,7 @@ mod tests {
     fn serialize_nested_functions() {
         assert_eq!(
             serialize_node(
-                Function::new(
+                &Function::new(
                     vec![String::from("x")],
                     Function::new(
                         vec![String::from("y")],

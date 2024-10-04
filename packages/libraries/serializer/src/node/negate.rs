@@ -53,7 +53,7 @@ mod tests {
     fn serialize_negate_symbol() {
         assert_eq!(
             serialize_node(
-                Negate::new(Symbol::new("a")),
+                &Negate::new(Symbol::new("a")),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -65,7 +65,7 @@ mod tests {
     fn serialize_nested_negate() {
         assert_eq!(
             serialize_node(
-                Negate::new(Negate::new(Symbol::new("a"))),
+                &Negate::new(Negate::new(Symbol::new("a"))),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -77,9 +77,10 @@ mod tests {
     fn serialize_negate_sum() {
         assert_eq!(
             serialize_node(
-                Negate::new(Sum::new(
-                    vec![Symbol::new("a"), Symbol::new("b"),]
-                )),
+                &Negate::new(Sum::new(vec![
+                    Symbol::new("a"),
+                    Symbol::new("b"),
+                ])),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -91,9 +92,10 @@ mod tests {
     fn serialize_negate_and() {
         assert_eq!(
             serialize_node(
-                Negate::new(And::new(
-                    vec![Symbol::new("a"), Symbol::new("b"),]
-                )),
+                &Negate::new(And::new(vec![
+                    Symbol::new("a"),
+                    Symbol::new("b"),
+                ])),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -105,7 +107,9 @@ mod tests {
     fn serialize_negate_or() {
         assert_eq!(
             serialize_node(
-                Negate::new(Or::new(vec![Symbol::new("a"), Symbol::new("b"),])),
+                &Negate::new(Or::new(
+                    vec![Symbol::new("a"), Symbol::new("b"),]
+                )),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -117,7 +121,7 @@ mod tests {
     fn serialize_negate_function() {
         assert_eq!(
             serialize_node(
-                Negate::new(Function::new(
+                &Negate::new(Function::new(
                     vec![String::from("x")],
                     Symbol::new("x")
                 )),

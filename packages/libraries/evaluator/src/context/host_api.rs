@@ -46,7 +46,7 @@ impl HostApi {
                     ..
                 } => Documentation {
                     synopsis: serialize_node(
-                        FunctionCall::new(
+                        &FunctionCall::new(
                             Symbol::new(name),
                             arguments
                                 .iter()

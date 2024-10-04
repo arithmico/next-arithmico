@@ -364,6 +364,7 @@ dependencies = [
  "evaluator",
  "parser",
  "serializer",
+ "thiserror",
 ]
 
 [[package]]
@@ -1383,6 +1384,7 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "nom",
+ "thiserror",
 ]
 
 [[package]]

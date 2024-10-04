@@ -2,10 +2,10 @@ use std::iter::zip;
 
 use ast::{Node, Number, Sum, Tensor};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Sum {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::InvalidNode);
         }
@@ -28,7 +28,7 @@ impl EvaluateNode for Sum {
 fn add_sum_elements(
     left: &Node,
     right: &Node,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
@@ -80,14 +80,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_sum() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Sum::new(vec![Number::new(1.)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
     }
 
     #[test]
     fn evaluate_sum_number_number_2() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Sum::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -96,7 +96,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_number_number_3() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result =
             Sum::new(vec![Number::new(1.), Number::new(2.), Number::new(3.)])
                 .evaluate(&context)
@@ -106,7 +106,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_empty_vectors() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Sum::new(vec![Tensor::new(vec![]), Tensor::new(vec![])])
             .evaluate(&context)
             .unwrap();

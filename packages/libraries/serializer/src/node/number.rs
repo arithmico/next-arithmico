@@ -87,7 +87,7 @@ mod tests {
     #[test]
     fn serialize_number_int() {
         assert_eq!(
-            serialize_node(Number::new(1.), &SerializeNodeOptions::default())
+            serialize_node(&Number::new(1.), &SerializeNodeOptions::default())
                 .unwrap(),
             "1"
         );
@@ -104,8 +104,11 @@ mod tests {
     #[test]
     fn serialize_number_float_dot() {
         assert_eq!(
-            serialize_node(Number::new(1.23), &SerializeNodeOptions::default())
-                .unwrap(),
+            serialize_node(
+                &Number::new(1.23),
+                &SerializeNodeOptions::default()
+            )
+            .unwrap(),
             "1.23"
         );
     }
@@ -114,7 +117,7 @@ mod tests {
     fn serialize_number_float_comma() {
         assert_eq!(
             serialize_node(
-                Number::new(1.23),
+                &Number::new(1.23),
                 &SerializeNodeOptions {
                     decimal_format: common::DecimalFormat::Comma,
                     decimal_places: DecimalPlaces::from(5)
@@ -129,7 +132,7 @@ mod tests {
     fn serialize_number_scientific_notation() {
         assert_eq!(
             serialize_node(
-                Number::new(112345678.),
+                &Number::new(112345678.),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -141,7 +144,7 @@ mod tests {
     fn serialize_number_scientific_notation_negative() {
         assert_eq!(
             serialize_node(
-                Number::new(-112345678.),
+                &Number::new(-112345678.),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),

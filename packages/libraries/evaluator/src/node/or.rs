@@ -1,9 +1,9 @@
 use ast::{Boolean, Node, Or};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Or {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::InvalidNode);
         }
@@ -44,14 +44,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_or() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Or::new(vec![Boolean::new(true)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
     }
 
     #[test]
     fn evaluate_or_boolean_boolean_2() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Or::new(vec![Boolean::new(false), Boolean::new(true)])
             .evaluate(&context)
             .unwrap();
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn evaluate_or_boolean_boolean_3() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Or::new(vec![
             Boolean::new(false),
             Boolean::new(false),

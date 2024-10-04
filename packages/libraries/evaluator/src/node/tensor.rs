@@ -1,9 +1,9 @@
 use ast::{Node, Tensor};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Tensor {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_tensor") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "tensor",
@@ -28,14 +28,14 @@ mod tests {
 
     #[test]
     fn evaluate_empty_tensor() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Tensor::new(vec![]).evaluate(&context).unwrap();
         assert_eq!(result, Tensor::new(vec![]));
     }
 
     #[test]
     fn evaluate_tensor_with_numbers() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Tensor::new(vec![Number::new(1.)])
             .evaluate(&context)
             .unwrap();
@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn evaluate_tensor_with_sum() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result =
             Tensor::new(vec![Sum::new(vec![Number::new(1.), Number::new(2.)])])
                 .evaluate(&context)
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn evaluate_tensor_preserve_shape() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Tensor::new(vec![
             Tensor::new(vec![Number::new(1.), Number::new(2.)]),
             Tensor::new(vec![Number::new(3.), Number::new(4.)]),

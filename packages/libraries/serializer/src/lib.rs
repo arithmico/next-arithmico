@@ -14,7 +14,7 @@ pub use serialize_node_options::SerializeNodeOptions;
 use serialize_node_utils::SerializeNodeUtils;
 
 pub fn serialize_node(
-    node: Node,
+    node: &Node,
     options: &SerializeNodeOptions,
 ) -> Result<String, SerializeNodeError> {
     let transformed_node = node.prepare_serialization(options)?;

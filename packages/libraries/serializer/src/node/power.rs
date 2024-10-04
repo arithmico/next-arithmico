@@ -68,7 +68,7 @@ mod tests {
     fn serialize_power_symbol() {
         assert_eq!(
             serialize_node(
-                Power::new(Symbol::new("a"), Symbol::new("b")),
+                &Power::new(Symbol::new("a"), Symbol::new("b")),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -80,7 +80,7 @@ mod tests {
     fn serialize_power_number() {
         assert_eq!(
             serialize_node(
-                Power::new(Number::new(2.), Number::new(3.)),
+                &Power::new(Number::new(2.), Number::new(3.)),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -92,7 +92,7 @@ mod tests {
     fn serialize_power_product() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Product::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Product::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
@@ -107,7 +107,7 @@ mod tests {
     fn serialize_power_sum() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
@@ -122,7 +122,7 @@ mod tests {
     fn serialize_power_division() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Division::new(Symbol::new("a"), Symbol::new("b"),),
                     Division::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
@@ -137,7 +137,7 @@ mod tests {
     fn serialize_nested_power() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Power::new(Symbol::new("a"), Symbol::new("b"),),
                     Power::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
@@ -152,7 +152,7 @@ mod tests {
     fn serialize_power_negate() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Negate::new(Symbol::new("a")),
                     Negate::new(Symbol::new("b"))
                 ),
@@ -167,7 +167,7 @@ mod tests {
     fn serialize_power_function_call() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
                     FunctionCall::new(Symbol::new("g"), vec![Symbol::new("x")]),
                 ),
@@ -182,7 +182,7 @@ mod tests {
     fn serialize_power_function() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Function::new(
                         vec![String::from("x"), String::from("y")],
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
@@ -206,7 +206,7 @@ mod tests {
     fn serialize_power_and() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     And::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ),
@@ -221,7 +221,7 @@ mod tests {
     fn serialize_power_or() {
         assert_eq!(
             serialize_node(
-                Power::new(
+                &Power::new(
                     Or::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ),

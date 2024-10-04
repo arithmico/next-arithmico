@@ -2,10 +2,10 @@ use std::iter::zip;
 
 use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Product {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::InvalidNode);
         }
@@ -31,7 +31,7 @@ impl EvaluateNode for Product {
 fn multiply_product_elements(
     left: &Node,
     right: &Node,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
@@ -64,7 +64,7 @@ fn multiply_numbers(
 fn multiply_number_and_tensor(
     number: &Number,
     tensor: &Tensor,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_product_number_tensor") {
         return Err(EvaluateNodeError::UnsupportedOperation);
@@ -85,7 +85,7 @@ fn multiply_number_and_tensor(
 fn multiply_tensors(
     left: &Tensor,
     right: &Tensor,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     let left_rank = left.get_rank();
     let right_rank = right.get_rank();
@@ -100,7 +100,7 @@ fn multiply_tensors(
 fn multiply_vectors(
     left: &Tensor,
     right: &Tensor,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     debug_assert_eq!(left.get_rank(), 1);
     debug_assert_eq!(right.get_rank(), 1);
@@ -125,7 +125,7 @@ fn multiply_vectors(
 fn multiply_matrices(
     left: &Tensor,
     right: &Tensor,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     debug_assert_eq!(left.get_rank(), 2);
     debug_assert_eq!(right.get_rank(), 2);
@@ -173,14 +173,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_product() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![Number::new(1.)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
     }
 
     #[test]
     fn evaluate_product_number_number_2() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -189,7 +189,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_number_3() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -198,7 +198,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_vector_vector_2() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![
             Tensor::new(vec![
                 Number::new(1.),
@@ -218,7 +218,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_vector() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![
             Number::new(2.),
             Tensor::new(vec![
@@ -241,7 +241,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_matrix() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Product::new(vec![
             Number::new(2.),
             Tensor::new(vec![
@@ -267,7 +267,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_matrix_matrix() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         assert_eq!(
             Product::new(vec![
                 Tensor::new(vec![
