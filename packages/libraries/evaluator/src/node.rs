@@ -13,6 +13,7 @@ mod function;
 mod function_call;
 mod host_function;
 mod less_than;
+mod less_than_or_equals;
 mod negate;
 mod number;
 mod or;
@@ -42,7 +43,9 @@ impl EvaluateNode for Node {
             Node::Or(or) => or.evaluate(context),
             Node::Equals(equals) => equals.evaluate(context),
             Node::LessThan(less_than) => less_than.evaluate(context),
-            Node::LessThanOrEquals(less_than_or_equals) => todo!(),
+            Node::LessThanOrEquals(less_than_or_equals) => {
+                less_than_or_equals.evaluate(context)
+            }
             Node::GreaterThan(greater_than) => todo!(),
             Node::GreaterThanOrEquals(greater_than_or_equals) => todo!(),
             Node::HostFunction(host_function) => {
