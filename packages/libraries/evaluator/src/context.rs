@@ -1,10 +1,10 @@
 use std::rc::Rc;
 
 use ast::{HostFunction, Node};
-use host_api::HostEndpoint;
 
 pub use host_api::HostApi;
 pub use host_api::HostApiModule;
+pub use host_api::HostEndpoint;
 pub use settings::Settings;
 pub use stack::Stack;
 
