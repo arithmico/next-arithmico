@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 ast = { path = "../ast" }
+common = { version = "0.1.0", path = "../common" }
 evaluator = { path = "../evaluator" }
 parser = { path = "../parser" }
 serializer = { path = "../serializer" }
