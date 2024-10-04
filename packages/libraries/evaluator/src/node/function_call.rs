@@ -2,7 +2,9 @@ use std::iter::zip;
 
 use ast::{FunctionCall, Node};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{
+    context::HostEndpoint, evaluate::EvaluateNode, Context, EvaluateNodeError,
+};
 
 impl EvaluateNode for FunctionCall {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -34,6 +36,33 @@ impl EvaluateNode for FunctionCall {
 
                 function.expression.evaluate(&local_context)
             }
+            Node::HostFunction(host_function) => {
+                let Some(endpoint) =
+                    context.host_api.endpoint(&host_function.name)
+                else {
+                    return Err(EvaluateNodeError::UnknownSymbol(
+                        host_function.name,
+                    ));
+                };
+
+                let HostEndpoint::Function {
+                    executor,
+                    arguments,
+                    ..
+                } = endpoint
+                else {
+                    return Err(EvaluateNodeError::UnsupportedOperation);
+                };
+
+                if self.arguments.len() != arguments.len() {
+                    return Err(EvaluateNodeError::InvalidNumberOfArguments(
+                        arguments.len(),
+                        self.arguments.len(),
+                    ));
+                }
+
+                executor(&self.arguments, context)
+            }
             _ => Err(EvaluateNodeError::UnsupportedOperation),
         }
     }
@@ -41,7 +70,11 @@ impl EvaluateNode for FunctionCall {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Function, Number, Symbol};
+    use std::rc::Rc;
+
+    use ast::{Function, Number, Power, Symbol};
+
+    use crate::{HostApi, HostApiModule, Settings, Stack};
 
     use super::*;
 
@@ -69,5 +102,87 @@ mod tests {
         .evaluate(&context)
         .unwrap();
         assert_eq!(result, Number::new(2.));
+    }
+
+    #[test]
+    fn evaluate_host_function_call() {
+        let context = Context::new(
+            Stack::new(),
+            Settings::default(),
+            Rc::new(
+                HostApi::builder()
+                    .module(true, || {
+                        HostApiModule::builder()
+                            .name("test")
+                            .endpoint(true, "f", |builder| {
+                                builder
+                                    .description(
+                                        common::Language::English,
+                                        "test",
+                                    )
+                                    .function(vec!["x"])
+                                    .executor(|arguments, context| {
+                                        Power::new(
+                                            arguments.get(0).ok_or(
+                                                EvaluateNodeError::RuntimeError(
+                                                    String::from("test"),
+                                                ),
+                                            )?.clone(),
+                                            Number::new(2.),
+                                        )
+                                        .evaluate(context)
+                                    })
+                            })
+                            .build()
+                    })
+                    .build(),
+            ),
+        );
+        let result = FunctionCall::new(Symbol::new("f"), vec![Number::new(2.)])
+            .evaluate(&context)
+            .unwrap();
+        assert_eq!(result, Number::new(4.));
+    }
+
+    #[test]
+    fn evaluate_host_function_call_invalid_number_of_arguments() {
+        let context = Context::new(
+            Stack::new(),
+            Settings::default(),
+            Rc::new(
+                HostApi::builder()
+                    .module(true, || {
+                        HostApiModule::builder()
+                            .name("test")
+                            .endpoint(true, "f", |builder| {
+                                builder
+                                    .description(
+                                        common::Language::English,
+                                        "test",
+                                    )
+                                    .function(vec!["x"])
+                                    .executor(|arguments, context| {
+                                        Power::new(
+                                            arguments.get(0).ok_or(
+                                                EvaluateNodeError::RuntimeError(
+                                                    String::from("test"),
+                                                ),
+                                            )?.clone(),
+                                            Number::new(2.),
+                                        )
+                                        .evaluate(context)
+                                    })
+                            })
+                            .build()
+                    })
+                    .build(),
+            ),
+        );
+        let result =
+            FunctionCall::new(Symbol::new("f"), vec![]).evaluate(&context);
+        assert_eq!(
+            result,
+            Err(EvaluateNodeError::InvalidNumberOfArguments(1, 0))
+        );
     }
 }
