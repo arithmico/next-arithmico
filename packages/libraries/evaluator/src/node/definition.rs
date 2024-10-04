@@ -4,6 +4,10 @@ use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
 
 impl EvaluateNode for Definition {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+        if !cfg!(feature = "operator_definition") {
+            return Err(EvaluateNodeError::UnsupportedOperation);
+        }
+
         let expression = self.expression.evaluate(context)?;
         Ok(Definition::new(&self.symbol, expression))
     }
