@@ -1,9 +1,13 @@
 use ast::Node;
 use entry::SessionEntry;
 use error::SessionError;
-use evaluator::{evaluate_node, EvaluateNodeContext};
+use evaluator::{
+    evaluate_node, EvaluateNodeContext, EvaluateNodeOptions, Stack,
+};
 use parser::parse;
 use serializer::{serialize_node, SerializeNodeOptions};
+
+use crate::api::load_host_api;
 
 mod entry;
 mod error;
@@ -16,7 +20,11 @@ pub struct Session {
 impl Session {
     pub fn new() -> Self {
         Self {
-            context: EvaluateNodeContext::default(),
+            context: EvaluateNodeContext::new(
+                Stack::new(),
+                EvaluateNodeOptions::default(),
+                load_host_api().into(),
+            ),
             entries: Vec::new(),
         }
     }
