@@ -10,7 +10,7 @@ use nom::{
 };
 
 use crate::{
-    cache::with_cache, error::ParserError, node::parse_sub_expression,
+    cache::with_cache, error::ParseNodeError, node::parse_sub_expression,
 };
 
 use super::{literal::parse_literal, ParseNode, ParseResult};
@@ -45,7 +45,7 @@ fn parse_function_call_target(input: &str) -> ParseResult {
 
 fn parse_function_call_arguments(
     input: &str,
-) -> IResult<&str, Vec<Node>, ParserError> {
+) -> IResult<&str, Vec<Node>, ParseNodeError> {
     let (remaining_input, (first, mut rest)) =
         tuple((Node::parse, many0(parse_function_call_arguments_item)))(input)?;
 

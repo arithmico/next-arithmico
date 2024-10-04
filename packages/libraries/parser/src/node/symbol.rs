@@ -8,7 +8,7 @@ use nom::{
     IResult,
 };
 
-use crate::{cache::with_cache, error::ParserError};
+use crate::{cache::with_cache, error::ParseNodeError};
 
 use super::{ParseNode, ParseResult};
 
@@ -23,7 +23,7 @@ fn parse_symbol(input: &str) -> ParseResult {
     Ok((remaining_input, Symbol::new(&name)))
 }
 
-pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParserError> {
+pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (start, rest)) =
         tuple((alpha1, many0(alt((alphanumeric1, tag("_"))))))(input)?;
 

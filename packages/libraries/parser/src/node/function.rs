@@ -4,7 +4,7 @@ use nom::{
     combinator::opt, multi::many0, sequence::tuple, IResult,
 };
 
-use crate::{cache::with_cache, error::ParserError};
+use crate::{cache::with_cache, error::ParseNodeError};
 
 use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
 
@@ -38,7 +38,7 @@ fn parse_function(input: &str) -> ParseResult {
 
 fn parse_function_arguments(
     input: &str,
-) -> IResult<&str, Vec<String>, ParserError> {
+) -> IResult<&str, Vec<String>, ParseNodeError> {
     let (remaining_input, (first, mut rest)) =
         tuple((parse_raw_symbol, many0(parse_function_argument_item)))(input)?;
     rest.insert(0, first);
@@ -47,7 +47,7 @@ fn parse_function_arguments(
 
 fn parse_function_argument_item(
     input: &str,
-) -> IResult<&str, String, ParserError> {
+) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (_, _, _, name)) =
         tuple((space0, tag(","), space0, parse_raw_symbol))(input)?;
 

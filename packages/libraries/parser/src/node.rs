@@ -20,9 +20,9 @@ use ast::{Function, Node};
 use nom::{branch::alt, IResult};
 use sub_expression::parse_sub_expression;
 
-use crate::error::ParserError;
+use crate::error::ParseNodeError;
 
-pub type ParseResult<'a> = IResult<&'a str, Node, ParserError>;
+pub type ParseResult<'a> = IResult<&'a str, Node, ParseNodeError>;
 
 pub trait ParseNode {
     fn parse(input: &str) -> ParseResult;
