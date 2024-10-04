@@ -1,9 +1,9 @@
 use nom::error::ParseError;
 
 #[derive(Debug, Clone)]
-pub struct ParserError {}
+pub struct ParseNodeError {}
 
-impl<I> ParseError<I> for ParserError {
+impl<I> ParseError<I> for ParseNodeError {
     fn from_error_kind(_input: I, _kind: nom::error::ErrorKind) -> Self {
         Self {}
     }

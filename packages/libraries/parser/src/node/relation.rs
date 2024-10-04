@@ -12,7 +12,7 @@ use nom::{
     IResult,
 };
 
-use crate::{cache::with_cache, error::ParserError};
+use crate::{cache::with_cache, error::ParseNodeError};
 
 use super::{ParseNode, ParseResult};
 
@@ -56,14 +56,14 @@ fn parse_relation_chain(input: &str) -> ParseResult {
 
 fn parse_relation_chain_item(
     input: &str,
-) -> IResult<&str, (&str, Node), ParserError> {
+) -> IResult<&str, (&str, Node), ParseNodeError> {
     tuple((
         delimited(space0, parse_relation_operator, space0),
         cut(parse_relation_element),
     ))(input)
 }
 
-fn parse_relation_operator(input: &str) -> IResult<&str, &str, ParserError> {
+fn parse_relation_operator(input: &str) -> IResult<&str, &str, ParseNodeError> {
     alt((tag("="), tag("<="), tag(">="), tag("<"), tag(">")))(input)
 }
 

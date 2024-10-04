@@ -44,13 +44,13 @@ mod tests {
     use ast::{Node, Number};
     use nom::combinator::all_consuming;
 
-    use crate::error::ParserError;
+    use crate::error::ParseNodeError;
 
     use super::*;
 
     #[test]
     fn parse_error_sum_1() {
-        let result: Result<(&str, Node), nom::Err<ParserError>> =
+        let result: Result<(&str, Node), nom::Err<ParseNodeError>> =
             all_consuming(Sum::parse)("1+");
         assert!(result.is_err());
     }

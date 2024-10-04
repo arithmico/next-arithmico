@@ -2,9 +2,9 @@ use std::{cell::RefCell, collections::HashMap};
 
 use ast::Node;
 
-use crate::{error::ParserError, ParseResult};
+use crate::{error::ParseNodeError, ParseResult};
 
-type CachedParseResult = Result<(String, Node), nom::Err<ParserError>>;
+type CachedParseResult = Result<(String, Node), nom::Err<ParseNodeError>>;
 
 #[derive(Clone, Debug)]
 struct Cache {
