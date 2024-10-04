@@ -1,4 +1,3 @@
-mod components;
-mod settings;
+mod page;
 
-pub use settings::SettingsPage;
+pub use page::SettingsPage;

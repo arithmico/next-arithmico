@@ -1,29 +1,9 @@
-mod navbar {
-    pub mod navbar;
-}
-mod page {
-    pub mod page;
-}
-mod page_with_navbar {
-    pub mod page_with_navbar;
-}
-mod listbox {
-    pub mod listbox;
-}
-mod link {
-    pub mod link;
-}
-mod page_title {
-    pub mod page_title;
-}
-mod breadcrumbs {
-    pub mod breadcrumbs;
-}
+mod navigation;
+mod page;
+mod page_with_sidebar;
+mod sidebar;
 
-pub use breadcrumbs::breadcrumbs::*;
-pub use link::link::*;
-pub use listbox::listbox::*;
-pub use navbar::navbar::*;
-pub use page::page::*;
-pub use page_title::page_title::*;
-pub use page_with_navbar::page_with_navbar::*;
+pub use navigation::*;
+pub use page::*;
+pub use page_with_sidebar::*;
+pub use sidebar::*;
