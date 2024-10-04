@@ -1,9 +1,9 @@
 use ast::{Node, Symbol};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Symbol {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "symbol",
@@ -23,13 +23,13 @@ mod tests {
     use ast::Number;
     use common::Language;
 
-    use crate::context::{HostApi, HostApiModule, Settings, Stack};
+    use crate::context::{HostApi, HostApiModule, EvaluateNodeOptions, Stack};
 
     use super::*;
 
     #[test]
     fn evaluate_unknown_symbol() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Symbol::new("x").evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::UnknownSymbol("x".into())));
     }
@@ -39,7 +39,7 @@ mod tests {
         let mut stack = Stack::new();
         stack.insert("x", Number::new(42.));
         let context =
-            Context::new(stack, Settings::default(), Rc::new(HostApi::empty()));
+            EvaluateNodeContext::new(stack, EvaluateNodeOptions::default(), Rc::new(HostApi::empty()));
         let result = Symbol::new("x").evaluate(&context).unwrap();
         assert_eq!(result, Number::new(42.));
     }
@@ -60,7 +60,7 @@ mod tests {
             .build();
 
         let context =
-            Context::new(Stack::new(), Settings::default(), host_api.into());
+            EvaluateNodeContext::new(Stack::new(), EvaluateNodeOptions::default(), host_api.into());
 
         let result = Symbol::new("test").evaluate(&context).unwrap();
         assert_eq!(result, Number::new(42.));

@@ -8,3 +8,4 @@ ast = { path = "../ast" }
 evaluator = { path = "../evaluator" }
 parser = { path = "../parser" }
 serializer = { path = "../serializer" }
+thiserror = "1.0.64"

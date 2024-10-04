@@ -95,7 +95,7 @@ mod tests {
     fn serialize_empty_tensor() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![]),
+                &Tensor::new(vec![]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -107,7 +107,7 @@ mod tests {
     fn serialize_tensor_1() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![Symbol::new("a")]),
+                &Tensor::new(vec![Symbol::new("a")]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -119,7 +119,7 @@ mod tests {
     fn serialize_tensor_2() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
+                &Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -131,7 +131,7 @@ mod tests {
     fn serialize_nested_tensor_rank_2() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![
+                &Tensor::new(vec![
                     Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Tensor::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
@@ -146,7 +146,7 @@ mod tests {
     fn serialize_nested_tensor_rank_3() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![
+                &Tensor::new(vec![
                     Tensor::new(vec![
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
@@ -169,7 +169,7 @@ mod tests {
     fn serialize_mixed_nested_tensor() {
         assert_eq!(
             serialize_node(
-                Tensor::new(vec![
+                &Tensor::new(vec![
                     Tensor::new(vec![
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),

@@ -1,9 +1,9 @@
 use ast::{Division, Node, Number, Tensor};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Division {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         let dividend = self.dividend.evaluate(context)?;
         let divisor = self.divisor.evaluate(context)?;
 
@@ -37,7 +37,7 @@ fn divide_number_by_number(
 fn divide_tensor_by_number(
     dividend: &Tensor,
     divisor: &Number,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_division_tensor_number") {
         return Err(EvaluateNodeError::UnsupportedOperation);
@@ -60,7 +60,7 @@ mod tests {
 
     #[test]
     fn evaluate_division_by_zero() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result =
             Division::new(Number::new(8.), Number::new(0.)).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::DivisionByZero));
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn evaluate_division_number_number() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Division::new(Number::new(8.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn evaluate_division_tensor_number() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Division::new(
             Tensor::new(vec![
                 Number::new(2.),

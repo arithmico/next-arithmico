@@ -38,7 +38,7 @@ mod tests {
     fn serialize_boolean_true() {
         assert_eq!(
             serialize_node(
-                Boolean::new(true),
+                &Boolean::new(true),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -50,7 +50,7 @@ mod tests {
     fn serialize_boolean_false() {
         assert_eq!(
             serialize_node(
-                Boolean::new(false),
+                &Boolean::new(false),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),

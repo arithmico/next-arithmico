@@ -62,7 +62,7 @@ mod tests {
     fn serialize_function_call_no_arguments() {
         assert_eq!(
             serialize_node(
-                FunctionCall::new(Symbol::new("f"), vec![]),
+                &FunctionCall::new(Symbol::new("f"), vec![]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -74,7 +74,7 @@ mod tests {
     fn serialize_function_call_1_argument() {
         assert_eq!(
             serialize_node(
-                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
+                &FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -86,7 +86,7 @@ mod tests {
     fn serialize_function_call_2_arguments() {
         assert_eq!(
             serialize_node(
-                FunctionCall::new(
+                &FunctionCall::new(
                     Symbol::new("f"),
                     vec![Symbol::new("x"), Symbol::new("y")]
                 ),
@@ -101,7 +101,7 @@ mod tests {
     fn serialize_in_place_function_call() {
         assert_eq!(
             serialize_node(
-                FunctionCall::new(
+                &FunctionCall::new(
                     Function::new(
                         vec![String::from("x"), String::from("y")],
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])

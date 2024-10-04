@@ -98,7 +98,7 @@ mod tests {
     fn serialize_invalid_sum() {
         assert_eq!(
             serialize_node(
-                Sum::new(vec![Symbol::new("a")]),
+                &Sum::new(vec![Symbol::new("a")]),
                 &SerializeNodeOptions::default()
             ),
             Err(SerializeNodeError::InvalidNode)
@@ -109,7 +109,7 @@ mod tests {
     fn serialize_sum_symbol() {
         assert_eq!(
             serialize_node(
-                Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
+                &Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -121,7 +121,7 @@ mod tests {
     fn serialize_nested_sum() {
         assert_eq!(
             serialize_node(
-                Sum::new(vec![
+                &Sum::new(vec![
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
@@ -136,7 +136,7 @@ mod tests {
     fn serialize_sum_with_negate() {
         assert_eq!(
             serialize_node(
-                Sum::new(vec![
+                &Sum::new(vec![
                     Symbol::new("a"),
                     Symbol::new("b"),
                     Negate::new(Symbol::new("c"))
@@ -152,7 +152,7 @@ mod tests {
     fn serialize_sum_starting_with_negate() {
         assert_eq!(
             serialize_node(
-                Sum::new(vec![
+                &Sum::new(vec![
                     Negate::new(Symbol::new("a")),
                     Symbol::new("b"),
                     Symbol::new("c"),

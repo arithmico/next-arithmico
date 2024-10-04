@@ -3,11 +3,15 @@ use std::iter::zip;
 use ast::{FunctionCall, Node};
 
 use crate::{
-    context::HostEndpoint, evaluate::EvaluateNode, Context, EvaluateNodeError,
+    context::HostEndpoint, evaluate::EvaluateNode, EvaluateNodeContext,
+    EvaluateNodeError,
 };
 
 impl EvaluateNode for FunctionCall {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         let target = self.target.evaluate(context)?;
 
         match target {
@@ -28,9 +32,9 @@ impl EvaluateNode for FunctionCall {
                     stack.insert(name, value.clone());
                 }
 
-                let local_context = Context::new(
+                let local_context = EvaluateNodeContext::new(
                     stack,
-                    context.settings.clone(),
+                    context.options.clone(),
                     context.host_api.clone(),
                 );
 
@@ -74,13 +78,13 @@ mod tests {
 
     use ast::{Function, Number, Power, Symbol};
 
-    use crate::{HostApi, HostApiModule, Settings, Stack};
+    use crate::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
 
     use super::*;
 
     #[test]
     fn evaluate_function_call_with_invalid_number_of_arguments() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = FunctionCall::new(
             Function::new(vec![String::from("x")], Symbol::new("x")),
             vec![],
@@ -94,7 +98,7 @@ mod tests {
 
     #[test]
     fn evaluate_function_call() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = FunctionCall::new(
             Function::new(vec![String::from("x")], Symbol::new("x")),
             vec![Number::new(2.)],
@@ -106,9 +110,9 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call() {
-        let context = Context::new(
+        let context = EvaluateNodeContext::new(
             Stack::new(),
-            Settings::default(),
+            EvaluateNodeOptions::default(),
             Rc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -146,9 +150,9 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call_invalid_number_of_arguments() {
-        let context = Context::new(
+        let context = EvaluateNodeContext::new(
             Stack::new(),
-            Settings::default(),
+            EvaluateNodeOptions::default(),
             Rc::new(
                 HostApi::builder()
                     .module(true, || {

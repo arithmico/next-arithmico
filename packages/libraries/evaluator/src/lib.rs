@@ -1,7 +1,7 @@
 use ast::Node;
 use evaluate::EvaluateNode;
 
-pub use context::{Context, HostApi, HostApiModule, Settings, Stack};
+pub use context::{EvaluateNodeContext, HostApi, HostApiModule, EvaluateNodeOptions, Stack};
 pub use error::EvaluateNodeError;
 
 mod context;
@@ -11,7 +11,7 @@ mod node;
 
 pub fn evaluate_node(
     node: &Node,
-    context: &Context,
+    context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     node.evaluate(context)
 }

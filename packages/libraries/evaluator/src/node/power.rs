@@ -1,9 +1,9 @@
 use ast::{Node, Number, Power};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Power {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_power_number_number") {
             return Err(EvaluateNodeError::UnsupportedOperation);
         }
@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn evaluate_power_number_number() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Power::new(Number::new(8.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn evaluate_power_number_number0() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Power::new(Number::new(8.), Number::new(0.))
             .evaluate(&context)
             .unwrap();
@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn evaluate_power_number0_number() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Power::new(Number::new(0.), Number::new(2.))
             .evaluate(&context)
             .unwrap();

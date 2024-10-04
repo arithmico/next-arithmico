@@ -68,7 +68,7 @@ mod tests {
     fn serialize_invalid_product() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![Symbol::new("a")]),
+                &Product::new(vec![Symbol::new("a")]),
                 &SerializeNodeOptions::default()
             ),
             Err(SerializeNodeError::InvalidNode)
@@ -79,7 +79,7 @@ mod tests {
     fn serialize_product_symbol() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
+                &Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -91,7 +91,7 @@ mod tests {
     fn serialize_product_sum() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
@@ -106,7 +106,7 @@ mod tests {
     fn serialize_nested_product() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Product::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
@@ -121,7 +121,7 @@ mod tests {
     fn serialize_product_negate() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Negate::new(Symbol::new("a")),
                     Negate::new(Symbol::new("b")),
                 ]),
@@ -136,7 +136,7 @@ mod tests {
     fn serialize_product_division() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Symbol::new("a"),
                     Division::new(Symbol::new("b"), Symbol::new("c"))
                 ]),
@@ -151,7 +151,7 @@ mod tests {
     fn serialize_product_and() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     And::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d")])
                 ]),
@@ -166,7 +166,7 @@ mod tests {
     fn serialize_product_or() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Or::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d")])
                 ]),
@@ -181,7 +181,7 @@ mod tests {
     fn serialize_product_function() {
         assert_eq!(
             serialize_node(
-                Product::new(vec![
+                &Product::new(vec![
                     Function::new(vec![String::from("x")], Symbol::new("x")),
                     Function::new(vec![String::from("y")], Symbol::new("y")),
                 ]),

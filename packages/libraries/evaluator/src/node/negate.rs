@@ -1,9 +1,9 @@
 use ast::{Boolean, Negate, Node, Number, Tensor};
 
-use crate::{evaluate::EvaluateNode, Context, EvaluateNodeError};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Negate {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
         let value = self.value.evaluate(context)?;
 
         match value {
@@ -47,14 +47,14 @@ mod tests {
 
     #[test]
     fn evaluate_negate_number() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Negate::new(Number::new(42.)).evaluate(&context).unwrap();
         assert_eq!(result, Number::new(-42.));
     }
 
     #[test]
     fn evaluate_negate_boolean() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result =
             Negate::new(Boolean::new(true)).evaluate(&context).unwrap();
         assert_eq!(result, Boolean::new(false));
@@ -62,7 +62,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_tensor() {
-        let context = Context::default();
+        let context = EvaluateNodeContext::default();
         let result = Negate::new(Tensor::new(vec![
             Number::new(1.),
             Number::new(2.),

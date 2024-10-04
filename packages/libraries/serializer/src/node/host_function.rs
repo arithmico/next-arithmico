@@ -35,7 +35,7 @@ mod tests {
     fn serialize_host_function() {
         assert_eq!(
             serialize_node(
-                HostFunction::new("f"),
+                &HostFunction::new("f"),
                 &SerializeNodeOptions::default()
             ),
             Err(SerializeNodeError::UnsupportedNode)

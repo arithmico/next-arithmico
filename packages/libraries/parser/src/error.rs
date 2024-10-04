@@ -1,6 +1,8 @@
 use nom::error::ParseError;
+use thiserror::Error;
 
-#[derive(Debug, Clone)]
+#[derive(Error, Debug, Clone)]
+#[error("ParserError")]
 pub struct ParseNodeError {}
 
 impl<I> ParseError<I> for ParseNodeError {

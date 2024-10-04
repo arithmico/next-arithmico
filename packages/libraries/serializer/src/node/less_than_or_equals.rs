@@ -58,7 +58,7 @@ mod tests {
     fn serialize_less_than_or_equals_with_symbols() {
         assert_eq!(
             serialize_node(
-                LessThanOrEquals::new(Symbol::new("x"), Symbol::new("y")),
+                &LessThanOrEquals::new(Symbol::new("x"), Symbol::new("y")),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -70,7 +70,7 @@ mod tests {
     fn serialize_less_than_or_equals_with_or() {
         assert_eq!(
             serialize_node(
-                LessThanOrEquals::new(
+                &LessThanOrEquals::new(
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
@@ -85,7 +85,7 @@ mod tests {
     fn serialize_less_than_or_equals_with_and() {
         assert_eq!(
             serialize_node(
-                LessThanOrEquals::new(
+                &LessThanOrEquals::new(
                     And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
@@ -100,7 +100,7 @@ mod tests {
     fn serialize_less_than_or_equals_with_equals() {
         assert_eq!(
             serialize_node(
-                LessThanOrEquals::new(
+                &LessThanOrEquals::new(
                     Equals::new(Symbol::new("a"), Symbol::new("b"),),
                     Equals::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
