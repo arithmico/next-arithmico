@@ -3,7 +3,10 @@ use ast::{Node, Number};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Number {
-    fn evaluate(&self, _context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        _context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_number") {
             return Err(EvaluateNodeError::UnsupportedDataType(String::from(
                 "number",

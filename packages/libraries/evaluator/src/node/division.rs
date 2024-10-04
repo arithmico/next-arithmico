@@ -3,7 +3,10 @@ use ast::{Division, Node, Number, Tensor};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Division {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         let dividend = self.dividend.evaluate(context)?;
         let divisor = self.divisor.evaluate(context)?;
 

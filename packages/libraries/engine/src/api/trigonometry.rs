@@ -28,7 +28,7 @@ pub fn load_trigonometry_module() -> HostApiModule {
                     }
                     let argument = arguments.get(0).unwrap();
                     let evaluated_argument = evaluate_node(&argument, context)?;
-                    
+
                     match evaluated_argument {
                         Node::Number(Number { value }) => {
                             if value.rem_euclid(PI).abs() < value * f64::EPSILON

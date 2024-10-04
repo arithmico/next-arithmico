@@ -1,7 +1,9 @@
 use ast::Node;
 use evaluate::EvaluateNode;
 
-pub use context::{EvaluateNodeContext, HostApi, HostApiModule, EvaluateNodeOptions, Stack};
+pub use context::{
+    EvaluateNodeContext, EvaluateNodeOptions, HostApi, HostApiModule, Stack,
+};
 pub use error::EvaluateNodeError;
 
 mod context;

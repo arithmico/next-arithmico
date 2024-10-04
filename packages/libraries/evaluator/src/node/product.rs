@@ -5,7 +5,10 @@ use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Product {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::InvalidNode);
         }

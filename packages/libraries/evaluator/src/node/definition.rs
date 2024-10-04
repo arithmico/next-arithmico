@@ -3,7 +3,10 @@ use ast::{Definition, Node};
 use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Definition {
-    fn evaluate(&self, context: &EvaluateNodeContext) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(
+        &self,
+        context: &EvaluateNodeContext,
+    ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_definition") {
             return Err(EvaluateNodeError::UnsupportedOperation);
         }
