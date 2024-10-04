@@ -10,6 +10,7 @@ mod definition;
 mod division;
 mod equals;
 mod function;
+mod function_call;
 mod negate;
 mod number;
 mod or;
@@ -32,7 +33,9 @@ impl EvaluateNode for Node {
             Node::Number(number) => number.evaluate(context),
             Node::Symbol(symbol) => symbol.evaluate(context),
             Node::Function(function) => function.evaluate(context),
-            Node::FunctionCall(function_call) => todo!(),
+            Node::FunctionCall(function_call) => {
+                function_call.evaluate(context)
+            }
             Node::And(and) => and.evaluate(context),
             Node::Or(or) => or.evaluate(context),
             Node::Equals(equals) => equals.evaluate(context),

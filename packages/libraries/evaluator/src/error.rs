@@ -25,4 +25,7 @@ pub enum EvaluateNodeError {
 
     #[error("division by zero")]
     DivisionByZero,
+
+    #[error("Invalid number of arguments: Expected {0} got {1}")]
+    InvalidNumberOfArguments(usize, usize),
 }
