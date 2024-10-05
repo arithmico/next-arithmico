@@ -23,6 +23,7 @@ pub fn CalculatorPage() -> impl IntoView {
             <h1 class="text-3xl font-bold">Calculator</h1>
             <div class="flex flex-col gap-4">
                 <input
+                    data-testid="calculator-input"
                     class="border border-black"
                     type="text"
                     on:change=move |event| {
@@ -51,6 +52,7 @@ pub fn OutputField(
     let is_error = move || output().1;
     view! {
         <input
+            data-testid="calculator-output"
             class="border"
             class=("border-black", move || !is_error())
             class=("border-red-500", is_error)
