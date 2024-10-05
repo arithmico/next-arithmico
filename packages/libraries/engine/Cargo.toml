@@ -54,10 +54,12 @@ operator_greater_than_or_equals_number_number = ["evaluator/operator_greater_tha
 api_modules = ["api_module_trigonometry"]
 api_module_trigonometry = [
     "api_endpoint_trigonometry_pi",
-    "api_endpoint_trigonometry_sin"
+    "api_endpoint_trigonometry_sin",
+    "api_endpoint_trigonometry_cos"
 ]
 
 # trigonometry
 api_module_loader_trigonometry = []
 api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_cos = ["api_module_loader_trigonometry"]

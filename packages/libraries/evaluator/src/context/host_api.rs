@@ -6,7 +6,7 @@ use log::info;
 use serializer::{serialize_node, SerializeNodeOptions};
 
 pub use endpoint::HostEndpoint;
-pub use module::HostApiModule;
+pub use module::{EndpointBuilder, HostApiModule};
 
 mod endpoint;
 mod module;

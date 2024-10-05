@@ -2,7 +2,8 @@ use ast::Node;
 use evaluate::EvaluateNode;
 
 pub use context::{
-    EvaluateNodeContext, EvaluateNodeOptions, HostApi, HostApiModule, Stack,
+    EndpointBuilder, EvaluateNodeContext, EvaluateNodeOptions, HostApi,
+    HostApiModule, HostEndpoint, Stack,
 };
 pub use error::EvaluateNodeError;
 
