@@ -30,7 +30,6 @@ export default defineConfig({
     trace: "on-first-retry",
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
       name: "chromium",
@@ -48,10 +47,9 @@ export default defineConfig({
     },*/
   ],
 
-  /* Run your local dev server before starting the tests */
   webServer: {
     command: "cd ../arithmico && trunk serve",
-    //   url: 'http://127.0.0.1:3000',
-    //   reuseExistingServer: !process.env.CI,
+    timeout: 5000,
+    url: "http://127.0.0.1:8080"
   },
 });
