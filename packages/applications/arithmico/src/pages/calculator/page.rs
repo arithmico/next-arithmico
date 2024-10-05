@@ -20,7 +20,7 @@ pub fn CalculatorPage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <h1 class="text-3xl font-bold">Calculator</h1>
+            <PageTitle>Calculator</PageTitle>
             <div class="flex flex-col gap-4">
                 <input
                     data-testid="calculator-input"

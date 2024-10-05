@@ -5,7 +5,7 @@ use leptos::*;
 pub fn ReferencePage() -> impl IntoView {
     view! {
         <PageWithSidebar>
-            <h1>Reference</h1>
+            <PageTitle>Reference</PageTitle>
         </PageWithSidebar>
     }
 }

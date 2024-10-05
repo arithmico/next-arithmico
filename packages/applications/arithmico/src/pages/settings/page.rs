@@ -5,7 +5,7 @@ use leptos::*;
 pub fn SettingsPage() -> impl IntoView {
     view! {
         <PageWithSidebar>
-            <h1>Settings</h1>
+            <PageTitle>Settings</PageTitle>
         </PageWithSidebar>
     }
 }
