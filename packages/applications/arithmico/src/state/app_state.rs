@@ -1,7 +1,4 @@
-use std::rc::Rc;
-
-use engine::{load_host_api, Session, Settings};
-use leptos::*;
+use engine::{EvaluateNodeOptions, Session};
 
 use super::AppAction;
 
@@ -13,20 +10,14 @@ pub struct AppState {
 impl AppState {
     pub fn new() -> Self {
         Self {
-            session: Session::new(Rc::new(load_host_api())),
+            session: Session::new(),
         }
     }
 
-    pub(super) fn reduce(&self, action: AppAction) -> Self {
+    pub(super) fn reduce(&mut self, action: AppAction) {
         match action {
             AppAction::Evaluate(input) => {
-                logging::log!("reduce");
-                let next_session =
-                    self.session.push(&input, &Settings::default());
-                logging::log!("{:?}", next_session);
-                AppState {
-                    session: next_session,
-                }
+                self.session.push(&input, &EvaluateNodeOptions::default());
             }
         }
     }

@@ -1,5 +1,4 @@
 use leptos::*;
-use logging::log;
 
 use crate::state::{AppAction, AppState};
 
@@ -11,7 +10,9 @@ pub fn StateProvider(children: Children) -> impl IntoView {
     let (app_state, set_app_state) = create_signal(AppState::new());
 
     provide_context::<Dispatch>(Dispatch(Callback::<AppAction>::new(
-        move |action| set_app_state.set(app_state.get().reduce(action)),
+        move |action| {
+            set_app_state.update(|app_state| app_state.reduce(action))
+        },
     )));
 
     provide_context(app_state);

@@ -1,4 +1,5 @@
 mod api;
 mod session;
 
-pub use session::Session;
+pub use evaluator::EvaluateNodeOptions;
+pub use session::{Session, SessionEntry, SessionError};
