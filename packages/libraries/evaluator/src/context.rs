@@ -2,9 +2,7 @@ use std::rc::Rc;
 
 use ast::{HostFunction, Node};
 
-pub use host_api::HostApi;
-pub use host_api::HostApiModule;
-pub use host_api::HostEndpoint;
+pub use host_api::{EndpointBuilder, HostApi, HostApiModule, HostEndpoint};
 pub use options::EvaluateNodeOptions;
 pub use stack::Stack;
 
