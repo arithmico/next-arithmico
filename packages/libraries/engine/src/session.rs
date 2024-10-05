@@ -1,44 +1,55 @@
+use crate::api::load_host_api;
 use ast::Node;
-use entry::SessionEntry;
-use error::SessionError;
 use evaluator::{
-    evaluate_node, EvaluateNodeContext, EvaluateNodeOptions, Stack,
+    evaluate_node, EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack,
 };
 use parser::parse;
 use serializer::{serialize_node, SerializeNodeOptions};
+use std::rc::Rc;
 
-use crate::api::load_host_api;
+pub use entry::SessionEntry;
+pub use error::SessionError;
 
 mod entry;
 mod error;
 
+#[derive(Debug, Clone)]
 pub struct Session {
-    context: EvaluateNodeContext,
+    stack: Stack,
+    host_api: Rc<HostApi>,
     entries: Vec<SessionEntry>,
 }
 
 impl Session {
     pub fn new() -> Self {
         Self {
-            context: EvaluateNodeContext::new(
-                Stack::new(),
-                EvaluateNodeOptions::default(),
-                load_host_api().into(),
-            ),
+            stack: Stack::new(),
+            host_api: Rc::new(load_host_api()),
             entries: Vec::new(),
         }
     }
 
-    pub fn push(&mut self, input: &str) {
+    fn create_context(
+        &self,
+        options: &EvaluateNodeOptions,
+    ) -> EvaluateNodeContext {
+        EvaluateNodeContext::new(
+            self.stack.clone(),
+            options.clone(),
+            self.host_api.clone(),
+        )
+    }
+
+    pub fn push(&mut self, input: &str, options: &EvaluateNodeOptions) {
         let output: Result<String, SessionError> = parse(input)
             .map_err(|error| SessionError::from(error))
             .and_then(|node| {
-                evaluate_node(&node, &self.context)
+                evaluate_node(&node, &self.create_context(options))
                     .map_err(|error| SessionError::from(error))
             })
             .and_then(|node: Node| {
                 if let Node::Definition(definition) = &node {
-                    self.context.stack.insert(
+                    self.stack.insert(
                         &definition.symbol,
                         *definition.expression.clone(),
                     );
@@ -47,8 +58,8 @@ impl Session {
                 serialize_node(
                     &node,
                     &SerializeNodeOptions::new(
-                        self.context.options.get_decimal_places().into(),
-                        self.context.options.get_decimal_format(),
+                        options.get_decimal_places().into(),
+                        options.get_decimal_format(),
                     ),
                 )
                 .map_err(|error| SessionError::from(error))

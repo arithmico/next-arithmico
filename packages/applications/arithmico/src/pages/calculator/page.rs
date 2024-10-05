@@ -3,7 +3,7 @@ use crate::{
     state::AppAction,
     utils::{expect_app_state, expect_dispatch},
 };
-use engine::EvaluationError;
+use engine::SessionError;
 use leptos::*;
 
 #[component]
@@ -14,7 +14,7 @@ pub fn CalculatorPage() -> impl IntoView {
         app_state
             .get()
             .session
-            .last_statement()
+            .last_entry()
             .and_then(|statement| Some(statement.output.clone()))
     });
 
@@ -38,7 +38,7 @@ pub fn CalculatorPage() -> impl IntoView {
 
 #[component]
 pub fn OutputField(
-    value: Signal<Option<Result<String, EvaluationError>>>,
+    value: Signal<Option<Result<String, SessionError>>>,
 ) -> impl IntoView {
     let output = move || match value.get() {
         None => (String::new(), false),
