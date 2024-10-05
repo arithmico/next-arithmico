@@ -5,8 +5,59 @@ edition = "2021"
 
 [dependencies]
 ast = { path = "../ast" }
-common = { version = "0.1.0", path = "../common" }
-evaluator = { path = "../evaluator" }
+common = { path = "../common" }
+evaluator = { path = "../evaluator", default-features = false }
 parser = { path = "../parser" }
 serializer = { path = "../serializer" }
 thiserror = "1.0.64"
+
+[features]
+default = ["evaluator/default", "api_modules"]
+
+# feature groups
+datatypes = ["evaluator/datatypes"]
+operators = ["evaluator/operators"]
+
+# data type features
+datatype_number = ["evaluator/datatype_number"]
+datatype_symbol = ["evaluator/datatype_symbol"]
+datatype_tensor = ["evaluator/datatype_tensor"]
+datatype_function = ["evaluator/datatype_function"]
+datatype_boolean = ["evaluator/datatype_boolean"]
+
+# operator features
+operator_negate_number = ["evaluator/operator_negate_number"]
+operator_negate_tensor = ["evaluator/operator_negate_tensor"]
+operator_negate_boolean = ["evaluator/operator_negate_boolean"]
+operator_sum_number_number = ["evaluator/operator_sum_number_number"]
+operator_sum_vector_vector = ["evaluator/operator_sum_vector_vector"]
+operator_product_number_number = ["evaluator/operator_product_number_number"]
+operator_product_number_tensor = ["evaluator/operator_product_number_tensor"]
+operator_product_vector_vector = ["evaluator/operator_product_vector_vector"]
+operator_division_number_number = ["evaluator/operator_division_number_number"]
+operator_division_tensor_number = ["evaluator/operator_division_tensor_number"]
+operator_power_number_number = ["evaluator/operator_power_number_number"]
+operator_function_call = ["evaluator/operator_function_call"]
+operator_definition = ["evaluator/operator_definition"]
+operator_product_matrix_matrix = ["evaluator/operator_product_matrix_matrix"]
+operator_and_boolean_boolean = ["evaluator/operator_and_boolean_boolean"]
+operator_or_boolean_boolean = ["evaluator/operator_or_boolean_boolean"]
+operator_equals_number_number = ["evaluator/operator_equals_number_number"]
+operator_equals_tensor_tensor = ["evaluator/operator_equals_tensor_tensor"]
+operator_equals_boolean_boolean = ["evaluator/operator_equals_boolean_boolean"]
+operator_less_than_number_number = ["evaluator/operator_less_than_number_number"]
+operator_greater_than_number_number = ["evaluator/operator_greater_than_number_number"]
+operator_less_than_or_equals_number_number = ["evaluator/operator_less_than_or_equals_number_number"]
+operator_greater_than_or_equals_number_number = ["evaluator/operator_greater_than_or_equals_number_number"]
+
+# api modules
+api_modules = ["api_module_trigonometry"]
+api_module_trigonometry = [
+    "api_endpoint_trigonometry_pi",
+    "api_endpoint_trigonometry_sin"
+]
+
+# trigonometry
+api_module_loader_trigonometry = []
+api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
