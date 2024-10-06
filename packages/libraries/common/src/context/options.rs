@@ -1,4 +1,8 @@
-use common::{DecimalFormat, DecimalPlaces};
+pub use decimal_format::DecimalFormat;
+pub use decimal_places::DecimalPlaces;
+
+mod decimal_format;
+mod decimal_places;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct EvaluateNodeOptions {

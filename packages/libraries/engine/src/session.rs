@@ -1,8 +1,7 @@
 use crate::api::load_host_api;
 use ast::Node;
-use evaluator::{
-    evaluate_node, EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack,
-};
+use common::{EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack};
+use evaluator::evaluate_node;
 use parser::parse;
 use serializer::{serialize_node, SerializeNodeOptions};
 use std::rc::Rc;

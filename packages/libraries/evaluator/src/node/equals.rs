@@ -1,8 +1,9 @@
 use std::iter::zip;
 
 use ast::{Boolean, Equals, Node};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Equals {
     fn evaluate(

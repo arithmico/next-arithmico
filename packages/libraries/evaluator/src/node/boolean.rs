@@ -1,9 +1,7 @@
 use ast::{Boolean, Node};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{
-    context::EvaluateNodeContext, error::EvaluateNodeError,
-    evaluate::EvaluateNode,
-};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Boolean {
     fn evaluate(

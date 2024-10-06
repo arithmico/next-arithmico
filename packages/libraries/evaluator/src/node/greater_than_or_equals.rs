@@ -1,6 +1,7 @@
 use ast::{Boolean, GreaterThanOrEquals, Node};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for GreaterThanOrEquals {
     fn evaluate(

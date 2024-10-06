@@ -1,4 +1,4 @@
-use evaluator::HostApi;
+use common::HostApi;
 use trigonometry::load_trigonometry_module;
 
 mod trigonometry;

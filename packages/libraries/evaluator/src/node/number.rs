@@ -1,6 +1,7 @@
 use ast::{Node, Number};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Number {
     fn evaluate(

@@ -1,4 +1,4 @@
-use evaluator::EvaluateNodeError;
+use common::EvaluateNodeError;
 use parser::ParseNodeError;
 use serializer::SerializeNodeError;
 use thiserror::Error;

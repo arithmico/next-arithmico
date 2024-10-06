@@ -1,6 +1,7 @@
 use ast::{Node, Symbol};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Symbol {
     fn evaluate(
@@ -24,9 +25,9 @@ mod tests {
     use std::rc::Rc;
 
     use ast::Number;
-    use common::Language;
-
-    use crate::context::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
+    use common::{
+        EvaluateNodeOptions, HostApi, HostApiModule, Language, Stack,
+    };
 
     use super::*;
 
