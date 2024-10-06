@@ -1,5 +1,5 @@
+use common::HostApiModule;
 use cos::load_cos_endpoint;
-use evaluator::HostApiModule;
 use pi::load_pi_endpoint;
 use sin::load_sin_endpoint;
 

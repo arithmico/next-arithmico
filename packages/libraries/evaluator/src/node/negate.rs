@@ -1,6 +1,7 @@
 use ast::{Boolean, Negate, Node, Number, Tensor};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Negate {
     fn evaluate(

@@ -1,9 +1,7 @@
 use ast::Node;
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{
-    context::EvaluateNodeContext, error::EvaluateNodeError,
-    evaluate::EvaluateNode,
-};
+use crate::evaluate::EvaluateNode;
 
 mod and;
 mod boolean;

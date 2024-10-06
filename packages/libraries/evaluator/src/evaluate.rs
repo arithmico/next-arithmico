@@ -1,6 +1,5 @@
 use ast::Node;
-
-use crate::{context::EvaluateNodeContext, error::EvaluateNodeError};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
 pub trait EvaluateNode {
     fn evaluate(

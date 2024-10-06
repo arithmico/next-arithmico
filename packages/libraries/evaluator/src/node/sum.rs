@@ -1,8 +1,9 @@
 use std::iter::zip;
 
 use ast::{Node, Number, Sum, Tensor};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Sum {
     fn evaluate(

@@ -1,11 +1,9 @@
 use std::iter::zip;
 
 use ast::{FunctionCall, Node};
+use common::HostEndpoint;
 
-use crate::{
-    context::HostEndpoint, evaluate::EvaluateNode, EvaluateNodeContext,
-    EvaluateNodeError,
-};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for FunctionCall {
     fn evaluate(
@@ -78,7 +76,7 @@ mod tests {
 
     use ast::{Function, Number, Power, Symbol};
 
-    use crate::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
+    use common::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
 
     use super::*;
 

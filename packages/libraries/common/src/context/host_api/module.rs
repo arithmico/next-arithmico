@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
-use common::Language;
-use log::info;
+use crate::Language;
 
 use super::endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint};
 
@@ -51,8 +50,6 @@ impl HostApiModuleBuilderEndpointsStage {
                     description_map: HashMap::new(),
                 }),
             );
-        } else {
-            info!("skip endpoint");
         }
         self
     }

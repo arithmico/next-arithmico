@@ -1,10 +1,8 @@
 use std::f64::consts::PI;
 
 use ast::{Node, Number};
-use common::Language;
-use evaluator::{
-    evaluate_node, EndpointBuilder, EvaluateNodeError, HostEndpoint,
-};
+use common::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language};
+use evaluator::evaluate_node;
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     builder

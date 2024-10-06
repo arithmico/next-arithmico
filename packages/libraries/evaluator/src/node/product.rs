@@ -1,8 +1,9 @@
 use std::iter::zip;
 
 use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
+use common::{EvaluateNodeContext, EvaluateNodeError};
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Product {
     fn evaluate(
