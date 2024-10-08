@@ -6,11 +6,6 @@ use std::collections::HashMap;
 pub use endpoint::*;
 pub use module::*;
 
-pub struct Documentation {
-    pub synopsis: String,
-    pub description: String,
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct HostApi {
     endpoints: HashMap<String, HostEndpoint>,
@@ -29,6 +24,10 @@ impl HostApi {
 
     pub fn endpoint(&self, name: &str) -> Option<&HostEndpoint> {
         self.endpoints.get(name)
+    }
+
+    pub fn endpoints(&self) -> &HashMap<String, HostEndpoint> {
+        &self.endpoints
     }
 }
 

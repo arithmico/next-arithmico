@@ -3,6 +3,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DecimalPlaces(u8);
 
+impl Default for DecimalPlaces {
+    fn default() -> Self {
+        Self(5)
+    }
+}
+
 impl From<u8> for DecimalPlaces {
     fn from(value: u8) -> Self {
         if value > 15 {

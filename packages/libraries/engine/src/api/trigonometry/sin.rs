@@ -6,7 +6,7 @@ use evaluator::evaluate_node;
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     builder
-        .description(Language::English, "tbd")
+        .description(Language::English, "Calculate the sine of x.")
         .description(Language::German, "Berechnet den Sinus von x.")
         .function(vec!["x"])
         .executor(|arguments, context| {

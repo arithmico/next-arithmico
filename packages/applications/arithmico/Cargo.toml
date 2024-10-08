@@ -8,3 +8,4 @@ console_error_panic_hook = "0.1.7"
 leptos = { version = "0.6.12", features = ["csr"] }
 leptos_router = { version = "0.6.12", features = ["csr"] }
 engine = { path = "../../libraries/engine" }
+common = { version = "0.1.0", path = "../../libraries/common" }

@@ -1,4 +1,4 @@
-use common::HostApiModule;
+use common::{HostApiModule, Language};
 use cos::load_cos_endpoint;
 use pi::load_pi_endpoint;
 use sin::load_sin_endpoint;
@@ -9,7 +9,9 @@ mod sin;
 
 pub fn load_trigonometry_module() -> HostApiModule {
     HostApiModule::builder()
-        .name("trigonometry")
+        .id("trigonometry")
+        .name(Language::English, "Trigonometry")
+        .name(Language::German, "Trigonometrie")
         .endpoint(
             cfg!(feature = "api_endpoint_trigonometry_pi"),
             "pi",

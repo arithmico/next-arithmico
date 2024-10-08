@@ -1,4 +1,4 @@
-use crate::api::load_host_api;
+use crate::{api::load_host_api, Documentation};
 use ast::Node;
 use common::{EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack};
 use evaluator::evaluate_node;
@@ -76,5 +76,9 @@ impl Session {
 
     pub fn last_entry(&self) -> Option<&SessionEntry> {
         self.entries.last()
+    }
+
+    pub fn documentation(&self) -> Documentation {
+        Documentation::from(&(*self.host_api))
     }
 }
