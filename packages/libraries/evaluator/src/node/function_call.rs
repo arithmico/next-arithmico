@@ -76,7 +76,9 @@ mod tests {
 
     use ast::{Function, Number, Power, Symbol};
 
-    use common::{EvaluateNodeOptions, HostApi, HostApiModule, Stack};
+    use common::{
+        EvaluateNodeOptions, HostApi, HostApiModule, Language, Stack,
+    };
 
     use super::*;
 
@@ -115,7 +117,8 @@ mod tests {
                 HostApi::builder()
                     .module(true, || {
                         HostApiModule::builder()
-                            .name("test")
+                            .id("test")
+                            .name(Language::English, "test")
                             .endpoint(true, "f", |builder| {
                                 builder
                                     .description(
@@ -155,7 +158,8 @@ mod tests {
                 HostApi::builder()
                     .module(true, || {
                         HostApiModule::builder()
-                            .name("test")
+                            .id("test")
+                            .name(Language::English, "test")
                             .endpoint(true, "f", |builder| {
                                 builder
                                     .description(

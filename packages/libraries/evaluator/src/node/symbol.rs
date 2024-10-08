@@ -56,7 +56,8 @@ mod tests {
         let host_api = HostApi::builder()
             .module(true, || {
                 HostApiModule::builder()
-                    .name("test")
+                    .id("test")
+                    .name(Language::English, "test")
                     .endpoint(true, "test", |builder| {
                         builder
                             .description(Language::English, "test")

@@ -6,7 +6,7 @@ use evaluator::evaluate_node;
 
 pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     builder
-        .description(Language::English, "tbd")
+        .description(Language::English, "Calculate the consine of x.")
         .description(Language::German, "Berechnet den Cosinus von x.")
         .function(vec!["x"])
         .executor(|arguments, context| {
