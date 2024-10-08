@@ -9,7 +9,7 @@ common = { path = "../common" }
 evaluator = { path = "../evaluator", default-features = false }
 parser = { path = "../parser" }
 serializer = { path = "../serializer" }
-thiserror = "1.0.64"
+thiserror = { workspace = true }
 
 [features]
 default = ["evaluator/default", "api_modules"]

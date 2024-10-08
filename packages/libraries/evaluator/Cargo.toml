@@ -8,7 +8,7 @@ ast = { path = "../ast"}
 common = { path = "../common" }
 serializer = { path = "../serializer" }
 log = "0.4.22"
-thiserror = "1.0.64"
+thiserror = { workspace = true }
 
 [features]
 default = ["datatypes", "operators"]
