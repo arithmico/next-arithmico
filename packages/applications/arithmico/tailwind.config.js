@@ -4,10 +4,9 @@ module.exports = {
     files: ["*.html", "./src/**/*.rs"],
     extract: {
       rs: (content) => {
-        const result = (content.match(/class=\"(.*)\"|class:(.*)=/g) ?? [])
+        const result = (content.match(/\"(.*)\"|class:(.*)=/g) ?? [])
           .flatMap(candidate => candidate
             .replaceAll("\"", "")
-            .replace("class=", "")
             .replace("class:", "")
             .split(" ")
             .map(classCandidate => classCandidate.replace(/=$/g, ""))
