@@ -8,7 +8,8 @@
         "parser",
         "ast",
         "evaluator",
-        "serializer"
+        "serializer",
+        "common_ui"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "tailwindCSS.includeLanguages": {
