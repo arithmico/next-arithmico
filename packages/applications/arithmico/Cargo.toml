@@ -10,3 +10,6 @@ leptos_router = { version = "0.6.12", features = ["csr"] }
 engine = { path = "../../libraries/engine" }
 common = { path = "../../libraries/common" }
 common_ui = { version = "0.1.0", path = "../../libraries/common_ui" }
+serde = { version = "1.0.210", features = ["derive"] }
+gloo-storage = "0.3.0"
+serde_json = "1.0.128"
