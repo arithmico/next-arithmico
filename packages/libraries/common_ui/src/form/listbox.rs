@@ -47,7 +47,7 @@ thread_local! {
 
 #[component]
 pub fn Listbox<T>(
-    value: ReadSignal<T>,
+    #[prop(into)] value: Signal<T>,
     #[prop(into)] on_change: Callback<T>,
     #[prop(optional)] children: Option<Children>,
     #[prop(optional, into)] class: Option<AttributeValue>,
