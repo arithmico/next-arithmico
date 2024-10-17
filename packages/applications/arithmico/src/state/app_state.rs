@@ -51,6 +51,10 @@ impl AppState {
                 self.settings.language = language;
                 self.save();
             }
+            AppAction::SetOverrideDecimalFormat(override_decimal_format) => {
+                self.settings.override_decimal_format = override_decimal_format;
+                self.save();
+            }
         }
     }
 }
