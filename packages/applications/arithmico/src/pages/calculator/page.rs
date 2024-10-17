@@ -24,14 +24,14 @@ pub fn CalculatorPage() -> impl IntoView {
             <div class="flex flex-col gap-4">
                 <input
                     data-testid="calculator-input"
-                    class="border border-black p-2 text-xl rounded-sm"
+                    class="p-2 text-xl rounded-sm border outline-none focus-visible:border-black border-neutral-300"
                     type="text"
                     on:change=move |event| {
                         dispatch.call(AppAction::Evaluate(event_target_value(&event)))
                     }
                 />
 
-                <OutputField value=output/>
+                <OutputField value=output />
             </div>
         </PageWithSidebar>
     }
@@ -53,7 +53,7 @@ pub fn OutputField(
     view! {
         <input
             data-testid="calculator-output"
-            class="border p-2 text-xl rounded-sm"
+            class="p-2 text-xl rounded-sm border outline-none focus-visible:border-black border-neutral-300"
             class:border-black=move || !is_error()
             class:border-red-500=move || is_error()
             class:bg-red-100=move || is_error()
