@@ -865,6 +865,7 @@ name = "parser"
 version = "0.1.0"
 dependencies = [
  "ast",
+ "common",
  "nom",
  "thiserror",
 ]
