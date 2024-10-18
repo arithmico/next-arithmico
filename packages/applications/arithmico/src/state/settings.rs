@@ -17,6 +17,10 @@ impl OverrideDecimalFormat {
     pub fn new() -> Self {
         Self(None)
     }
+
+    pub fn decimal_format(&self) -> Option<&DecimalFormat> {
+        self.0.as_ref()
+    }
 }
 
 impl From<DecimalFormat> for OverrideDecimalFormat {

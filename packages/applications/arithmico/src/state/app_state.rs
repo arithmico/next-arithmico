@@ -45,7 +45,15 @@ impl AppState {
     pub(super) fn reduce(&mut self, action: AppAction) {
         match action {
             AppAction::Evaluate(input) => {
-                self.session.push(&input, &EvaluateNodeOptions::default());
+                let options = EvaluateNodeOptions::new(
+                    (&self.settings.decimal_places).into(),
+                    self.settings
+                        .override_decimal_format
+                        .decimal_format()
+                        .map(|decimal_format| decimal_format.clone())
+                        .unwrap_or_else(|| (&self.settings.language).into()),
+                );
+                self.session.push(&input, &options);
             }
             AppAction::SetLanguage(language) => {
                 self.settings.language = language;
