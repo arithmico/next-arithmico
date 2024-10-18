@@ -2,7 +2,7 @@ use crate::{api::load_host_api, Documentation};
 use ast::Node;
 use common::{EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack};
 use evaluator::evaluate_node;
-use parser::parse;
+use parser::{parse, ParseNodeOptions};
 use serializer::{serialize_node, SerializeNodeOptions};
 use std::rc::Rc;
 
@@ -40,29 +40,32 @@ impl Session {
     }
 
     pub fn push(&mut self, input: &str, options: &EvaluateNodeOptions) {
-        let output: Result<String, SessionError> = parse(input)
-            .map_err(|error| SessionError::from(error))
-            .and_then(|node| {
-                evaluate_node(&node, &self.create_context(options))
-                    .map_err(|error| SessionError::from(error))
-            })
-            .and_then(|node: Node| {
-                if let Node::Definition(definition) = &node {
-                    self.stack.insert(
-                        &definition.symbol,
-                        *definition.expression.clone(),
-                    );
-                }
-
-                serialize_node(
-                    &node,
-                    &SerializeNodeOptions::new(
-                        options.get_decimal_places().into(),
-                        options.get_decimal_format(),
-                    ),
-                )
+        let parse_node_options =
+            ParseNodeOptions::new(options.get_decimal_format());
+        let output: Result<String, SessionError> =
+            parse(input, parse_node_options)
                 .map_err(|error| SessionError::from(error))
-            });
+                .and_then(|node| {
+                    evaluate_node(&node, &self.create_context(options))
+                        .map_err(|error| SessionError::from(error))
+                })
+                .and_then(|node: Node| {
+                    if let Node::Definition(definition) = &node {
+                        self.stack.insert(
+                            &definition.symbol,
+                            *definition.expression.clone(),
+                        );
+                    }
+
+                    serialize_node(
+                        &node,
+                        &SerializeNodeOptions::new(
+                            options.get_decimal_places().into(),
+                            options.get_decimal_format(),
+                        ),
+                    )
+                    .map_err(|error| SessionError::from(error))
+                });
 
         self.entries.push(SessionEntry {
             input: input.to_string(),
