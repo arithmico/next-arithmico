@@ -5,6 +5,8 @@ use node::ParseNode;
 mod cache;
 mod error;
 mod node;
+mod trace;
+mod with_parser;
 
 pub use error::ParseNodeError;
 use node::ParseResult;

@@ -8,15 +8,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Product {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Product::parse", input, |input| {
+        with_parser("Product::parse", |input| {
             alt((parse_product, Division::parse))(input)
-        })
+        })(input)
     }
 }
 
@@ -26,7 +26,10 @@ pub fn parse_product(input: &str) -> ParseResult {
 
     let mut elements = vec![first];
     elements.append(&mut rest);
-    Ok((remaining_input, Product::new(elements)))
+    Ok((
+        remaining_input,
+        Product::new(elements).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_product_item(input: &str) -> ParseResult {
@@ -58,7 +61,14 @@ mod tests {
         let result = Product::parse("1*2").unwrap();
         assert_eq!(
             result,
-            ("", Product::new(vec![Number::new(1.), Number::new(2.)]))
+            (
+                "",
+                Product::new(vec![
+                    Number::new(1.).with_span(0, 0),
+                    Number::new(2.).with_span(2, 2)
+                ])
+                .with_span(0, 2)
+            )
         );
     }
 
@@ -70,10 +80,11 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.)
+                    Number::new(1.).with_span(0, 0),
+                    Number::new(2.).with_span(2, 2),
+                    Number::new(3.).with_span(4, 4)
                 ])
+                .with_span(0, 4)
             )
         );
     }
@@ -86,25 +97,31 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.)
+                    Number::new(1.).with_span(0, 0),
+                    Number::new(2.).with_span(3, 3),
+                    Number::new(3.).with_span(10, 10)
                 ])
+                .with_span(0, 10)
             )
         );
     }
 
     #[test]
     fn parse_product_with_division() {
-        let result = Product::parse("1 / 2 *3").unwrap();
+        let result = Product::parse("1 / 2 * 3").unwrap();
         assert_eq!(
             result,
             (
                 "",
                 Product::new(vec![
-                    Division::new(Number::new(1.), Number::new(2.)),
-                    Number::new(3.)
+                    Division::new(
+                        Number::new(1.).with_span(0, 0),
+                        Number::new(2.).with_span(4, 4)
+                    )
+                    .with_span(0, 4),
+                    Number::new(3.).with_span(8, 8)
                 ])
+                .with_span(0, 8)
             )
         );
     }
@@ -117,9 +134,18 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
-                    Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
+                    Sum::new(vec![
+                        Symbol::new("a").with_span(1, 1),
+                        Symbol::new("b").with_span(5, 5),
+                    ])
+                    .with_span(1, 5),
+                    Sum::new(vec![
+                        Symbol::new("c").with_span(11, 11),
+                        Symbol::new("d").with_span(15, 15),
+                    ])
+                    .with_span(11, 15),
                 ])
+                .with_span(0, 16)
             )
         );
     }

@@ -7,17 +7,19 @@ use nom::{
     sequence::{delimited, terminated, tuple},
 };
 
-use crate::{cache::with_cache, node::symbol::parse_raw_symbol};
+use crate::{
+    node::symbol::parse_raw_symbol, trace::TraceUtils, with_parser::with_parser,
+};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Definition {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Definition::parse", input, |input| {
+        with_parser("Definition::parse", |input| {
             alt((parse_define_function, parse_define_symbol, Node::parse))(
                 input,
             )
-        })
+        })(input)
     }
 }
 
@@ -27,7 +29,11 @@ fn parse_define_symbol(input: &str) -> ParseResult {
         Node::parse,
     ))(input)?;
 
-    Ok((remaining_input, Definition::new(symbol, expression)))
+    Ok((
+        remaining_input,
+        Definition::new(symbol, expression)
+            .with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_define_function(input: &str) -> ParseResult {
@@ -51,7 +57,12 @@ fn parse_define_function(input: &str) -> ParseResult {
 
     Ok((
         remaining_input,
-        Definition::new(symbol, Function::new(arguments, expression)),
+        Definition::new(
+            symbol,
+            Function::new(arguments, expression)
+                .with_span_from_parser(input, remaining_input),
+        )
+        .with_span_from_parser(input, remaining_input),
     ))
 }
 
@@ -64,7 +75,14 @@ mod tests {
     #[test]
     fn parse_define_symbol() {
         let result = Definition::parse("a := 1").unwrap();
-        assert_eq!(result, ("", Definition::new("a", Number::new(1.))));
+        assert_eq!(
+            result,
+            (
+                "",
+                Definition::new("a", Number::new(1.).with_span(5, 5))
+                    .with_span(0, 5)
+            )
+        );
     }
 
     #[test]
@@ -74,7 +92,12 @@ mod tests {
             result,
             (
                 "",
-                Definition::new("f", Function::new(vec![], Number::new(1.)))
+                Definition::new(
+                    "f",
+                    Function::new(vec![], Number::new(1.).with_span(7, 7))
+                        .with_span(0, 7)
+                )
+                .with_span(0, 7)
             )
         );
     }
@@ -88,8 +111,13 @@ mod tests {
                 "",
                 Definition::new(
                     "f",
-                    Function::new(vec!["x".into()], Symbol::new("x"))
+                    Function::new(
+                        vec!["x".into()],
+                        Symbol::new("x").with_span(8, 8)
+                    )
+                    .with_span(0, 8)
                 )
+                .with_span(0, 8)
             )
         );
     }
@@ -105,9 +133,15 @@ mod tests {
                     "f",
                     Function::new(
                         vec!["x".into(), "y".into()],
-                        Power::new(Symbol::new("x"), Symbol::new("y"),)
+                        Power::new(
+                            Symbol::new("x").with_span(11, 11),
+                            Symbol::new("y").with_span(13, 13),
+                        )
+                        .with_span(11, 13)
                     )
+                    .with_span(0, 13)
                 )
+                .with_span(0, 13)
             )
         );
     }
@@ -123,9 +157,15 @@ mod tests {
                     "f",
                     Function::new(
                         vec!["x".into(), "y".into()],
-                        Power::new(Symbol::new("x"), Symbol::new("y"),)
+                        Power::new(
+                            Symbol::new("x").with_span(14, 14),
+                            Symbol::new("y").with_span(18, 18),
+                        )
+                        .with_span(14, 18)
                     )
+                    .with_span(0, 18)
                 )
+                .with_span(0, 18)
             )
         );
     }
@@ -141,9 +181,15 @@ mod tests {
                     "f",
                     Function::new(
                         vec!["x".into(), "y".into()],
-                        Power::new(Symbol::new("x"), Symbol::new("y"),)
+                        Power::new(
+                            Symbol::new("x").with_span(8, 8),
+                            Symbol::new("y").with_span(10, 10),
+                        )
+                        .with_span(8, 10)
                     )
+                    .with_span(0, 10)
                 )
+                .with_span(0, 10)
             )
         );
     }

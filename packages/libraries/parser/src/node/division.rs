@@ -1,18 +1,21 @@
 use ast::{Division, Power};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::tuple,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    multi::many1,
+    sequence::{preceded, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Division {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Division::parse", input, |input| {
+        with_parser("Division::parse", |input| {
             alt((parse_division, parse_division_element))(input)
-        })
+        })(input)
     }
 }
 
@@ -22,14 +25,18 @@ fn parse_division(input: &str) -> ParseResult {
 
     Ok((
         remaining_input,
-        rest.into_iter()
-            .fold(first, |dividend, divisor| Division::new(dividend, divisor)),
+        rest.into_iter().fold(first, |dividend, divisor| {
+            let trace = dividend.trace().hull_trace(divisor.trace());
+            Division::new(dividend, divisor).with_trace(trace)
+        }),
     ))
 }
 
 fn parse_division_item(input: &str) -> ParseResult {
-    let (remaining_input, (_, _, _, node)) =
-        tuple((space0, tag("/"), space0, parse_division_element))(input)?;
+    let (remaining_input, node) = preceded(
+        tuple((space0, tag("/"), space0)),
+        parse_division_element,
+    )(input)?;
 
     Ok((remaining_input, node))
 }
@@ -50,7 +57,14 @@ mod tests {
         let result = Division::parse("1 / 2").unwrap();
         assert_eq!(
             result,
-            ("", Division::new(Number::new(1.), Number::new(2.)))
+            (
+                "",
+                Division::new(
+                    Number::new(1.).with_span(0, 0),
+                    Number::new(2.).with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
         );
     }
 
@@ -62,9 +76,14 @@ mod tests {
             (
                 "",
                 Division::new(
-                    Number::new(1.),
-                    Power::new(Number::new(2.), Number::new(3.),)
+                    Number::new(1.).with_span(0, 0),
+                    Power::new(
+                        Number::new(2.).with_span(4, 4),
+                        Number::new(3.).with_span(6, 6),
+                    )
+                    .with_span(4, 6)
                 )
+                .with_span(0, 6)
             )
         );
     }
@@ -77,9 +96,14 @@ mod tests {
             (
                 "",
                 Division::new(
-                    Division::new(Number::new(1.), Number::new(2.)),
-                    Number::new(3.)
+                    Division::new(
+                        Number::new(1.).with_span(0, 0),
+                        Number::new(2.).with_span(4, 4)
+                    )
+                    .with_span(0, 4),
+                    Number::new(3.).with_span(8, 8)
                 )
+                .with_span(0, 8)
             )
         );
     }

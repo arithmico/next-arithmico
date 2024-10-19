@@ -7,15 +7,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Or {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Or::parse", input, |input| {
-            alt((parse_or, And::parse))(input)
-        })
+        with_parser("Or::parse", |input| alt((parse_or, And::parse))(input))(
+            input,
+        )
     }
 }
 
@@ -24,7 +24,10 @@ fn parse_or(input: &str) -> ParseResult {
         tuple((And::parse, many1(parse_or_item)))(input)?;
 
     rest.insert(0, first);
-    Ok((remaining_input, Or::new(rest)))
+    Ok((
+        remaining_input,
+        Or::new(rest).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_or_item(input: &str) -> ParseResult {
@@ -35,6 +38,8 @@ fn parse_or_item(input: &str) -> ParseResult {
 mod tests {
     use ast::{Boolean, Symbol};
 
+    use crate::trace::TraceUtils;
+
     use super::*;
 
     #[test]
@@ -42,7 +47,14 @@ mod tests {
         let result = Or::parse("a | true").unwrap();
         assert_eq!(
             result,
-            ("", Or::new(vec![Symbol::new("a"), Boolean::new(true)]))
+            (
+                "",
+                Or::new(vec![
+                    Symbol::new("a").with_span(0, 0),
+                    Boolean::new(true).with_span(4, 7)
+                ])
+                .with_span(0, 7)
+            )
         );
     }
 
@@ -54,10 +66,11 @@ mod tests {
             (
                 "",
                 Or::new(vec![
-                    Symbol::new("a"),
-                    Boolean::new(true),
-                    Symbol::new("c")
+                    Symbol::new("a").with_span(0, 0),
+                    Boolean::new(true).with_span(4, 7),
+                    Symbol::new("c").with_span(11, 11)
                 ])
+                .with_span(0, 11)
             )
         );
     }
@@ -70,9 +83,14 @@ mod tests {
             (
                 "",
                 Or::new(vec![
-                    Symbol::new("a"),
-                    And::new(vec![Boolean::new(true), Symbol::new("c")])
+                    Symbol::new("a").with_span(0, 0),
+                    And::new(vec![
+                        Boolean::new(true).with_span(4, 7),
+                        Symbol::new("c").with_span(11, 11)
+                    ])
+                    .with_span(4, 11)
                 ])
+                .with_span(0, 11)
             )
         );
     }

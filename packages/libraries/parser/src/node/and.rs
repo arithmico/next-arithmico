@@ -8,15 +8,15 @@ use nom::{
     sequence::{preceded, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{relation::parse_relation, ParseNode, ParseResult};
 
 impl ParseNode for And {
     fn parse(input: &str) -> ParseResult {
-        with_cache("And::parse", input, |input| {
+        with_parser("And::parse", |input| {
             alt((parse_and, parse_relation))(input)
-        })
+        })(input)
     }
 }
 
@@ -25,7 +25,10 @@ fn parse_and(input: &str) -> ParseResult {
         tuple((Sum::parse, many1(parse_and_item)))(input)?;
 
     rest.insert(0, first);
-    Ok((remaining_input, And::new(rest)))
+    Ok((
+        remaining_input,
+        And::new(rest).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_and_item(input: &str) -> ParseResult {
@@ -43,7 +46,14 @@ mod tests {
         let result = And::parse("a & true").unwrap();
         assert_eq!(
             result,
-            ("", And::new(vec![Symbol::new("a"), Boolean::new(true)]))
+            (
+                "",
+                And::new(vec![
+                    Symbol::new("a").with_span(0, 0),
+                    Boolean::new(true).with_span(4, 7)
+                ])
+                .with_span(0, 7)
+            )
         );
     }
 
@@ -55,10 +65,11 @@ mod tests {
             (
                 "",
                 And::new(vec![
-                    Symbol::new("a"),
-                    Boolean::new(true),
-                    Symbol::new("c")
+                    Symbol::new("a").with_span(0, 0),
+                    Boolean::new(true).with_span(4, 7),
+                    Symbol::new("c").with_span(11, 11)
                 ])
+                .with_span(0, 11)
             )
         );
     }

@@ -1,38 +1,42 @@
 use ast::{Function, Node, Or};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::opt, multi::many0, sequence::tuple, IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    combinator::opt,
+    multi::many0,
+    sequence::{delimited, tuple},
+    IResult,
 };
 
-use crate::{cache::with_cache, error::ParseNodeError};
+use crate::{
+    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
+};
 
 use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
 
 impl ParseNode for Function {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Function::parse", input, |input| {
+        with_parser("Function::parse", |input| {
             alt((parse_function, Or::parse))(input)
-        })
+        })(input)
     }
 }
 
 fn parse_function(input: &str) -> ParseResult {
-    let (remaining_input, (_, _, arguments, _, _, _, _, _, expression)) =
-        tuple((
-            tag("("),
-            space0,
+    let (remaining_input, (arguments, expression)) = tuple((
+        delimited(
+            tuple((tag("("), space0)),
             opt(parse_function_arguments),
-            space0,
-            tag(")"),
-            space0,
-            tag("->"),
-            space0,
-            Node::parse,
-        ))(input)?;
+            tuple((space0, tag(")"), space0, tag("->"), space0)),
+        ),
+        Node::parse,
+    ))(input)?;
 
     Ok((
         remaining_input,
-        Function::new(arguments.unwrap_or(vec![]), expression),
+        Function::new(arguments.unwrap_or(vec![]), expression)
+            .with_span_from_parser(input, remaining_input),
     ))
 }
 
@@ -64,7 +68,14 @@ mod tests {
     #[test]
     fn parse_function_no_arguments() {
         let result = Function::parse("() -> 2").unwrap();
-        assert_eq!(result, ("", Function::new(vec![], Number::new(2.))));
+        assert_eq!(
+            result,
+            (
+                "",
+                Function::new(vec![], Number::new(2.).with_span(6, 6))
+                    .with_span(0, 6)
+            )
+        );
     }
 
     #[test]
@@ -72,7 +83,14 @@ mod tests {
         let result = Function::parse("(x) -> x").unwrap();
         assert_eq!(
             result,
-            ("", Function::new(vec![String::from("x")], Symbol::new("x")))
+            (
+                "",
+                Function::new(
+                    vec![String::from("x")],
+                    Symbol::new("x").with_span(7, 7)
+                )
+                .with_span(0, 7)
+            )
         );
     }
 
@@ -85,8 +103,13 @@ mod tests {
                 "",
                 Function::new(
                     vec![String::from("x"), String::from("y")],
-                    Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
+                    Sum::new(vec![
+                        Symbol::new("x").with_span(10, 10),
+                        Symbol::new("y").with_span(14, 14),
+                    ])
+                    .with_span(10, 14)
                 )
+                .with_span(0, 14)
             )
         );
     }
@@ -102,9 +125,15 @@ mod tests {
                     vec![String::from("x")],
                     Function::new(
                         vec![String::from("y")],
-                        Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
+                        Sum::new(vec![
+                            Symbol::new("x").with_span(14, 14),
+                            Symbol::new("y").with_span(18, 18),
+                        ])
+                        .with_span(14, 18)
                     )
+                    .with_span(7, 18)
                 )
+                .with_span(0, 18)
             )
         );
     }
