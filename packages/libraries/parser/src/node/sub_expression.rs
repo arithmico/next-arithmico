@@ -5,16 +5,16 @@ use nom::{
     sequence::{delimited, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::with_parser::with_parser;
 
 use super::{ParseNode, ParseResult};
 
 pub fn parse_sub_expression(input: &str) -> ParseResult {
-    with_cache("parse_sub_expression", input, |input| {
+    with_parser("parse_sub_expression", |input| {
         delimited(
             tuple((tag("("), space0)),
             Node::parse,
             tuple((space0, tag(")"))),
         )(input)
-    })
+    })(input)
 }

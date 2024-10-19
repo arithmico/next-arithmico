@@ -12,14 +12,16 @@ use nom::{
     IResult,
 };
 
-use crate::{cache::with_cache, error::ParseNodeError};
+use crate::{
+    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
+};
 
 use super::{ParseNode, ParseResult};
 
 pub fn parse_relation(input: &str) -> ParseResult {
-    with_cache("parse_relation", input, |input| {
+    with_parser("parse_relation", |input| {
         alt((parse_relation_chain, parse_relation_element))(input)
-    })
+    })(input)
 }
 
 fn parse_relation_chain(input: &str) -> ParseResult {
@@ -31,6 +33,7 @@ fn parse_relation_chain(input: &str) -> ParseResult {
     let (mut relations, _) = rest.into_iter().fold(
         (Vec::<Node>::new(), first),
         |(mut relations, left), (operator, right)| {
+            let trace = left.trace().hull_trace(right.trace());
             let next = right.clone();
             let relation = match operator {
                 "=" => Equals::new(left, right),
@@ -41,7 +44,8 @@ fn parse_relation_chain(input: &str) -> ParseResult {
                 _ => {
                     unreachable!()
                 }
-            };
+            }
+            .with_trace(trace);
             relations.push(relation);
             (relations, next)
         },
@@ -51,7 +55,10 @@ fn parse_relation_chain(input: &str) -> ParseResult {
         return Ok((remaining_input, relations.remove(0)));
     }
 
-    Ok((remaining_input, And::new(relations)))
+    Ok((
+        remaining_input,
+        And::new(relations).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_relation_chain_item(
@@ -82,7 +89,14 @@ mod tests {
         let result = parse_relation("a = b").unwrap();
         assert_eq!(
             result,
-            ("", Equals::new(Symbol::new("a"), Symbol::new("b")))
+            (
+                "",
+                Equals::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
         );
     }
 
@@ -91,7 +105,14 @@ mod tests {
         let result = parse_relation("a < b").unwrap();
         assert_eq!(
             result,
-            ("", LessThan::new(Symbol::new("a"), Symbol::new("b")))
+            (
+                "",
+                LessThan::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
         );
     }
 
@@ -100,7 +121,14 @@ mod tests {
         let result = parse_relation("a > b").unwrap();
         assert_eq!(
             result,
-            ("", GreaterThan::new(Symbol::new("a"), Symbol::new("b")))
+            (
+                "",
+                GreaterThan::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
         );
     }
 
@@ -111,7 +139,11 @@ mod tests {
             result,
             (
                 "",
-                LessThanOrEquals::new(Symbol::new("a"), Symbol::new("b"))
+                LessThanOrEquals::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(5, 5)
+                )
+                .with_span(0, 5)
             )
         );
     }
@@ -123,7 +155,11 @@ mod tests {
             result,
             (
                 "",
-                GreaterThanOrEquals::new(Symbol::new("a"), Symbol::new("b"))
+                GreaterThanOrEquals::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(5, 5)
+                )
+                .with_span(0, 5)
             )
         );
     }
@@ -136,15 +172,33 @@ mod tests {
             (
                 "",
                 And::new(vec![
-                    LessThan::new(Symbol::new("a"), Symbol::new("b")),
-                    LessThanOrEquals::new(Symbol::new("b"), Symbol::new("c")),
-                    Equals::new(Symbol::new("c"), Symbol::new("d")),
+                    LessThan::new(
+                        Symbol::new("a").with_span(0, 0),
+                        Symbol::new("b").with_span(4, 4)
+                    )
+                    .with_span(0, 4),
+                    LessThanOrEquals::new(
+                        Symbol::new("b").with_span(4, 4),
+                        Symbol::new("c").with_span(9, 9)
+                    )
+                    .with_span(4, 9),
+                    Equals::new(
+                        Symbol::new("c").with_span(9, 9),
+                        Symbol::new("d").with_span(13, 13)
+                    )
+                    .with_span(9, 13),
                     GreaterThanOrEquals::new(
-                        Symbol::new("d"),
-                        Symbol::new("e")
-                    ),
-                    GreaterThan::new(Symbol::new("e"), Symbol::new("f")),
+                        Symbol::new("d").with_span(13, 13),
+                        Symbol::new("e").with_span(18, 18)
+                    )
+                    .with_span(13, 18),
+                    GreaterThan::new(
+                        Symbol::new("e").with_span(18, 18),
+                        Symbol::new("f").with_span(22, 22)
+                    )
+                    .with_span(18, 22),
                 ])
+                .with_span(0, 22)
             )
         );
     }

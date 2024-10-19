@@ -79,12 +79,13 @@ impl Cache {
 }
 
 pub fn with_cache<'a>(
-    table: &'a str,
-    input: &'a str,
-    f: impl Fn(&str) -> ParseResult,
-) -> ParseResult<'a> {
-    let result = PARSER_CACHE.with(|cache| cache.with(table, input, f));
-    result
+    parser_id: &'static str,
+    f: impl Fn(&str) -> ParseResult + 'static + Copy,
+) -> impl Fn(&str) -> ParseResult {
+    move |input| {
+        let result = PARSER_CACHE.with(|cache| cache.with(parser_id, input, f));
+        result
+    }
 }
 
 thread_local! {

@@ -8,21 +8,24 @@ use nom::{
     sequence::{delimited, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Tensor {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Tensor::parse", input, |input| {
+        with_parser("Tensor::parse", |input| {
             alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))(input)
-        })
+        })(input)
     }
 }
 
 fn parse_empty_tensor(input: &str) -> ParseResult {
     let (remaining_input, _) = tuple((tag("["), space0, tag("]")))(input)?;
-    Ok((remaining_input, Tensor::new(vec![])))
+    Ok((
+        remaining_input,
+        Tensor::new(vec![]).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 fn parse_tensor(input: &str) -> ParseResult {
@@ -35,7 +38,10 @@ fn parse_tensor(input: &str) -> ParseResult {
         tuple((space0, tag("]"))),
     )(input)?;
 
-    Ok((remaining_input, Tensor::new(elements)))
+    Ok((
+        remaining_input,
+        Tensor::new(elements).with_span_from_parser(input, remaining_input),
+    ))
 }
 
 #[cfg(test)]
@@ -56,6 +62,7 @@ mod tests {
                     shape: vec![0],
                     trace: Trace::new()
                 })
+                .with_span(0, 1)
             )
         )
     }
@@ -67,10 +74,11 @@ mod tests {
             (
                 "",
                 Node::Tensor(Tensor {
-                    elements: vec![Number::new(1.)],
+                    elements: vec![Number::new(1.).with_span(1, 1)],
                     shape: vec![1],
                     trace: Trace::new()
                 })
+                .with_span(0, 2)
             )
         )
     }
@@ -83,13 +91,14 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![
-                        Number::new(1.),
-                        Number::new(2.),
-                        Number::new(3.)
+                        Number::new(1.).with_span(2, 2),
+                        Number::new(2.).with_span(6, 6),
+                        Number::new(3.).with_span(10, 10)
                     ],
                     shape: vec![3, 1],
                     trace: Trace::new()
                 })
+                .with_span(0, 12)
             )
         )
     }
@@ -102,16 +111,17 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![
-                        Number::new(1.),
-                        Number::new(2.),
-                        Number::new(3.),
-                        Number::new(4.),
-                        Number::new(5.),
-                        Number::new(6.),
+                        Number::new(1.).with_span(3, 3),
+                        Number::new(2.).with_span(5, 5),
+                        Number::new(3.).with_span(7, 7),
+                        Number::new(4.).with_span(11, 11),
+                        Number::new(5.).with_span(13, 13),
+                        Number::new(6.).with_span(15, 15),
                     ],
                     shape: vec![1, 2, 3],
                     trace: Trace::new()
                 })
+                .with_span(0, 18)
             )
         )
     }

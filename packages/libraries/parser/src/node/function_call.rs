@@ -10,16 +10,17 @@ use nom::{
 };
 
 use crate::{
-    cache::with_cache, error::ParseNodeError, node::parse_sub_expression,
+    error::ParseNodeError, node::parse_sub_expression, trace::TraceUtils,
+    with_parser::with_parser,
 };
 
 use super::{literal::parse_literal, ParseNode, ParseResult};
 
 impl ParseNode for FunctionCall {
     fn parse(input: &str) -> ParseResult {
-        with_cache("FunctionCall:parse", input, |input| {
+        with_parser("FunctionCall::parse", |input| {
             alt((parse_function_call, parse_literal))(input)
-        })
+        })(input)
     }
 }
 
@@ -35,7 +36,8 @@ fn parse_function_call(input: &str) -> ParseResult {
 
     Ok((
         remaining_input,
-        FunctionCall::new(target, arguments.unwrap_or(Vec::new())),
+        FunctionCall::new(target, arguments.unwrap_or(Vec::new()))
+            .with_span_from_parser(input, remaining_input),
     ))
 }
 
@@ -64,7 +66,14 @@ mod tests {
     #[test]
     fn function_empty_function_call() {
         let result = FunctionCall::parse("f()").unwrap();
-        assert_eq!(result, ("", FunctionCall::new(Symbol::new("f"), vec![])));
+        assert_eq!(
+            result,
+            (
+                "",
+                FunctionCall::new(Symbol::new("f").with_span(0, 0), vec![])
+                    .with_span(0, 2)
+            )
+        );
     }
 
     #[test]
@@ -74,7 +83,11 @@ mod tests {
             result,
             (
                 "",
-                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")])
+                FunctionCall::new(
+                    Symbol::new("f").with_span(0, 0),
+                    vec![Symbol::new("x").with_span(2, 2)]
+                )
+                .with_span(0, 3)
             )
         );
     }
@@ -87,9 +100,13 @@ mod tests {
             (
                 "",
                 FunctionCall::new(
-                    Symbol::new("f"),
-                    vec![Symbol::new("x"), Symbol::new("y")]
+                    Symbol::new("f").with_span(0, 0),
+                    vec![
+                        Symbol::new("x").with_span(2, 2),
+                        Symbol::new("y").with_span(5, 5)
+                    ]
                 )
+                .with_span(0, 6)
             )
         );
     }
@@ -102,15 +119,18 @@ mod tests {
             (
                 "",
                 FunctionCall::new(
-                    Symbol::new("f"),
+                    Symbol::new("f").with_span(0, 0),
                     vec![FunctionCall::new(
-                        Symbol::new("f"),
+                        Symbol::new("f").with_span(2, 2),
                         vec![FunctionCall::new(
-                            Symbol::new("f"),
-                            vec![Symbol::new("x")]
-                        )]
-                    )]
+                            Symbol::new("f").with_span(4, 4),
+                            vec![Symbol::new("x").with_span(6, 6)]
+                        )
+                        .with_span(4, 7)]
+                    )
+                    .with_span(2, 8)]
                 )
+                .with_span(0, 9)
             )
         );
     }

@@ -1,18 +1,21 @@
 use ast::{Power, Tensor};
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::tuple,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    multi::many1,
+    sequence::{preceded, tuple},
 };
 
-use crate::cache::with_cache;
+use crate::{trace::TraceUtils, with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 
 impl ParseNode for Power {
     fn parse(input: &str) -> ParseResult {
-        with_cache("Power::parse", input, |input| {
+        with_parser("Power::parse", |input| {
             alt((parse_power, parse_power_element))(input)
-        })
+        })(input)
     }
 }
 
@@ -22,14 +25,18 @@ fn parse_power(input: &str) -> ParseResult {
 
     Ok((
         remaining_input,
-        rest.into_iter()
-            .fold(first, |base, exponent| Power::new(base, exponent)),
+        rest.into_iter().fold(first, |base, exponent| {
+            let trace = base.trace().hull_trace(exponent.trace());
+            Power::new(base, exponent).with_trace(trace)
+        }),
     ))
 }
 
 fn parse_power_item(input: &str) -> ParseResult {
-    let (remaining_input, (_, _, _, node)) =
-        tuple((space0, tag("^"), space0, parse_power_element))(input)?;
+    let (remaining_input, node) = preceded(
+        tuple((space0, tag("^"), space0)),
+        parse_power_element,
+    )(input)?;
 
     Ok((remaining_input, node))
 }
@@ -48,7 +55,17 @@ mod tests {
     #[test]
     fn parse_power() {
         let result = Power::parse("1 ^ 2").unwrap();
-        assert_eq!(result, ("", Power::new(Number::new(1.), Number::new(2.))));
+        assert_eq!(
+            result,
+            (
+                "",
+                Power::new(
+                    Number::new(1.).with_span(0, 0),
+                    Number::new(2.).with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
+        );
     }
 
     #[test]
@@ -59,9 +76,14 @@ mod tests {
             (
                 "",
                 Power::new(
-                    Power::new(Number::new(1.), Number::new(2.)),
-                    Number::new(3.)
+                    Power::new(
+                        Number::new(1.).with_span(0, 0),
+                        Number::new(2.).with_span(4, 4)
+                    )
+                    .with_span(0, 4),
+                    Number::new(3.).with_span(8, 8)
                 )
+                .with_span(0, 8)
             )
         );
     }
@@ -71,7 +93,14 @@ mod tests {
         let result = Power::parse("a ^ b").unwrap();
         assert_eq!(
             result,
-            ("", Power::new(Symbol::new("a"), Symbol::new("b")))
+            (
+                "",
+                Power::new(
+                    Symbol::new("a").with_span(0, 0),
+                    Symbol::new("b").with_span(4, 4)
+                )
+                .with_span(0, 4)
+            )
         );
     }
 }
