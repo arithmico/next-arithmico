@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct GreaterThan {
     pub left: Box<Node>,
     pub right: Box<Node>,
+    pub trace: Trace,
 }
 
 impl GreaterThan {
@@ -11,6 +14,7 @@ impl GreaterThan {
         Node::GreaterThan(GreaterThan {
             left: left.into(),
             right: right.into(),
+            trace: Trace::new(),
         })
     }
 }

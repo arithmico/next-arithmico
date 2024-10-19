@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct FunctionCall {
     pub target: Box<Node>,
     pub arguments: Vec<Node>,
+    pub trace: Trace,
 }
 
 impl FunctionCall {
@@ -11,6 +14,7 @@ impl FunctionCall {
         Node::FunctionCall(FunctionCall {
             target: target.into(),
             arguments,
+            trace: Trace::new(),
         })
     }
 }

@@ -41,7 +41,7 @@ fn parse_tensor(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
 
-    use ast::Number;
+    use ast::{Number, Trace};
 
     use super::*;
 
@@ -53,7 +53,8 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![],
-                    shape: vec![0]
+                    shape: vec![0],
+                    trace: Trace::new()
                 })
             )
         )
@@ -67,7 +68,8 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![Number::new(1.)],
-                    shape: vec![1]
+                    shape: vec![1],
+                    trace: Trace::new()
                 })
             )
         )
@@ -85,7 +87,8 @@ mod tests {
                         Number::new(2.),
                         Number::new(3.)
                     ],
-                    shape: vec![3, 1]
+                    shape: vec![3, 1],
+                    trace: Trace::new()
                 })
             )
         )
@@ -106,7 +109,8 @@ mod tests {
                         Number::new(5.),
                         Number::new(6.),
                     ],
-                    shape: vec![1, 2, 3]
+                    shape: vec![1, 2, 3],
+                    trace: Trace::new()
                 })
             )
         )
