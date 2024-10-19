@@ -19,7 +19,7 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
             let evaluated_argument = evaluate_node(&argument, context)?;
 
             match evaluated_argument {
-                Node::Number(Number { value }) => {
+                Node::Number(Number { value, .. }) => {
                     if value.rem_euclid(PI).abs() < value * f64::EPSILON {
                         return Ok(Number::new(0.0));
                     }

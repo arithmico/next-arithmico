@@ -1,20 +1,21 @@
 use std::iter::zip;
 
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
     pub elements: Vec<Node>,
     pub shape: Vec<usize>,
+    pub trace: Trace,
 }
 
 impl Tensor {
     pub fn new(elements: Vec<Node>) -> Node {
         let shape = Tensor::get_shape(&elements);
-        Node::Tensor(Self {
-            elements: Tensor::flatten_elements(&elements, &shape),
-            shape,
-        })
+        let elements = Tensor::flatten_elements(&elements, &shape);
+        Tensor::new_with_shape(shape, elements)
     }
 
     pub fn new_with_shape(shape: Vec<usize>, elements: Vec<Node>) -> Node {
@@ -27,7 +28,11 @@ impl Tensor {
                 == elements.len()
         );
 
-        Node::Tensor(Self { elements, shape })
+        Node::Tensor(Self {
+            elements,
+            shape,
+            trace: Trace::new(),
+        })
     }
 
     pub fn get_rank(&self) -> usize {
@@ -218,7 +223,8 @@ mod tests {
             Tensor::new(vec![Number::new(1.)]),
             Node::Tensor(Tensor {
                 elements: vec![Number::new(1.)],
-                shape: vec![1]
+                shape: vec![1],
+                trace: Trace::new()
             })
         )
     }
@@ -237,7 +243,8 @@ mod tests {
                     Number::new(2.),
                     Number::new(3.)
                 ],
-                shape: vec![3, 1]
+                shape: vec![3, 1],
+                trace: Trace::new()
             })
         )
     }
@@ -266,7 +273,8 @@ mod tests {
                     Number::new(5.),
                     Number::new(6.),
                 ],
-                shape: vec![1, 2, 3]
+                shape: vec![1, 2, 3],
+                trace: Trace::new()
             })
         )
     }

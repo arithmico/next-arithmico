@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Function {
     pub arguments: Vec<String>,
     pub expression: Box<Node>,
+    pub trace: Trace,
 }
 
 impl Function {
@@ -11,6 +14,7 @@ impl Function {
         Node::Function(Function {
             arguments,
             expression: Box::new(expression),
+            trace: Trace::new(),
         })
     }
 }

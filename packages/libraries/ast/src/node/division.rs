@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Division {
     pub dividend: Box<Node>,
     pub divisor: Box<Node>,
+    pub trace: Trace,
 }
 
 impl Division {
@@ -11,6 +14,7 @@ impl Division {
         Node::Division(Self {
             dividend: Box::new(dividend),
             divisor: Box::new(divisor),
+            trace: Trace::new(),
         })
     }
 }

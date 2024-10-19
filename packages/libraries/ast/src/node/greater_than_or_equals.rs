@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct GreaterThanOrEquals {
     pub left: Box<Node>,
     pub right: Box<Node>,
+    pub trace: Trace,
 }
 
 impl GreaterThanOrEquals {
@@ -11,6 +14,7 @@ impl GreaterThanOrEquals {
         Node::GreaterThanOrEquals(GreaterThanOrEquals {
             left: left.into(),
             right: right.into(),
+            trace: Trace::new(),
         })
     }
 }

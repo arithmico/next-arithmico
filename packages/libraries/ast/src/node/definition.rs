@@ -1,9 +1,12 @@
+use crate::trace::Trace;
+
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Definition {
     pub symbol: String,
     pub expression: Box<Node>,
+    pub trace: Trace,
 }
 
 impl Definition {
@@ -11,6 +14,7 @@ impl Definition {
         Node::Definition(Definition {
             symbol: symbol.into(),
             expression: expression.into(),
+            trace: Trace::new(),
         })
     }
 }

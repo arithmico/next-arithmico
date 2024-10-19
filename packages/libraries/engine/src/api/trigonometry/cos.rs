@@ -19,7 +19,7 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
             let evaluated_argument = evaluate_node(&argument, context)?;
 
             match evaluated_argument {
-                Node::Number(Number { value }) => {
+                Node::Number(Number { value, .. }) => {
                     let modulus_pi = value.rem_euclid(PI).abs();
                     if modulus_pi < value * f64::EPSILON {
                         return Ok(Number::new(1.));
