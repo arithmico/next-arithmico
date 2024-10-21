@@ -63,17 +63,17 @@ impl TraceUtils for Node {
             input_length - input.len(),
             input_length - remaining_input.len() - 1,
         );
-        self.trace_mut().spans.push(span);
+        self.trace_mut().push_span(span);
         self
     }
 
     fn with_span(mut self, start: usize, end: usize) -> Self {
-        self.trace_mut().spans.push(Span::new(start, end));
+        self.trace_mut().push_span(Span::new(start, end));
         self
     }
 
     fn with_trace(mut self, trace: Trace) -> Self {
-        self.trace_mut().append_trace(trace);
+        self.trace_mut().append_trace(&trace);
         self
     }
 
@@ -89,7 +89,7 @@ impl TraceUtils for Node {
             input_length - input.len() + whitespaces,
             input_length - remaining_input.len() - 1,
         );
-        self.trace_mut().spans.push(span);
+        self.trace_mut().push_span(span);
         self
     }
 }
