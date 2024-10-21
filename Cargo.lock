@@ -35,6 +35,9 @@ dependencies = [
 [[package]]
 name = "ast"
 version = "0.1.0"
+dependencies = [
+ "trace",
+]
 
 [[package]]
 name = "async-recursion"
@@ -868,6 +871,7 @@ dependencies = [
  "common",
  "nom",
  "thiserror",
+ "trace",
 ]
 
 [[package]]
@@ -1410,6 +1414,10 @@ dependencies = [
  "toml_datetime",
  "winnow",
 ]
+
+[[package]]
+name = "trace"
+version = "0.1.0"
 
 [[package]]
 name = "tracing"

@@ -6,6 +6,7 @@ use nom::{
     multi::many1,
     sequence::{preceded, tuple},
 };
+use trace::Traceable;
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
 
