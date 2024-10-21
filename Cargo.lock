@@ -162,6 +162,7 @@ dependencies = [
  "ast",
  "serde",
  "thiserror",
+ "trace",
 ]
 
 [[package]]

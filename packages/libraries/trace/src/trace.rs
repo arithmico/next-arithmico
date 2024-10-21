@@ -1,40 +1,64 @@
+use crate::TraceFrame;
+
 use super::span::Span;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Trace {
-    pub spans: Vec<Span>,
+    frames: Vec<TraceFrame>,
+}
+
+impl From<TraceFrame> for Trace {
+    fn from(value: TraceFrame) -> Self {
+        Self {
+            frames: vec![value],
+        }
+    }
 }
 
 impl From<Span> for Trace {
     fn from(value: Span) -> Self {
-        Self { spans: vec![value] }
+        Self {
+            frames: vec![value.into()],
+        }
     }
 }
 
 impl Trace {
     pub fn new() -> Self {
-        Self { spans: Vec::new() }
+        Self { frames: Vec::new() }
     }
 
     pub fn hull_span(&self) -> Span {
-        self.spans
+        self.frames
             .iter()
-            .cloned()
+            .map(|frame| frame.hull_span())
             .reduce(|left, right| left.hull(&right))
-            .expect("hull")
+            .expect("hull span")
     }
 
     pub fn hull_trace(&self, other: &Trace) -> Trace {
-        self.spans
+        self.frames
             .iter()
-            .chain(other.spans.iter())
+            .chain(other.frames.iter())
             .cloned()
-            .reduce(|left, right| left.hull(&right))
-            .expect("hull")
+            .reduce(|left, right| left.hull_trace_frame(&right))
+            .expect("hull trace frame")
             .into()
     }
 
-    pub fn append_trace(&mut self, mut trace: Trace) {
-        self.spans.append(&mut trace.spans);
+    pub fn append_trace(&mut self, trace: &Trace) {
+        self.frames.append(&mut trace.frames.clone());
+    }
+
+    pub fn push_frame(&mut self, frame: TraceFrame) {
+        self.frames.push(frame);
+    }
+
+    pub fn push_span(&mut self, span: Span) {
+        if let Some(frame) = self.frames.last_mut() {
+            frame.push_span(span);
+        } else {
+            self.push_frame(span.into());
+        }
     }
 }
