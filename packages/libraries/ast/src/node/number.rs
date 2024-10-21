@@ -1,4 +1,4 @@
-use crate::trace::Trace;
+use trace::Trace;
 
 use super::Node;
 

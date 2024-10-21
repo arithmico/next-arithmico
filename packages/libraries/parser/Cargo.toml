@@ -8,3 +8,4 @@ nom = "7.1.3"
 ast = { path = "../ast"}
 thiserror = { workspace = true }
 common = { path = "../common" }
+trace = { path = "../trace" }

@@ -47,7 +47,8 @@ fn parse_tensor(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Number, Trace};
+    use ast::Number;
+    use trace::Trace;
 
     use super::*;
 

@@ -11,6 +11,7 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
+use trace::Traceable;
 
 use crate::{
     error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,

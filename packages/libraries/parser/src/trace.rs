@@ -1,6 +1,7 @@
 use std::cell::RefCell;
 
-use ast::{Node, Span, Trace};
+use ast::Node;
+use trace::{Span, Trace, Traceable};
 
 use crate::node::ParseResult;
 

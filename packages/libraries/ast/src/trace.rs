@@ -1,65 +1,9 @@
+use trace::{Trace, Traceable};
+
 use crate::Node;
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Span {
-    pub start: usize,
-    pub end: usize,
-}
-
-impl Span {
-    pub fn new(start: usize, end: usize) -> Self {
-        Self { start, end }
-    }
-
-    pub fn hull(&self, other: &Span) -> Span {
-        Self {
-            start: self.start.min(other.start),
-            end: self.end.max(other.end),
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Trace {
-    pub spans: Vec<Span>,
-}
-
-impl Trace {
-    pub fn new() -> Self {
-        Self { spans: Vec::new() }
-    }
-
-    pub fn hull_span(&self) -> Span {
-        self.spans
-            .iter()
-            .cloned()
-            .reduce(|left, right| left.hull(&right))
-            .expect("hull")
-    }
-
-    pub fn hull_trace(&self, other: &Trace) -> Trace {
-        self.spans
-            .iter()
-            .chain(other.spans.iter())
-            .cloned()
-            .reduce(|left, right| left.hull(&right))
-            .expect("hull")
-            .into()
-    }
-
-    pub fn append_trace(&mut self, mut trace: Trace) {
-        self.spans.append(&mut trace.spans);
-    }
-}
-
-impl From<Span> for Trace {
-    fn from(value: Span) -> Self {
-        Self { spans: vec![value] }
-    }
-}
-
-impl Node {
-    pub fn trace_mut(&mut self) -> &mut Trace {
+impl Traceable for Node {
+    fn trace_mut(&mut self) -> &mut Trace {
         match self {
             Node::Boolean(node) => &mut node.trace,
             Node::Sum(node) => &mut node.trace,
@@ -84,7 +28,7 @@ impl Node {
         }
     }
 
-    pub fn trace(&self) -> &Trace {
+    fn trace(&self) -> &Trace {
         match self {
             Node::Boolean(node) => &node.trace,
             Node::Sum(node) => &node.trace,
