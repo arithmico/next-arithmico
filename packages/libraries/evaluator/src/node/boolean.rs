@@ -1,7 +1,7 @@
+use crate::evaluate::EvaluateNode;
 use ast::{Boolean, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-
-use crate::evaluate::EvaluateNode;
+use trace::{Tracable, TracableMut};
 
 impl EvaluateNode for Boolean {
     fn evaluate(
@@ -14,12 +14,14 @@ impl EvaluateNode for Boolean {
             )));
         }
 
-        Ok(Boolean::new(self.value))
+        Ok(Boolean::new(self.value).with_trace(self.trace().clone()))
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use trace::Trace;
+
     use super::*;
 
     #[test]
@@ -34,5 +36,16 @@ mod tests {
         let context = EvaluateNodeContext::default();
         let result = Boolean::new(false).evaluate(&context).unwrap();
         assert_eq!(result, Boolean::new(false));
+    }
+
+    #[test]
+    fn evaluate_boolean_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let trace = Trace::new().with_span(0, 4);
+        let result = Boolean::new(false)
+            .with_trace(trace.clone())
+            .evaluate(&context)
+            .unwrap();
+        assert_eq!(result, Boolean::new(false).with_trace(trace));
     }
 }
