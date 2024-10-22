@@ -68,6 +68,11 @@ impl Trace {
         }
     }
 
+    pub fn with_span(mut self, start: usize, end: usize) -> Self {
+        self.push_span(Span::new(start, end));
+        self
+    }
+
     pub fn all_spans(&self) -> Vec<Span> {
         self.frames
             .iter()
