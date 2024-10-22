@@ -1,3 +1,6 @@
+use crate::{
+    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
+};
 use ast::{
     And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
     Node, Sum,
@@ -11,11 +14,8 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
-use trace::Traceable;
-
-use crate::{
-    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
-};
+use trace::Tracable;
+use trace::TracableMut;
 
 use super::{ParseNode, ParseResult};
 
@@ -81,9 +81,8 @@ fn parse_relation_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::Symbol;
-
     use super::*;
+    use ast::Symbol;
 
     #[test]
     fn parse_equals() {

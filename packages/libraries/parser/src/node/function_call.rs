@@ -62,6 +62,7 @@ fn parse_function_call_arguments_item(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use trace::TracableMut;
 
     #[test]
     fn function_empty_function_call() {

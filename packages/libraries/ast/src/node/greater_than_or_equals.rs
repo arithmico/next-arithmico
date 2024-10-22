@@ -1,4 +1,4 @@
-use trace::Trace;
+use trace::{Tracable, TracableMut, Trace};
 
 use super::Node;
 
@@ -16,5 +16,17 @@ impl GreaterThanOrEquals {
             right: right.into(),
             trace: Trace::new(),
         })
+    }
+}
+
+impl TracableMut for GreaterThanOrEquals {
+    fn trace_mut(&mut self) -> &mut Trace {
+        &mut self.trace
+    }
+}
+
+impl Tracable for GreaterThanOrEquals {
+    fn trace(&self) -> &Trace {
+        &self.trace
     }
 }

@@ -1,7 +1,7 @@
+use crate::evaluate::EvaluateNode;
 use ast::{And, Boolean, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-
-use crate::evaluate::EvaluateNode;
+use trace::{IntoTrace, TracableMut};
 
 impl EvaluateNode for And {
     fn evaluate(
@@ -34,12 +34,15 @@ fn combine_and_elements(
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right)) => {
             if !cfg!(feature = "operator_and_boolean_boolean") {
-                return Err(EvaluateNodeError::UnsupportedOperation);
+                return Err(EvaluateNodeError::unsupported_operation((
+                    left, right,
+                )));
             }
 
-            Ok(Boolean::new(left.value && right.value))
+            Ok(Boolean::new(left.value && right.value)
+                .with_trace((left, right).into_trace()))
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
     }
 }
 

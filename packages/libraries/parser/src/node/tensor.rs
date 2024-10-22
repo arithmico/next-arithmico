@@ -46,11 +46,10 @@ fn parse_tensor(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-
-    use ast::Number;
-    use trace::Trace;
-
     use super::*;
+    use ast::Number;
+    use trace::TracableMut;
+    use trace::Trace;
 
     #[test]
     fn parse_empty_tensor() {

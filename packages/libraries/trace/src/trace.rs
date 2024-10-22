@@ -50,6 +50,12 @@ impl Trace {
         self.frames.append(&mut trace.frames.clone());
     }
 
+    pub fn merge(&self, other: &Trace) -> Trace {
+        let mut result = self.clone();
+        result.append_trace(&other);
+        result
+    }
+
     pub fn push_frame(&mut self, frame: TraceFrame) {
         self.frames.push(frame);
     }
@@ -60,5 +66,12 @@ impl Trace {
         } else {
             self.push_frame(span.into());
         }
+    }
+
+    pub fn all_spans(&self) -> Vec<Span> {
+        self.frames
+            .iter()
+            .flat_map(|frame| frame.spans().clone())
+            .collect()
     }
 }

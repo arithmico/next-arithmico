@@ -16,50 +16,58 @@ impl EvaluateNode for Equals {
         match (left, right) {
             (Node::Number(left), Node::Number(right)) => {
                 if !cfg!(feature = "operator_equals_number_number") {
-                    return Err(EvaluateNodeError::UnsupportedOperation);
+                    return Err(EvaluateNodeError::unsupported_operation((
+                        left, right,
+                    )));
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Boolean(left), Node::Boolean(right)) => {
                 if !cfg!(feature = "operator_equals_boolean_boolean") {
-                    return Err(EvaluateNodeError::UnsupportedOperation);
+                    return Err(EvaluateNodeError::unsupported_operation((
+                        left, right,
+                    )));
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Tensor(left), Node::Tensor(right)) => {
                 if !cfg!(feature = "operator_equals_tensor_tensor") {
-                    return Err(EvaluateNodeError::UnsupportedOperation);
+                    return Err(EvaluateNodeError::unsupported_operation((
+                        left, right,
+                    )));
                 }
 
                 if left.shape != right.shape {
                     return Ok(Boolean::new(false));
                 }
 
-                let comparison_result: Result<bool, EvaluateNodeError> =
-                    zip(left.elements.into_iter(), right.elements.into_iter())
-                        .map(|(left, right)| {
-                            Equals::new(left, right).evaluate(context).map(
-                                |element| {
-                                    if let Node::Boolean(element) = element {
-                                        Some(element.value)
-                                    } else {
-                                        None
-                                    }
-                                },
-                            )
-                        })
-                        .try_fold(true, |acc, comparison_result| {
-                            let is_equal = comparison_result?.ok_or(
-                                EvaluateNodeError::UnsupportedOperation,
-                            )?;
-                            Ok(acc && is_equal)
-                        });
+                let comparison_result: Result<bool, EvaluateNodeError> = zip(
+                    left.elements.into_iter(),
+                    right.elements.into_iter(),
+                )
+                .map(|(left, right)| {
+                    Equals::new(left, right).evaluate(context).map(|element| {
+                        if let Node::Boolean(element) = element {
+                            Ok(element.value)
+                        } else {
+                            Err(EvaluateNodeError::unsupported_operation(
+                                element,
+                            ))
+                        }
+                    })
+                })
+                .try_fold(true, |acc, comparison_result| {
+                    let is_equal = comparison_result??;
+                    Ok(acc && is_equal)
+                });
 
                 Ok(Boolean::new(comparison_result?))
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            (left, right) => {
+                Err(EvaluateNodeError::unsupported_operation((left, right)))
+            }
         }
     }
 }
@@ -182,6 +190,9 @@ mod tests {
             ]),
         )
         .evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::UnsupportedOperation));
+        assert!(matches!(
+            result,
+            Err(EvaluateNodeError::UnsupportedOperation(..))
+        ));
     }
 }

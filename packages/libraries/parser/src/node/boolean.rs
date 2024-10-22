@@ -25,6 +25,7 @@ fn parse_boolean(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use trace::TracableMut;
 
     #[test]
     fn parse_true() {

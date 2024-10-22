@@ -37,8 +37,7 @@ fn parse_or_item(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use ast::{Boolean, Symbol};
-
-    use crate::trace::TraceUtils;
+    use trace::TracableMut;
 
     use super::*;
 

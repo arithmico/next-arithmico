@@ -9,6 +9,7 @@ common = { path = "../common" }
 serializer = { path = "../serializer" }
 log = "0.4.22"
 thiserror = { workspace = true }
+trace = { path = "../trace" }
 
 [features]
 default = ["datatypes", "operators"]

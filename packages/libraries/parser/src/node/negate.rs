@@ -27,8 +27,8 @@ fn parse_negate(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-
     use ast::Number;
+    use trace::TracableMut;
 
     use super::*;
 

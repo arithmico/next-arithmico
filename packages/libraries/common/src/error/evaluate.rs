@@ -1,9 +1,13 @@
 use thiserror::Error;
 
+mod unsuppored_operation;
+
+pub use unsuppored_operation::*;
+
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum EvaluateNodeError {
     #[error("unsupported operation")]
-    UnsupportedOperation,
+    UnsupportedOperation(UnsupportedOperationError),
 
     #[error("unsupported data type '{0}'")]
     UnsupportedDataType(String),
@@ -28,4 +32,12 @@ pub enum EvaluateNodeError {
 
     #[error("Invalid number of arguments: Expected {0} got {1}")]
     InvalidNumberOfArguments(usize, usize),
+}
+
+impl EvaluateNodeError {
+    pub fn unsupported_operation(
+        from: impl Into<UnsupportedOperationError>,
+    ) -> Self {
+        Self::UnsupportedOperation(from.into())
+    }
 }

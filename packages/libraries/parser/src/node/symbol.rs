@@ -41,6 +41,7 @@ pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParseNodeError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use trace::TracableMut;
 
     #[test]
     fn parse_symbol_1() {

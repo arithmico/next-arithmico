@@ -37,7 +37,9 @@ fn add_sum_elements(
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
             if !cfg!(feature = "operator_sum_number_number") {
-                return Err(EvaluateNodeError::UnsupportedOperation);
+                return Err(EvaluateNodeError::unsupported_operation((
+                    left, right,
+                )));
             }
 
             Ok(Number::new(left.value + right.value))
@@ -49,7 +51,9 @@ fn add_sum_elements(
             match (left_rank, right_rank) {
                 (1, 1) => {
                     if !cfg!(feature = "operator_sum_vector_vector") {
-                        return Err(EvaluateNodeError::UnsupportedOperation);
+                        return Err(EvaluateNodeError::unsupported_operation(
+                            (left, right),
+                        ));
                     }
 
                     if left.elements.len() != right.elements.len() {
@@ -71,10 +75,12 @@ fn add_sum_elements(
                             .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
                     ))
                 }
-                _ => Err(EvaluateNodeError::UnsupportedOperation),
+                _ => {
+                    Err(EvaluateNodeError::unsupported_operation((left, right)))
+                }
             }
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
     }
 }
 

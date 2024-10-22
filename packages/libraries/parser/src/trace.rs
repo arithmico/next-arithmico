@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 
 use ast::Node;
-use trace::{Span, Trace, Traceable};
+use trace::{TracableMut, Span};
 
 use crate::node::ParseResult;
 
@@ -45,11 +45,6 @@ pub(super) trait TraceUtils {
         input: &str,
         remaining_input: &str,
     ) -> Self;
-
-    #[allow(dead_code)]
-    fn with_span(self, start: usize, end: usize) -> Self;
-
-    fn with_trace(self, trace: Trace) -> Self;
 }
 
 impl TraceUtils for Node {
@@ -64,16 +59,6 @@ impl TraceUtils for Node {
             input_length - remaining_input.len() - 1,
         );
         self.trace_mut().push_span(span);
-        self
-    }
-
-    fn with_span(mut self, start: usize, end: usize) -> Self {
-        self.trace_mut().push_span(Span::new(start, end));
-        self
-    }
-
-    fn with_trace(mut self, trace: Trace) -> Self {
-        self.trace_mut().append_trace(&trace);
         self
     }
 

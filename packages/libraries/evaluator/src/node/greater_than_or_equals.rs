@@ -15,7 +15,9 @@ impl EvaluateNode for GreaterThanOrEquals {
             (Node::Number(left), Node::Number(right)) => {
                 Ok(Boolean::new(left.value >= right.value))
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            (left, right) => {
+                Err(EvaluateNodeError::unsupported_operation((left, right)))
+            }
         }
     }
 }

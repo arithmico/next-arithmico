@@ -69,6 +69,7 @@ fn parse_define_function(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use ast::{Number, Power, Symbol};
+    use trace::TracableMut;
 
     use super::*;
 
