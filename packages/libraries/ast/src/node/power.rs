@@ -1,4 +1,4 @@
-use trace::Trace;
+use trace::{Tracable, TracableMut, Trace};
 
 use super::Node;
 
@@ -16,5 +16,17 @@ impl Power {
             exponent: Box::new(exponent),
             trace: Trace::new(),
         })
+    }
+}
+
+impl TracableMut for Power {
+    fn trace_mut(&mut self) -> &mut Trace {
+        &mut self.trace
+    }
+}
+
+impl Tracable for Power {
+    fn trace(&self) -> &Trace {
+        &self.trace
     }
 }

@@ -18,7 +18,9 @@ impl EvaluateNode for Division {
             (Node::Tensor(dividend), Node::Number(divisor)) => {
                 divide_tensor_by_number(&dividend, &divisor, context)
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            (dividend, divisor) => Err(
+                EvaluateNodeError::unsupported_operation((&dividend, &divisor)),
+            ),
         }
     }
 }
@@ -28,7 +30,9 @@ fn divide_number_by_number(
     divisor: &Number,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_division_number_number") {
-        return Err(EvaluateNodeError::UnsupportedOperation);
+        return Err(EvaluateNodeError::unsupported_operation((
+            dividend, divisor,
+        )));
     }
 
     if divisor.value == 0. {
@@ -44,7 +48,9 @@ fn divide_tensor_by_number(
     context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_division_tensor_number") {
-        return Err(EvaluateNodeError::UnsupportedOperation);
+        return Err(EvaluateNodeError::unsupported_operation((
+            dividend, divisor,
+        )));
     }
 
     let elements = dividend

@@ -9,7 +9,7 @@ impl EvaluateNode for Definition {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_definition") {
-            return Err(EvaluateNodeError::UnsupportedOperation);
+            return Err(EvaluateNodeError::unsupported_operation(self));
         }
 
         let expression = self.expression.evaluate(context)?;

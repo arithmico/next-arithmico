@@ -1,4 +1,4 @@
-use trace::Trace;
+use trace::{Tracable, TracableMut, Trace};
 
 use super::Node;
 
@@ -14,5 +14,17 @@ impl Boolean {
             value,
             trace: Trace::new(),
         })
+    }
+}
+
+impl TracableMut for Boolean {
+    fn trace_mut(&mut self) -> &mut Trace {
+        &mut self.trace
+    }
+}
+
+impl Tracable for Boolean {
+    fn trace(&self) -> &Trace {
+        &self.trace
     }
 }

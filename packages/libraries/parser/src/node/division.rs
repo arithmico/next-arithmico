@@ -6,9 +6,9 @@ use nom::{
     multi::many1,
     sequence::{preceded, tuple},
 };
-use trace::Traceable;
+use trace::{Tracable, TracableMut};
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::with_parser::with_parser;
 
 use super::{ParseNode, ParseResult};
 
@@ -48,7 +48,6 @@ pub fn parse_division_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-
     use ast::Number;
 
     use super::*;

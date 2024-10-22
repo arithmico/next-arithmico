@@ -33,12 +33,16 @@ fn combine_or_elements(
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right)) => {
             if !cfg!(feature = "operator_or_boolean_boolean") {
-                return Err(EvaluateNodeError::UnsupportedOperation);
+                return Err(EvaluateNodeError::unsupported_operation((
+                    left, right,
+                )));
             }
 
             Ok(Boolean::new(left.value || right.value))
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        (left, right) => {
+            Err(EvaluateNodeError::unsupported_operation((left, right)))
+        }
     }
 }
 

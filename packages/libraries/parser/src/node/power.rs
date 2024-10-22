@@ -1,3 +1,4 @@
+use crate::with_parser::with_parser;
 use ast::{Power, Tensor};
 use nom::{
     branch::alt,
@@ -6,9 +7,7 @@ use nom::{
     multi::many1,
     sequence::{preceded, tuple},
 };
-use trace::Traceable;
-
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use trace::{Tracable, TracableMut};
 
 use super::{ParseNode, ParseResult};
 
@@ -48,7 +47,6 @@ fn parse_power_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-
     use ast::{Number, Symbol};
 
     use super::*;

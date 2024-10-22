@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use trace::Trace;
+use trace::{Tracable, TracableMut, Trace};
 
 use super::Node;
 
@@ -112,6 +112,18 @@ impl Tensor {
                 _ => unreachable!(),
             })
             .collect()
+    }
+}
+
+impl TracableMut for Tensor {
+    fn trace_mut(&mut self) -> &mut Trace {
+        &mut self.trace
+    }
+}
+
+impl Tracable for Tensor {
+    fn trace(&self) -> &Trace {
+        &self.trace
     }
 }
 

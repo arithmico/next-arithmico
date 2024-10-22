@@ -50,7 +50,9 @@ fn multiply_product_elements(
         (Node::Tensor(left), Node::Tensor(right)) => {
             multiply_tensors(left, right, context)
         }
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        (left, right) => {
+            Err(EvaluateNodeError::unsupported_operation((left, right)))
+        }
     }
 }
 
@@ -59,7 +61,7 @@ fn multiply_numbers(
     right: &Number,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_product_number_number") {
-        return Err(EvaluateNodeError::UnsupportedOperation);
+        return Err(EvaluateNodeError::unsupported_operation((left, right)));
     }
 
     Ok(Number::new(left.value * right.value))
@@ -71,7 +73,7 @@ fn multiply_number_and_tensor(
     context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_product_number_tensor") {
-        return Err(EvaluateNodeError::UnsupportedOperation);
+        return Err(EvaluateNodeError::unsupported_operation((number, tensor)));
     }
 
     let elements = tensor
@@ -97,7 +99,7 @@ fn multiply_tensors(
     match (left_rank, right_rank) {
         (1, 1) => multiply_vectors(left, right, context),
         (2, 2) => multiply_matrices(left, right, context),
-        _ => Err(EvaluateNodeError::UnsupportedOperation),
+        _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
     }
 }
 
@@ -110,7 +112,7 @@ fn multiply_vectors(
     debug_assert_eq!(right.get_rank(), 1);
 
     if !cfg!(feature = "operator_product_number_number") {
-        return Err(EvaluateNodeError::UnsupportedOperation);
+        return Err(EvaluateNodeError::unsupported_operation((left, right)));
     }
 
     if left.elements.len() != right.elements.len() {

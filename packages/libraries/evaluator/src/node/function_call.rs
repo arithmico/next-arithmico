@@ -53,7 +53,9 @@ impl EvaluateNode for FunctionCall {
                     ..
                 } = endpoint
                 else {
-                    return Err(EvaluateNodeError::UnsupportedOperation);
+                    return Err(EvaluateNodeError::unsupported_operation(
+                        host_function,
+                    ));
                 };
 
                 if self.arguments.len() != arguments.len() {
@@ -65,7 +67,7 @@ impl EvaluateNode for FunctionCall {
 
                 executor(&self.arguments, context)
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            node => Err(EvaluateNodeError::unsupported_operation(node)),
         }
     }
 }

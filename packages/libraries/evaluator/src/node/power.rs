@@ -8,15 +8,15 @@ impl EvaluateNode for Power {
         &self,
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
-        if !cfg!(feature = "operator_power_number_number") {
-            return Err(EvaluateNodeError::UnsupportedOperation);
-        }
-
         let base = self.base.evaluate(context)?;
         let exponent = self.exponent.evaluate(context)?;
 
         match (base, exponent) {
             (Node::Number(base), Node::Number(exponent)) => {
+                if !cfg!(feature = "operator_power_number_number") {
+                    return Err(EvaluateNodeError::unsupported_operation(self));
+                }
+
                 if exponent.value == 0. {
                     return Ok(Number::new(1.));
                 }
@@ -27,7 +27,9 @@ impl EvaluateNode for Power {
 
                 Ok(Number::new(base.value.powf(exponent.value)))
             }
-            _ => Err(EvaluateNodeError::UnsupportedOperation),
+            (base, exponent) => {
+                Err(EvaluateNodeError::unsupported_operation((base, exponent)))
+            }
         }
     }
 }

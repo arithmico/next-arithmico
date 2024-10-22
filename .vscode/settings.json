@@ -10,7 +10,8 @@
         "evaluator",
         "serializer",
         "common_ui",
-        "trace"
+        "trace",
+        "common"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "tailwindCSS.includeLanguages": {

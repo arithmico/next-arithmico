@@ -31,4 +31,8 @@ impl TraceFrame {
     pub fn push_span(&mut self, span: Span) {
         self.spans.push(span);
     }
+
+    pub fn spans(&self) -> &Vec<Span> {
+        &self.spans
+    }
 }

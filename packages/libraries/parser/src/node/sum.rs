@@ -44,10 +44,10 @@ fn parse_sum_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
+    use crate::error::ParseNodeError;
     use ast::{Node, Number};
     use nom::combinator::all_consuming;
-
-    use crate::error::ParseNodeError;
+    use trace::TracableMut;
 
     use super::*;
 

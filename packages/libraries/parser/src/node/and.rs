@@ -38,6 +38,7 @@ fn parse_and_item(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
     use ast::{Boolean, Symbol};
+    use trace::TracableMut;
 
     use super::*;
 

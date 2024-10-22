@@ -1,8 +1,8 @@
-use trace::{Trace, Traceable};
+use trace::{Tracable, TracableMut, Trace};
 
 use crate::Node;
 
-impl Traceable for Node {
+impl TracableMut for Node {
     fn trace_mut(&mut self) -> &mut Trace {
         match self {
             Node::Boolean(node) => &mut node.trace,
@@ -27,7 +27,9 @@ impl Traceable for Node {
             Node::Definition(node) => &mut node.trace,
         }
     }
+}
 
+impl Tracable for Node {
     fn trace(&self) -> &Trace {
         match self {
             Node::Boolean(node) => &node.trace,

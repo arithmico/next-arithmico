@@ -1,4 +1,4 @@
-use trace::Trace;
+use trace::{GetTrace, GetTraceMut, Trace};
 
 use super::Node;
 
@@ -14,5 +14,17 @@ impl And {
             elements: values,
             trace: Trace::new(),
         })
+    }
+}
+
+impl GetTrace for And {
+    fn trace(&self) -> &Trace {
+        &self.trace
+    }
+}
+
+impl GetTraceMut for And {
+    fn trace_mut(&mut self) -> &mut Trace {
+        &mut self.trace
     }
 }

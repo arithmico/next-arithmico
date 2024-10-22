@@ -294,6 +294,7 @@ dependencies = [
  "log",
  "serializer",
  "thiserror",
+ "trace",
 ]
 
 [[package]]
