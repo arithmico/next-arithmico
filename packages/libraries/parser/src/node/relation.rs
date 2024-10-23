@@ -14,7 +14,7 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
-use trace::Tracable;
+use trace::IntoTrace;
 use trace::TracableMut;
 
 use super::{ParseNode, ParseResult};
@@ -34,7 +34,7 @@ fn parse_relation_chain(input: &str) -> ParseResult {
     let (mut relations, _) = rest.into_iter().fold(
         (Vec::<Node>::new(), first),
         |(mut relations, left), (operator, right)| {
-            let trace = left.trace().hull_trace(right.trace());
+            let trace = (&left, &right).into_hull_trace();
             let next = right.clone();
             let relation = match operator {
                 "=" => Equals::new(left, right),
@@ -46,7 +46,7 @@ fn parse_relation_chain(input: &str) -> ParseResult {
                     unreachable!()
                 }
             }
-            .with_trace(trace);
+            .with_trace(&trace);
             relations.push(relation);
             (relations, next)
         },

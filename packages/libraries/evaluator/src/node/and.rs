@@ -1,7 +1,7 @@
 use crate::evaluate::EvaluateNode;
 use ast::{And, Boolean, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-use trace::{IntoTrace, Tracable, TracableMut};
+use trace::{Tracable, TracableMut};
 
 impl EvaluateNode for And {
     fn evaluate(
@@ -17,7 +17,7 @@ impl EvaluateNode for And {
             .map(|element| element.evaluate(context))
             .reduce(|left, right| combine_and_elements(&left?, &right?))
             .expect("min 2 elements")
-            .map(|result| result.with_trace(self.trace().clone()))
+            .map(|result| result.with_trace(self.trace()))
     }
 }
 
@@ -34,7 +34,7 @@ fn combine_and_elements(
             }
 
             Ok(Boolean::new(left.value && right.value)
-                .with_trace((left, right).into_trace()))
+                .with_tracable((left, right)))
         }
         _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
     }
