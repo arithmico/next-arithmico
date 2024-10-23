@@ -9,7 +9,7 @@ impl EvaluateNode for And {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::InvalidNode);
+            return Err(EvaluateNodeError::invalid_node("And"));
         }
 
         self.elements
@@ -27,15 +27,13 @@ fn combine_and_elements(
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right)) => {
             if !cfg!(feature = "operator_and_boolean_boolean") {
-                return Err(EvaluateNodeError::unsupported_operation((
-                    left, right,
-                )));
+                return Err(EvaluateNodeError::unsupported_operation());
             }
 
             Ok(Boolean::new(left.value && right.value)
                 .with_tracable((left, right)))
         }
-        _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
+        _ => Err(EvaluateNodeError::unsupported_operation()),
     }
 }
 
@@ -47,7 +45,7 @@ mod tests {
     fn evaluate_invalid_and() {
         let context = EvaluateNodeContext::default();
         let result = And::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node("And")));
     }
 
     #[test]

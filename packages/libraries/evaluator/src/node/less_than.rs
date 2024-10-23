@@ -16,7 +16,7 @@ impl EvaluateNode for LessThan {
                 Ok(Boolean::new(left.value < right.value))
             }
             (left, right) => {
-                Err(EvaluateNodeError::unsupported_operation((left, right)))
+                Err(EvaluateNodeError::unsupported_operation())
             }
         }
     }

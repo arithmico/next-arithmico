@@ -11,8 +11,8 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .function(vec!["x"])
         .executor(|arguments, context| {
             if arguments.len() != 1 {
-                return Err(EvaluateNodeError::RuntimeError(
-                    "invalid number of arguments".into(),
+                return Err(EvaluateNodeError::runtime_error(
+                    "invalid number of arguments",
                 ));
             }
             let argument = arguments.get(0).unwrap();
@@ -31,8 +31,8 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
 
                     Ok(Number::new(value.cos()))
                 }
-                _ => Err(EvaluateNodeError::RuntimeError(
-                    "invalid argument type".into(),
+                _ => Err(EvaluateNodeError::runtime_error(
+                    "invalid argument type",
                 )),
             }
         })

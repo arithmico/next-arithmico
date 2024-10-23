@@ -12,7 +12,7 @@ impl EvaluateNode for Sum {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::InvalidNode);
+            return Err(EvaluateNodeError::invalid_node("Sum"));
         }
 
         let mut elements = self
@@ -38,9 +38,7 @@ fn add_sum_elements(
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
             if !cfg!(feature = "operator_sum_number_number") {
-                return Err(EvaluateNodeError::unsupported_operation((
-                    left, right,
-                )));
+                return Err(EvaluateNodeError::unsupported_operation());
             }
 
             Ok(Number::new(left.value + right.value))
@@ -52,14 +50,12 @@ fn add_sum_elements(
             match (left_rank, right_rank) {
                 (1, 1) => {
                     if !cfg!(feature = "operator_sum_vector_vector") {
-                        return Err(EvaluateNodeError::unsupported_operation(
-                            (left, right),
-                        ));
+                        return Err(EvaluateNodeError::unsupported_operation());
                     }
 
                     if left.elements.len() != right.elements.len() {
                         return Err(
-                            EvaluateNodeError::IncompatibleVectorDimensions(
+                            EvaluateNodeError::incompatible_vector_dimensions(
                                 left.elements.len(),
                                 right.elements.len(),
                             ),
@@ -76,12 +72,10 @@ fn add_sum_elements(
                             .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
                     ))
                 }
-                _ => {
-                    Err(EvaluateNodeError::unsupported_operation((left, right)))
-                }
+                _ => Err(EvaluateNodeError::unsupported_operation()),
             }
         }
-        _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
+        _ => Err(EvaluateNodeError::unsupported_operation()),
     }
     .map(|node| node.with_tracable((left, right)))
 }
@@ -94,7 +88,7 @@ mod tests {
     fn evaluate_invalid_sum() {
         let context = EvaluateNodeContext::default();
         let result = Sum::new(vec![Number::new(1.)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node("Sum")));
     }
 
     #[test]

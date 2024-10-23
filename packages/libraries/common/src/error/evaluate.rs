@@ -1,13 +1,10 @@
 use thiserror::Error;
-
-mod unsuppored_operation;
-
-pub use unsuppored_operation::*;
+use trace::Trace;
 
 #[derive(Error, Debug, PartialEq, Clone)]
-pub enum EvaluateNodeError {
+pub enum EvaluateNodeInnerError {
     #[error("unsupported operation")]
-    UnsupportedOperation(UnsupportedOperationError),
+    UnsupportedOperation,
 
     #[error("unsupported data type '{0}'")]
     UnsupportedDataType(String),
@@ -19,7 +16,7 @@ pub enum EvaluateNodeError {
     RuntimeError(String),
 
     #[error("invalid node")]
-    InvalidNode,
+    InvalidNode(String),
 
     #[error("incompatible vector dimensions: {0}, {1}")]
     IncompatibleVectorDimensions(usize, usize),
@@ -34,10 +31,74 @@ pub enum EvaluateNodeError {
     InvalidNumberOfArguments(usize, usize),
 }
 
+#[derive(Error, Debug, PartialEq, Clone)]
+#[error("{inner}")]
+pub struct EvaluateNodeError {
+    inner: EvaluateNodeInnerError,
+    stack_trace: Vec<Trace>,
+}
+
 impl EvaluateNodeError {
-    pub fn unsupported_operation(
-        from: impl Into<UnsupportedOperationError>,
+    fn from_inner(inner: EvaluateNodeInnerError) -> Self {
+        Self {
+            inner,
+            stack_trace: Vec::new(),
+        }
+    }
+
+    pub fn unsupported_operation() -> Self {
+        Self::from_inner(EvaluateNodeInnerError::UnsupportedOperation)
+    }
+
+    pub fn unsupported_datatype<T: ToString>(node_kind: T) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::UnsupportedDataType(
+            node_kind.to_string(),
+        ))
+    }
+
+    pub fn unknown_symbol<T: ToString>(name: T) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::UnknownSymbol(
+            name.to_string(),
+        ))
+    }
+
+    pub fn runtime_error<T: ToString>(message: T) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::RuntimeError(
+            message.to_string(),
+        ))
+    }
+
+    pub fn invalid_node<T: ToString>(node_kind: T) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::InvalidNode(
+            node_kind.to_string(),
+        ))
+    }
+
+    pub fn incompatible_vector_dimensions(left: usize, right: usize) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::IncompatibleVectorDimensions(
+            left, right,
+        ))
+    }
+
+    pub fn incompatible_matrix_dimensions(
+        left: Vec<usize>,
+        right: Vec<usize>,
     ) -> Self {
-        Self::UnsupportedOperation(from.into())
+        Self::from_inner(EvaluateNodeInnerError::IncompatibleMatrixDimensions(
+            left, right,
+        ))
+    }
+
+    pub fn division_by_zero() -> Self {
+        Self::from_inner(EvaluateNodeInnerError::DivisionByZero)
+    }
+
+    pub fn invalid_number_of_arguments(
+        expected: usize,
+        received: usize,
+    ) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::InvalidNumberOfArguments(
+            expected, received,
+        ))
     }
 }

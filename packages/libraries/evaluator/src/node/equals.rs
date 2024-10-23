@@ -16,27 +16,21 @@ impl EvaluateNode for Equals {
         match (left, right) {
             (Node::Number(left), Node::Number(right)) => {
                 if !cfg!(feature = "operator_equals_number_number") {
-                    return Err(EvaluateNodeError::unsupported_operation((
-                        left, right,
-                    )));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Boolean(left), Node::Boolean(right)) => {
                 if !cfg!(feature = "operator_equals_boolean_boolean") {
-                    return Err(EvaluateNodeError::unsupported_operation((
-                        left, right,
-                    )));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Tensor(left), Node::Tensor(right)) => {
                 if !cfg!(feature = "operator_equals_tensor_tensor") {
-                    return Err(EvaluateNodeError::unsupported_operation((
-                        left, right,
-                    )));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 if left.shape != right.shape {
@@ -52,9 +46,7 @@ impl EvaluateNode for Equals {
                         if let Node::Boolean(element) = element {
                             Ok(element.value)
                         } else {
-                            Err(EvaluateNodeError::unsupported_operation(
-                                element,
-                            ))
+                            Err(EvaluateNodeError::unsupported_operation())
                         }
                     })
                 })
@@ -65,9 +57,7 @@ impl EvaluateNode for Equals {
 
                 Ok(Boolean::new(comparison_result?))
             }
-            (left, right) => {
-                Err(EvaluateNodeError::unsupported_operation((left, right)))
-            }
+            (left, right) => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }
@@ -190,9 +180,6 @@ mod tests {
             ]),
         )
         .evaluate(&context);
-        assert!(matches!(
-            result,
-            Err(EvaluateNodeError::UnsupportedOperation(..))
-        ));
+        assert_eq!(result, Err(EvaluateNodeError::unsupported_operation()));
     }
 }

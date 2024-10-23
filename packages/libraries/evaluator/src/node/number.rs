@@ -8,9 +8,7 @@ impl EvaluateNode for Number {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_number") {
-            return Err(EvaluateNodeError::UnsupportedDataType(String::from(
-                "number",
-            )));
+            return Err(EvaluateNodeError::unsupported_datatype("Number"));
         }
 
         Ok(Number::new(self.value))

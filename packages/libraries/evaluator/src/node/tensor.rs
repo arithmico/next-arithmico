@@ -8,9 +8,7 @@ impl EvaluateNode for Tensor {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_tensor") {
-            return Err(EvaluateNodeError::UnsupportedDataType(String::from(
-                "tensor",
-            )));
+            return Err(EvaluateNodeError::unsupported_datatype("Tensor"));
         }
 
         Ok(Tensor::new_with_shape(

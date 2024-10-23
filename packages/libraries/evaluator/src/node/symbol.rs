@@ -9,14 +9,12 @@ impl EvaluateNode for Symbol {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
-            return Err(EvaluateNodeError::UnsupportedDataType(String::from(
-                "symbol",
-            )));
+            return Err(EvaluateNodeError::unsupported_datatype("Symbol"));
         }
 
         context
             .lookup(&self.name)
-            .ok_or_else(|| EvaluateNodeError::UnknownSymbol(self.name.clone()))
+            .ok_or_else(|| EvaluateNodeError::unknown_symbol(&self.name))
     }
 }
 
@@ -34,7 +32,7 @@ mod tests {
     fn evaluate_unknown_symbol() {
         let context = EvaluateNodeContext::default();
         let result = Symbol::new("x").evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::UnknownSymbol("x".into())));
+        assert_eq!(result, Err(EvaluateNodeError::unknown_symbol("x")));
     }
 
     #[test]
