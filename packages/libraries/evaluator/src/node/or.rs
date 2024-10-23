@@ -39,8 +39,10 @@ fn combine_or_elements(
             Ok(Boolean::new(left.value || right.value)
                 .with_tracable((left, right)))
         }
-        (left, right) => Err(EvaluateNodeError::unsupported_operation()),
+        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+            .with_tracable((left, right))),
     }
+    .map(|node| node.with_tracable((left, right)))
 }
 
 #[cfg(test)]

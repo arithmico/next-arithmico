@@ -61,5 +61,6 @@ impl EvaluateNode for Node {
             Node::Definition(definition) => definition.evaluate(context),
         }
         .map(|node| node.with_tracable(self))
+        .map_err(|error| error.with_tracable(self))
     }
 }

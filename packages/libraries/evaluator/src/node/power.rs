@@ -27,9 +27,7 @@ impl EvaluateNode for Power {
 
                 Ok(Number::new(base.value.powf(exponent.value)))
             }
-            (base, exponent) => {
-                Err(EvaluateNodeError::unsupported_operation())
-            }
+            _ => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }

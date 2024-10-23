@@ -40,7 +40,7 @@ impl EvaluateNode for Negate {
 
                 Ok(Tensor::new_with_shape(tensor.shape.clone(), elements))
             }
-            node => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }

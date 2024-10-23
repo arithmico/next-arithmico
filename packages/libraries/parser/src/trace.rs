@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 
 use ast::Node;
-use trace::{TracableMut, Span};
+use trace::{Span, TracableMut};
 
 use crate::node::ParseResult;
 

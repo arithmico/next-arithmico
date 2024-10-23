@@ -75,7 +75,8 @@ fn add_sum_elements(
                 _ => Err(EvaluateNodeError::unsupported_operation()),
             }
         }
-        _ => Err(EvaluateNodeError::unsupported_operation()),
+        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+            .with_tracable((left, right))),
     }
     .map(|node| node.with_tracable((left, right)))
 }
