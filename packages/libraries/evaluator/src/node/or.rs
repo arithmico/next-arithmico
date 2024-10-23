@@ -9,7 +9,7 @@ impl EvaluateNode for Or {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::InvalidNode);
+            return Err(EvaluateNodeError::invalid_node("Or"));
         }
 
         let mut elements = self
@@ -33,17 +33,13 @@ fn combine_or_elements(
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right)) => {
             if !cfg!(feature = "operator_or_boolean_boolean") {
-                return Err(EvaluateNodeError::unsupported_operation((
-                    left, right,
-                )));
+                return Err(EvaluateNodeError::unsupported_operation());
             }
 
             Ok(Boolean::new(left.value || right.value)
                 .with_tracable((left, right)))
         }
-        (left, right) => {
-            Err(EvaluateNodeError::unsupported_operation((left, right)))
-        }
+        (left, right) => Err(EvaluateNodeError::unsupported_operation()),
     }
 }
 
@@ -55,7 +51,7 @@ mod tests {
     fn evaluate_invalid_or() {
         let context = EvaluateNodeContext::default();
         let result = Or::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::InvalidNode));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node("Or")));
     }
 
     #[test]

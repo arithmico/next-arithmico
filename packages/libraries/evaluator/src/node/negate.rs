@@ -13,27 +13,21 @@ impl EvaluateNode for Negate {
         match value {
             Node::Number(number) => {
                 if !cfg!(feature = "operator_negate_number") {
-                    return Err(EvaluateNodeError::unsupported_operation(
-                        number,
-                    ));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 Ok(Number::new(-number.value))
             }
             Node::Boolean(boolean) => {
                 if !cfg!(feature = "operator_negate_boolean") {
-                    return Err(EvaluateNodeError::unsupported_operation(
-                        boolean,
-                    ));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 Ok(Boolean::new(!boolean.value))
             }
             Node::Tensor(tensor) => {
                 if !cfg!(feature = "operator_negate_tensor") {
-                    return Err(EvaluateNodeError::unsupported_operation(
-                        tensor,
-                    ));
+                    return Err(EvaluateNodeError::unsupported_operation());
                 }
 
                 let elements = tensor
@@ -46,7 +40,7 @@ impl EvaluateNode for Negate {
 
                 Ok(Tensor::new_with_shape(tensor.shape.clone(), elements))
             }
-            node => Err(EvaluateNodeError::unsupported_operation(node)),
+            node => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }

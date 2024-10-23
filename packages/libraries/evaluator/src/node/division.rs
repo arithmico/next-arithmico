@@ -18,9 +18,9 @@ impl EvaluateNode for Division {
             (Node::Tensor(dividend), Node::Number(divisor)) => {
                 divide_tensor_by_number(&dividend, &divisor, context)
             }
-            (dividend, divisor) => Err(
-                EvaluateNodeError::unsupported_operation((&dividend, &divisor)),
-            ),
+            (dividend, divisor) => {
+                Err(EvaluateNodeError::unsupported_operation())
+            }
         }
     }
 }
@@ -30,13 +30,11 @@ fn divide_number_by_number(
     divisor: &Number,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_division_number_number") {
-        return Err(EvaluateNodeError::unsupported_operation((
-            dividend, divisor,
-        )));
+        return Err(EvaluateNodeError::unsupported_operation());
     }
 
     if divisor.value == 0. {
-        return Err(EvaluateNodeError::DivisionByZero);
+        return Err(EvaluateNodeError::division_by_zero());
     }
 
     Ok(Number::new(dividend.value / divisor.value))
@@ -48,9 +46,7 @@ fn divide_tensor_by_number(
     context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_division_tensor_number") {
-        return Err(EvaluateNodeError::unsupported_operation((
-            dividend, divisor,
-        )));
+        return Err(EvaluateNodeError::unsupported_operation());
     }
 
     let elements = dividend
@@ -73,7 +69,7 @@ mod tests {
         let context = EvaluateNodeContext::default();
         let result =
             Division::new(Number::new(8.), Number::new(0.)).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::DivisionByZero));
+        assert_eq!(result, Err(EvaluateNodeError::division_by_zero()));
     }
 
     #[test]

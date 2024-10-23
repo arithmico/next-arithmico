@@ -9,9 +9,7 @@ impl EvaluateNode for Function {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_function") {
-            return Err(EvaluateNodeError::UnsupportedDataType(String::from(
-                "function",
-            )));
+            return Err(EvaluateNodeError::unsupported_datatype("Function"));
         }
 
         Ok(Node::Function(self.clone()))

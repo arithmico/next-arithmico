@@ -8,9 +8,7 @@ impl EvaluateNode for Boolean {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_boolean") {
-            return Err(EvaluateNodeError::UnsupportedDataType(String::from(
-                "boolean",
-            )));
+            return Err(EvaluateNodeError::unsupported_datatype("Boolean"));
         }
 
         Ok(Boolean::new(self.value))
