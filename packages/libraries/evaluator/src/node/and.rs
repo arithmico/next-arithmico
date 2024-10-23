@@ -1,7 +1,7 @@
 use crate::evaluate::EvaluateNode;
 use ast::{And, Boolean, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-use trace::{IntoTrace, TracableMut};
+use trace::{IntoTrace, Tracable, TracableMut};
 
 impl EvaluateNode for And {
     fn evaluate(
@@ -12,18 +12,12 @@ impl EvaluateNode for And {
             return Err(EvaluateNodeError::InvalidNode);
         }
 
-        let mut elements = self
-            .elements
+        self.elements
             .iter()
-            .map(|element| element.evaluate(context));
-
-        let mut accumulator = elements.next().unwrap()?;
-        for current_element in elements {
-            accumulator =
-                combine_and_elements(&accumulator, &current_element?)?;
-        }
-
-        Ok(accumulator)
+            .map(|element| element.evaluate(context))
+            .reduce(|left, right| combine_and_elements(&left?, &right?))
+            .expect("min 2 elements")
+            .map(|result| result.with_trace(self.trace().clone()))
     }
 }
 
@@ -77,5 +71,18 @@ mod tests {
         .evaluate(&context)
         .unwrap();
         assert_eq!(result, Boolean::new(true));
+    }
+
+    #[test]
+    fn evaluate_and_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = And::new(vec![
+            Boolean::new(false).with_span(0, 0),
+            Boolean::new(true).with_span(2, 2),
+        ])
+        .with_span(0, 2)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Boolean::new(false).with_span(0, 2));
     }
 }
