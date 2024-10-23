@@ -1,7 +1,7 @@
 use crate::evaluate::EvaluateNode;
 use ast::{And, Boolean, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-use trace::{Tracable, TracableMut};
+use trace::TracableMut;
 
 impl EvaluateNode for And {
     fn evaluate(
@@ -17,7 +17,6 @@ impl EvaluateNode for And {
             .map(|element| element.evaluate(context))
             .reduce(|left, right| combine_and_elements(&left?, &right?))
             .expect("min 2 elements")
-            .map(|result| result.with_trace(self.trace()))
     }
 }
 

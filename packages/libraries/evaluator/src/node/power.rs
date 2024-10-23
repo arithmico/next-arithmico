@@ -37,6 +37,7 @@ impl EvaluateNode for Power {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use trace::TracableMut;
 
     #[test]
     fn evaluate_power_number_number() {
@@ -45,6 +46,19 @@ mod tests {
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Number::new(64.));
+    }
+
+    #[test]
+    fn evaluate_power_number_number_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Power::new(
+            Number::new(8.).with_span(0, 0),
+            Number::new(2.).with_span(2, 2),
+        )
+        .with_span(0, 2)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Number::new(64.).with_span(0, 2));
     }
 
     #[test]
@@ -57,11 +71,37 @@ mod tests {
     }
 
     #[test]
+    fn evaluate_power_number_number0_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Power::new(
+            Number::new(8.).with_span(0, 0),
+            Number::new(0.).with_span(2, 2),
+        )
+        .with_span(0, 2)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Number::new(1.).with_span(0, 2));
+    }
+
+    #[test]
     fn evaluate_power_number0_number() {
         let context = EvaluateNodeContext::default();
         let result = Power::new(Number::new(0.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Number::new(0.));
+    }
+
+    #[test]
+    fn evaluate_power_number0_number_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Power::new(
+            Number::new(0.).with_span(0, 0),
+            Number::new(2.).with_span(2, 2),
+        )
+        .with_span(0, 2)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Number::new(0.).with_span(0, 2));
     }
 }

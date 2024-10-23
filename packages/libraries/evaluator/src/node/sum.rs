@@ -2,6 +2,7 @@ use std::iter::zip;
 
 use ast::{Node, Number, Sum, Tensor};
 use common::{EvaluateNodeContext, EvaluateNodeError};
+use trace::TracableMut;
 
 use crate::evaluate::EvaluateNode;
 
@@ -82,6 +83,7 @@ fn add_sum_elements(
         }
         _ => Err(EvaluateNodeError::unsupported_operation((left, right))),
     }
+    .map(|node| node.with_tracable((left, right)))
 }
 
 #[cfg(test)]

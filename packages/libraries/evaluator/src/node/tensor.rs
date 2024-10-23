@@ -1,7 +1,6 @@
+use crate::evaluate::EvaluateNode;
 use ast::{Node, Tensor};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-
-use crate::evaluate::EvaluateNode;
 
 impl EvaluateNode for Tensor {
     fn evaluate(
@@ -26,15 +25,25 @@ impl EvaluateNode for Tensor {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Sum};
-
     use super::*;
+    use ast::{Number, Sum};
+    use trace::TracableMut;
 
     #[test]
     fn evaluate_empty_tensor() {
         let context = EvaluateNodeContext::default();
         let result = Tensor::new(vec![]).evaluate(&context).unwrap();
         assert_eq!(result, Tensor::new(vec![]));
+    }
+
+    #[test]
+    fn evaluate_empty_tensor_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Tensor::new(vec![])
+            .with_span(0, 1)
+            .evaluate(&context)
+            .unwrap();
+        assert_eq!(result, Tensor::new(vec![]).with_span(0, 1));
     }
 
     #[test]
@@ -54,6 +63,23 @@ mod tests {
                 .evaluate(&context)
                 .unwrap();
         assert_eq!(result, Tensor::new(vec![Number::new(3.)]));
+    }
+
+    #[test]
+    fn evaluate_tensor_with_sum_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Tensor::new(vec![Sum::new(vec![
+            Number::new(1.).with_span(1, 1),
+            Number::new(2.).with_span(3, 3),
+        ])
+        .with_span(1, 3)])
+        .with_span(0, 4)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(
+            result,
+            Tensor::new(vec![Number::new(3.).with_span(1, 3)]).with_span(0, 4)
+        );
     }
 
     #[test]

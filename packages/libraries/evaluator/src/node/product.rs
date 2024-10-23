@@ -2,6 +2,7 @@ use std::iter::zip;
 
 use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
 use common::{EvaluateNodeContext, EvaluateNodeError};
+use trace::TracableMut;
 
 use crate::evaluate::EvaluateNode;
 
@@ -54,6 +55,7 @@ fn multiply_product_elements(
             Err(EvaluateNodeError::unsupported_operation((left, right)))
         }
     }
+    .map(|node| node.with_tracable((left, right)))
 }
 
 fn multiply_numbers(

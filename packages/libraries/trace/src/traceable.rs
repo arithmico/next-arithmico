@@ -46,3 +46,13 @@ impl<T1: Tracable, T2: Tracable> GetTraces for (T1, T2) {
         vec![self.0.trace().clone(), self.1.trace().clone()]
     }
 }
+
+impl<T1: Tracable, T2: Tracable, T3: Tracable> GetTraces for (T1, T2, T3) {
+    fn traces(&self) -> Vec<Trace> {
+        vec![
+            self.0.trace().clone(),
+            self.1.trace().clone(),
+            self.2.trace().clone(),
+        ]
+    }
+}

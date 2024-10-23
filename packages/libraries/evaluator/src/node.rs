@@ -1,5 +1,6 @@
 use ast::Node;
 use common::{EvaluateNodeContext, EvaluateNodeError};
+use trace::TracableMut;
 
 use crate::evaluate::EvaluateNode;
 
@@ -59,5 +60,6 @@ impl EvaluateNode for Node {
             }
             Node::Definition(definition) => definition.evaluate(context),
         }
+        .map(|node| node.with_tracable(self))
     }
 }
