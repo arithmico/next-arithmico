@@ -21,6 +21,6 @@ impl From<UnsupportedOperationError> for EvaluateNodeError {
 
 impl<T: IntoTrace> From<T> for UnsupportedOperationError {
     fn from(value: T) -> Self {
-        Self::new(value.into_trace().all_spans())
+        Self::new(value.into_trace().spans())
     }
 }
