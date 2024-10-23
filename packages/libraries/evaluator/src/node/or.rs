@@ -1,7 +1,7 @@
+use crate::evaluate::EvaluateNode;
 use ast::{Boolean, Node, Or};
 use common::{EvaluateNodeContext, EvaluateNodeError};
-
-use crate::evaluate::EvaluateNode;
+use trace::TracableMut;
 
 impl EvaluateNode for Or {
     fn evaluate(
@@ -38,7 +38,8 @@ fn combine_or_elements(
                 )));
             }
 
-            Ok(Boolean::new(left.value || right.value))
+            Ok(Boolean::new(left.value || right.value)
+                .with_tracable((left, right)))
         }
         (left, right) => {
             Err(EvaluateNodeError::unsupported_operation((left, right)))
@@ -77,5 +78,18 @@ mod tests {
         .evaluate(&context)
         .unwrap();
         assert_eq!(result, Boolean::new(false));
+    }
+
+    #[test]
+    fn evaluate_or_with_trace() {
+        let context = EvaluateNodeContext::default();
+        let result = Or::new(vec![
+            Boolean::new(false).with_span(0, 0),
+            Boolean::new(false).with_span(2, 2),
+        ])
+        .with_span(0, 2)
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Boolean::new(false).with_span(0, 2));
     }
 }
