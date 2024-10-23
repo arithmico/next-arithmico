@@ -13,7 +13,8 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
             if arguments.len() != 1 {
                 return Err(EvaluateNodeError::runtime_error(
                     "invalid number of arguments",
-                ));
+                )
+                .with_tracable(arguments));
             }
             let argument = arguments.get(0).unwrap();
             let evaluated_argument = evaluate_node(&argument, context)?;
@@ -25,9 +26,10 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
                     }
                     Ok(Number::new(value.sin()))
                 }
-                _ => Err(EvaluateNodeError::runtime_error(
+                node => Err(EvaluateNodeError::runtime_error(
                     "invalid argument type",
-                )),
+                )
+                .with_tracable(node)),
             }
         })
 }

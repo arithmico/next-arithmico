@@ -56,3 +56,15 @@ impl<T1: Tracable, T2: Tracable, T3: Tracable> GetTraces for (T1, T2, T3) {
         ]
     }
 }
+
+impl<T: Tracable> GetTraces for Vec<T> {
+    fn traces(&self) -> Vec<Trace> {
+        self.iter().map(|element| element.trace().clone()).collect()
+    }
+}
+
+impl<T: Tracable> GetTraces for &Vec<T> {
+    fn traces(&self) -> Vec<Trace> {
+        self.iter().map(|element| element.trace().clone()).collect()
+    }
+}

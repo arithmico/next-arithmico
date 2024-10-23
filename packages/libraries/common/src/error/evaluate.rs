@@ -109,4 +109,8 @@ impl EvaluateNodeError {
         }
         self
     }
+
+    pub fn stack_trace(&self) -> Vec<Trace> {
+        self.stack_trace.clone()
+    }
 }

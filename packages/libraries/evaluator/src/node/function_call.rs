@@ -62,7 +62,8 @@ impl EvaluateNode for FunctionCall {
                         EvaluateNodeError::invalid_number_of_arguments(
                             arguments.len(),
                             self.arguments.len(),
-                        ),
+                        )
+                        .with_tracable(&self.arguments),
                     );
                 }
 
