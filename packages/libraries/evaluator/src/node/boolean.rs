@@ -14,7 +14,7 @@ impl EvaluateNode for Boolean {
             )));
         }
 
-        Ok(Boolean::new(self.value).with_trace(self.trace().clone()))
+        Ok(Boolean::new(self.value).with_trace(&self.trace()))
     }
 }
 
@@ -43,9 +43,9 @@ mod tests {
         let context = EvaluateNodeContext::default();
         let trace = Trace::new().with_span(0, 4);
         let result = Boolean::new(false)
-            .with_trace(trace.clone())
+            .with_trace(&trace)
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Boolean::new(false).with_trace(trace));
+        assert_eq!(result, Boolean::new(false).with_trace(&trace));
     }
 }

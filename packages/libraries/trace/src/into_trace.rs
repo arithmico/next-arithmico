@@ -2,6 +2,7 @@ use crate::{GetTraces, Trace};
 
 pub trait IntoTrace {
     fn into_trace(self) -> Trace;
+    fn into_hull_trace(self) -> Trace;
 }
 
 impl<T: GetTraces> IntoTrace for T {
@@ -9,6 +10,13 @@ impl<T: GetTraces> IntoTrace for T {
         self.traces()
             .into_iter()
             .reduce(|left, right| left.merge(&right))
+            .expect("trace")
+    }
+
+    fn into_hull_trace(self) -> Trace {
+        self.traces()
+            .into_iter()
+            .reduce(|left, right| left.hull_trace(&right))
             .expect("trace")
     }
 }

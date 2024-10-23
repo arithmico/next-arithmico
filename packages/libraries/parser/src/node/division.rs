@@ -6,7 +6,7 @@ use nom::{
     multi::many1,
     sequence::{preceded, tuple},
 };
-use trace::{Tracable, TracableMut};
+use trace::{IntoTrace, TracableMut};
 
 use crate::with_parser::with_parser;
 
@@ -27,8 +27,8 @@ fn parse_division(input: &str) -> ParseResult {
     Ok((
         remaining_input,
         rest.into_iter().fold(first, |dividend, divisor| {
-            let trace = dividend.trace().hull_trace(divisor.trace());
-            Division::new(dividend, divisor).with_trace(trace)
+            let trace = (&dividend, &divisor).into_hull_trace();
+            Division::new(dividend, divisor).with_trace(&trace)
         }),
     ))
 }

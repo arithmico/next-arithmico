@@ -7,7 +7,7 @@ use nom::{
     multi::many1,
     sequence::{preceded, tuple},
 };
-use trace::{Tracable, TracableMut};
+use trace::{IntoTrace, TracableMut};
 
 use super::{ParseNode, ParseResult};
 
@@ -26,8 +26,8 @@ fn parse_power(input: &str) -> ParseResult {
     Ok((
         remaining_input,
         rest.into_iter().fold(first, |base, exponent| {
-            let trace = base.trace().hull_trace(exponent.trace());
-            Power::new(base, exponent).with_trace(trace)
+            let trace = (&base, &exponent).into_hull_trace();
+            Power::new(base, exponent).with_trace(&trace)
         }),
     ))
 }

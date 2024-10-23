@@ -1,4 +1,4 @@
-use crate::Span;
+use crate::{IntoTrace, Span};
 
 use super::trace::Trace;
 
@@ -20,8 +20,13 @@ pub trait TracableMut: Sized {
         self
     }
 
-    fn with_trace(mut self, trace: Trace) -> Self {
+    fn with_trace(mut self, trace: &Trace) -> Self {
         self.trace_mut().append_trace(&trace);
+        self
+    }
+
+    fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
+        self.trace_mut().append_trace(&tracable.into_trace());
         self
     }
 }
