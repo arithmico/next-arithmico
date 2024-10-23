@@ -93,6 +93,10 @@ impl Trace {
     pub fn spans(&self) -> Vec<Span> {
         self.spans.clone()
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.spans.is_empty()
+    }
 }
 
 #[cfg(test)]

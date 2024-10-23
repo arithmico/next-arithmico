@@ -57,7 +57,7 @@ impl EvaluateNode for Equals {
 
                 Ok(Boolean::new(comparison_result?))
             }
-            (left, right) => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }

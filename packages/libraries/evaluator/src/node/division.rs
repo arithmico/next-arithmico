@@ -18,9 +18,7 @@ impl EvaluateNode for Division {
             (Node::Tensor(dividend), Node::Number(divisor)) => {
                 divide_tensor_by_number(&dividend, &divisor, context)
             }
-            (dividend, divisor) => {
-                Err(EvaluateNodeError::unsupported_operation())
-            }
+            _ => Err(EvaluateNodeError::unsupported_operation()),
         }
     }
 }

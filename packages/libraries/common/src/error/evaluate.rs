@@ -1,5 +1,5 @@
 use thiserror::Error;
-use trace::Trace;
+use trace::{IntoTrace, Trace};
 
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum EvaluateNodeInnerError {
@@ -100,5 +100,13 @@ impl EvaluateNodeError {
         Self::from_inner(EvaluateNodeInnerError::InvalidNumberOfArguments(
             expected, received,
         ))
+    }
+
+    pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
+        let trace = tracable.into_trace();
+        if !trace.is_empty() {
+            self.stack_trace.push(trace);
+        }
+        self
     }
 }

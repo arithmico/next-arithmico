@@ -68,7 +68,10 @@ impl EvaluateNode for FunctionCall {
 
                 executor(&self.arguments, context)
             }
-            node => Err(EvaluateNodeError::unsupported_operation()),
+            node => {
+                Err(EvaluateNodeError::unsupported_operation()
+                    .with_tracable(node))
+            }
         }
     }
 }
