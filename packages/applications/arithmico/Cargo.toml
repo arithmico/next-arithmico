@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 console_error_panic_hook = "0.1.7"
-leptos = { version = "0.6.12", features = ["csr"] }
+leptos = { workspace = true }
 leptos_router = { version = "0.6.12", features = ["csr"] }
 engine = { path = "../../libraries/engine" }
 common = { path = "../../libraries/common" }
