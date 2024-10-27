@@ -1,14 +1,12 @@
 use crate::{
-    components::*,
-    state::AppAction,
-    utils::{expect_app_state, expect_dispatch},
+    components::*, pages::calculator::input_field::InputField,
+    utils::expect_app_state,
 };
 use engine::SessionError;
 use leptos::*;
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
-    let dispatch = expect_dispatch();
     let app_state = expect_app_state();
     let output = Signal::derive(move || {
         app_state
@@ -35,14 +33,7 @@ pub fn CalculatorPage() -> impl IntoView {
         <PageWithSidebar>
             <PageTitle>Calculator</PageTitle>
             <div class="flex flex-col gap-4">
-                <input
-                    data-testid="calculator-input"
-                    class="p-2 text-xl rounded-sm border outline-none focus-visible:border-black border-neutral-300"
-                    type="text"
-                    on:change=move |event| {
-                        dispatch.call(AppAction::Evaluate(event_target_value(&event)))
-                    }
-                />
+                <InputField />
                 <ul class="flex flex-col space-y-1">
                     {move || {
                         trace()

@@ -13,3 +13,14 @@ common_ui = { version = "0.1.0", path = "../../libraries/common_ui" }
 serde = { version = "1.0.210", features = ["derive"] }
 gloo-storage = "0.3.0"
 serde_json = "1.0.128"
+web-sys = { version = "0.3.72", features = [
+    "InputEvent",
+    "DataTransfer",
+    "HtmlDivElement",
+    "Document",
+    "Selection",
+    "Range",
+    "Node",
+    "NodeList"
+] }
+js-sys = "0.3.72"
