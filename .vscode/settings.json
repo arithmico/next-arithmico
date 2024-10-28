@@ -11,7 +11,8 @@
         "serializer",
         "common_ui",
         "trace",
-        "common"
+        "common",
+        "editor"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "tailwindCSS.includeLanguages": {
