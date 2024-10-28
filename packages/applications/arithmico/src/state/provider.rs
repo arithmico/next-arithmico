@@ -17,7 +17,5 @@ pub fn StateProvider(children: Children) -> impl IntoView {
 
     provide_context(app_state);
 
-    logging::log!("provider");
-
     view! { <>{children()}</> }
 }
