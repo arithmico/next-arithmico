@@ -24,6 +24,7 @@ dependencies = [
  "common",
  "common_ui",
  "console_error_panic_hook",
+ "editor",
  "engine",
  "gloo-storage",
  "js-sys",
@@ -268,6 +269,7 @@ name = "editor"
 version = "0.1.0"
 dependencies = [
  "leptos",
+ "leptos_dom",
  "web-sys",
 ]
 
