@@ -1,4 +1,6 @@
-use crate::core::{state::node_mapping::EditorState, SelectionRange};
+use crate::core::state::EditorState;
+
+use super::SelectionRange;
 
 impl EditorState {
     pub fn set_selection(&mut self, range: SelectionRange) {

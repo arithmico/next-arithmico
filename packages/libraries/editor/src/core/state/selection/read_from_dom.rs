@@ -1,8 +1,8 @@
 use leptos::document;
 
-use crate::core::{
-    state::node_mapping::EditorState, SelectionRange, SelectionRangePoint,
-};
+use crate::core::state::EditorState;
+
+use super::{SelectionRange, SelectionRangePoint};
 
 impl EditorState {
     fn get_selection_from_dom(&self) -> Option<SelectionRange> {

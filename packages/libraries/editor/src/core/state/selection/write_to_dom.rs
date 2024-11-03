@@ -1,7 +1,7 @@
 use leptos::document;
 use web_sys::Node;
 
-use crate::core::state::node_mapping::EditorState;
+use crate::core::state::EditorState;
 
 impl EditorState {
     fn get_selection_data(&self) -> Option<(&Node, usize, &Node, usize)> {
