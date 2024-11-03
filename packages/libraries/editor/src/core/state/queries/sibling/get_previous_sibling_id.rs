@@ -1,0 +1,12 @@
+use crate::core::state::EditorState;
+
+impl EditorState {
+    pub fn get_previous_sibling_id(&self, node_id: usize) -> Option<usize> {
+        let position = self.get_child_position(node_id)?;
+        if position < 1 {
+            return None;
+        }
+        let parent_id = self.get_parent_id(node_id)?;
+        self.get_child_id_at(parent_id, position - 1)
+    }
+}

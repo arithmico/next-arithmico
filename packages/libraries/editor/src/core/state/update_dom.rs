@@ -1,6 +1,6 @@
 use std::{cmp::Ordering, collections::HashSet};
 
-use web_sys::Node;
+use web_sys::{wasm_bindgen::JsCast, Node};
 
 use super::EditorState;
 
@@ -27,6 +27,22 @@ fn update_child_for_node(
 }
 
 impl EditorState {
+    fn read_current_children_from_dom(
+        &self,
+        node_id: usize,
+    ) -> Option<Vec<Node>> {
+        self.get_dom_node(node_id)
+            .map(|node| {
+                node.child_nodes()
+                    .values()
+                    .into_iter()
+                    .map(|child| child?.dyn_into::<Node>())
+                    .collect::<Result<Vec<Node>, _>>()
+                    .ok()
+            })
+            .flatten()
+    }
+
     #[allow(dead_code)]
     fn sort_modified_nodes(&self) -> Vec<usize> {
         let mut as_vec =
@@ -70,7 +86,7 @@ impl EditorState {
         let node = self.get_dom_node(node_id).expect("parent dom node");
 
         let old_children = self
-            .get_current_children_from_dom(node_id)
+            .read_current_children_from_dom(node_id)
             .expect("old children");
 
         let new_children =

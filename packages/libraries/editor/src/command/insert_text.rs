@@ -25,7 +25,7 @@ impl InsertTextCommand {
         node_id: usize,
         offset: usize,
     ) {
-        if let Some(child_id) = state.get_child_at(node_id, offset) {
+        if let Some(child_id) = state.get_child_id_at(node_id, offset) {
             if let Some(child) = state.get_node_as::<TextNode>(child_id) {
                 let new_child =
                     TextNode::new_with_content(&self.text).append(child);
