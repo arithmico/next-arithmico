@@ -1,12 +1,7 @@
+use editor_core::{selection::SelectionRange, EditorCommand, EditorState};
 use leptos_dom::log;
 
-use crate::{
-    core::{
-        state::{selection::SelectionRange, EditorState},
-        EditorCommand,
-    },
-    node::TextNode,
-};
+use crate::node::TextNode;
 
 pub struct InsertTextCommand {
     text: String,
