@@ -6,7 +6,7 @@ impl EditorState {
     pub fn set_node_entries(
         &mut self,
         node_id: usize,
-        editor_node: Box<dyn EditorNode>,
+        editor_node: EditorNode,
         dom_node: Option<Node>,
         children: Option<Vec<usize>>,
         parent: Option<usize>,

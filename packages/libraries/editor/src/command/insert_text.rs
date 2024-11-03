@@ -1,4 +1,6 @@
-use editor_core::{selection::SelectionRange, EditorCommand, EditorState};
+use editor_core::{
+    selection::SelectionRange, EditorCommand, EditorLeafNode, EditorState,
+};
 use leptos_dom::log;
 
 use crate::node::TextNode;
@@ -21,10 +23,10 @@ impl InsertTextCommand {
         offset: usize,
     ) {
         if let Some(child_id) = state.get_child_id_at(node_id, offset) {
-            if let Some(child) = state.get_node_as::<TextNode>(child_id) {
+            if let Some(child) = state.get_leaf_node_as::<TextNode>(child_id) {
                 let new_child =
                     TextNode::new_with_content(&self.text).append(child);
-                state.replace_node(child_id, new_child.into());
+                state.replace_node(child_id, new_child.into_editor_node());
                 state.set_selection(SelectionRange::new_at(
                     child_id,
                     self.text.len(),
@@ -33,7 +35,7 @@ impl InsertTextCommand {
             }
         }
         let node_id = state.insert_node(
-            TextNode::new_with_content(&self.text).into(),
+            TextNode::new_with_content(&self.text).into_editor_node(),
             Some(node_id),
             Some(offset),
         );
@@ -64,12 +66,12 @@ impl EditorCommand for InsertTextCommand {
             );
         }
 
-        if let Some(text_node) = state.get_node_as::<TextNode>(node_id) {
+        if let Some(text_node) = state.get_leaf_node_as::<TextNode>(node_id) {
             let position = range.get_focus().get_offset();
             let new_node =
                 text_node.insert_text(self.text.clone(), position, position);
 
-            state.replace_node(node_id, new_node.into());
+            state.replace_node(node_id, new_node.into_editor_node());
             state.set_selection(SelectionRange::new_at(
                 node_id,
                 position + self.text.len(),

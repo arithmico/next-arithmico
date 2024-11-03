@@ -3,14 +3,14 @@ use std::collections::{HashMap, HashSet};
 use selection::SelectionRange;
 use web_sys::Node;
 
-use crate::{utils::get_node_id, EditorNode, RootNode};
+use crate::{utils::get_node_id, EditorContainerNode, EditorNode, RootNode};
 
 pub mod commands;
 pub mod queries;
 pub mod selection;
 
 pub struct EditorState {
-    editor_nodes: HashMap<usize, Box<dyn EditorNode>>,
+    editor_nodes: HashMap<usize, EditorNode>,
     dom_nodes: HashMap<usize, Option<Node>>,
     children: HashMap<usize, Option<Vec<usize>>>,
     parent: HashMap<usize, Option<usize>>,
@@ -20,7 +20,7 @@ pub struct EditorState {
 }
 
 impl EditorState {
-    pub fn new_with_root_node(root_node: Box<dyn EditorNode>) -> Self {
+    pub fn new_with_root_node(root_node: EditorNode) -> Self {
         assert!(root_node.supports_children());
         let root_node_id = get_node_id();
         let mut mapping = Self {
@@ -44,6 +44,6 @@ impl EditorState {
 
     pub fn new() -> Self {
         let root_node = RootNode::new();
-        Self::new_with_root_node(root_node.into())
+        Self::new_with_root_node(root_node.into_editor_node())
     }
 }
