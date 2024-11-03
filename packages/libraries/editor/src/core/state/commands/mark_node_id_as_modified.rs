@@ -1,7 +1,7 @@
-use super::EditorState;
+use crate::core::state::EditorState;
 
 impl EditorState {
-    pub fn mark_as_modified(&mut self, node_id: usize) {
+    pub fn mark_node_id_as_modified(&mut self, node_id: usize) {
         let mut current_node_id = Some(node_id);
         while let Some(node_id) = current_node_id {
             self.modified_nodes.insert(node_id);

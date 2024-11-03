@@ -1,6 +1,4 @@
-use crate::core::EditorNode;
-
-use super::EditorState;
+use crate::core::{state::EditorState, EditorNode};
 
 impl EditorState {
     pub fn replace_node(&mut self, node_id: usize, node: Box<dyn EditorNode>) {

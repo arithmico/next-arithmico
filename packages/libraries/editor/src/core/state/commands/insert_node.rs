@@ -1,6 +1,7 @@
-use crate::{core::EditorNode, utils::get_node_id};
-
-use super::EditorState;
+use crate::{
+    core::{state::EditorState, EditorNode},
+    utils::get_node_id,
+};
 
 impl EditorState {
     pub fn insert_node(
