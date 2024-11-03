@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use editor_core::EditorState;
+use editor_core::{EditorLeafNode, EditorState};
 use html::Div;
 use leptos::*;
 use logging::log;
@@ -15,19 +15,19 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
     let (_editor_state, set_editor_state) = create_signal({
         let mut editor_state = EditorState::new();
         editor_state.insert_node(
-            Box::new(TextNode::new_with_content("hello ")),
+            TextNode::new_with_content("hello ").into_editor_node(),
             None,
             None,
         );
 
         editor_state.insert_node(
-            Box::new(TextNode::new_with_content("world ")),
+            TextNode::new_with_content("world ").into_editor_node(),
             None,
             None,
         );
 
         editor_state.insert_node(
-            Box::new(TextNode::new_with_content("test")),
+            TextNode::new_with_content("test").into_editor_node(),
             None,
             None,
         );

@@ -62,7 +62,11 @@ impl EditorLeafNode for TextNode {
         Box::new(self)
     }
 
-    fn boxed_clone(&self) -> Box<dyn EditorNode> {
+    fn into_editor_node(self) -> editor_core::EditorNode {
+        EditorNode::Leaf(Box::new(self))
+    }
+
+    fn boxed_clone(&self) -> Box<dyn EditorLeafNode> {
         Box::new(self.clone())
     }
 }

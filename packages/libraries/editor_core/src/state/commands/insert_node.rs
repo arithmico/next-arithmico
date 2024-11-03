@@ -1,12 +1,9 @@
-use crate::{
-    {state::EditorState, EditorNode},
-    utils::get_node_id,
-};
+use crate::{state::EditorState, utils::get_node_id, EditorNode};
 
 impl EditorState {
     pub fn insert_node(
         &mut self,
-        node: Box<dyn EditorNode>,
+        node: EditorNode,
         parent_id: Option<usize>,
         position: Option<usize>,
     ) -> usize {
