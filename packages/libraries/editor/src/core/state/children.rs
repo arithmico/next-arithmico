@@ -76,7 +76,7 @@ impl EditorState {
     }
 
     pub fn get_child_position(&self, node_id: usize) -> Option<usize> {
-        let parent_id = self.parent_id(node_id)?;
+        let parent_id = self.get_parent_id(node_id)?;
         let children = self.get_children_ids(parent_id);
         children.iter().position(|child_id| child_id.eq(&node_id))
     }
@@ -91,7 +91,7 @@ impl EditorState {
 
     pub fn get_next_sibling(&self, node_id: usize) -> Option<usize> {
         let position = self.get_child_position(node_id)?;
-        let parent_id = self.parent_id(node_id)?;
+        let parent_id = self.get_parent_id(node_id)?;
         self.get_child_at(parent_id, position + 1)
     }
 
@@ -100,7 +100,7 @@ impl EditorState {
         if position < 1 {
             return None;
         }
-        let parent_id = self.parent_id(node_id)?;
+        let parent_id = self.get_parent_id(node_id)?;
         self.get_child_at(parent_id, position - 1)
     }
 }

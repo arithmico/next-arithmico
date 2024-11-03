@@ -11,8 +11,9 @@ impl EditorState {
     }
 
     pub fn delete_node(&mut self, node_id: usize) {
-        let parent_id =
-            self.parent_id(node_id).expect("don't delete the root node");
+        let parent_id = self
+            .get_parent_id(node_id)
+            .expect("don't delete the root node");
         let mut nodes_to_remove = self.get_all_children_ids(node_id);
         nodes_to_remove.insert(node_id);
         for child_id in nodes_to_remove {
@@ -32,7 +33,8 @@ impl EditorState {
             .iter()
             .copied()
             .map(|node_id| {
-                self.parent_id(node_id).expect("don't delete the root node")
+                self.get_parent_id(node_id)
+                    .expect("don't delete the root node")
             })
             .collect::<HashSet<_>>();
 
