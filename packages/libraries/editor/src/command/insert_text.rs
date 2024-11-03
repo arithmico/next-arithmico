@@ -1,7 +1,6 @@
 use editor_core::{
     selection::SelectionRange, EditorCommand, EditorLeafNode, EditorState,
 };
-use leptos_dom::log;
 
 use crate::node::TextNode;
 
@@ -52,7 +51,7 @@ impl EditorCommand for InsertTextCommand {
             range.get_anchor().get_node_id(),
             range.get_focus().get_node_id(),
         );
-        log!("nodes between: {:?}", nodes_between);
+        state.delete_many_nodes(nodes_between.into_iter().collect());
 
         if !range.is_collapsed() {
             return;
