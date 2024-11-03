@@ -1,14 +1,13 @@
 use std::ops::Deref;
 
+use editor_core::EditorState;
 use html::Div;
 use leptos::*;
 use logging::log;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
-use crate::{
-    command::InsertTextCommand, core::state::EditorState, node::TextNode,
-};
+use crate::{command::InsertTextCommand, node::TextNode};
 
 #[component]
 pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {

@@ -1,9 +1,8 @@
 use std::any::Any;
 
+use editor_core::{EditorLeafNode, EditorNode};
 use leptos::document;
 use web_sys::{wasm_bindgen::JsCast, Text};
-
-use crate::core::{EditorLeafNode, EditorNode};
 
 #[derive(Debug, Clone)]
 pub struct TextNode {
