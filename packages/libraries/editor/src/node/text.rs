@@ -69,4 +69,8 @@ impl EditorLeafNode for TextNode {
     fn boxed_clone(&self) -> Box<dyn EditorLeafNode> {
         Box::new(self.clone())
     }
+
+    fn length(&self) -> usize {
+        self.content.len()
+    }
 }

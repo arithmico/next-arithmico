@@ -1,3 +1,6 @@
+[watch]
+watch = ["../../.."]
+
 [build]
 target = "index.html"
 dist = "dist"

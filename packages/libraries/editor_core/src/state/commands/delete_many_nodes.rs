@@ -17,6 +17,7 @@ impl EditorState {
             .iter()
             .copied()
             .flat_map(|node_id| self.get_all_children_ids(node_id))
+            .chain(node_ids.iter().copied())
             .collect::<HashSet<_>>();
 
         let affected_parent_ids = parent_ids
@@ -35,7 +36,7 @@ impl EditorState {
                 .filter(|child_id| !nodes_to_delete.contains(child_id))
                 .collect::<Vec<_>>();
             self.children.insert(parent_id, Some(new_children));
-            self.modified_nodes.insert(parent_id);
+            self.mark_node_id_as_modified(parent_id);
         }
     }
 }

@@ -1,6 +1,6 @@
 use std::{cmp::Ordering, collections::HashSet};
 
-use web_sys::{wasm_bindgen::JsCast, Node};
+use web_sys::Node;
 
 use crate::state::EditorState;
 
@@ -22,25 +22,23 @@ fn update_child_for_node(
         (Some(old_child), None) => {
             node.remove_child(old_child).expect("remove child");
         }
-        _ => unreachable!(),
+        _ => (),
     }
 }
 
 impl EditorState {
-    fn read_current_children_from_dom(
+    fn read_child_from_dom(
         &self,
         node_id: usize,
-    ) -> Option<Vec<Node>> {
-        self.get_dom_node(node_id)
-            .map(|node| {
-                node.child_nodes()
-                    .values()
-                    .into_iter()
-                    .map(|child| child?.dyn_into::<Node>())
-                    .collect::<Result<Vec<Node>, _>>()
-                    .ok()
-            })
-            .flatten()
+        position: usize,
+    ) -> Option<Node> {
+        let node = self.get_dom_node(node_id)?;
+        node.child_nodes().get(position as u32)
+    }
+
+    fn read_children_count_from_dom(&self, node_id: usize) -> Option<usize> {
+        let node = self.get_dom_node(node_id)?;
+        Some(node.child_nodes().length() as usize)
     }
 
     #[allow(dead_code)]
@@ -85,17 +83,17 @@ impl EditorState {
     fn update_children_for_node(&self, node_id: usize) {
         let node = self.get_dom_node(node_id).expect("parent dom node");
 
-        let old_children = self
-            .read_current_children_from_dom(node_id)
-            .expect("old children");
+        let dom_children_count = self
+            .read_children_count_from_dom(node_id)
+            .expect("dom children count");
 
         let new_children =
             self.get_children_dom_nodes(node_id).expect("new children");
 
-        for i in 0..old_children.len().max(new_children.len()) {
-            let old_child = old_children.get(i);
+        for i in 0..dom_children_count.max(new_children.len()) {
+            let old_child = self.read_child_from_dom(node_id, i);
             let new_child = new_children.get(i);
-            update_child_for_node(node, old_child, new_child);
+            update_child_for_node(node, old_child.as_ref(), new_child);
         }
     }
 
@@ -132,6 +130,10 @@ impl EditorState {
             .into_iter()
             .chain(replaced_node_ids.into_iter())
             .filter_map(|node_id| self.get_parent_id(node_id))
+            .collect::<HashSet<_>>()
+            .union(&self.modified_nodes)
+            .copied()
+            .filter(|node_id| self.supports_children(*node_id))
             .collect::<HashSet<_>>();
 
         self.update_children_for_nodes(&affected_parent_ids);
