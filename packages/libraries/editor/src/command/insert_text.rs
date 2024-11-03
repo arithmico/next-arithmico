@@ -26,7 +26,7 @@ impl InsertTextCommand {
         offset: usize,
     ) {
         if let Some(child_id) = state.get_child_at(node_id, offset) {
-            if let Some(child) = state.downcast_node::<TextNode>(child_id) {
+            if let Some(child) = state.get_node_as::<TextNode>(child_id) {
                 let new_child =
                     TextNode::new_with_content(&self.text).append(child);
                 state.replace_node(child_id, new_child.into());
@@ -69,7 +69,7 @@ impl EditorCommand for InsertTextCommand {
             );
         }
 
-        if let Some(text_node) = state.downcast_node::<TextNode>(node_id) {
+        if let Some(text_node) = state.get_node_as::<TextNode>(node_id) {
             let position = range.get_focus().get_offset();
             let new_node =
                 text_node.insert_text(self.text.clone(), position, position);
