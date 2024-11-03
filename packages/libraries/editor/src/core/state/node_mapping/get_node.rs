@@ -2,9 +2,9 @@ use web_sys::Node;
 
 use crate::core::EditorNode;
 
-use super::NodeMapping;
+use super::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     pub fn get_node(&self, node_id: usize) -> Option<&Box<dyn EditorNode>> {
         self.editor_nodes.get(&node_id)
     }

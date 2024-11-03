@@ -6,7 +6,9 @@ use logging::log;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
-use crate::{command::InsertTextCommand, core::EditorState, node::TextNode};
+use crate::{
+    command::InsertTextCommand, core::node_mapping::EditorState, node::TextNode,
+};
 
 #[component]
 pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
@@ -34,7 +36,7 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
     });
     let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
         set_editor_state.update_untracked(move |state| {
-            state.update_selection();
+            state.read_selection_from_dom();
         });
     });
     document()

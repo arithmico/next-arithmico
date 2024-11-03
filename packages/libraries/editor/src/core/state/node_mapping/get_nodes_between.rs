@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
-use super::NodeMapping;
+use super::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     pub fn get_ordered_node_ids(&self) -> Vec<usize> {
         let mut node_ids = Vec::<usize>::new();
         let mut queue = VecDeque::from([self.get_root_id()]);

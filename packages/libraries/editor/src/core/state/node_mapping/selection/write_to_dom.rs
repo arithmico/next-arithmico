@@ -1,9 +1,9 @@
 use leptos::document;
 use web_sys::Node;
 
-use crate::core::state::node_mapping::NodeMapping;
+use crate::core::state::node_mapping::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     fn get_selection_data(&self) -> Option<(&Node, usize, &Node, usize)> {
         let range = self.get_selection()?;
         let focus_node = self.get_dom_node(range.get_focus().get_node_id())?;

@@ -2,10 +2,10 @@ use std::collections::{HashSet, VecDeque};
 
 use web_sys::{wasm_bindgen::JsCast, Node};
 
-use super::NodeMapping;
+use super::EditorState;
 
 #[allow(dead_code)]
-impl NodeMapping {
+impl EditorState {
     pub fn get_children_ids(&self, node_id: usize) -> Vec<usize> {
         self.children
             .get(&node_id)

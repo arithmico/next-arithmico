@@ -2,7 +2,7 @@ use std::{cmp::Ordering, collections::HashSet};
 
 use web_sys::Node;
 
-use super::NodeMapping;
+use super::EditorState;
 
 fn update_child_for_node(
     node: &Node,
@@ -26,7 +26,7 @@ fn update_child_for_node(
     }
 }
 
-impl NodeMapping {
+impl EditorState {
     #[allow(dead_code)]
     fn sort_modified_nodes(&self) -> Vec<usize> {
         let mut as_vec =

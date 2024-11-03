@@ -1,6 +1,6 @@
-use crate::core::{state::node_mapping::NodeMapping, SelectionRange};
+use crate::core::{state::node_mapping::EditorState, SelectionRange};
 
-impl NodeMapping {
+impl EditorState {
     pub fn set_selection(&mut self, range: SelectionRange) {
         self.selection = Some(range);
     }
