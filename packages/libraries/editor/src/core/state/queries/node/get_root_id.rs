@@ -1,4 +1,4 @@
-use super::EditorState;
+use crate::core::state::EditorState;
 
 impl EditorState {
     pub fn get_root_id(&self) -> usize {
