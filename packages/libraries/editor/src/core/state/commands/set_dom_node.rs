@@ -1,6 +1,6 @@
 use web_sys::Node;
 
-use super::EditorState;
+use crate::core::state::EditorState;
 
 impl EditorState {
     pub fn set_dom_node(&mut self, node_id: usize, dom_node: Node) {

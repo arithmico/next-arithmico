@@ -1,6 +1,4 @@
-use crate::core::EditorCommand;
-
-use super::EditorState;
+use crate::core::{state::EditorState, EditorCommand};
 
 impl EditorState {
     pub fn execute_command(&mut self, command: Box<dyn EditorCommand>) {

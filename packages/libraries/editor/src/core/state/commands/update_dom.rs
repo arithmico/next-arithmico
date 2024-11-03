@@ -2,7 +2,7 @@ use std::{cmp::Ordering, collections::HashSet};
 
 use web_sys::{wasm_bindgen::JsCast, Node};
 
-use super::EditorState;
+use crate::core::state::EditorState;
 
 fn update_child_for_node(
     node: &Node,

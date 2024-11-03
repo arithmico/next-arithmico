@@ -5,17 +5,9 @@ use web_sys::Node;
 
 use crate::{core::EditorNode, node::RootNode, utils::get_node_id};
 
-pub mod delete_node;
-pub mod execute_command;
-pub mod insert_node;
-mod mark_as_modified;
-pub mod mount_root;
+pub mod commands;
 pub mod queries;
-pub mod replace_node;
 pub mod selection;
-pub mod set_dom_node;
-mod set_node_entries;
-pub mod update_dom;
 
 pub struct EditorState {
     editor_nodes: HashMap<usize, Box<dyn EditorNode>>,

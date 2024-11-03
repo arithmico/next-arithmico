@@ -1,11 +1,9 @@
 use web_sys::Node;
 
-use crate::core::EditorNode;
-
-use super::EditorState;
+use crate::core::{state::EditorState, EditorNode};
 
 impl EditorState {
-    pub(super) fn set_node_entries(
+    pub fn set_node_entries(
         &mut self,
         node_id: usize,
         editor_node: Box<dyn EditorNode>,
@@ -17,6 +15,6 @@ impl EditorState {
         self.dom_nodes.insert(node_id, dom_node);
         self.children.insert(node_id, children);
         self.parent.insert(node_id, parent);
-        self.mark_as_modified(node_id);
+        self.mark_node_id_as_modified(node_id);
     }
 }
