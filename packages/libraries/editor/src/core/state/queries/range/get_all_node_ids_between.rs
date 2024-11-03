@@ -1,27 +1,12 @@
-use std::collections::VecDeque;
-
-use super::EditorState;
+use crate::core::state::EditorState;
 
 impl EditorState {
-    pub fn get_ordered_node_ids(&self) -> Vec<usize> {
-        let mut node_ids = Vec::<usize>::new();
-        let mut queue = VecDeque::from([self.get_root_id()]);
-        while let Some(node_id) = queue.pop_front() {
-            node_ids.push(node_id);
-            let children = self.get_children_ids(node_id);
-            for child in children {
-                queue.push_front(child);
-            }
-        }
-        node_ids
-    }
-
-    pub fn get_nodes_between(
+    pub fn get_all_node_ids_between(
         &self,
         from_node_id: usize,
         to_node_id: usize,
     ) -> Vec<usize> {
-        let node_ids = self.get_ordered_node_ids();
+        let node_ids = self.get_all_node_ids_in_order();
         let from = node_ids
             .iter()
             .position(|node_id| *node_id == from_node_id)

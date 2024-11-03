@@ -51,7 +51,7 @@ impl EditorCommand for InsertTextCommand {
         let Some(range) = state.get_selection() else {
             return;
         };
-        let nodes_between = state.get_nodes_between(
+        let nodes_between = state.get_all_node_ids_between(
             range.get_anchor().get_node_id(),
             range.get_focus().get_node_id(),
         );

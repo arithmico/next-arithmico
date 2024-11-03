@@ -7,7 +7,6 @@ use crate::{core::EditorNode, node::RootNode, utils::get_node_id};
 
 pub mod delete_node;
 pub mod execute_command;
-pub mod get_nodes_between;
 pub mod insert_node;
 mod mark_as_modified;
 pub mod mount_root;
