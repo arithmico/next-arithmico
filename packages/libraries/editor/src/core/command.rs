@@ -1,4 +1,4 @@
-use super::node_mapping::EditorState;
+use super::state::EditorState;
 
 pub trait EditorCommand {
     fn apply(&self, state: &mut EditorState);

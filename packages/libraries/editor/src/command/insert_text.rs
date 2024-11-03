@@ -1,7 +1,10 @@
 use leptos_dom::log;
 
 use crate::{
-    core::{node_mapping::EditorState, EditorCommand, SelectionRange},
+    core::{
+        state::{selection::SelectionRange, EditorState},
+        EditorCommand,
+    },
     node::TextNode,
 };
 

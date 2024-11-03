@@ -7,7 +7,7 @@ use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
 use crate::{
-    command::InsertTextCommand, core::node_mapping::EditorState, node::TextNode,
+    command::InsertTextCommand, core::state::EditorState, node::TextNode,
 };
 
 #[component]

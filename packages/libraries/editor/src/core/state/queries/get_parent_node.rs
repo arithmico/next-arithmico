@@ -1,8 +1,6 @@
 use web_sys::Node;
 
-use crate::core::EditorNode;
-
-use super::EditorState;
+use crate::core::{state::EditorState, EditorNode};
 
 #[allow(dead_code)]
 impl EditorState {
