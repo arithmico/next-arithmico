@@ -2,10 +2,10 @@ use web_sys::Node;
 
 use crate::core::EditorNode;
 
-use super::NodeMapping;
+use super::EditorState;
 
 #[allow(dead_code)]
-impl NodeMapping {
+impl EditorState {
     pub fn parent_id(&self, node_id: usize) -> Option<usize> {
         self.parent
             .get(&node_id)

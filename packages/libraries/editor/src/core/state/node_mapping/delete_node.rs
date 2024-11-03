@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use super::NodeMapping;
+use super::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     fn delete_node_entries(&mut self, node_id: usize) {
         self.editor_nodes.remove(&node_id);
         self.dom_nodes.remove(&node_id);

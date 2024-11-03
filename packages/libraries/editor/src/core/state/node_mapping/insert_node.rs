@@ -1,8 +1,8 @@
 use crate::{core::EditorNode, utils::get_node_id};
 
-use super::NodeMapping;
+use super::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     pub fn insert_node(
         &mut self,
         node: Box<dyn EditorNode>,

@@ -1,10 +1,10 @@
 use leptos::document;
 
 use crate::core::{
-    state::node_mapping::NodeMapping, SelectionRange, SelectionRangePoint,
+    state::node_mapping::EditorState, SelectionRange, SelectionRangePoint,
 };
 
-impl NodeMapping {
+impl EditorState {
     fn get_selection_from_dom(&self) -> Option<SelectionRange> {
         let selection = document().get_selection().ok()??;
         let focus_node_id = self.get_dom_node_id(&selection.focus_node()?)?;

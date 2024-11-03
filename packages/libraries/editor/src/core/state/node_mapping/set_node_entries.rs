@@ -2,9 +2,9 @@ use web_sys::Node;
 
 use crate::core::EditorNode;
 
-use super::NodeMapping;
+use super::EditorState;
 
-impl NodeMapping {
+impl EditorState {
     pub(super) fn set_node_entries(
         &mut self,
         node_id: usize,
