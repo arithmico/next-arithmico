@@ -73,4 +73,9 @@ impl EditorLeafNode for TextNode {
     fn length(&self) -> usize {
         self.content.len()
     }
+
+    fn slice(&self, start: usize, end: usize) -> EditorNode {
+        let new_content = &self.content[start..end];
+        TextNode::new_with_content(new_content).into_editor_node()
+    }
 }
