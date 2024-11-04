@@ -54,4 +54,5 @@ pub trait EditorLeafNode: Any + 'static {
     fn boxed_clone(&self) -> Box<dyn EditorLeafNode>;
     fn into_editor_node(self) -> EditorNode;
     fn length(&self) -> usize;
+    fn slice(&self, start: usize, end: usize) -> EditorNode;
 }
