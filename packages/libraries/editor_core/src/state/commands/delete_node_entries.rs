@@ -6,5 +6,6 @@ impl EditorState {
         self.dom_nodes.remove(&node_id);
         self.children.remove(&node_id);
         self.parent.remove(&node_id);
+        self.modified_nodes.remove(&node_id);
     }
 }

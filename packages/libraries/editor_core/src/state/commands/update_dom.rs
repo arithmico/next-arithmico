@@ -1,30 +1,8 @@
-use std::{cmp::Ordering, collections::HashSet};
+use std::collections::HashSet;
 
 use web_sys::Node;
 
 use crate::state::EditorState;
-
-fn update_child_for_node(
-    node: &Node,
-    old_child: Option<&Node>,
-    new_child: Option<&Node>,
-) {
-    match (old_child, new_child) {
-        (Some(old_child), Some(new_child)) => {
-            if old_child != new_child {
-                node.replace_child(new_child, old_child)
-                    .expect("replace child");
-            }
-        }
-        (None, Some(new_child)) => {
-            node.append_child(new_child).expect("append_child");
-        }
-        (Some(old_child), None) => {
-            node.remove_child(old_child).expect("remove child");
-        }
-        _ => (),
-    }
-}
 
 impl EditorState {
     fn read_child_from_dom(
@@ -34,30 +12,6 @@ impl EditorState {
     ) -> Option<Node> {
         let node = self.get_dom_node(node_id)?;
         node.child_nodes().get(position as u32)
-    }
-
-    fn read_children_count_from_dom(&self, node_id: usize) -> Option<usize> {
-        let node = self.get_dom_node(node_id)?;
-        Some(node.child_nodes().length() as usize)
-    }
-
-    #[allow(dead_code)]
-    fn sort_modified_nodes(&self) -> Vec<usize> {
-        let mut as_vec =
-            self.modified_nodes.iter().copied().collect::<Vec<_>>();
-        as_vec.sort_by(|left, right| {
-            if left == right {
-                return Ordering::Equal;
-            }
-            if self.is_parent_of(*left, *right) {
-                return Ordering::Less;
-            }
-            if self.is_parent_of(*right, *left) {
-                return Ordering::Greater;
-            }
-            Ordering::Equal
-        });
-        as_vec
     }
 
     fn find_node_ids_without_dom_node(&self) -> HashSet<usize> {
@@ -80,20 +34,40 @@ impl EditorState {
         node_ids_without_dom_node
     }
 
+    fn get_child_pair_at(
+        &self,
+        node_id: usize,
+        position: usize,
+    ) -> (Option<Node>, Option<Node>) {
+        let expected_child =
+            self.get_child_dom_node_at(node_id, position).cloned();
+        let current_child = self.read_child_from_dom(node_id, position);
+        (current_child, expected_child)
+    }
+
     fn update_children_for_node(&self, node_id: usize) {
         let node = self.get_dom_node(node_id).expect("parent dom node");
-
-        let dom_children_count = self
-            .read_children_count_from_dom(node_id)
-            .expect("dom children count");
-
-        let new_children =
-            self.get_children_dom_nodes(node_id).expect("new children");
-
-        for i in 0..dom_children_count.max(new_children.len()) {
-            let old_child = self.read_child_from_dom(node_id, i);
-            let new_child = new_children.get(i);
-            update_child_for_node(node, old_child.as_ref(), new_child);
+        let mut position = 0;
+        loop {
+            match self.get_child_pair_at(node_id, position) {
+                (Some(current_child), Some(expected_child)) => {
+                    if current_child != expected_child {
+                        node.replace_child(&expected_child, &current_child)
+                            .expect("replace");
+                    }
+                }
+                (Some(current_child), None) => {
+                    node.remove_child(&current_child).expect("remove");
+                    position = position.saturating_sub(1);
+                }
+                (None, Some(expected_child)) => {
+                    node.append_child(&expected_child).expect("append");
+                }
+                (None, None) => {
+                    break;
+                }
+            }
+            position += 1;
         }
     }
 
@@ -133,7 +107,7 @@ impl EditorState {
             .collect::<HashSet<_>>()
             .union(&self.modified_nodes)
             .copied()
-            .filter(|node_id| self.supports_children(*node_id))
+            .filter(|node_id| self.is_container_node(*node_id))
             .collect::<HashSet<_>>();
 
         self.update_children_for_nodes(&affected_parent_ids);

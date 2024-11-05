@@ -1,3 +1,5 @@
+pub mod add_transform;
+pub(super) mod apply_transform;
 pub mod delete_many_nodes;
 pub mod delete_node;
 pub(super) mod delete_node_entries;
