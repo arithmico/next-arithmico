@@ -15,7 +15,7 @@ impl InsertTextCommand {
         }
     }
 
-    fn insert_into_node(
+    fn insert_into_leaf_node(
         &self,
         state: &mut EditorState,
         node_id: usize,
@@ -45,6 +45,24 @@ impl InsertTextCommand {
 
         Some(())
     }
+
+    fn insert_into_container_node(
+        &self,
+        state: &mut EditorState,
+        node_id: usize,
+        focus_offset: usize,
+        anchor_offset: usize,
+    ) -> Option<()> {
+        if focus_offset != anchor_offset {
+            return None;
+        }
+        state.insert_node(
+            TextNode::new_with_content(&self.text).into_editor_node(),
+            Some(node_id),
+            Some(focus_offset),
+        );
+        Some(())
+    }
 }
 
 impl EditorCommand for InsertTextCommand {
@@ -52,6 +70,7 @@ impl EditorCommand for InsertTextCommand {
         let Some(range) = state.get_selection() else {
             return;
         };
+
         let nodes_between = state.get_all_node_ids_between(
             range.get_anchor().get_node_id(),
             range.get_focus().get_node_id(),
@@ -64,16 +83,25 @@ impl EditorCommand for InsertTextCommand {
         let anchor_offset = range.get_anchor().get_offset();
 
         if focus_node_id == anchor_node_id {
-            self.insert_into_node(
-                state,
-                focus_node_id,
-                focus_offset,
-                anchor_offset,
-            );
+            if state.is_container_node(focus_node_id) {
+                self.insert_into_container_node(
+                    state,
+                    focus_node_id,
+                    focus_offset,
+                    anchor_offset,
+                );
+            } else {
+                self.insert_into_leaf_node(
+                    state,
+                    focus_node_id,
+                    focus_offset,
+                    anchor_offset,
+                );
+            }
         } else {
             let new_node =
                 TextNode::new_with_content(&self.text).into_editor_node();
-            let node_id = if state
+            let node_id = if !state
                 .is_node_before(anchor_node_id, focus_node_id)
                 .unwrap()
             {
