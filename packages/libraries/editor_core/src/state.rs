@@ -1,9 +1,15 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    rc::Rc,
+};
 
 use selection::SelectionRange;
 use web_sys::Node;
 
-use crate::{utils::get_node_id, EditorContainerNode, EditorNode, RootNode};
+use crate::{
+    utils::get_node_id, EditorContainerNode, EditorNode, EditorTransform,
+    RootNode,
+};
 
 pub mod commands;
 pub mod queries;
@@ -17,13 +23,14 @@ pub struct EditorState {
     root_node_id: usize,
     modified_nodes: HashSet<usize>,
     selection: Option<SelectionRange>,
+    transforms: Vec<Rc<dyn EditorTransform>>,
 }
 
 impl EditorState {
     pub fn new_with_root_node(root_node: EditorNode) -> Self {
         assert!(root_node.supports_children());
         let root_node_id = get_node_id();
-        let mut mapping = Self {
+        let mut state = Self {
             editor_nodes: HashMap::new(),
             dom_nodes: HashMap::new(),
             children: HashMap::new(),
@@ -31,15 +38,16 @@ impl EditorState {
             root_node_id,
             modified_nodes: HashSet::new(),
             selection: None,
+            transforms: Vec::new(),
         };
-        mapping.set_node_entries(
+        state.set_node_entries(
             root_node_id,
             root_node,
             None,
             Some(vec![]),
             None,
         );
-        mapping
+        state
     }
 
     pub fn new() -> Self {

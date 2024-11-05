@@ -7,13 +7,16 @@ use logging::log;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
-use crate::{command::InsertTextCommand, node::TextNode};
+use crate::{
+    command::InsertTextCommand, node::TextNode, transform::TextTransform,
+};
 
 #[component]
 pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
     let editor_ref = create_node_ref::<Div>();
     let (_editor_state, set_editor_state) = create_signal({
         let mut editor_state = EditorState::new();
+        editor_state.add_transform(TextTransform);
         editor_state.insert_node(
             TextNode::new_with_content("hello ").into_editor_node(),
             None,
