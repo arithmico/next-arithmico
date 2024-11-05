@@ -11,6 +11,6 @@ impl EditorState {
             ordered_nodes.iter().position(|id| id.eq(&node_id))?;
         let other_node_position =
             ordered_nodes.iter().position(|id| id.eq(&other_node_id))?;
-        Some(node_position > other_node_position)
+        Some(node_position < other_node_position)
     }
 }

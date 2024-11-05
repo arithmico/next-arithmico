@@ -31,7 +31,7 @@ pub fn CalculatorPage() -> impl IntoView {
         <PageWithSidebar>
             <PageTitle>Calculator</PageTitle>
             <div class="flex flex-col gap-4">
-                <Editor class="p-2 text-xl bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300" />
+                <Editor class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300" />
 
                 <ul class="flex flex-col space-y-1">
                     {move || {
