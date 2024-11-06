@@ -10,7 +10,7 @@ use web_sys::Node;
 use crate::{
     command::{
         DeleteContentBackwardCommand, DeleteContentForwardCommand,
-        DeleteWordBackwardCommand, InsertTextCommand,
+        DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
     },
     node::TextNode,
     transform::TextTransform,
@@ -23,13 +23,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
         let mut editor_state = EditorState::new();
         editor_state.add_transform(TextTransform);
         editor_state.insert_node(
-            TextNode::new_with_content("hello_").into_editor_node(),
+            TextNode::new_with_content("hello ").into_editor_node(),
             None,
             None,
         );
 
         editor_state.insert_node(
-            TextNode::new_with_content("world_").into_editor_node(),
+            TextNode::new_with_content("world ").into_editor_node(),
             None,
             None,
         );
@@ -102,6 +102,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
                 set_editor_state.update(|state| {
                     state.execute_command(
                         DeleteWordBackwardCommand::new().into(),
+                    );
+                });
+            }
+            "deleteWordForward" => {
+                set_editor_state.update(|state| {
+                    state.execute_command(
+                        DeleteWordForwardCommand::new().into(),
                     );
                 });
             }
