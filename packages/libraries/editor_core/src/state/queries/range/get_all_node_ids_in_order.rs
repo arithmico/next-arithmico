@@ -9,7 +9,7 @@ impl EditorState {
         while let Some(node_id) = queue.pop_front() {
             node_ids.push(node_id);
             let children = self.get_children_ids(node_id);
-            for child in children {
+            for child in children.iter().rev().copied() {
                 queue.push_front(child);
             }
         }

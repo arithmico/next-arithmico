@@ -55,4 +55,5 @@ pub trait EditorLeafNode: Any + 'static {
     fn into_editor_node(self) -> EditorNode;
     fn length(&self) -> usize;
     fn slice(&self, start: usize, end: usize) -> EditorNode;
+    fn get_whitespaces(&self) -> Vec<(usize, usize)>;
 }
