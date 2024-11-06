@@ -8,7 +8,10 @@ use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
 use crate::{
-    command::{DeleteContentBackwardCommand, InsertTextCommand},
+    command::{
+        DeleteContentBackwardCommand, DeleteContentForwardCommand,
+        InsertTextCommand,
+    },
     node::TextNode,
     transform::TextTransform,
 };
@@ -84,6 +87,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
                 set_editor_state.update(|state| {
                     state.execute_command(
                         DeleteContentBackwardCommand::new().into(),
+                    );
+                });
+            }
+            "deleteContentForward" => {
+                set_editor_state.update(|state| {
+                    state.execute_command(
+                        DeleteContentForwardCommand::new().into(),
                     );
                 });
             }
