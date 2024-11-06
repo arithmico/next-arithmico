@@ -66,10 +66,8 @@ impl InsertTextCommand {
 }
 
 impl EditorCommand for InsertTextCommand {
-    fn apply(&self, state: &mut EditorState) {
-        let Some(range) = state.get_selection() else {
-            return;
-        };
+    fn apply(&self, state: &mut EditorState) -> Option<()> {
+        let range = state.get_selection()?;
 
         let nodes_between = state.get_all_node_ids_between(
             range.get_anchor().get_node_id(),
@@ -122,5 +120,6 @@ impl EditorCommand for InsertTextCommand {
                 self.text.len(),
             ));
         }
+        Some(())
     }
 }
