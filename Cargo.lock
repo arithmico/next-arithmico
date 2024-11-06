@@ -271,6 +271,7 @@ dependencies = [
  "editor_core",
  "leptos",
  "leptos_dom",
+ "unicode-segmentation",
  "web-sys",
 ]
 

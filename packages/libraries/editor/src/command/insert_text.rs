@@ -36,7 +36,7 @@ impl InsertTextCommand {
         );
         state.set_selection(SelectionRange::new_at(node_id, self.text.len()));
 
-        if end_offset < node.length() - 1 {
+        if end_offset + 1 < node.length() {
             state.insert_node_after(
                 node.slice(end_offset, node.length()),
                 node_id,
@@ -99,7 +99,7 @@ impl EditorCommand for InsertTextCommand {
         } else {
             let new_node =
                 TextNode::new_with_content(&self.text).into_editor_node();
-            let node_id = if !state
+            let node_id = if state
                 .is_node_before(anchor_node_id, focus_node_id)
                 .unwrap()
             {

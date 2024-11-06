@@ -10,7 +10,7 @@ use web_sys::Node;
 use crate::{
     command::{
         DeleteContentBackwardCommand, DeleteContentForwardCommand,
-        InsertTextCommand,
+        DeleteWordBackwardCommand, InsertTextCommand,
     },
     node::TextNode,
     transform::TextTransform,
@@ -23,13 +23,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
         let mut editor_state = EditorState::new();
         editor_state.add_transform(TextTransform);
         editor_state.insert_node(
-            TextNode::new_with_content("hello ").into_editor_node(),
+            TextNode::new_with_content("hello_").into_editor_node(),
             None,
             None,
         );
 
         editor_state.insert_node(
-            TextNode::new_with_content("world ").into_editor_node(),
+            TextNode::new_with_content("world_").into_editor_node(),
             None,
             None,
         );
@@ -67,6 +67,7 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
             .expect("node");
 
         set_editor_state.update_untracked(move |state| {
+            //state.apply_transforms();
             state.mount_to_root(node);
         });
     });
@@ -94,6 +95,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
                 set_editor_state.update(|state| {
                     state.execute_command(
                         DeleteContentForwardCommand::new().into(),
+                    );
+                });
+            }
+            "deleteWordBackward" => {
+                set_editor_state.update(|state| {
+                    state.execute_command(
+                        DeleteWordBackwardCommand::new().into(),
                     );
                 });
             }

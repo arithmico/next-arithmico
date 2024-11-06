@@ -2,6 +2,7 @@ use std::any::Any;
 
 use editor_core::{EditorLeafNode, EditorNode};
 use leptos::document;
+use unicode_segmentation::UnicodeSegmentation;
 use web_sys::{wasm_bindgen::JsCast, Text};
 
 #[derive(Debug, Clone)]
@@ -77,5 +78,32 @@ impl EditorLeafNode for TextNode {
     fn slice(&self, start: usize, end: usize) -> EditorNode {
         let new_content = &self.content[start..end];
         TextNode::new_with_content(new_content).into_editor_node()
+    }
+
+    fn get_whitespaces(&self) -> Vec<(usize, usize)> {
+        self.content
+            .grapheme_indices(true)
+            .filter_map(
+                |(index, grapheme)| {
+                    if grapheme == " " {
+                        Some(index)
+                    } else {
+                        None
+                    }
+                },
+            )
+            .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {
+                if let Some(last) = whitespaces.last_mut() {
+                    if last.1 + 1 == pos {
+                        last.1 = pos;
+                    } else {
+                        whitespaces.push((pos, pos));
+                    }
+                } else {
+                    whitespaces.push((pos, pos));
+                };
+
+                whitespaces
+            })
     }
 }

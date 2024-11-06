@@ -7,4 +7,5 @@ edition = "2021"
 editor_core = { path = "../editor_core" }
 leptos = { workspace = true }
 leptos_dom = { version = "0.6.15", features = ["csr", "web"] }
+unicode-segmentation = "1.12.0"
 web-sys = { version = "0.3.72", features = ["Document", "Element", "Selection"] }
