@@ -112,6 +112,17 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
                     );
                 });
             }
+            "insertFromPaste" => {
+                let data = event
+                    .data_transfer()
+                    .expect("data transfer")
+                    .get_data("text/plain")
+                    .expect("data");
+
+                set_editor_state.update(|state| {
+                    state.execute_command(InsertTextCommand::new(data).into());
+                });
+            }
             _ => (),
         }
     };
