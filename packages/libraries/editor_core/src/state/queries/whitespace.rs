@@ -1,5 +1,6 @@
 pub mod get_all_white_spaces;
 pub mod get_all_whitespaces_ending_before;
+pub mod get_all_whitespaces_starting_after;
 pub mod get_whitespace;
 
 #[derive(Debug, Clone)]
