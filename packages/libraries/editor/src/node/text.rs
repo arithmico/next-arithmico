@@ -106,4 +106,8 @@ impl EditorLeafNode for TextNode {
                 whitespaces
             })
     }
+
+    fn serialize(&self) -> Option<String> {
+        Some(self.content.clone())
+    }
 }

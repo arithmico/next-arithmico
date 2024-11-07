@@ -1,6 +1,5 @@
 use std::ops::Deref;
 
-use editor_core::{EditorContainerNode, EditorLeafNode, EditorState};
 use html::Div;
 use leptos::*;
 use logging::log;
@@ -12,45 +11,15 @@ use crate::{
         DeleteContentBackwardCommand, DeleteContentForwardCommand,
         DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
     },
-    node::{MarkNode, TextNode},
-    transform::{MergeTextNodesTransform, RemoveEmptyContainerNodesTransform},
+    use_editor_context::use_editor_context,
 };
 
 #[component]
 pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
     let editor_ref = create_node_ref::<Div>();
-    let (_editor_state, set_editor_state) = create_signal({
-        let mut editor_state = EditorState::new();
-        editor_state.add_transform(MergeTextNodesTransform::new());
-        editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());
-
-        editor_state.insert_node(
-            TextNode::new_with_content("hello ").into_editor_node(),
-            None,
-            None,
-        );
-
-        let mark_node_id = editor_state.insert_node(
-            MarkNode::new().into_editor_node(),
-            None,
-            None,
-        );
-
-        editor_state.insert_node(
-            TextNode::new_with_content("world ").into_editor_node(),
-            Some(mark_node_id),
-            None,
-        );
-
-        editor_state.insert_node(
-            TextNode::new_with_content("test").into_editor_node(),
-            None,
-            None,
-        );
-        editor_state
-    });
+    let editor_state = use_editor_context();
     let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
-        set_editor_state.update_untracked(move |state| {
+        editor_state.update_untracked(move |state| {
             state.read_selection_from_dom();
         });
     });
@@ -74,8 +43,8 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
             .dyn_into::<Node>()
             .expect("node");
 
-        set_editor_state.update_untracked(move |state| {
-            //state.apply_transforms();
+        editor_state.update_untracked(move |state| {
+            state.apply_transforms();
             state.mount_to_root(node);
         });
     });
@@ -88,33 +57,33 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
             "insertText" => {
                 let command =
                     InsertTextCommand::new(event.data().expect("data"));
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(command.into());
                 });
             }
             "deleteContentBackward" => {
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(
                         DeleteContentBackwardCommand::new().into(),
                     );
                 });
             }
             "deleteContentForward" => {
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(
                         DeleteContentForwardCommand::new().into(),
                     );
                 });
             }
             "deleteWordBackward" => {
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(
                         DeleteWordBackwardCommand::new().into(),
                     );
                 });
             }
             "deleteWordForward" => {
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(
                         DeleteWordForwardCommand::new().into(),
                     );
@@ -127,7 +96,7 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
                     .get_data("text/plain")
                     .expect("data");
 
-                set_editor_state.update(|state| {
+                editor_state.update(|state| {
                     state.execute_command(InsertTextCommand::new(data).into());
                 });
             }
@@ -135,5 +104,13 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
         }
     };
 
-    view! { <div class=class ref=editor_ref contenteditable on:beforeinput=beforeinput></div> }
+    view! {
+        <div
+            role="textbox"
+            class=class
+            ref=editor_ref
+            contenteditable
+            on:beforeinput=beforeinput
+        ></div>
+    }
 }

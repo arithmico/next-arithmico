@@ -1,5 +1,5 @@
 use crate::{components::*, utils::expect_app_state};
-use editor::editor::Editor;
+use editor::{editor::Editor, editor_provider::EditorProvider};
 use engine::SessionError;
 use leptos::*;
 
@@ -31,7 +31,16 @@ pub fn CalculatorPage() -> impl IntoView {
         <PageWithSidebar>
             <PageTitle>Calculator</PageTitle>
             <div class="flex flex-col gap-4">
-                <Editor class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300" />
+                <EditorProvider>
+                    <Editor
+                        on:keydown=move |event| {
+                            if event.key() == "Enter" {
+                                event.prevent_default();
+                            }
+                        }
+                        class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300"
+                    />
+                </EditorProvider>
 
                 <ul class="flex flex-col space-y-1">
                     {move || {
