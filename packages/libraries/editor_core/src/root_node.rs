@@ -5,7 +5,7 @@ use web_sys::wasm_bindgen::JsCast;
 
 use crate::EditorContainerNode;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct RootNode;
 
 impl RootNode {
