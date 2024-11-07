@@ -1,4 +1,5 @@
 use ast::{Definition, Node};
+use cache::clear_cache;
 use common::DecimalFormat;
 use node::ParseNode;
 
@@ -40,6 +41,8 @@ pub fn parse(
             nom::Err::Error(error) => error,
             nom::Err::Failure(error) => error,
         });
+
+    clear_cache();
 
     result
 }

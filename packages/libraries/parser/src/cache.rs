@@ -72,7 +72,6 @@ impl Cache {
         }
     }
 
-    #[allow(dead_code)]
     pub fn clear(&self) {
         self.entries.borrow_mut().clear();
     }
@@ -86,6 +85,10 @@ pub fn with_cache<'a>(
         let result = PARSER_CACHE.with(|cache| cache.with(parser_id, input, f));
         result
     }
+}
+
+pub fn clear_cache() {
+    PARSER_CACHE.with(|cache| cache.clear());
 }
 
 thread_local! {
