@@ -12,9 +12,14 @@ impl EditorState {
         let anchor_node_id = selection.get_anchor().get_node_id();
         let focus_offset = selection.get_focus().get_offset();
         let anchor_offset = selection.get_anchor().get_offset();
-        let nodes_between =
-            self.get_all_node_ids_between(focus_node_id, anchor_node_id);
-        self.delete_many_nodes(nodes_between.into_iter().collect());
+        let nodes_between = self
+            .get_all_node_ids_between(focus_node_id, anchor_node_id)
+            .into_iter()
+            .filter(|node_id| {
+                !self.is_parent_of(*node_id, focus_node_id)
+                    && !self.is_parent_of(*node_id, anchor_node_id)
+            });
+        self.delete_many_nodes(nodes_between.collect());
 
         if focus_node_id == anchor_node_id {
             let node = self.get_leaf_node(focus_node_id)?;
