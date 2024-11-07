@@ -37,7 +37,8 @@ fn find_first_deletable_container(state: &EditorState) -> Option<usize> {
 }
 
 impl EditorTransform for RemoveEmptyContainerNodesTransform {
-    fn transform(&self, state: &mut EditorState) {
+    fn transform(&self, state: &mut EditorState) -> bool {
+        let mut modified = false;
         while let Some(node_id) = find_first_deletable_container(state) {
             let previous_leaf_node_id = state
                 .get_previous_leaf_node(node_id)
@@ -51,6 +52,8 @@ impl EditorTransform for RemoveEmptyContainerNodesTransform {
                 previous_leaf_node_id,
                 leaf_node_length,
             ));
+            modified = true;
         }
+        modified
     }
 }

@@ -1,5 +1,5 @@
 use crate::EditorState;
 
 pub trait EditorTransform {
-    fn transform(&self, state: &mut EditorState);
+    fn transform(&self, state: &mut EditorState) -> bool;
 }
