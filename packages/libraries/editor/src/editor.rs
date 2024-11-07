@@ -15,7 +15,10 @@ use crate::{
 };
 
 #[component]
-pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
+pub fn Editor(
+    #[prop(into, optional)] class: Option<String>,
+    #[prop(optional, into)] data_test_id: Option<String>,
+) -> impl IntoView {
     let editor_ref = create_node_ref::<Div>();
     let editor_state = use_editor_context();
     let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
@@ -106,6 +109,7 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
 
     view! {
         <div
+            data-testid=data_test_id
             role="textbox"
             class=class
             ref=editor_ref
