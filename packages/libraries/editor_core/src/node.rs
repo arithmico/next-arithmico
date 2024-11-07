@@ -58,4 +58,5 @@ pub trait EditorLeafNode: std::fmt::Debug + Any + 'static {
     fn length(&self) -> usize;
     fn slice(&self, start: usize, end: usize) -> EditorNode;
     fn get_whitespaces(&self) -> Vec<(usize, usize)>;
+    fn serialize(&self) -> Option<String>;
 }
