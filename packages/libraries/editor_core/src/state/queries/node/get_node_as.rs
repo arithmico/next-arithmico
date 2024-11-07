@@ -6,7 +6,9 @@ impl EditorState {
         node_id: usize,
     ) -> Option<&T> {
         let node = self.get_node(node_id)?;
-        assert!(node.supports_children());
+        if !node.supports_children() {
+            return None;
+        }
         node.as_any().downcast_ref::<T>()
     }
 
@@ -15,7 +17,9 @@ impl EditorState {
         node_id: usize,
     ) -> Option<&T> {
         let node = self.get_node(node_id)?;
-        assert!(!node.supports_children());
+        if node.supports_children() {
+            return None;
+        }
         node.as_any().downcast_ref::<T>()
     }
 }

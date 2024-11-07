@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use editor_core::{EditorLeafNode, EditorState};
+use editor_core::{EditorContainerNode, EditorLeafNode, EditorState};
 use html::Div;
 use leptos::*;
 use logging::log;
@@ -12,7 +12,7 @@ use crate::{
         DeleteContentBackwardCommand, DeleteContentForwardCommand,
         DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
     },
-    node::TextNode,
+    node::{MarkNode, TextNode},
     transform::TextTransform,
 };
 
@@ -28,9 +28,15 @@ pub fn Editor(#[prop(into, optional)] class: Option<String>) -> impl IntoView {
             None,
         );
 
+        let mark_node_id = editor_state.insert_node(
+            MarkNode::new().into_editor_node(),
+            None,
+            None,
+        );
+
         editor_state.insert_node(
             TextNode::new_with_content("world ").into_editor_node(),
-            None,
+            Some(mark_node_id),
             None,
         );
 
