@@ -8,34 +8,36 @@ impl EditorState {
         node_id: usize,
         offset: usize,
     ) -> Vec<EditorWhitespace> {
-        let mut end_selected =
+        let end_selected =
             self.get_leaf_node(node_id).expect("leaf node").length() == offset;
 
-        let mut entered_node = false;
-        let mut cut_off_pos = None;
-        let mut whitespaces = self.get_all_whitespaces();
-        for (pos, whitepsace) in whitespaces.iter().enumerate() {
-            if whitepsace.node_id != node_id && entered_node {
-                end_selected = false;
-                continue;
-            }
-            if whitepsace.node_id != node_id && entered_node && !end_selected {
-                cut_off_pos = Some(pos);
-                break;
-            }
-            if whitepsace.node_id == node_id {
-                entered_node = true;
-                if whitepsace.start_offset > offset {
-                    cut_off_pos = Some(pos);
-                    break;
+        let mut node_ids = self.get_all_leaf_node_ids_after(node_id);
+        if !end_selected {
+            node_ids.insert(0, node_id);
+        }
+
+        let mut result = Vec::<EditorWhitespace>::new();
+
+        for (index, id) in node_ids.into_iter().enumerate() {
+            if let Some(whitespaces) = self.get_whitespaces(id) {
+                for whitespace in whitespaces {
+                    if whitespace.node_id == node_id {
+                        if whitespace.start_offset > offset {
+                            result.push(whitespace);
+                        }
+                    } else {
+                        if index == 0
+                            && end_selected
+                            && whitespace.start_offset == 0
+                        {
+                            continue;
+                        }
+                        result.push(whitespace);
+                    }
                 }
             }
         }
-        if let Some(cut_off_pos) = cut_off_pos {
-            whitespaces.drain(..cut_off_pos).for_each(drop);
-            whitespaces
-        } else {
-            Vec::new()
-        }
+
+        result
     }
 }

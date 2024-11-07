@@ -1,5 +1,4 @@
 use editor_core::{selection::SelectionRange, EditorCommand};
-use leptos_dom::log;
 
 pub struct DeleteWordForwardCommand;
 
@@ -19,7 +18,8 @@ impl EditorCommand for DeleteWordForwardCommand {
             let node = state.get_leaf_node(node_id)?;
             let whitespaces =
                 state.get_all_whitespaces_starting_after(node_id, offset);
-            if let Some(whitespace) = whitespaces.last() {
+
+            if let Some(whitespace) = whitespaces.first() {
                 if whitespace.node_id == node_id {
                     let target_pos =
                         (whitespace.start_offset).min(node.length());
@@ -34,26 +34,28 @@ impl EditorCommand for DeleteWordForwardCommand {
                     let end_node = state.get_leaf_node(whitespace.node_id)?;
                     let target_pos =
                         (whitespace.start_offset).min(end_node.length());
-                    let right_node = node.slice(0, offset);
-                    let left_node =
+                    let left_node = node.slice(0, offset);
+                    let right_node =
                         end_node.slice(target_pos, end_node.length());
                     let nodes_to_delete = state
-                        .get_all_node_ids_between(whitespace.node_id, node_id);
-                    state.delete_many_nodes(
-                        nodes_to_delete.into_iter().collect(),
-                    );
-                    state.replace_node(node_id, right_node);
-                    state.replace_node(whitespace.node_id, left_node);
+                        .get_all_node_ids_between(whitespace.node_id, node_id)
+                        .into_iter()
+                        .filter(|id| {
+                            !state.is_parent_of(*id, node_id)
+                                && !state.is_parent_of(*id, whitespace.node_id)
+                        });
+
+                    state.delete_many_nodes(nodes_to_delete.collect());
+                    state.replace_node(node_id, left_node);
+                    state.replace_node(whitespace.node_id, right_node);
                     state.set_selection(SelectionRange::new_at(
                         whitespace.node_id,
-                        target_pos,
+                        0,
                     ));
                 }
             } else {
-                log!("leaf: {}", node_id);
                 let all_leaf_nodes_after =
                     state.get_all_leaf_node_ids_after(node_id);
-                log!("leafes after: {:?}", &all_leaf_nodes_after);
                 state.replace_node(node_id, node.slice(0, offset));
                 state.set_selection(SelectionRange::new_at(node_id, offset));
                 state.delete_many_nodes(

@@ -2,6 +2,7 @@ use std::any::Any;
 
 use web_sys::Node;
 
+#[derive(Debug)]
 pub enum EditorNode {
     Container(Box<dyn EditorContainerNode>),
     Leaf(Box<dyn EditorLeafNode>),
@@ -39,7 +40,7 @@ impl EditorNode {
     }
 }
 
-pub trait EditorContainerNode: Any + 'static {
+pub trait EditorContainerNode: std::fmt::Debug + Any + 'static {
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Box<&dyn Any>;
@@ -48,7 +49,7 @@ pub trait EditorContainerNode: Any + 'static {
     fn delete_if_empty(&self) -> bool;
 }
 
-pub trait EditorLeafNode: Any + 'static {
+pub trait EditorLeafNode: std::fmt::Debug + Any + 'static {
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Box<&dyn Any>;

@@ -39,10 +39,14 @@ impl EditorCommand for DeleteWordBackwardCommand {
                     let right_node = node.slice(offset, node.length());
                     let left_node = end_node.slice(0, target_pos);
                     let nodes_to_delete = state
-                        .get_all_node_ids_between(whitespace.node_id, node_id);
-                    state.delete_many_nodes(
-                        nodes_to_delete.into_iter().collect(),
-                    );
+                        .get_all_node_ids_between(whitespace.node_id, node_id)
+                        .into_iter()
+                        .filter(|id| {
+                            !state.is_parent_of(*id, node_id)
+                                && !state.is_parent_of(*id, whitespace.node_id)
+                        });
+
+                    state.delete_many_nodes(nodes_to_delete.collect());
                     state.replace_node(node_id, right_node);
                     state.replace_node(whitespace.node_id, left_node);
                     state.set_selection(SelectionRange::new_at(
@@ -53,6 +57,7 @@ impl EditorCommand for DeleteWordBackwardCommand {
             } else {
                 let all_leaf_nodes_before =
                     state.get_all_leaf_node_ids_before(node_id);
+
                 state.replace_node(node_id, node.slice(offset, node.length()));
                 state.set_selection(SelectionRange::new_at(node_id, 0));
                 state.delete_many_nodes(
