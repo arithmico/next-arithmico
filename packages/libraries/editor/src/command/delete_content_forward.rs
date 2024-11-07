@@ -23,7 +23,17 @@ impl EditorCommand for DeleteContentForwardCommand {
                 state.insert_node_after(right_node, node_id);
                 state.set_selection(SelectionRange::new_at(node_id, offset));
             } else {
-                return None;
+                // TODO: find next **non-empty** leaf node
+                // TODO: delete all empty leaf nodes between
+                let next_leaf_node_id = state.get_next_leaf_node(node_id)?;
+                let next_leaf_node = state.get_leaf_node(next_leaf_node_id)?;
+                let leaf_length = next_leaf_node.length();
+                let new_node = next_leaf_node.slice(1, leaf_length);
+                state.replace_node(next_leaf_node_id, new_node);
+                state.set_selection(SelectionRange::new_at(
+                    next_leaf_node_id,
+                    0,
+                ));
             }
         } else {
             state.delete_selection_and_preserve_focus_node()?;
