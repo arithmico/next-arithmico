@@ -35,7 +35,7 @@ impl EditorContainerNode for MarkNode {
         editor_core::EditorNode::Container(Box::new(self))
     }
 
-    fn delete_if_empty(self) -> bool {
+    fn delete_if_empty(&self) -> bool {
         true
     }
 }

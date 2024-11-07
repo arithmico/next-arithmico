@@ -45,7 +45,7 @@ pub trait EditorContainerNode: Any + 'static {
     fn as_any(&self) -> Box<&dyn Any>;
     fn boxed_clone(&self) -> Box<dyn EditorContainerNode>;
     fn into_editor_node(self) -> EditorNode;
-    fn delete_if_empty(self) -> bool;
+    fn delete_if_empty(&self) -> bool;
 }
 
 pub trait EditorLeafNode: Any + 'static {
