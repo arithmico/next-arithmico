@@ -38,4 +38,8 @@ impl EditorContainerNode for RootNode {
     fn into_editor_node(self) -> crate::EditorNode {
         crate::EditorNode::Container(Box::new(self))
     }
+
+    fn delete_if_empty(self) -> bool {
+        false
+    }
 }
