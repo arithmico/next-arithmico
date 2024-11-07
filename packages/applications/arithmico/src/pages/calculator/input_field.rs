@@ -1,10 +1,16 @@
 use editor::{
-    editor::Editor, editor_provider::EditorProvider,
+    editor::Editor,
+    editor_provider::EditorProvider,
+    node::{MarkNode, TextNode},
     use_editor_context::use_editor_context,
 };
+use editor_core::{EditorContainerNode, EditorLeafNode};
 use leptos::*;
 
-use crate::{state::AppAction, utils::expect_dispatch};
+use crate::{
+    pages::calculator::use_error_trace::use_error_trace, state::AppAction,
+    utils::expect_dispatch,
+};
 
 #[component]
 pub fn InputField() -> impl IntoView {
@@ -19,6 +25,62 @@ pub fn InputField() -> impl IntoView {
 fn InputFieldEditor() -> impl IntoView {
     let editor_state = use_editor_context();
     let dispatch = expect_dispatch();
+    let error_trace = use_error_trace();
+
+    create_effect(move |_| {
+        if let Some(trace) = error_trace.get() {
+            let content = editor_state
+                .with_untracked(|state| {
+                    state.serialize_node(state.get_root_id())
+                })
+                .expect("field content");
+            let mut segments = Vec::<(String, bool)>::new();
+            let mut pos = 0;
+            for span in trace.spans() {
+                let start = span.start();
+                let end = span.end();
+                assert!(start >= pos);
+                assert!(start < content.len());
+                if pos < start {
+                    segments.push((content[pos..start].to_string(), false));
+                    pos = start;
+                }
+                segments.push((content[pos..=end].to_string(), true));
+                pos = end + 1;
+            }
+            if pos < content.len() {
+                segments.push((content[pos..].to_string(), false));
+            }
+            editor_state.update_untracked(move |state| {
+                state.clear_root_node();
+                state.clear_selection();
+                for (segment, is_highlighted) in segments {
+                    if is_highlighted {
+                        let mark_node_id = state.insert_node(
+                            MarkNode::new().into_editor_node(),
+                            None,
+                            None,
+                        );
+                        state.insert_node(
+                            TextNode::new_with_content(segment)
+                                .into_editor_node(),
+                            Some(mark_node_id),
+                            None,
+                        );
+                    } else {
+                        state.insert_node(
+                            TextNode::new_with_content(segment)
+                                .into_editor_node(),
+                            None,
+                            None,
+                        );
+                    }
+                }
+                state.apply_transforms();
+                state.update_dom();
+            });
+        }
+    });
 
     view! {
         <Editor
@@ -26,12 +88,11 @@ fn InputFieldEditor() -> impl IntoView {
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();
-                    editor_state
-                        .with_untracked(|state| {
-                            if let Some(content) = state.serialize_node(state.get_root_id()) {
-                                dispatch.call(AppAction::Evaluate(content))
-                            }
-                        });
+                    let content: Option<String> = editor_state
+                        .with_untracked(|state| state.serialize_node(state.get_root_id()));
+                    if let Some(content) = content {
+                        dispatch.call(AppAction::Evaluate(content))
+                    }
                 }
             }
             class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300"

@@ -25,3 +25,5 @@ web-sys = { version = "0.3.72", features = [
 ] }
 js-sys = "0.3.72"
 editor = { path = "../../libraries/editor" }
+trace = { version = "0.1.0", path = "../../libraries/trace" }
+editor_core = { version = "0.1.0", path = "../../libraries/editor_core" }

@@ -25,6 +25,7 @@ dependencies = [
  "common_ui",
  "console_error_panic_hook",
  "editor",
+ "editor_core",
  "engine",
  "gloo-storage",
  "js-sys",
@@ -32,6 +33,7 @@ dependencies = [
  "leptos_router",
  "serde",
  "serde_json",
+ "trace",
  "web-sys",
 ]
 

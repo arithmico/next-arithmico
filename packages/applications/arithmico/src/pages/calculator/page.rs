@@ -1,67 +1,21 @@
 use crate::{
-    components::*, pages::calculator::input_field::InputField,
-    utils::expect_app_state,
+    components::*,
+    pages::calculator::{
+        input_field::InputField, use_last_output::use_last_output,
+    },
 };
 use engine::SessionError;
 use leptos::*;
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
-    let app_state = expect_app_state();
-    let output = Signal::derive(move || {
-        app_state
-            .get()
-            .session
-            .last_entry()
-            .and_then(|statement| Some(statement.output.clone()))
-    });
-    let trace = move || match output.get() {
-        Some(result) => match result {
-            Ok(_) => vec![],
-            Err(error) => match error {
-                SessionError::ParseNodeError(..) => vec![],
-                SessionError::SerializeNodeError(..) => vec![],
-                SessionError::EvaluateNodeError(evaluate_node_error) => {
-                    evaluate_node_error.stack_trace()
-                }
-            },
-        },
-        None => vec![],
-    };
+    let output = use_last_output();
 
     view! {
         <PageWithSidebar>
             <PageTitle>Calculator</PageTitle>
             <div class="flex flex-col gap-4">
                 <InputField />
-
-                <ul class="flex flex-col space-y-1">
-                    {move || {
-                        trace()
-                            .iter()
-                            .map(|trace| {
-                                let spans = trace.spans();
-                                view! {
-                                    <li class="flex">
-                                        <ul class="flex p-1 rounded-md border border-black">
-                                            {spans
-                                                .iter()
-                                                .map(|span| {
-                                                    view! {
-                                                        <li class="flex p-1 space-x-2 bg-white rounded-sm border border-neutral-300">
-                                                            <span>{span.start()}</span>
-                                                            <span>{span.end()}</span>
-                                                        </li>
-                                                    }
-                                                })
-                                                .collect_view()}
-                                        </ul>
-                                    </li>
-                                }
-                            })
-                            .collect_view()
-                    }}
-                </ul>
                 <OutputField value=output />
             </div>
         </PageWithSidebar>

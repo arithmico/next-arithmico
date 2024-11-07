@@ -2,7 +2,6 @@ use std::ops::Deref;
 
 use html::Div;
 use leptos::*;
-use logging::log;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::Node;
 
@@ -55,7 +54,6 @@ pub fn Editor(
     let beforeinput = move |event: web_sys::InputEvent| {
         event.prevent_default();
 
-        log!("input_type: {}", event.input_type());
         match event.input_type().as_str() {
             "insertText" => {
                 let command =
