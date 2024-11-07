@@ -39,7 +39,8 @@ fn find_transform_candidate(
     }
 }
 
-fn transform_container_node(state: &mut EditorState, node_id: usize) {
+fn transform_container_node(state: &mut EditorState, node_id: usize) -> bool {
+    let mut modified = false;
     while let Some((first_node_id, second_node_id)) =
         find_transform_candidate(state, node_id)
     {
@@ -78,14 +79,19 @@ fn transform_container_node(state: &mut EditorState, node_id: usize) {
 
             state.set_selection(SelectionRange::new(anchor, focus));
         }
+
+        modified = true;
     }
+    modified
 }
 
 impl EditorTransform for MergeTextNodesTransform {
-    fn transform(&self, state: &mut editor_core::EditorState) {
+    fn transform(&self, state: &mut editor_core::EditorState) -> bool {
+        let mut modified = false;
         let container_nodes = state.find_all_container_nodes();
         for node_id in container_nodes {
-            transform_container_node(state, node_id);
+            modified = modified || transform_container_node(state, node_id);
         }
+        modified
     }
 }
