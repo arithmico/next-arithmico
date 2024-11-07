@@ -24,7 +24,19 @@ impl EditorCommand for DeleteContentBackwardCommand {
                 state
                     .set_selection(SelectionRange::new_at(node_id, offset - 1));
             } else {
-                return None;
+                // TODO: find previous **non-empty** leaf node
+                // TODO: delete all empty leaf nodes between
+                let previous_leaf_node_id =
+                    state.get_previous_leaf_node(node_id)?;
+                let previous_leaf_node =
+                    state.get_leaf_node(previous_leaf_node_id)?;
+                let end_pos = previous_leaf_node.length().saturating_sub(1);
+                let new_node = previous_leaf_node.slice(0, end_pos);
+                state.replace_node(previous_leaf_node_id, new_node);
+                state.set_selection(SelectionRange::new_at(
+                    previous_leaf_node_id,
+                    end_pos,
+                ));
             }
         } else {
             state.delete_selection_and_preserve_focus_node()?;
