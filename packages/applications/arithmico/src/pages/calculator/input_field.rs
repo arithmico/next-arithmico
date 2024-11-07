@@ -22,7 +22,7 @@ fn InputFieldEditor() -> impl IntoView {
 
     view! {
         <Editor
-            data_test_id="calculator-output"
+            data_test_id="calculator-input"
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();

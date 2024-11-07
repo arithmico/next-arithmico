@@ -56,11 +56,15 @@ impl InsertTextCommand {
         if focus_offset != anchor_offset {
             return None;
         }
-        state.insert_node(
+        let new_node_id = state.insert_node(
             TextNode::new_with_content(&self.text).into_editor_node(),
             Some(node_id),
             Some(focus_offset),
         );
+        state.set_selection(SelectionRange::new_at(
+            new_node_id,
+            self.text.len(),
+        ));
         Some(())
     }
 }
