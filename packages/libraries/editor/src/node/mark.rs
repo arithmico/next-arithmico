@@ -34,4 +34,8 @@ impl EditorContainerNode for MarkNode {
     fn into_editor_node(self) -> editor_core::EditorNode {
         editor_core::EditorNode::Container(Box::new(self))
     }
+
+    fn delete_if_empty(self) -> bool {
+        true
+    }
 }
