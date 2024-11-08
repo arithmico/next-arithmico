@@ -33,17 +33,26 @@ pub fn OutputField(
             Err(error) => (error.to_string(), true),
         },
     };
-    let content = move || output().0;
+    let content = move || {
+        let output = output().0;
+        if output.is_empty() {
+            // TODO: consider using css content = "\200b" instead of " "
+            String::from(" ")
+        } else {
+            output
+        }
+    };
     let is_error = move || output().1;
     view! {
-        <input
+        <output
+            for="calculator-output"
             data-testid="calculator-output"
-            class="p-2 text-xl rounded-sm border outline-none focus-visible:border-black border-neutral-300"
+            class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300"
             class:border-black=move || !is_error()
             class:border-red-500=move || is_error()
             class:bg-red-100=move || is_error()
-            readonly
-            value=content
-        />
+        >
+            {content}
+        </output>
     }
 }
