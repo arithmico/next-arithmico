@@ -21,7 +21,11 @@ impl EditorState {
             .into_iter()
             .enumerate()
             .filter_map(|(position, node_id)| {
-                if position > start && position < end {
+                if self.is_parent_of(node_id, from_node_id)
+                    || self.is_parent_of(node_id, to_node_id)
+                {
+                    None
+                } else if position > start && position < end {
                     Some(node_id)
                 } else {
                     None

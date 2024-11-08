@@ -1,5 +1,6 @@
 pub mod children;
 pub mod leaf;
+pub mod log_node;
 pub mod node;
 pub mod parent;
 pub mod range;
