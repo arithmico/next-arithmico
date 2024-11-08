@@ -2,6 +2,7 @@ pub mod children;
 pub mod leaf;
 pub mod log_node;
 pub mod node;
+pub mod offset;
 pub mod parent;
 pub mod range;
 pub mod serialize_node;

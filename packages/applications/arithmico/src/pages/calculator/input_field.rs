@@ -4,7 +4,10 @@ use editor::{
     node::{MarkNode, TextNode},
     use_editor_context::use_editor_context,
 };
-use editor_core::{EditorContainerNode, EditorLeafNode};
+use editor_core::{
+    selection::{SelectionRange, SelectionRangePoint},
+    EditorContainerNode, EditorLeafNode,
+};
 use leptos::*;
 
 use crate::{
@@ -52,6 +55,21 @@ fn InputFieldEditor() -> impl IntoView {
                 segments.push((content[pos..].to_string(), false));
             }
             editor_state.update_untracked(move |state| {
+                let selection_pos = state
+                    .get_selection()
+                    .map(|selection| {
+                        let anchor_pos = state.get_absolute_offset(
+                            selection.get_anchor().get_node_id(),
+                            selection.get_anchor().get_offset(),
+                        )?;
+                        let focus_pos = state.get_absolute_offset(
+                            selection.get_focus().get_node_id(),
+                            selection.get_focus().get_offset(),
+                        )?;
+                        Some((anchor_pos, focus_pos))
+                    })
+                    .flatten();
+
                 state.clear_root_node();
                 state.clear_selection();
                 for (segment, is_highlighted) in segments {
@@ -76,8 +94,25 @@ fn InputFieldEditor() -> impl IntoView {
                         );
                     }
                 }
+                if let Some((anchor_pos, focus_pos)) = selection_pos {
+                    let (anchor_node_id, anchor_offset) = state
+                        .get_node_id_and_offset_from_absolute_offset(anchor_pos)
+                        .expect("anchor pos");
+
+                    let (focus_node_id, focus_offset) = state
+                        .get_node_id_and_offset_from_absolute_offset(focus_pos)
+                        .expect("focus pos");
+
+                    state.set_selection(SelectionRange::new(
+                        SelectionRangePoint::new(anchor_node_id, anchor_offset),
+                        SelectionRangePoint::new(focus_node_id, focus_offset),
+                    ));
+                } else {
+                    state.clear_selection();
+                }
                 state.apply_transforms();
                 state.update_dom();
+                state.write_selection_to_dom();
             });
         }
     });
