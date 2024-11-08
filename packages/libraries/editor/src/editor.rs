@@ -15,6 +15,7 @@ use crate::{
 
 #[component]
 pub fn Editor(
+    #[prop(into, optional)] id: Option<String>,
     #[prop(into, optional)] class: Option<String>,
     #[prop(optional, into)] data_test_id: Option<String>,
     #[prop(default = false)] autofocus: bool,
@@ -112,6 +113,7 @@ pub fn Editor(
 
     view! {
         <div
+            id=id
             data-testid=data_test_id
             role="textbox"
             class=class
