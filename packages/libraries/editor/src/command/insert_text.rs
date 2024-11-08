@@ -1,6 +1,7 @@
 use editor_core::{
     selection::SelectionRange, EditorCommand, EditorLeafNode, EditorState,
 };
+use leptos_dom::log;
 
 use crate::node::TextNode;
 
@@ -36,7 +37,7 @@ impl InsertTextCommand {
         );
         state.set_selection(SelectionRange::new_at(node_id, self.text.len()));
 
-        if end_offset + 1 < node.length() {
+        if end_offset < node.length() {
             state.insert_node_after(
                 node.slice(end_offset, node.length()),
                 node_id,
@@ -109,14 +110,15 @@ impl EditorCommand for InsertTextCommand {
             {
                 // left to right selection
                 let node_id = state.insert_node_before(new_node, focus_node_id);
-                state.trim_leaf_node_left(anchor_node_id, anchor_offset);
-                state.trim_leaf_node_right(focus_node_id, focus_offset);
-                node_id
-            } else {
-                // right to left selection
-                let node_id = state.insert_node_after(new_node, focus_node_id);
                 state.trim_leaf_node_right(anchor_node_id, anchor_offset);
                 state.trim_leaf_node_left(focus_node_id, focus_offset);
+                node_id
+            } else {
+                log!("r2l");
+                // right to left selection
+                let node_id = state.insert_node_after(new_node, focus_node_id);
+                state.trim_leaf_node_left(anchor_node_id, anchor_offset);
+                state.trim_leaf_node_right(focus_node_id, focus_offset);
                 node_id
             };
             state.set_selection(SelectionRange::new_at(
