@@ -1,7 +1,6 @@
 use editor_core::{
     selection::SelectionRange, EditorCommand, EditorLeafNode, EditorState,
 };
-use leptos_dom::log;
 
 use crate::node::TextNode;
 
@@ -28,13 +27,14 @@ impl InsertTextCommand {
         let end_offset = focus_offset.max(anchor_offset);
 
         if start_offset > 0 {
-            state.insert_node_before(node.slice(0, start_offset), node_id);
+            let node_before = node.slice(0, start_offset);
+            state.insert_node_before(node_before, node_id);
         }
-
         state.replace_node(
             node_id,
             TextNode::new_with_content(&self.text).into_editor_node(),
         );
+
         state.set_selection(SelectionRange::new_at(node_id, self.text.len()));
 
         if end_offset < node.length() {
@@ -78,12 +78,12 @@ impl EditorCommand for InsertTextCommand {
             range.get_anchor().get_node_id(),
             range.get_focus().get_node_id(),
         );
-        state.delete_many_nodes(nodes_between.into_iter().collect());
 
         let focus_node_id = range.get_focus().get_node_id();
         let anchor_node_id = range.get_anchor().get_node_id();
         let focus_offset = range.get_focus().get_offset();
         let anchor_offset = range.get_anchor().get_offset();
+        state.delete_many_nodes(nodes_between.into_iter().collect());
 
         if focus_node_id == anchor_node_id {
             if state.is_container_node(focus_node_id) {
@@ -114,7 +114,6 @@ impl EditorCommand for InsertTextCommand {
                 state.trim_leaf_node_left(focus_node_id, focus_offset);
                 node_id
             } else {
-                log!("r2l");
                 // right to left selection
                 let node_id = state.insert_node_after(new_node, focus_node_id);
                 state.trim_leaf_node_left(anchor_node_id, anchor_offset);
