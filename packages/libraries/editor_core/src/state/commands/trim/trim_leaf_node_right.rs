@@ -13,13 +13,13 @@ impl EditorState {
         &mut self,
         node_id: usize,
         position: usize,
-        delete_empty_node: bool,
+        delete_empty: bool,
     ) -> Option<()> {
         let node = self.get_leaf_node(node_id)?;
-        if position == 0 && delete_empty_node {
+        if position >= node.length() && delete_empty {
             self.delete_node(node_id);
         } else {
-            self.replace_node(node_id, node.slice(position, node.length()));
+            self.replace_node(node_id, node.slice(0, position));
         }
         Some(())
     }

@@ -38,16 +38,16 @@ impl EditorState {
                 self.is_node_before(anchor_node_id, focus_node_id).unwrap();
 
             if is_selection_left_to_right {
-                self.trim_leaf_node_left(anchor_node_id, anchor_offset);
-                self.trim_leaf_node_right_with_delete_option(
+                self.trim_leaf_node_right(anchor_node_id, anchor_offset);
+                self.trim_leaf_node_left_with_delete_option(
                     focus_node_id,
                     focus_offset,
                     false,
                 );
                 self.set_selection(SelectionRange::new_at(focus_node_id, 0));
             } else {
-                self.trim_leaf_node_right(anchor_node_id, anchor_offset);
-                self.trim_leaf_node_left_with_delete_option(
+                self.trim_leaf_node_left(anchor_node_id, anchor_offset);
+                self.trim_leaf_node_right_with_delete_option(
                     focus_node_id,
                     focus_offset,
                     false,
