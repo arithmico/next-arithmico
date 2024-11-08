@@ -119,6 +119,7 @@ fn InputFieldEditor() -> impl IntoView {
 
     view! {
         <Editor
+            autofocus=true
             data_test_id="calculator-input"
             on:keydown=move |event| {
                 if event.key() == "Enter" {
