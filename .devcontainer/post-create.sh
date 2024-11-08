@@ -6,6 +6,7 @@ bash -i -c 'nvm install --lts'
 
 # install tailwind
 npm i -g tailwindcss
+npx playwright install --with-deps
 
 # install rust toolchain and utilities
 rustup target add wasm32-unknown-unknown
