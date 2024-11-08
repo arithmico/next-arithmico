@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
 
+test("autofocus", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+    await expect(inputField).toBeFocused();
+});
+
 test("append text", async ({ page }) => {
     await page.goto("/");
     const inputField = page.getByTestId("calculator-input");

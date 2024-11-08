@@ -17,6 +17,7 @@ use crate::{
 pub fn Editor(
     #[prop(into, optional)] class: Option<String>,
     #[prop(optional, into)] data_test_id: Option<String>,
+    #[prop(default = false)] autofocus: bool,
 ) -> impl IntoView {
     let editor_ref = create_node_ref::<Div>();
     let editor_state = use_editor_context();
@@ -37,8 +38,12 @@ pub fn Editor(
         if node_ref.is_none() {
             return;
         }
-        let node = node_ref
-            .unwrap()
+        let div = node_ref.unwrap();
+        if autofocus {
+            div.focus().expect("focus");
+        }
+
+        let node = div
             .into_any()
             .deref()
             .clone()
