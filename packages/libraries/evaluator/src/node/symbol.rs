@@ -1,4 +1,4 @@
-use ast::{Node, Symbol};
+use ast::{GetNodeType, Node, Symbol};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 
 use crate::evaluate::EvaluateNode;
@@ -9,7 +9,9 @@ impl EvaluateNode for Symbol {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
-            return Err(EvaluateNodeError::unsupported_datatype("Symbol"));
+            return Err(EvaluateNodeError::unsupported_datatype(
+                self.node_type(),
+            ));
         }
 
         context

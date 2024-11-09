@@ -1,4 +1,6 @@
-use trace::{Tracable, TracableMut, Trace};
+use trace::Trace;
+
+use crate::impl_node_traits;
 
 use super::Node;
 
@@ -17,14 +19,4 @@ impl Negate {
     }
 }
 
-impl TracableMut for Negate {
-    fn trace_mut(&mut self) -> &mut Trace {
-        &mut self.trace
-    }
-}
-
-impl Tracable for Negate {
-    fn trace(&self) -> &Trace {
-        &self.trace
-    }
-}
+impl_node_traits!(Negate);

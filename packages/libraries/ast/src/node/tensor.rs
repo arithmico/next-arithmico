@@ -1,6 +1,8 @@
 use std::iter::zip;
 
-use trace::{Tracable, TracableMut, Trace};
+use trace::Trace;
+
+use crate::impl_node_traits;
 
 use super::Node;
 
@@ -115,17 +117,7 @@ impl Tensor {
     }
 }
 
-impl TracableMut for Tensor {
-    fn trace_mut(&mut self) -> &mut Trace {
-        &mut self.trace
-    }
-}
-
-impl Tracable for Tensor {
-    fn trace(&self) -> &Trace {
-        &self.trace
-    }
-}
+impl_node_traits!(Tensor);
 
 pub fn get_capacity(shape: &Vec<usize>) -> usize {
     shape.iter().fold(1, |a, &b| a * b)

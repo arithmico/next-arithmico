@@ -1,4 +1,6 @@
-use trace::{Tracable, TracableMut, Trace};
+use trace::Trace;
+
+use crate::impl_node_traits;
 
 use super::Node;
 
@@ -19,14 +21,4 @@ impl LessThan {
     }
 }
 
-impl TracableMut for LessThan {
-    fn trace_mut(&mut self) -> &mut Trace {
-        &mut self.trace
-    }
-}
-
-impl Tracable for LessThan {
-    fn trace(&self) -> &Trace {
-        &self.trace
-    }
-}
+impl_node_traits!(LessThan);

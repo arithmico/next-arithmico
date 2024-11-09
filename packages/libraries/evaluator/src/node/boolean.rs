@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Boolean, Node};
+use ast::{Boolean, GetNodeType, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Boolean {
@@ -8,7 +8,9 @@ impl EvaluateNode for Boolean {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_boolean") {
-            return Err(EvaluateNodeError::unsupported_datatype("Boolean"));
+            return Err(EvaluateNodeError::unsupported_datatype(
+                self.node_type(),
+            ));
         }
 
         Ok(Boolean::new(self.value))
