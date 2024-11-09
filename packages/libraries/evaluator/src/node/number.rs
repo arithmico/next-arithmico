@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Node, Number};
+use ast::{GetNodeType, Node, Number};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Number {
@@ -8,7 +8,9 @@ impl EvaluateNode for Number {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_number") {
-            return Err(EvaluateNodeError::unsupported_datatype("Number"));
+            return Err(EvaluateNodeError::unsupported_datatype(
+                self.node_type(),
+            ));
         }
 
         Ok(Number::new(self.value))

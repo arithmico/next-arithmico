@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Node, Tensor};
+use ast::{GetNodeType, Node, Tensor};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for Tensor {
@@ -8,7 +8,9 @@ impl EvaluateNode for Tensor {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_tensor") {
-            return Err(EvaluateNodeError::unsupported_datatype("Tensor"));
+            return Err(EvaluateNodeError::unsupported_datatype(
+                self.node_type(),
+            ));
         }
 
         Ok(Tensor::new_with_shape(

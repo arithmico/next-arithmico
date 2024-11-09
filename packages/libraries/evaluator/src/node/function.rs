@@ -1,4 +1,4 @@
-use ast::{Function, Node};
+use ast::{Function, GetNodeType, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 
 use crate::evaluate::EvaluateNode;
@@ -9,7 +9,9 @@ impl EvaluateNode for Function {
         _context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_function") {
-            return Err(EvaluateNodeError::unsupported_datatype("Function"));
+            return Err(EvaluateNodeError::unsupported_datatype(
+                self.node_type(),
+            ));
         }
 
         Ok(Node::Function(self.clone()))

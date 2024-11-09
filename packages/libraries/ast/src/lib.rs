@@ -1,6 +1,8 @@
 pub mod for_each_node;
 mod node;
-pub mod node_kind;
+mod node_type;
 pub mod trace;
+mod utils;
 
 pub use node::*;
+pub use node_type::*;

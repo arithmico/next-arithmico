@@ -4,4 +4,5 @@ mod language;
 
 pub use context::*;
 pub use error::*;
+pub use function_signature::*;
 pub use language::*;

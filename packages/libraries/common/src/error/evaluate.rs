@@ -1,3 +1,4 @@
+use ast::NodeType;
 use thiserror::Error;
 use trace::{IntoTrace, Trace};
 
@@ -50,7 +51,7 @@ impl EvaluateNodeError {
         Self::from_inner(EvaluateNodeInnerError::UnsupportedOperation)
     }
 
-    pub fn unsupported_datatype<T: ToString>(node_kind: T) -> Self {
+    pub fn unsupported_datatype(node_kind: NodeType) -> Self {
         Self::from_inner(EvaluateNodeInnerError::UnsupportedDataType(
             node_kind.to_string(),
         ))
