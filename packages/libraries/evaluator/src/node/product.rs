@@ -51,8 +51,9 @@ fn multiply_product_elements(
         (Node::Tensor(left), Node::Tensor(right)) => {
             multiply_tensors(left, right, context)
         }
-        (left, right) => Err(EvaluateNodeError::unsupported_operation()
-            .with_tracable((left, right))),
+        (_, right) => {
+            Err(EvaluateNodeError::unsupported_operation().with_tracable(right))
+        }
     }
     .map(|node| node.with_tracable((left, right)))
 }
