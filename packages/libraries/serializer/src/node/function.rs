@@ -13,7 +13,7 @@ impl SerializeNodeUtils for Function {
         options: &SerializeNodeOptions,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Function::new(
-            self.arguments.clone(),
+            self.signature.clone(),
             self.expression.prepare_serialization(options)?,
         ))
     }
@@ -26,7 +26,9 @@ impl SerializeNode for Function {
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "({}) -> {}",
-            self.arguments.join(&get_argument_separator(options)),
+            self.signature
+                .argument_names()
+                .join(&get_argument_separator(options)),
             self.expression.serialize(options)?
         ))
     }
@@ -35,7 +37,7 @@ impl SerializeNode for Function {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Function, Number, Sum, Symbol};
+    use ast::{Function, FunctionSignature, NodeType, Number, Sum, Symbol};
 
     use crate::serialize_node;
 
@@ -45,7 +47,10 @@ mod tests {
     fn serialize_function_with_no_arguments() {
         assert_eq!(
             serialize_node(
-                &Function::new(vec![], Number::new(1.)),
+                &Function::new(
+                    FunctionSignature::new().add_return_type(NodeType::Any),
+                    Number::new(1.)
+                ),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -57,7 +62,13 @@ mod tests {
     fn serialize_function_with_1_argument() {
         assert_eq!(
             serialize_node(
-                &Function::new(vec![String::from("x")], Symbol::new("x")),
+                &Function::new(
+                    FunctionSignature::new()
+                        .argument("x", |argument| argument
+                            .node_type(NodeType::Any))
+                        .add_return_type(NodeType::Any),
+                    Symbol::new("x")
+                ),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
@@ -70,7 +81,12 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Function::new(
-                    vec![String::from("x"), String::from("y")],
+                    FunctionSignature::new()
+                        .argument("x", |argument| argument
+                            .node_type(NodeType::Any))
+                        .argument("y", |argument| argument
+                            .node_type(NodeType::Any))
+                        .add_return_type(NodeType::Any),
                     Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                 ),
                 &SerializeNodeOptions::default()
@@ -85,9 +101,15 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Function::new(
-                    vec![String::from("x")],
+                    FunctionSignature::new()
+                        .argument("x", |argument| argument
+                            .node_type(NodeType::Any))
+                        .add_return_type(NodeType::Any),
                     Function::new(
-                        vec![String::from("y")],
+                        FunctionSignature::new()
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                     )
                 ),

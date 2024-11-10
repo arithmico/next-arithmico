@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use crate::Language;
+use ast::FunctionSignature;
+use translate_core::Language;
 
 use super::{
     endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
@@ -134,16 +135,13 @@ impl EndpointBuilderAdditionalDescriptionsStage {
 
     pub fn function(
         self,
-        arguments: Vec<&str>,
+        signature: FunctionSignature,
     ) -> FunctionEndpointBuilderArgumentsPhase {
         FunctionEndpointBuilderArgumentsPhase {
             module_id: self.module_id,
             description: self.description,
             module_name: self.module_name,
-            arguments: arguments
-                .iter()
-                .map(|&argument| String::from(argument))
-                .collect(),
+            signature,
         }
     }
 
@@ -161,14 +159,14 @@ pub struct FunctionEndpointBuilderArgumentsPhase {
     module_id: String,
     module_name: TranslatedString,
     description: TranslatedString,
-    arguments: Vec<String>,
+    signature: FunctionSignature,
 }
 
 impl FunctionEndpointBuilderArgumentsPhase {
     pub fn executor(self, executor: FunctionExecutor) -> HostEndpoint {
         HostEndpoint::Function {
             executor,
-            arguments: self.arguments,
+            signature: self.signature,
             description: self.description,
             module_name: self.module_name,
             module_id: self.module_id,

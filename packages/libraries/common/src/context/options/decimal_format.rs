@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
-
-use crate::Language;
+use translate_core::Language;
 
 #[derive(Debug, Clone, PartialEq, Hash, Eq, Serialize, Deserialize)]
 pub enum DecimalFormat {

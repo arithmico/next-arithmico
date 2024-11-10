@@ -31,7 +31,7 @@ impl DocumentationItem {
     pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
         match endpoint {
             HostEndpoint::Function {
-                arguments,
+                signature,
                 description,
                 ..
             } => {
@@ -39,7 +39,8 @@ impl DocumentationItem {
                 item.description = description.clone();
                 let synopsis_expression = FunctionCall::new(
                     Symbol::new(name),
-                    arguments
+                    signature
+                        .argument_names()
                         .iter()
                         .map(|argument| Symbol::new(&argument))
                         .collect(),

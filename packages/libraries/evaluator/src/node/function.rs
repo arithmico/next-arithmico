@@ -20,19 +20,29 @@ impl EvaluateNode for Function {
 
 #[cfg(test)]
 mod tests {
-    use ast::Symbol;
+    use ast::{FunctionSignature, NodeType, Symbol};
 
     use super::*;
 
     #[test]
     fn evaluate_function() {
         let context = EvaluateNodeContext::default();
-        let result = Function::new(vec![String::from("x")], Symbol::new("x"))
-            .evaluate(&context)
-            .unwrap();
+        let result = Function::new(
+            FunctionSignature::new()
+                .argument("x", |argument| argument.node_type(NodeType::Any))
+                .add_return_type(NodeType::Any),
+            Symbol::new("x"),
+        )
+        .evaluate(&context)
+        .unwrap();
         assert_eq!(
             result,
-            Function::new(vec![String::from("x")], Symbol::new("x"))
+            Function::new(
+                FunctionSignature::new()
+                    .argument("x", |argument| argument.node_type(NodeType::Any))
+                    .add_return_type(NodeType::Any),
+                Symbol::new("x")
+            )
         );
     }
 }

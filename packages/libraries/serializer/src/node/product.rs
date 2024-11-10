@@ -58,7 +58,10 @@ impl SerializeNode for Product {
 #[cfg(test)]
 mod tests {
 
-    use ast::{And, Division, Function, Negate, Or, Product, Sum, Symbol};
+    use ast::{
+        And, Division, Function, FunctionSignature, Negate, NodeType, Or,
+        Product, Sum, Symbol,
+    };
 
     use crate::serialize_node;
 
@@ -182,8 +185,20 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Product::new(vec![
-                    Function::new(vec![String::from("x")], Symbol::new("x")),
-                    Function::new(vec![String::from("y")], Symbol::new("y")),
+                    Function::new(
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
+                        Symbol::new("x")
+                    ),
+                    Function::new(
+                        FunctionSignature::new()
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
+                        Symbol::new("y")
+                    ),
                 ]),
                 &SerializeNodeOptions::default()
             )

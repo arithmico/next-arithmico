@@ -56,8 +56,8 @@ impl SerializeNode for Power {
 mod tests {
 
     use ast::{
-        And, Division, Function, FunctionCall, Negate, Number, Or, Product,
-        Sum, Symbol,
+        And, Division, Function, FunctionCall, FunctionSignature, Negate,
+        NodeType, Number, Or, Product, Sum, Symbol,
     };
 
     use crate::serialize_node;
@@ -184,11 +184,21 @@ mod tests {
             serialize_node(
                 &Power::new(
                     Function::new(
-                        vec![String::from("x"), String::from("y")],
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                     ),
                     Function::new(
-                        vec![String::from("x"), String::from("y")],
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
                         Sum::new(vec![
                             Symbol::new("x"),
                             Negate::new(Symbol::new("y")),
