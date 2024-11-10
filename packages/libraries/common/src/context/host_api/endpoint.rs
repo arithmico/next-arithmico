@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 
-use ast::Node;
+use ast::{FunctionSignature, Node};
+use translate_core::Language;
 
-use crate::{EvaluateNodeContext, EvaluateNodeError, Language};
+use crate::{
+    argument_mapping::ArgumentMapping, EvaluateNodeContext, EvaluateNodeError,
+};
 
 pub type FunctionExecutor = fn(
-    arguments: &Vec<Node>,
+    arguments: &ArgumentMapping,
     context: &EvaluateNodeContext,
 ) -> Result<Node, EvaluateNodeError>;
 
@@ -17,7 +20,7 @@ pub type TranslatedString = HashMap<Language, String>;
 pub enum HostEndpoint {
     Function {
         executor: FunctionExecutor,
-        arguments: Vec<String>,
+        signature: FunctionSignature,
         description: TranslatedString,
         module_name: TranslatedString,
         module_id: String,

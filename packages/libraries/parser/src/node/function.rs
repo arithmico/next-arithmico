@@ -1,4 +1,4 @@
-use ast::{Function, Node, Or};
+use ast::{Function, FunctionSignature, Node, NodeType, Or};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -33,9 +33,16 @@ fn parse_function(input: &str) -> ParseResult {
         Node::parse,
     ))(input)?;
 
+    let mut signature = FunctionSignature::new();
+    for name in arguments.unwrap_or(vec![]) {
+        signature
+            .add_argument(name, |argument| argument.node_type(NodeType::Any));
+    }
+    signature = signature.add_return_type(NodeType::Any);
+
     Ok((
         remaining_input,
-        Function::new(arguments.unwrap_or(vec![]), expression)
+        Function::new(signature, expression)
             .with_span_from_parser(input, remaining_input),
     ))
 }
@@ -68,11 +75,13 @@ mod tests {
     #[test]
     fn parse_function_no_arguments() {
         let result = Function::parse("() -> 2").unwrap();
+        let signature = FunctionSignature::new().add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
                 "",
-                Function::new(vec![], Number::new(2.).with_span(6, 6))
+                Function::new(signature, Number::new(2.).with_span(6, 6))
                     .with_span(0, 6)
             )
         );
@@ -81,15 +90,16 @@ mod tests {
     #[test]
     fn parse_function_1_argument() {
         let result = Function::parse("(x) -> x").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
                 "",
-                Function::new(
-                    vec![String::from("x")],
-                    Symbol::new("x").with_span(7, 7)
-                )
-                .with_span(0, 7)
+                Function::new(signature, Symbol::new("x").with_span(7, 7))
+                    .with_span(0, 7)
             )
         );
     }
@@ -97,12 +107,17 @@ mod tests {
     #[test]
     fn parse_function_2_arguments() {
         let result = Function::parse("(x, y) -> x + y").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .argument("y", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
                 "",
                 Function::new(
-                    vec![String::from("x"), String::from("y")],
+                    signature,
                     Sum::new(vec![
                         Symbol::new("x").with_span(10, 10),
                         Symbol::new("y").with_span(14, 14),
@@ -122,9 +137,15 @@ mod tests {
             (
                 "",
                 Function::new(
-                    vec![String::from("x")],
+                    FunctionSignature::new()
+                        .argument("x", |argument| argument
+                            .node_type(NodeType::Any))
+                        .add_return_type(NodeType::Any),
                     Function::new(
-                        vec![String::from("y")],
+                        FunctionSignature::new()
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
                         Sum::new(vec![
                             Symbol::new("x").with_span(14, 14),
                             Symbol::new("y").with_span(18, 18),

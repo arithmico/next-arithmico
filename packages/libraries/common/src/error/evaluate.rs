@@ -1,7 +1,11 @@
+use std::collections::HashSet;
+
 use ast::NodeType;
 use thiserror::Error;
 use trace::{IntoTrace, Trace};
 
+// TODO: extract inner error into separate file
+// TODO: replace format strings with dummy names
 #[derive(Error, Debug, PartialEq, Clone)]
 pub enum EvaluateNodeInnerError {
     #[error("unsupported operation")]
@@ -30,8 +34,30 @@ pub enum EvaluateNodeInnerError {
 
     #[error("Invalid number of arguments: Expected {0} got {1}")]
     InvalidNumberOfArguments(usize, usize),
+
+    #[error("Missing parameter \"{0}\"")]
+    MissingParameter(String),
+
+    #[error("Invalid repeatable parameter count. Expected between {min} and {max:?} but received {received}.")]
+    InvalidRepeatableParameterCount {
+        name: String,
+        min: usize,
+        max: Option<usize>,
+        received: usize,
+    },
+
+    #[error("InvalidParameterType")]
+    InvalidParameterType {
+        name: String,
+        expected: HashSet<NodeType>,
+        received: NodeType,
+    },
+
+    #[error("TooManyParameters")]
+    TooManyParameters,
 }
 
+// TODO: add translations later
 #[derive(Error, Debug, PartialEq, Clone)]
 #[error("{inner}")]
 pub struct EvaluateNodeError {
@@ -39,6 +65,7 @@ pub struct EvaluateNodeError {
     stack_trace: Vec<Trace>,
 }
 
+// TODO: extract variant constructor methods into seperate files
 impl EvaluateNodeError {
     fn from_inner(inner: EvaluateNodeInnerError) -> Self {
         Self {
@@ -101,6 +128,44 @@ impl EvaluateNodeError {
         Self::from_inner(EvaluateNodeInnerError::InvalidNumberOfArguments(
             expected, received,
         ))
+    }
+
+    pub fn missing_parameter(name: impl ToString) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::MissingParameter(
+            name.to_string(),
+        ))
+    }
+
+    pub fn invalid_repeatable_parameter_count(
+        name: String,
+        min: usize,
+        max: Option<usize>,
+        received: usize,
+    ) -> Self {
+        Self::from_inner(
+            EvaluateNodeInnerError::InvalidRepeatableParameterCount {
+                name,
+                min,
+                max,
+                received,
+            },
+        )
+    }
+
+    pub fn invalid_parameter_type(
+        name: String,
+        expected: HashSet<NodeType>,
+        received: NodeType,
+    ) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::InvalidParameterType {
+            name,
+            expected,
+            received,
+        })
+    }
+
+    pub fn too_many_parameters(_remaining_parameter_count: usize) -> Self {
+        Self::from_inner(EvaluateNodeInnerError::TooManyParameters)
     }
 
     pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {

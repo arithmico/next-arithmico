@@ -1,4 +1,4 @@
-use ast::{Definition, Function, Node};
+use ast::{Definition, Function, FunctionSignature, Node, NodeType};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -55,11 +55,18 @@ fn parse_define_function(input: &str) -> ParseResult {
         Node::parse,
     ))(input)?;
 
+    let mut signature = FunctionSignature::new();
+    for name in arguments {
+        signature
+            .add_argument(name, |argument| argument.node_type(NodeType::Any));
+    }
+    signature = signature.add_return_type(NodeType::Any);
+
     Ok((
         remaining_input,
         Definition::new(
             symbol,
-            Function::new(arguments, expression)
+            Function::new(signature, expression)
                 .with_span_from_parser(input, remaining_input),
         )
         .with_span_from_parser(input, remaining_input),
@@ -95,8 +102,11 @@ mod tests {
                 "",
                 Definition::new(
                     "f",
-                    Function::new(vec![], Number::new(1.).with_span(7, 7))
-                        .with_span(0, 7)
+                    Function::new(
+                        FunctionSignature::new().add_return_type(NodeType::Any),
+                        Number::new(1.).with_span(7, 7)
+                    )
+                    .with_span(0, 7)
                 )
                 .with_span(0, 7)
             )
@@ -106,17 +116,17 @@ mod tests {
     #[test]
     fn parse_define_function_1_argument() {
         let result = Definition::parse("f(x) := x").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
         assert_eq!(
             result,
             (
                 "",
                 Definition::new(
                     "f",
-                    Function::new(
-                        vec!["x".into()],
-                        Symbol::new("x").with_span(8, 8)
-                    )
-                    .with_span(0, 8)
+                    Function::new(signature, Symbol::new("x").with_span(8, 8))
+                        .with_span(0, 8)
                 )
                 .with_span(0, 8)
             )
@@ -126,6 +136,11 @@ mod tests {
     #[test]
     fn parse_define_function_2_argument() {
         let result = Definition::parse("f(x, y) := x^y").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .argument("y", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
@@ -133,7 +148,7 @@ mod tests {
                 Definition::new(
                     "f",
                     Function::new(
-                        vec!["x".into(), "y".into()],
+                        signature,
                         Power::new(
                             Symbol::new("x").with_span(11, 11),
                             Symbol::new("y").with_span(13, 13),
@@ -150,6 +165,11 @@ mod tests {
     #[test]
     fn parse_define_function_2_argument_spaced() {
         let result = Definition::parse("f ( x, y ) := x ^ y").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .argument("y", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
@@ -157,7 +177,7 @@ mod tests {
                 Definition::new(
                     "f",
                     Function::new(
-                        vec!["x".into(), "y".into()],
+                        signature,
                         Power::new(
                             Symbol::new("x").with_span(14, 14),
                             Symbol::new("y").with_span(18, 18),
@@ -174,6 +194,11 @@ mod tests {
     #[test]
     fn parse_define_function_2_no_space() {
         let result = Definition::parse("f(x,y):=x^y").unwrap();
+        let signature = FunctionSignature::new()
+            .argument("x", |argument| argument.node_type(NodeType::Any))
+            .argument("y", |argument| argument.node_type(NodeType::Any))
+            .add_return_type(NodeType::Any);
+
         assert_eq!(
             result,
             (
@@ -181,7 +206,7 @@ mod tests {
                 Definition::new(
                     "f",
                     Function::new(
-                        vec!["x".into(), "y".into()],
+                        signature,
                         Power::new(
                             Symbol::new("x").with_span(8, 8),
                             Symbol::new("y").with_span(10, 10),

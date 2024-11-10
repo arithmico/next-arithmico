@@ -4,6 +4,7 @@ use evaluate::EvaluateNode;
 
 mod evaluate;
 mod node;
+mod utils;
 
 pub fn evaluate_node(
     node: &Node,

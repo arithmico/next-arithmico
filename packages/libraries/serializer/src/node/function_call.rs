@@ -52,7 +52,7 @@ impl SerializeNode for FunctionCall {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Function, Sum, Symbol};
+    use ast::{Function, FunctionSignature, NodeType, Sum, Symbol};
 
     use crate::serialize_node;
 
@@ -103,7 +103,12 @@ mod tests {
             serialize_node(
                 &FunctionCall::new(
                     Function::new(
-                        vec![String::from("x"), String::from("y")],
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                     ),
                     vec![Symbol::new("x"), Symbol::new("y")]

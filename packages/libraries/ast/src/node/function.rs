@@ -1,20 +1,20 @@
 use trace::Trace;
 
-use crate::impl_node_traits;
+use crate::{impl_node_traits, FunctionSignature};
 
 use super::Node;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Function {
-    pub arguments: Vec<String>,
+    pub signature: FunctionSignature,
     pub expression: Box<Node>,
     pub trace: Trace,
 }
 
 impl Function {
-    pub fn new(arguments: Vec<String>, expression: Node) -> Node {
+    pub fn new(signature: FunctionSignature, expression: Node) -> Node {
         Node::Function(Function {
-            arguments,
+            signature,
             expression: Box::new(expression),
             trace: Trace::new(),
         })

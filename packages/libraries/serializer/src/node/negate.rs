@@ -43,7 +43,7 @@ impl SerializeNode for Negate {
 #[cfg(test)]
 mod tests {
 
-    use ast::{And, Function, Or, Sum, Symbol};
+    use ast::{And, Function, FunctionSignature, NodeType, Or, Sum, Symbol};
 
     use crate::serialize_node;
 
@@ -122,7 +122,10 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Negate::new(Function::new(
-                    vec![String::from("x")],
+                    FunctionSignature::new()
+                        .argument("x", |argument| argument
+                            .node_type(NodeType::Any))
+                        .add_return_type(NodeType::Any),
                     Symbol::new("x")
                 )),
                 &SerializeNodeOptions::default()

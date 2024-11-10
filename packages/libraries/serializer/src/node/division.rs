@@ -66,7 +66,9 @@ impl SerializeNode for Division {
 
 #[cfg(test)]
 mod tests {
-    use ast::{And, Function, Or, Product, Sum, Symbol};
+    use ast::{
+        And, Function, FunctionSignature, NodeType, Or, Product, Sum, Symbol,
+    };
 
     use crate::serialize_node;
 
@@ -179,8 +181,20 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Division::new(
-                    Function::new(vec![String::from("x")], Symbol::new("x")),
-                    Function::new(vec![String::from("y")], Symbol::new("y")),
+                    Function::new(
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
+                        Symbol::new("x")
+                    ),
+                    Function::new(
+                        FunctionSignature::new()
+                            .argument("y", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
+                        Symbol::new("y")
+                    ),
                 ),
                 &SerializeNodeOptions::default()
             )

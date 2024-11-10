@@ -28,7 +28,10 @@ impl SerializeNode for Definition {
             Node::Function(function) => Ok(format!(
                 "{}({}) := {}",
                 self.symbol,
-                function.arguments.join(&get_argument_separator(options)),
+                function
+                    .signature
+                    .argument_names()
+                    .join(&get_argument_separator(options)),
                 function.expression.serialize(options)?
             )),
             _ => Ok(format!(
@@ -42,7 +45,7 @@ impl SerializeNode for Definition {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Function, Number, Symbol};
+    use ast::{Function, FunctionSignature, NodeType, Number, Symbol};
 
     use crate::serialize_node;
 
@@ -66,7 +69,13 @@ mod tests {
             serialize_node(
                 &Definition::new(
                     "f",
-                    Function::new(vec![String::from("x")], Symbol::new("x"))
+                    Function::new(
+                        FunctionSignature::new()
+                            .argument("x", |argument| argument
+                                .node_type(NodeType::Any))
+                            .add_return_type(NodeType::Any),
+                        Symbol::new("x")
+                    )
                 ),
                 &SerializeNodeOptions::default()
             )

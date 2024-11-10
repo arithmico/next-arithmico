@@ -1,6 +1,6 @@
 use crate::Node;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum NodeType {
     Any, // required for user defined functions without type signature
     Boolean,

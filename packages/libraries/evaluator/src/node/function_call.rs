@@ -1,8 +1,11 @@
 use ast::{FunctionCall, Node};
 use common::HostEndpoint;
-use std::iter::zip;
 
-use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
+use crate::{
+    evaluate::EvaluateNode,
+    utils::map_function_arguments::map_function_parameters,
+    EvaluateNodeContext, EvaluateNodeError,
+};
 
 impl EvaluateNode for FunctionCall {
     fn evaluate(
@@ -13,22 +16,18 @@ impl EvaluateNode for FunctionCall {
 
         match target {
             Node::Function(function) => {
-                if self.arguments.len() != function.arguments.len() {
-                    return Err(
-                        EvaluateNodeError::invalid_number_of_arguments(
-                            function.arguments.len(),
-                            self.arguments.len(),
-                        ),
-                    );
-                }
+                let mapping = map_function_parameters(
+                    &function.signature,
+                    &self.arguments,
+                    context,
+                )?;
 
                 let mut stack = context.stack.clone();
                 stack.add_frame();
 
-                for (name, value) in
-                    zip(function.arguments.iter(), self.arguments.iter())
-                {
-                    stack.insert(name, value.clone());
+                for name in mapping.parameter_names() {
+                    let value = mapping.get_parameter_value(&name)?;
+                    stack.insert(&name, value);
                 }
 
                 let local_context = EvaluateNodeContext::new(
@@ -50,24 +49,20 @@ impl EvaluateNode for FunctionCall {
 
                 let HostEndpoint::Function {
                     executor,
-                    arguments,
+                    signature,
                     ..
                 } = endpoint
                 else {
                     return Err(EvaluateNodeError::unsupported_operation());
                 };
 
-                if self.arguments.len() != arguments.len() {
-                    return Err(
-                        EvaluateNodeError::invalid_number_of_arguments(
-                            arguments.len(),
-                            self.arguments.len(),
-                        )
-                        .with_tracable(&self.arguments),
-                    );
-                }
+                let mapping = map_function_parameters(
+                    &signature,
+                    &self.arguments,
+                    context,
+                )?;
 
-                executor(&self.arguments, context)
+                executor(&mapping, context)
             }
             node => {
                 Err(EvaluateNodeError::unsupported_operation()
@@ -81,7 +76,7 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::rc::Rc;
 
-    use ast::{Function, Number, Power, Symbol};
+    use ast::{Function, FunctionSignature, NodeType, Number, Power, Symbol};
 
     use common::{
         EvaluateNodeOptions, HostApi, HostApiModule, Language, Stack,
@@ -93,21 +88,28 @@ mod tests {
     fn evaluate_function_call_with_invalid_number_of_arguments() {
         let context = EvaluateNodeContext::default();
         let result = FunctionCall::new(
-            Function::new(vec![String::from("x")], Symbol::new("x")),
+            Function::new(
+                FunctionSignature::new()
+                    .argument("x", |argument| argument.node_type(NodeType::Any))
+                    .add_return_type(NodeType::Any),
+                Symbol::new("x"),
+            ),
             vec![],
         )
         .evaluate(&context);
-        assert_eq!(
-            result,
-            Err(EvaluateNodeError::invalid_number_of_arguments(1, 0))
-        );
+        assert_eq!(result, Err(EvaluateNodeError::missing_parameter("x")));
     }
 
     #[test]
     fn evaluate_function_call() {
         let context = EvaluateNodeContext::default();
         let result = FunctionCall::new(
-            Function::new(vec![String::from("x")], Symbol::new("x")),
+            Function::new(
+                FunctionSignature::new()
+                    .argument("x", |argument| argument.node_type(NodeType::Any))
+                    .add_return_type(NodeType::Any),
+                Symbol::new("x"),
+            ),
             vec![Number::new(2.)],
         )
         .evaluate(&context)
@@ -132,14 +134,18 @@ mod tests {
                                         common::Language::English,
                                         "test",
                                     )
-                                    .function(vec!["x"])
+                                    .function(
+                                        FunctionSignature::new()
+                                            .argument("x", |argument| {
+                                                argument
+                                                    .node_type(NodeType::Any)
+                                            })
+                                            .add_return_type(NodeType::Any),
+                                    )
                                     .executor(|arguments, context| {
                                         Power::new(
-                                            arguments.get(0).ok_or(
-                                                EvaluateNodeError::runtime_error(
-                                                    "test",
-                                                ),
-                                            )?.clone(),
+                                            arguments
+                                                .get_parameter_value("x")?,
                                             Number::new(2.),
                                         )
                                         .evaluate(context)
@@ -173,14 +179,18 @@ mod tests {
                                         common::Language::English,
                                         "test",
                                     )
-                                    .function(vec!["x"])
+                                    .function(
+                                        FunctionSignature::new()
+                                            .argument("x", |argument| {
+                                                argument
+                                                    .node_type(NodeType::Any)
+                                            })
+                                            .add_return_type(NodeType::Any),
+                                    )
                                     .executor(|arguments, context| {
                                         Power::new(
-                                            arguments.get(0).ok_or(
-                                                EvaluateNodeError::runtime_error(
-                                                    "test",
-                                                ),
-                                            )?.clone(),
+                                            arguments
+                                                .get_parameter_value("x")?,
                                             Number::new(2.),
                                         )
                                         .evaluate(context)
@@ -193,9 +203,6 @@ mod tests {
         );
         let result =
             FunctionCall::new(Symbol::new("f"), vec![]).evaluate(&context);
-        assert_eq!(
-            result,
-            Err(EvaluateNodeError::invalid_number_of_arguments(1, 0))
-        );
+        assert_eq!(result, Err(EvaluateNodeError::missing_parameter("x")));
     }
 }
