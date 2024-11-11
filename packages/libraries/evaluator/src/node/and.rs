@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{And, Boolean, Node};
+use ast::{And, Boolean, GetNodeType, Node};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;
 
@@ -9,7 +9,7 @@ impl EvaluateNode for And {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node("And"));
+            return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }
 
         self.elements
@@ -41,13 +41,15 @@ fn combine_and_elements(
 
 #[cfg(test)]
 mod tests {
+    use ast::NodeType;
+
     use super::*;
 
     #[test]
     fn evaluate_invalid_and() {
         let context = EvaluateNodeContext::default();
         let result = And::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node("And")));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::And)));
     }
 
     #[test]

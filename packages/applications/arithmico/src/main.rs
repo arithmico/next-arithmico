@@ -2,6 +2,7 @@ use app::App;
 use leptos::*;
 
 mod app;
+mod app_shell;
 mod components;
 mod pages;
 mod router;

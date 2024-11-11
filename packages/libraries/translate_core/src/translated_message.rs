@@ -1,65 +1,55 @@
 use std::collections::HashMap;
 
 use crate::{
-    language::Language, translation_template::TranslationTemplate,
-    TranslationError,
+    Language, Translatable, TranslationError, TranslationTemplateCollection,
 };
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TranslatedMessage {
-    map: HashMap<Language, TranslationTemplate>,
+    templates: TranslationTemplateCollection,
+    keys: HashMap<String, String>,
 }
 
 impl TranslatedMessage {
     pub fn new() -> Self {
         Self {
-            map: HashMap::new(),
+            templates: TranslationTemplateCollection::new(),
+            keys: HashMap::new(),
         }
     }
 
-    pub fn add_translation<T: ToString>(
+    pub fn add_translation(
         &mut self,
         language: Language,
-        template: T,
+        template: impl ToString,
     ) {
-        self.map
-            .insert(language, TranslationTemplate::new(template));
+        self.templates.add_translation(language, template);
     }
 
-    pub fn translation<T: ToString>(
+    pub fn translation(
         mut self,
         language: Language,
-        template: T,
+        template: impl ToString,
     ) -> Self {
         self.add_translation(language, template);
         self
     }
 
-    fn get_template_for(
-        &self,
-        language: Language,
-    ) -> Result<&TranslationTemplate, TranslationError> {
-        if let Some(template) = self.map.get(&language) {
-            Ok(template)
-        } else {
-            Err(TranslationError::MissingTranslationTemplate(language))
-        }
+    pub fn add_key(&mut self, key: impl ToString, value: impl ToString) {
+        self.keys.insert(key.to_string(), value.to_string());
     }
 
-    pub fn translate_with(
-        &self,
-        language: Language,
-        keys: &HashMap<String, String>,
-    ) -> Result<String, TranslationError> {
-        let template = self.get_template_for(language)?;
-        template.render_with(&keys)
+    pub fn key(mut self, key: impl ToString, value: impl ToString) -> Self {
+        self.add_key(key, value);
+        self
     }
+}
 
-    pub fn translate(
+impl Translatable for TranslatedMessage {
+    fn translate(
         &self,
         language: Language,
     ) -> Result<String, TranslationError> {
-        let template = self.get_template_for(language)?;
-        template.render()
+        self.templates.translate_with(language, &self.keys)
     }
 }

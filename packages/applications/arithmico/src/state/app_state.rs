@@ -42,7 +42,7 @@ impl AppState {
         .expect("localstorage");
     }
 
-    pub(super) fn reduce(&mut self, action: AppAction) {
+    pub fn reduce(&mut self, action: AppAction) {
         match action {
             AppAction::Evaluate(input) => {
                 let options = EvaluateNodeOptions::new(

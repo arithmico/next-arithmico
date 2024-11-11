@@ -1,10 +1,10 @@
-use crate::{components::*, utils::expect_app_state};
+use crate::{components::*, utils::use_app_state};
 use common::Language;
 use leptos::*;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
-    let app_state = expect_app_state();
+    let app_state = use_app_state();
 
     view! {
         <PageWithSidebar>

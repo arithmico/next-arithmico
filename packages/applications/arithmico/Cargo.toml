@@ -27,4 +27,4 @@ js-sys = "0.3.72"
 editor = { path = "../../libraries/editor" }
 trace = { path = "../../libraries/trace" }
 editor_core = { path = "../../libraries/editor_core" }
-translate_core = { path = "../../libraries/translate_core" }
+translate = { path = "../../libraries/translate" }

@@ -1,6 +1,8 @@
 use std::iter::zip;
 
-use ast::{convert_to_outer_index, Node, Number, Product, Sum, Tensor};
+use ast::{
+    convert_to_outer_index, GetNodeType, Node, Number, Product, Sum, Tensor,
+};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;
 
@@ -12,7 +14,7 @@ impl EvaluateNode for Product {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node("Product"));
+            return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }
 
         let mut elements = self
@@ -175,7 +177,7 @@ fn multiply_matrices(
 
 #[cfg(test)]
 mod tests {
-    use ast::Tensor;
+    use ast::{NodeType, Tensor};
 
     use super::*;
 
@@ -183,7 +185,10 @@ mod tests {
     fn evaluate_invalid_product() {
         let context = EvaluateNodeContext::default();
         let result = Product::new(vec![Number::new(1.)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node("Product")));
+        assert_eq!(
+            result,
+            Err(EvaluateNodeError::invalid_node(NodeType::Product))
+        );
     }
 
     #[test]

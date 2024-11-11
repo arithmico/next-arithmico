@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Boolean, Node, Or};
+use ast::{Boolean, GetNodeType, Node, Or};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;
 
@@ -9,7 +9,7 @@ impl EvaluateNode for Or {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node("Or"));
+            return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }
 
         let mut elements = self
@@ -47,13 +47,15 @@ fn combine_or_elements(
 
 #[cfg(test)]
 mod tests {
+    use ast::NodeType;
+
     use super::*;
 
     #[test]
     fn evaluate_invalid_or() {
         let context = EvaluateNodeContext::default();
         let result = Or::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node("Or")));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Or)));
     }
 
     #[test]
