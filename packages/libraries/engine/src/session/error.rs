@@ -1,6 +1,6 @@
-use common::EvaluateNodeError;
-use parser::ParseNodeError;
-use serializer::SerializeNodeError;
+pub use common::EvaluateNodeError;
+pub use parser::ParseNodeError;
+pub use serializer::SerializeNodeError;
 use thiserror::Error;
 
 #[derive(Error, Debug, Clone)]

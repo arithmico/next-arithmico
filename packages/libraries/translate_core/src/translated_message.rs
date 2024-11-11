@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-use crate::{language::Language, translation_template::TranslationTemplate};
+use crate::{
+    language::Language, translation_template::TranslationTemplate,
+    TranslationError,
+};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TranslatedMessage {
@@ -30,5 +33,33 @@ impl TranslatedMessage {
     ) -> Self {
         self.add_translation(language, template);
         self
+    }
+
+    fn get_template_for(
+        &self,
+        language: Language,
+    ) -> Result<&TranslationTemplate, TranslationError> {
+        if let Some(template) = self.map.get(&language) {
+            Ok(template)
+        } else {
+            Err(TranslationError::MissingTranslationTemplate(language))
+        }
+    }
+
+    pub fn translate_with(
+        &self,
+        language: Language,
+        keys: &HashMap<String, String>,
+    ) -> Result<String, TranslationError> {
+        let template = self.get_template_for(language)?;
+        template.render_with(&keys)
+    }
+
+    pub fn translate(
+        &self,
+        language: Language,
+    ) -> Result<String, TranslationError> {
+        let template = self.get_template_for(language)?;
+        template.render()
     }
 }
