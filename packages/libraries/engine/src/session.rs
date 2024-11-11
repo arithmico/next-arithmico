@@ -7,7 +7,7 @@ use serializer::{serialize_node, SerializeNodeOptions};
 use std::rc::Rc;
 
 pub use entry::SessionEntry;
-pub use error::SessionError;
+pub use error::*;
 
 mod entry;
 mod error;

@@ -34,6 +34,7 @@ dependencies = [
  "serde",
  "serde_json",
  "trace",
+ "translate_core",
  "web-sys",
 ]
 

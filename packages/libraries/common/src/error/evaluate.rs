@@ -1,139 +1,74 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use ast::NodeType;
+pub use error_kind::*;
 use thiserror::Error;
 use trace::{IntoTrace, Trace};
+use translate_core::{Language, Translatable, TranslatedMessage};
 
-// TODO: extract inner error into separate file
-// TODO: replace format strings with dummy names
+mod error_kind;
+
 #[derive(Error, Debug, PartialEq, Clone)]
-pub enum EvaluateNodeInnerError {
-    #[error("unsupported operation")]
-    UnsupportedOperation,
-
-    #[error("unsupported data type '{0}'")]
-    UnsupportedDataType(String),
-
-    #[error("unknown symbol '{0}'")]
-    UnknownSymbol(String),
-
-    #[error("RuntimeError: {0}")]
-    RuntimeError(String),
-
-    #[error("invalid node")]
-    InvalidNode(String),
-
-    #[error("incompatible vector dimensions: {0}, {1}")]
-    IncompatibleVectorDimensions(usize, usize),
-
-    #[error("incompatible vector dimensions: {0:?}, {1:?}")]
-    IncompatibleMatrixDimensions(Vec<usize>, Vec<usize>),
-
-    #[error("division by zero")]
-    DivisionByZero,
-
-    #[error("Invalid number of arguments: Expected {0} got {1}")]
-    InvalidNumberOfArguments(usize, usize),
-
-    #[error("Missing parameter \"{0}\"")]
-    MissingParameter(String),
-
-    #[error("Invalid repeatable parameter count. Expected between {min} and {max:?} but received {received}.")]
-    InvalidRepeatableParameterCount {
-        name: String,
-        min: usize,
-        max: Option<usize>,
-        received: usize,
-    },
-
-    #[error("InvalidParameterType")]
-    InvalidParameterType {
-        name: String,
-        expected: HashSet<NodeType>,
-        received: NodeType,
-    },
-
-    #[error("TooManyParameters")]
-    TooManyParameters,
-}
-
-// TODO: add translations later
-#[derive(Error, Debug, PartialEq, Clone)]
-#[error("{inner}")]
+#[error("{inner:?}")]
 pub struct EvaluateNodeError {
-    inner: EvaluateNodeInnerError,
+    inner: EvaluateNodeErrorKind,
     stack_trace: Vec<Trace>,
+    message: TranslatedMessage,
+    keys: HashMap<String, String>,
 }
 
 // TODO: extract variant constructor methods into seperate files
 impl EvaluateNodeError {
-    fn from_inner(inner: EvaluateNodeInnerError) -> Self {
+    fn from_error_kind(inner: EvaluateNodeErrorKind) -> Self {
         Self {
             inner,
             stack_trace: Vec::new(),
+            message: TranslatedMessage::new(),
+            keys: HashMap::new(),
         }
     }
 
     pub fn unsupported_operation() -> Self {
-        Self::from_inner(EvaluateNodeInnerError::UnsupportedOperation)
+        Self::from_error_kind(EvaluateNodeErrorKind::UnsupportedOperation)
     }
 
     pub fn unsupported_datatype(node_kind: NodeType) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::UnsupportedDataType(
-            node_kind.to_string(),
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::UnsupportedDataType)
     }
 
     pub fn unknown_symbol<T: ToString>(name: T) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::UnknownSymbol(
-            name.to_string(),
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::UnknownSymbol)
     }
 
     pub fn runtime_error<T: ToString>(message: T) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::RuntimeError(
-            message.to_string(),
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::RuntimeError)
     }
 
     pub fn invalid_node<T: ToString>(node_kind: T) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::InvalidNode(
-            node_kind.to_string(),
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::InvalidNode)
     }
 
     pub fn incompatible_vector_dimensions(left: usize, right: usize) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::IncompatibleVectorDimensions(
-            left, right,
-        ))
+        Self::from_error_kind(
+            EvaluateNodeErrorKind::IncompatibleVectorDimensions,
+        )
     }
 
     pub fn incompatible_matrix_dimensions(
         left: Vec<usize>,
         right: Vec<usize>,
     ) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::IncompatibleMatrixDimensions(
-            left, right,
-        ))
+        Self::from_error_kind(
+            EvaluateNodeErrorKind::IncompatibleMatrixDimensions,
+        )
     }
 
     pub fn division_by_zero() -> Self {
-        Self::from_inner(EvaluateNodeInnerError::DivisionByZero)
-    }
-
-    pub fn invalid_number_of_arguments(
-        expected: usize,
-        received: usize,
-    ) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::InvalidNumberOfArguments(
-            expected, received,
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::DivisionByZero)
     }
 
     pub fn missing_parameter(name: impl ToString) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::MissingParameter(
-            name.to_string(),
-        ))
+        Self::from_error_kind(EvaluateNodeErrorKind::MissingParameter)
     }
 
     pub fn invalid_repeatable_parameter_count(
@@ -142,13 +77,8 @@ impl EvaluateNodeError {
         max: Option<usize>,
         received: usize,
     ) -> Self {
-        Self::from_inner(
-            EvaluateNodeInnerError::InvalidRepeatableParameterCount {
-                name,
-                min,
-                max,
-                received,
-            },
+        Self::from_error_kind(
+            EvaluateNodeErrorKind::InvalidRepeatableParameterCount,
         )
     }
 
@@ -157,15 +87,18 @@ impl EvaluateNodeError {
         expected: HashSet<NodeType>,
         received: NodeType,
     ) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::InvalidParameterType {
-            name,
-            expected,
-            received,
-        })
+        Self::from_error_kind(EvaluateNodeErrorKind::InvalidParameterType)
     }
 
-    pub fn too_many_parameters(_remaining_parameter_count: usize) -> Self {
-        Self::from_inner(EvaluateNodeInnerError::TooManyParameters)
+    pub fn too_many_parameters(remaining_parameter_count: usize) -> Self {
+        let mut error =
+            Self::from_error_kind(EvaluateNodeErrorKind::TooManyParameters);
+        error.message.add_translation(Language::English, "Too many parameters: the last {count} parameters could not be mapped to function inputs.");
+        error.message.add_translation(Language::German, "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden.");
+        error
+            .keys
+            .insert("count".to_string(), remaining_parameter_count.to_string());
+        error
     }
 
     pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
@@ -178,5 +111,14 @@ impl EvaluateNodeError {
 
     pub fn stack_trace(&self) -> Vec<Trace> {
         self.stack_trace.clone()
+    }
+}
+
+impl Translatable for EvaluateNodeError {
+    fn translate(
+        &self,
+        language: Language,
+    ) -> Result<String, translate_core::TranslationError> {
+        self.message.translate_with(language, &self.keys)
     }
 }
