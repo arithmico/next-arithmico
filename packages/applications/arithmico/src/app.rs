@@ -1,13 +1,12 @@
 use leptos::*;
 
-use crate::router::Router;
-use crate::state::StateProvider;
+use crate::{app_shell::AppShell, router::Router};
 
 #[component]
 pub fn App() -> impl IntoView {
     view! {
-        <StateProvider>
-            <Router/>
-        </StateProvider>
+        <AppShell>
+            <Router />
+        </AppShell>
     }
 }

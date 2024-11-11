@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use ast::NodeType;
 pub use error_kind::*;
@@ -9,48 +9,102 @@ use translate_core::{Language, Translatable, TranslatedMessage};
 mod error_kind;
 
 #[derive(Error, Debug, PartialEq, Clone)]
-#[error("{inner:?}")]
+#[error("{kind:?}")]
 pub struct EvaluateNodeError {
-    inner: EvaluateNodeErrorKind,
+    kind: EvaluateNodeErrorKind,
     stack_trace: Vec<Trace>,
     message: TranslatedMessage,
-    keys: HashMap<String, String>,
 }
 
 // TODO: extract variant constructor methods into seperate files
 impl EvaluateNodeError {
-    fn from_error_kind(inner: EvaluateNodeErrorKind) -> Self {
+    fn new(kind: EvaluateNodeErrorKind, message: TranslatedMessage) -> Self {
         Self {
-            inner,
+            kind,
             stack_trace: Vec::new(),
-            message: TranslatedMessage::new(),
-            keys: HashMap::new(),
+            message,
         }
     }
 
     pub fn unsupported_operation() -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::UnsupportedOperation)
+        Self::new(
+            EvaluateNodeErrorKind::UnsupportedOperation,
+            TranslatedMessage::new()
+                .translation(Language::English, "Unsupported operation")
+                .translation(Language::German, "Nicht unterstützte Operation"),
+        )
     }
 
     pub fn unsupported_datatype(node_kind: NodeType) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::UnsupportedDataType)
+        Self::new(
+            EvaluateNodeErrorKind::UnsupportedDataType,
+            TranslatedMessage::new()
+                .translation(
+                    Language::English,
+                    "Unsupported datatype: \"{node_kind}\"",
+                )
+                .translation(
+                    Language::German,
+                    "Nicht unterstützter Datentyp: \"{node_kind}\"",
+                )
+                .key("node_kind", node_kind),
+        )
     }
 
     pub fn unknown_symbol<T: ToString>(name: T) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::UnknownSymbol)
+        Self::new(
+            EvaluateNodeErrorKind::UnknownSymbol,
+            TranslatedMessage::new()
+                .translation(Language::English, "Unknown symbol: \"{name}\"")
+                .translation(
+                    Language::English,
+                    "Unbekanntes Symbol: \"{name}\"",
+                )
+                .key("name", name),
+        )
     }
 
+    // TODO: make T: Translatable
     pub fn runtime_error<T: ToString>(message: T) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::RuntimeError)
+        Self::new(
+            EvaluateNodeErrorKind::RuntimeError,
+            TranslatedMessage::new()
+                .translation(Language::English, "Runtime error: {message}")
+                .translation(Language::English, "Laufzeitfehler: {message}")
+                .key("message", message),
+        )
     }
 
-    pub fn invalid_node<T: ToString>(node_kind: T) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::InvalidNode)
+    pub fn invalid_node(node_type: NodeType) -> Self {
+        Self::new(
+            EvaluateNodeErrorKind::InvalidNode,
+            TranslatedMessage::new()
+                .translation(
+                    Language::English,
+                    "Invalid node of type \"{node_type}\"",
+                )
+                .translation(
+                    Language::English,
+                    "Ungültiger Knoten vom Typ \"{node_type}\"",
+                )
+                .key("node_type", node_type),
+        )
     }
 
     pub fn incompatible_vector_dimensions(left: usize, right: usize) -> Self {
-        Self::from_error_kind(
+        Self::new(
             EvaluateNodeErrorKind::IncompatibleVectorDimensions,
+            TranslatedMessage::new()
+                .translation(
+                    Language::English,
+                    "Incompatible vector dimensions: {left} and {right}",
+                )
+                .translation(
+                    Language::German,
+                    "Inkompatible Vektordimensionen: {left} und {right}",
+                )
+                .key("left", left)
+                .key("right", right),
         )
     }
 
@@ -58,17 +112,58 @@ impl EvaluateNodeError {
         left: Vec<usize>,
         right: Vec<usize>,
     ) -> Self {
-        Self::from_error_kind(
+        Self::new(
             EvaluateNodeErrorKind::IncompatibleMatrixDimensions,
+            TranslatedMessage::new()
+                .translation(
+                    Language::English,
+                    "Incompatible matrix dimensions: {left} and {right}",
+                )
+                .translation(
+                    Language::English,
+                    "Inkompatible Matrixdimensionen: {left} und {right}",
+                )
+                .key(
+                    "left",
+                    left.into_iter()
+                        .map(|v| v.to_string())
+                        .collect::<Vec<_>>()
+                        .join("x"),
+                )
+                .key(
+                    "right",
+                    right
+                        .into_iter()
+                        .map(|v| v.to_string())
+                        .collect::<Vec<_>>()
+                        .join("x"),
+                ),
         )
     }
 
     pub fn division_by_zero() -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::DivisionByZero)
+        Self::new(
+            EvaluateNodeErrorKind::DivisionByZero,
+            TranslatedMessage::new()
+                .translation(Language::English, "Division by zero")
+                .translation(Language::German, "Division durch Null"),
+        )
     }
 
     pub fn missing_parameter(name: impl ToString) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::MissingParameter)
+        Self::new(
+            EvaluateNodeErrorKind::MissingParameter,
+            TranslatedMessage::new()
+                .translation(
+                    Language::English,
+                    "Missing parameter value for \"{name}\"",
+                )
+                .translation(
+                    Language::German,
+                    "Fehlender Parameterwert für \"{name}\"",
+                )
+                .key("name", name),
+        )
     }
 
     pub fn invalid_repeatable_parameter_count(
@@ -77,9 +172,14 @@ impl EvaluateNodeError {
         max: Option<usize>,
         received: usize,
     ) -> Self {
-        Self::from_error_kind(
-            EvaluateNodeErrorKind::InvalidRepeatableParameterCount,
-        )
+        Self::new(EvaluateNodeErrorKind::InvalidRepeatableParameterCount, TranslatedMessage::new()
+        .translation(Language::English, "Invalid number of values for the repeatable parameter \"{name}\". Expected between {min} and {max} values but received {received}.")
+        .translation(Language::German, "Ungültige Anzahl von Parameterwerten für den wiederholbaren Parameter \"{name}\". Es werden zwischen {min} und {max} Werte. Es wurden {received} Werte übergeben.")
+        .key("name", name)
+        .key("min", min)
+        .key("max", format!("{:?}", max))
+        .key("received", received)
+    )
     }
 
     pub fn invalid_parameter_type(
@@ -87,18 +187,19 @@ impl EvaluateNodeError {
         expected: HashSet<NodeType>,
         received: NodeType,
     ) -> Self {
-        Self::from_error_kind(EvaluateNodeErrorKind::InvalidParameterType)
+        Self::new(EvaluateNodeErrorKind::InvalidParameterType, TranslatedMessage::new()
+            .translation(Language::English, "Invalid parameter type for \"{name}\". Expected {expected} received {received}.")
+            .translation(Language::German, "Ungültiger Parameterwert für \"{name}\". Es wurde eine Wert vom Typ {expected} erwartet. Stattdessen wurde ein Wert vom Typ {received} gefunden.")
+            .key("name", name)
+            .key("expected", expected.into_iter().map(|v| v.to_string()).collect::<Vec<_>>().join(", "))
+            .key("received", received))
     }
 
-    pub fn too_many_parameters(remaining_parameter_count: usize) -> Self {
-        let mut error =
-            Self::from_error_kind(EvaluateNodeErrorKind::TooManyParameters);
-        error.message.add_translation(Language::English, "Too many parameters: the last {count} parameters could not be mapped to function inputs.");
-        error.message.add_translation(Language::German, "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden.");
-        error
-            .keys
-            .insert("count".to_string(), remaining_parameter_count.to_string());
-        error
+    pub fn too_many_parameters(count: usize) -> Self {
+        Self::new(EvaluateNodeErrorKind::TooManyParameters, TranslatedMessage::new()
+            .translation(Language::English, "Too many parameters: the last {count} parameters could not be mapped to function inputs.")
+            .translation(Language::German, "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden.")
+            .key("count", count))
     }
 
     pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
@@ -119,6 +220,6 @@ impl Translatable for EvaluateNodeError {
         &self,
         language: Language,
     ) -> Result<String, translate_core::TranslationError> {
-        self.message.translate_with(language, &self.keys)
+        self.message.translate(language)
     }
 }

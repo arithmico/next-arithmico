@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use ast::{Node, Number, Sum, Tensor};
+use ast::{GetNodeType, Node, Number, Sum, Tensor};
 use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;
 
@@ -12,7 +12,7 @@ impl EvaluateNode for Sum {
         context: &EvaluateNodeContext,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node("Sum"));
+            return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }
 
         let mut elements = self
@@ -84,13 +84,15 @@ fn add_sum_elements(
 
 #[cfg(test)]
 mod tests {
+    use ast::NodeType;
+
     use super::*;
 
     #[test]
     fn evaluate_invalid_sum() {
         let context = EvaluateNodeContext::default();
         let result = Sum::new(vec![Number::new(1.)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node("Sum")));
+        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Sum)));
     }
 
     #[test]

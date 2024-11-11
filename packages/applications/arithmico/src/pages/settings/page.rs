@@ -1,7 +1,7 @@
 use crate::{
     components::*,
     state::{AppAction, OverrideDecimalFormat},
-    utils::{expect_app_state, expect_dispatch},
+    utils::{expect_dispatch, use_app_state},
 };
 use common::{DecimalFormat, Language};
 use common_ui::form::listbox::{
@@ -11,7 +11,7 @@ use leptos::*;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {
-    let app_state = expect_app_state();
+    let app_state = use_app_state();
     let dispatch = expect_dispatch();
 
     let class = |selected: bool| {
