@@ -1,4 +1,4 @@
-use translate_core::{Language, TranslationTemplateCollection};
+use translate_core::{Language, TranslationTemplate};
 
 use crate::{Node, NodeType};
 
@@ -7,7 +7,7 @@ use super::argument_options::{ArgumentOptions, Cardinality, Preprocess};
 #[derive(Debug, Clone, PartialEq)]
 pub struct Argument {
     name: String,
-    description: TranslationTemplateCollection,
+    description: TranslationTemplate,
     options: ArgumentOptions,
 }
 
@@ -16,7 +16,7 @@ impl Argument {
     pub fn new(name: String) -> Self {
         Self {
             name,
-            description: TranslationTemplateCollection::new(),
+            description: TranslationTemplate::new(),
             options: ArgumentOptions::new(),
         }
     }
