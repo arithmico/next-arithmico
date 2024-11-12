@@ -4,7 +4,7 @@ use ast::NodeType;
 pub use error_kind::*;
 use thiserror::Error;
 use trace::{IntoTrace, Trace};
-use translate_core::{Language, Translatable, TranslatedMessage};
+use translate_core::{Language, StandaloneTranslatedMessage, Translatable};
 
 mod error_kind;
 
@@ -13,12 +13,15 @@ mod error_kind;
 pub struct EvaluateNodeError {
     kind: EvaluateNodeErrorKind,
     stack_trace: Vec<Trace>,
-    message: TranslatedMessage,
+    message: StandaloneTranslatedMessage,
 }
 
 // TODO: extract variant constructor methods into seperate files
 impl EvaluateNodeError {
-    fn new(kind: EvaluateNodeErrorKind, message: TranslatedMessage) -> Self {
+    fn new(
+        kind: EvaluateNodeErrorKind,
+        message: StandaloneTranslatedMessage,
+    ) -> Self {
         Self {
             kind,
             stack_trace: Vec::new(),
@@ -29,7 +32,7 @@ impl EvaluateNodeError {
     pub fn unsupported_operation() -> Self {
         Self::new(
             EvaluateNodeErrorKind::UnsupportedOperation,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(Language::English, "Unsupported operation")
                 .translation(Language::German, "Nicht unterstützte Operation"),
         )
@@ -38,7 +41,7 @@ impl EvaluateNodeError {
     pub fn unsupported_datatype(node_kind: NodeType) -> Self {
         Self::new(
             EvaluateNodeErrorKind::UnsupportedDataType,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(
                     Language::English,
                     "Unsupported datatype: \"{node_kind}\"",
@@ -54,7 +57,7 @@ impl EvaluateNodeError {
     pub fn unknown_symbol<T: ToString>(name: T) -> Self {
         Self::new(
             EvaluateNodeErrorKind::UnknownSymbol,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(Language::English, "Unknown symbol: \"{name}\"")
                 .translation(
                     Language::English,
@@ -68,7 +71,7 @@ impl EvaluateNodeError {
     pub fn runtime_error<T: ToString>(message: T) -> Self {
         Self::new(
             EvaluateNodeErrorKind::RuntimeError,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(Language::English, "Runtime error: {message}")
                 .translation(Language::English, "Laufzeitfehler: {message}")
                 .key("message", message),
@@ -78,7 +81,7 @@ impl EvaluateNodeError {
     pub fn invalid_node(node_type: NodeType) -> Self {
         Self::new(
             EvaluateNodeErrorKind::InvalidNode,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(
                     Language::English,
                     "Invalid node of type \"{node_type}\"",
@@ -94,7 +97,7 @@ impl EvaluateNodeError {
     pub fn incompatible_vector_dimensions(left: usize, right: usize) -> Self {
         Self::new(
             EvaluateNodeErrorKind::IncompatibleVectorDimensions,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(
                     Language::English,
                     "Incompatible vector dimensions: {left} and {right}",
@@ -114,7 +117,7 @@ impl EvaluateNodeError {
     ) -> Self {
         Self::new(
             EvaluateNodeErrorKind::IncompatibleMatrixDimensions,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(
                     Language::English,
                     "Incompatible matrix dimensions: {left} and {right}",
@@ -144,7 +147,7 @@ impl EvaluateNodeError {
     pub fn division_by_zero() -> Self {
         Self::new(
             EvaluateNodeErrorKind::DivisionByZero,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(Language::English, "Division by zero")
                 .translation(Language::German, "Division durch Null"),
         )
@@ -153,7 +156,7 @@ impl EvaluateNodeError {
     pub fn missing_parameter(name: impl ToString) -> Self {
         Self::new(
             EvaluateNodeErrorKind::MissingParameter,
-            TranslatedMessage::new()
+            StandaloneTranslatedMessage::new()
                 .translation(
                     Language::English,
                     "Missing parameter value for \"{name}\"",
@@ -172,7 +175,7 @@ impl EvaluateNodeError {
         max: Option<usize>,
         received: usize,
     ) -> Self {
-        Self::new(EvaluateNodeErrorKind::InvalidRepeatableParameterCount, TranslatedMessage::new()
+        Self::new(EvaluateNodeErrorKind::InvalidRepeatableParameterCount, StandaloneTranslatedMessage::new()
         .translation(Language::English, "Invalid number of values for the repeatable parameter \"{name}\". Expected between {min} and {max} values but received {received}.")
         .translation(Language::German, "Ungültige Anzahl von Parameterwerten für den wiederholbaren Parameter \"{name}\". Es werden zwischen {min} und {max} Werte. Es wurden {received} Werte übergeben.")
         .key("name", name)
@@ -187,7 +190,7 @@ impl EvaluateNodeError {
         expected: HashSet<NodeType>,
         received: NodeType,
     ) -> Self {
-        Self::new(EvaluateNodeErrorKind::InvalidParameterType, TranslatedMessage::new()
+        Self::new(EvaluateNodeErrorKind::InvalidParameterType, StandaloneTranslatedMessage::new()
             .translation(Language::English, "Invalid parameter type for \"{name}\". Expected {expected} received {received}.")
             .translation(Language::German, "Ungültiger Parameterwert für \"{name}\". Es wurde eine Wert vom Typ {expected} erwartet. Stattdessen wurde ein Wert vom Typ {received} gefunden.")
             .key("name", name)
@@ -196,7 +199,7 @@ impl EvaluateNodeError {
     }
 
     pub fn too_many_parameters(count: usize) -> Self {
-        Self::new(EvaluateNodeErrorKind::TooManyParameters, TranslatedMessage::new()
+        Self::new(EvaluateNodeErrorKind::TooManyParameters, StandaloneTranslatedMessage::new()
             .translation(Language::English, "Too many parameters: the last {count} parameters could not be mapped to function inputs.")
             .translation(Language::German, "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden.")
             .key("count", count))

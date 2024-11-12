@@ -1,19 +1,17 @@
 use std::collections::HashMap;
 
-use crate::{
-    Language, Translatable, TranslationError, TranslationTemplateCollection,
-};
+use crate::{Language, Translatable, TranslationError, TranslationTemplate};
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct TranslatedMessage {
-    templates: TranslationTemplateCollection,
+pub struct StandaloneTranslatedMessage {
+    template: TranslationTemplate,
     keys: HashMap<String, String>,
 }
 
-impl TranslatedMessage {
+impl StandaloneTranslatedMessage {
     pub fn new() -> Self {
         Self {
-            templates: TranslationTemplateCollection::new(),
+            template: TranslationTemplate::new(),
             keys: HashMap::new(),
         }
     }
@@ -23,7 +21,7 @@ impl TranslatedMessage {
         language: Language,
         template: impl ToString,
     ) {
-        self.templates.add_translation(language, template);
+        self.template.add_translation(language, template);
     }
 
     pub fn translation(
@@ -45,11 +43,11 @@ impl TranslatedMessage {
     }
 }
 
-impl Translatable for TranslatedMessage {
+impl Translatable for StandaloneTranslatedMessage {
     fn translate(
         &self,
         language: Language,
     ) -> Result<String, TranslationError> {
-        self.templates.translate_with(language, &self.keys)
+        self.template.translate_with(language, &self.keys)
     }
 }
