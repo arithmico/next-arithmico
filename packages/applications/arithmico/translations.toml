@@ -13,3 +13,39 @@ German = "Referenz"
 [navigation.about]
 English = "About"
 German = "Über"
+
+[calculator.title]
+English = "Calculator"
+German = "Rechner"
+
+[settings.title]
+English = "Settings"
+German = "Einstellungen"
+
+[settings.language]
+English = "Language"
+German = "Sprache"
+
+[settings.language.german]
+English = "German"
+German = "Deutsch"
+
+[settings.language.english]
+English = "English"
+German = "Englisch"
+
+[settings.override_decimal_format]
+English = "Override decimal format"
+German = "Dezimalformat überschreiben"
+
+[settings.override_decimal_format.no]
+English = "No"
+German = "Nein"
+
+[reference.title]
+English = "Reference"
+German = "Referenz"
+
+[about.title]
+English = "About"
+German = "Über"
