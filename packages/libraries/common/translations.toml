@@ -1,0 +1,47 @@
+[engine.evaluate.error.unsupported_operation]
+English = "Unsupported operation"
+German = "Nicht unterstützte Operation"
+
+[engine.evaluate.error.unsupported_datatype]
+English = "Unsupported datatype: \"{node_kind}\""
+German = "Nicht unterstützter Datentyp: \"{node_kind}\""
+
+[engine.evaluate.error.unknown_symbol]
+English = "Unknown symbol: \"{name}\""
+German = "Unbekanntes Symbol: \"{name}\""
+
+[engine.evaluate.error.runtime_error]
+English = "Runtime error: {message}"
+German = "Laufzeitfehler: {message}"
+
+[engine.evaluate.error.invalid_node]
+English = "Invalid node of type \"{node_type}\""
+German = "Ungültiger Knoten vom Typ \"{node_type}\""
+
+[engine.evaluate.error.incompatible_vector_dimensions]
+English = "Incompatible vector dimensions: {left} and {right}"
+German = "Inkompatible Vektordimensionen: {left} und {right}"
+
+[engine.evaluate.error.incompatible_matrix_dimensions]
+English = "Incompatible matrix dimensions: {left} and {right}"
+German = "Inkompatible Matrixdimensionen: {left} und {right}"
+
+[engine.evaluate.error.division_by_zero]
+English = "Division by zero"
+German = "Division durch Null"
+
+[engine.evaluate.error.missing_parameter]
+English = "Missing parameter value for \"{name}\""
+German = "Fehlender Parameterwert für \"{name}\""
+
+[engine.evaluate.error.invalid_repeatable_parameter_count]
+English = "Invalid number of values for the repeatable parameter \"{name}\". Expected between {min} and {max} values but received {received}."
+German = "Ungültige Anzahl von Parameterwerten für den wiederholbaren Parameter \"{name}\". Es werden zwischen {min} und {max} Werte. Es wurden {received} Werte übergeben."
+
+[engine.evaluate.error.invalid_parameter_type]
+English = "Invalid parameter type for \"{name}\". Expected {expected} received {received}."
+German = "Ungültiger Parameterwert für \"{name}\". Es wurde eine Wert vom Typ {expected} erwartet. Stattdessen wurde ein Wert vom Typ {received} gefunden."
+
+[engine.evaluate.error.too_many_parameters]
+English = "Too many parameters: the last {count} parameters could not be mapped to function inputs."
+German = "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden."

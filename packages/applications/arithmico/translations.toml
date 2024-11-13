@@ -1,0 +1,15 @@
+[navigation.calculator]
+English = "Calculator"
+German = "Rechner"
+
+[navigation.settings]
+English = "Settings"
+German = "Einstellungen"
+
+[navigation.reference]
+English = "Reference"
+German = "Referenz"
+
+[navigation.about]
+English = "About"
+German = "Über"
