@@ -19,3 +19,12 @@ impl FromStr for Language {
         }
     }
 }
+
+impl ToString for Language {
+    fn to_string(&self) -> String {
+        match self {
+            Language::German => "German".to_string(),
+            Language::English => "English".to_string(),
+        }
+    }
+}

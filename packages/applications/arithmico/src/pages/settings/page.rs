@@ -8,6 +8,7 @@ use common_ui::form::listbox::{
     Listbox, ListboxButton, ListboxOption, ListboxOptions,
 };
 use leptos::*;
+use translate::FormattedMessage;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {
@@ -25,10 +26,14 @@ pub fn SettingsPage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <PageTitle>Settings</PageTitle>
+            <PageTitle>
+                <FormattedMessage id="settings.title" />
+            </PageTitle>
             <div class="flex flex-col gap-2 p-2 w-1/2 bg-white rounded-md border border-neutral-200">
                 <div class="flex items-center">
-                    <span>Language</span>
+                    <span>
+                        <FormattedMessage id="settings.language" />
+                    </span>
 
                     <Listbox
                         class="flex relative flex-col ml-auto w-32"
@@ -38,21 +43,31 @@ pub fn SettingsPage() -> impl IntoView {
                         }
                     >
                         <ListboxButton class="py-1 px-2 text-left rounded-sm border bg-neutral-200 border-neutral-300 hover:bg-neutral-300">
-                            {move || format!("{:?}", app_state.get().settings.language)}
+                            {move || {
+                                view! {
+                                    <FormattedMessage id=format!(
+                                        "settings.language.{}",
+                                        app_state.get().settings.language.to_string().to_lowercase(),
+                                    ) />
+                                }
+                            }}
+
                         </ListboxButton>
                         <ListboxOptions class="absolute z-10 mt-1 w-full border bg-neutral-200 border-neutral-300">
                             <ListboxOption class=class value=Language::German>
-                                German
+                                <FormattedMessage id="settings.language.german" />
                             </ListboxOption>
                             <ListboxOption class=class value=Language::English>
-                                English
+                                <FormattedMessage id="settings.language.english" />
                             </ListboxOption>
                         </ListboxOptions>
                     </Listbox>
                 </div>
 
                 <div class="flex items-center">
-                    <span>Override decimal format</span>
+                    <span>
+                        <FormattedMessage id="settings.override_decimal_format" />
+                    </span>
 
                     <Listbox
                         class="flex relative flex-col ml-auto w-32"
@@ -64,25 +79,50 @@ pub fn SettingsPage() -> impl IntoView {
                     >
                         <ListboxButton class="py-1 px-2 text-left rounded-sm border bg-neutral-200 border-neutral-300 hover:bg-neutral-300">
                             {move || {
-                                format!("{:?}", app_state.get().settings.override_decimal_format)
+                                match app_state
+                                    .get()
+                                    .settings
+                                    .override_decimal_format
+                                    .decimal_format()
+                                {
+                                    Some(override_format) => {
+                                        match override_format {
+                                            DecimalFormat::Comma => {
+                                                view! { <FormattedMessage id="settings.language.german" /> }
+                                            }
+                                            DecimalFormat::Dot => {
+                                                view! {
+                                                    <FormattedMessage id="settings.language.english" />
+                                                }
+                                            }
+                                        }
+                                    }
+                                    None => {
+                                        view! {
+                                            <FormattedMessage id="settings.override_decimal_format.no" />
+                                        }
+                                    }
+                                }
                             }}
                         </ListboxButton>
+
                         <ListboxOptions class="absolute z-10 mt-1 w-full border bg-neutral-200 border-neutral-300">
                             <ListboxOption class=class value=OverrideDecimalFormat::new()>
-                                Default
+                                <FormattedMessage id="settings.override_decimal_format.no" />
                             </ListboxOption>
 
                             <ListboxOption
                                 class=class
                                 value=OverrideDecimalFormat::from(DecimalFormat::Comma)
                             >
-                                German
+                                <FormattedMessage id="settings.language.german" />
                             </ListboxOption>
+
                             <ListboxOption
                                 class=class
                                 value=OverrideDecimalFormat::from(DecimalFormat::Dot)
                             >
-                                English
+                                <FormattedMessage id="settings.language.english" />
                             </ListboxOption>
                         </ListboxOptions>
                     </Listbox>

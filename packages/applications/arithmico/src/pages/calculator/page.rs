@@ -6,6 +6,7 @@ use crate::{
     },
 };
 use leptos::*;
+use translate::FormattedMessage;
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
@@ -13,7 +14,9 @@ pub fn CalculatorPage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <PageTitle>Calculator</PageTitle>
+            <PageTitle>
+                <FormattedMessage id="calculator.title" />
+            </PageTitle>
             <div class="flex flex-col gap-4">
                 <InputField />
                 <OutputField value=output />

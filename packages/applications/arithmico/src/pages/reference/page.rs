@@ -1,6 +1,7 @@
 use crate::{components::*, utils::use_app_state};
 use common::Language;
 use leptos::*;
+use translate::FormattedMessage;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
@@ -8,7 +9,10 @@ pub fn ReferencePage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <PageTitle>Reference</PageTitle>
+            <PageTitle>
+                <FormattedMessage id="reference.title" />
+
+            </PageTitle>
             {move || {
                 app_state
                     .get()
