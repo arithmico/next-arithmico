@@ -26,6 +26,10 @@ German = "Beschreibung"
 English = "Error Kind"
 German = "Fehlertyp"
 
+[calculator.evaluate_node_error]
+English = "Evaluation Error"
+German = "Auswertungsfehler"
+
 [settings.title]
 English = "Settings"
 German = "Einstellungen"
