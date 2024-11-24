@@ -63,6 +63,10 @@ impl AppState {
                 self.settings.override_decimal_format = override_decimal_format;
                 self.save();
             }
+            AppAction::SetTheme(theme) => {
+                self.settings.theme = theme;
+                self.save();
+            }
         }
     }
 }

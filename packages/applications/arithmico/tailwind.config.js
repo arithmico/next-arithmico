@@ -1,25 +1,33 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: {
-    files: ["*.html", "./src/**/*.rs", "../../libraries/editor/src/**/*.rs", "../../libraries/translate/src/**/*.rs"],
-    extract: {
-      rs: (content) => {
-        const result = (content.match(/\"(.*)\"|class:(.*)=/g) ?? [])
-          .flatMap(candidate => candidate
-            .replaceAll("\"", "")
-            .replace("class:", "")
-            .split(" ")
-            .map(classCandidate => classCandidate.replace(/=$/g, ""))
-          )
-          .filter(candidate => candidate != "");
 
-        return result;
-      }
+import plugin from 'tailwindcss/plugin';
+
+const themes = ["light", "dark"];
+
+export const content = {
+  files: ["*.html", "./src/**/*.rs", "../../libraries/editor/src/**/*.rs", "../../libraries/translate/src/**/*.rs"],
+  extract: {
+    rs: (content) => {
+      const result = (content.match(/\"(.*)\"|class:(.*)=/g) ?? [])
+        .flatMap(candidate => candidate
+          .replaceAll("\"", "")
+          .replace("class:", "")
+          .split(" ")
+          .map(classCandidate => classCandidate.replace(/=$/g, ""))
+        )
+        .filter(candidate => candidate != "");
+      return result;
     }
-  },
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+  }
+};
+export const theme = {
+  extend: {},
+};
+export const plugins = [
+  plugin(function ({ addVariant }) {
+    themes.forEach((theme) => {
+      addVariant(`theme-${theme}`, `.theme-${theme} &`);
+    });
+  }),
+];
 
