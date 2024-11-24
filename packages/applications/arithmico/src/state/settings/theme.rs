@@ -7,6 +7,15 @@ pub enum Theme {
     Dark,
 }
 
+impl Theme {
+    pub fn get_class(&self) -> &str {
+        match self {
+            Theme::Light => "theme-light",
+            Theme::Dark => "theme-dark",
+        }
+    }
+}
+
 impl IntoTranslationId for Theme {
     fn into_translation_id(&self) -> &str {
         match self {
