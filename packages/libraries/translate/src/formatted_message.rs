@@ -21,7 +21,7 @@ pub fn FormattedMessage(
         match template.translate_with(context.get_current_language(), &keys) {
             Ok(ok) => Ok(ok),
             Err(_) => match template
-                .translate_with(context.get_current_language(), &keys)
+                .translate_with(context.get_fallback_language(), &keys)
             {
                 Ok(ok) => Ok(ok),
                 Err(_) => Err("TranslationError"),

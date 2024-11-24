@@ -2,31 +2,63 @@
 English = "Unsupported operation"
 German = "Nicht unterstützte Operation"
 
+[engine.evaluate.error.unsupported_operation.error_kind]
+English = "Unsupported operation"
+German = "Nicht unterstützte Operation"
+
 [engine.evaluate.error.unsupported_datatype]
 English = "Unsupported datatype: \"{node_kind}\""
 German = "Nicht unterstützter Datentyp: \"{node_kind}\""
+
+[engine.evaluate.error.unsupported_datatype.error_kind]
+English = "Unsupported datatype"
+German = "Nicht unterstützter Datentyp"
 
 [engine.evaluate.error.unknown_symbol]
 English = "Unknown symbol: \"{name}\""
 German = "Unbekanntes Symbol: \"{name}\""
 
+[engine.evaluate.error.unknown_symbol.error_kind]
+English = "Unknown symbol"
+German = "Unbekanntes Symbol"
+
 [engine.evaluate.error.runtime_error]
 English = "Runtime error: {message}"
 German = "Laufzeitfehler: {message}"
+
+[engine.evaluate.error.runtime_error.error_kind]
+English = "Runtime error"
+German = "Laufzeitfehler"
 
 [engine.evaluate.error.invalid_node]
 English = "Invalid node of type \"{node_type}\""
 German = "Ungültiger Knoten vom Typ \"{node_type}\""
 
+[engine.evaluate.error.invalid_node.error_kind]
+English = "Invalid node"
+German = "Ungültiger Knoten"
+
 [engine.evaluate.error.incompatible_vector_dimensions]
 English = "Incompatible vector dimensions: {left} and {right}"
 German = "Inkompatible Vektordimensionen: {left} und {right}"
+
+[engine.evaluate.error.incompatible_vector_dimensions.error_kind]
+English = "Incompatible vector dimensions"
+German = "Inkompatible Vektordimensionen"
 
 [engine.evaluate.error.incompatible_matrix_dimensions]
 English = "Incompatible matrix dimensions: {left} and {right}"
 German = "Inkompatible Matrixdimensionen: {left} und {right}"
 
+[engine.evaluate.error.incompatible_matrix_dimensions.error_kind]
+English = "Incompatible matrix dimensions"
+German = "Inkompatible Matrixdimensionen"
+
 [engine.evaluate.error.division_by_zero]
+English = "Division by zero"
+German = "Division durch Null"
+
+[engine.evaluate.error.division_by_zero.error_kind]
 English = "Division by zero"
 German = "Division durch Null"
 
@@ -34,14 +66,30 @@ German = "Division durch Null"
 English = "Missing parameter value for \"{name}\""
 German = "Fehlender Parameterwert für \"{name}\""
 
+[engine.evaluate.error.missing_parameter.error_kind]
+English = "Missing parameter"
+German = "Fehlender Parameter"
+
 [engine.evaluate.error.invalid_repeatable_parameter_count]
 English = "Invalid number of values for the repeatable parameter \"{name}\". Expected between {min} and {max} values but received {received}."
 German = "Ungültige Anzahl von Parameterwerten für den wiederholbaren Parameter \"{name}\". Es werden zwischen {min} und {max} Werte. Es wurden {received} Werte übergeben."
 
+[engine.evaluate.error.invalid_repeatable_parameter_count.error_kind]
+English = "Invalid number of values for repeatable parameter"
+German = "Ungültige Anzahl von Parameterwerten für wiederholbaren Parameter"
+
 [engine.evaluate.error.invalid_parameter_type]
 English = "Invalid parameter type for \"{name}\". Expected {expected} received {received}."
-German = "Ungültiger Parameterwert für \"{name}\". Es wurde eine Wert vom Typ {expected} erwartet. Stattdessen wurde ein Wert vom Typ {received} gefunden."
+German = "Ungültiger Parameterwert für \"{name}\". Es wurde ein Wert vom Typ {expected} erwartet. Stattdessen wurde ein Wert vom Typ {received} gefunden."
+
+[engine.evaluate.error.invalid_parameter_type.error_kind]
+English = "Invalid parameter type"
+German = "Ungültiger Parameterwert"
 
 [engine.evaluate.error.too_many_parameters]
 English = "Too many parameters: the last {count} parameters could not be mapped to function inputs."
 German = "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Funktions-Eingaben abgebildet werden."
+
+[engine.evaluate.error.too_many_parameters.error_kind]
+English = "Too many parameters"
+German = "Zu viele Parameter"
