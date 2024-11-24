@@ -4,7 +4,7 @@ use leptos_dom::Transparent;
 #[component(transparent)]
 pub fn ListboxOptions(
     #[prop(optional)] children: Option<Children>,
-    #[prop(optional)] class: Option<&'static str>,
+    #[prop(into, optional)] class: Option<String>,
 ) -> impl IntoView {
     let options = children
         .map(|children| {
@@ -22,7 +22,7 @@ pub fn ListboxOptions(
 
 #[derive(Clone)]
 pub(super) struct ListboxOptionsDefinition {
-    pub class: Option<&'static str>,
+    pub class: Option<String>,
     pub options: Vec<Transparent>,
 }
 
