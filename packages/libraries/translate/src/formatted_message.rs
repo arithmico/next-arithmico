@@ -1,15 +1,16 @@
 use std::collections::HashMap;
 
-use crate::context::TranslateContext;
+use crate::{context::TranslateContext, IntoTranslationId};
 use leptos::*;
 
 #[component]
 pub fn FormattedMessage(
-    #[prop(into)] id: String,
+    id: impl IntoTranslationId + 'static,
     #[prop(default = Signal::derive(||HashMap::new()))] keys: Signal<
         HashMap<String, String>,
     >,
 ) -> impl IntoView {
+    let id = id.into_translation_id().to_string();
     let context = expect_context::<TranslateContext>();
     let content: Signal<Result<String, &str>> = Signal::derive(move || {
         let keys = keys.get();

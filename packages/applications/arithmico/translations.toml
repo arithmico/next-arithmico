@@ -54,6 +54,18 @@ German = "Dezimalformat überschreiben"
 English = "No"
 German = "Nein"
 
+[settings.theme]
+English = "Color Theme"
+German = "Farbschma"
+
+[settings.theme.light]
+English = "Light"
+German = "Dark"
+
+[settings.theme.dark]
+English = "Dark"
+German = "Dunkel"
+
 [reference.title]
 English = "Reference"
 German = "Referenz"

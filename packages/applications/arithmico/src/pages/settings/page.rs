@@ -1,6 +1,8 @@
 use crate::{
     components::*,
-    state::{AppAction, OverrideDecimalFormat},
+    state::{
+        override_decimal_format::OverrideDecimalFormat, theme::Theme, AppAction,
+    },
     utils::{expect_dispatch, use_app_state},
 };
 use common::{DecimalFormat, Language};
@@ -124,6 +126,34 @@ pub fn SettingsPage() -> impl IntoView {
                             >
                                 <FormattedMessage id="settings.language.english" />
                             </ListboxOption>
+                        </ListboxOptions>
+                    </Listbox>
+                </div>
+
+                <div class="flex items-center">
+                    <span>
+                        <FormattedMessage id="settings.theme" />
+                    </span>
+
+                    <Listbox
+                        class="flex relative flex-col ml-auto w-32"
+                        value=move || app_state.get().settings.theme
+                        on_change=move |theme| { dispatch.call(AppAction::SetTheme(theme)) }
+                    >
+                        <ListboxButton class="py-1 px-2 text-left rounded-sm border bg-neutral-200 border-neutral-300 hover:bg-neutral-300">
+                            {move || {
+                                view! { <FormattedMessage id=app_state.get().settings.theme /> }
+                            }}
+                        </ListboxButton>
+
+                        <ListboxOptions class="absolute z-10 mt-1 w-full border bg-neutral-200 border-neutral-300">
+                            <ListboxOption class=class value=Theme::Light>
+                                <FormattedMessage id=Theme::Light />
+                            </ListboxOption>
+                            <ListboxOption class=class value=Theme::Dark>
+                                <FormattedMessage id=Theme::Dark />
+                            </ListboxOption>
+
                         </ListboxOptions>
                     </Listbox>
                 </div>

@@ -4,4 +4,4 @@ mod settings;
 
 pub use action::AppAction;
 pub use app_state::AppState;
-pub use settings::OverrideDecimalFormat;
+pub use settings::*;
