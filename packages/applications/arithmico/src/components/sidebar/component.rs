@@ -1,9 +1,22 @@
 use leptos::*;
 
+use crate::class_names;
+
 #[component]
 pub fn Sidebar(children: Children) -> impl IntoView {
     view! {
-        <aside class="bg-white h-screen border-r border-neutral-200 px-2 flex flex-col">
+        <aside class=class_names!(
+            "flex",
+            "flex-col",
+            "px-2",
+            "h-screen",
+            "theme-light:text-black",
+            "theme-dark:text-white",
+            "theme-light:bg-white",
+            "theme-dark:bg-neutral-800",
+            "border-r",
+            "border-neutral-200"
+        )>
             <h1 class="py-4 pr-10 text-2xl font-light">Arithmico</h1>
             {children()}
         </aside>

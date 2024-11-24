@@ -30,7 +30,7 @@ where
                         .cloned()
                         .enumerate()
                         .map(|(_index, option)| {
-                            view! { <InternalOption option=option/> }
+                            view! { <InternalOption option=option /> }
                         })
                         .collect_view()}
                 </ul>

@@ -8,7 +8,7 @@ export const content = {
   files: ["*.html", "./src/**/*.rs", "../../libraries/editor/src/**/*.rs", "../../libraries/translate/src/**/*.rs"],
   extract: {
     rs: (content) => {
-      const result = (content.match(/\"(.*)\"|class:(.*)=/g) ?? [])
+      const result = (content.match(/"(?:[^"\\]|\\.)*"|class:(.*)=/g) ?? [])
         .flatMap(candidate => candidate
           .replaceAll("\"", "")
           .replace("class:", "")
