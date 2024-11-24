@@ -1,8 +1,10 @@
 use leptos::*;
 use state::StateProvider;
+use theme::ThemeProvider;
 use translation::TranslationProvider;
 
 mod state;
+mod theme;
 mod translation;
 
 pub use state::Dispatch;
@@ -11,7 +13,9 @@ pub use state::Dispatch;
 pub fn AppShell(children: Children) -> impl IntoView {
     view! {
         <StateProvider>
-            <TranslationProvider>{children()}</TranslationProvider>
+            <ThemeProvider>
+                <TranslationProvider>{children()}</TranslationProvider>
+            </ThemeProvider>
         </StateProvider>
     }
 }
