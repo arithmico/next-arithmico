@@ -18,6 +18,14 @@ German = "Über"
 English = "Calculator"
 German = "Rechner"
 
+[calculator.error.description]
+English = "Description"
+German = "Beschreibung"
+
+[calculator.error.error_kind]
+English = "Error Kind"
+German = "Fehlertyp"
+
 [settings.title]
 English = "Settings"
 German = "Einstellungen"

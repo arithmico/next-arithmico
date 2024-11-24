@@ -38,6 +38,10 @@ impl EvaluateNodeError {
         &self.message
     }
 
+    pub fn get_error_kind(&self) -> EvaluateNodeErrorKind {
+        self.kind.clone()
+    }
+
     pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
         let trace = tracable.into_trace();
         if !trace.is_empty() {
