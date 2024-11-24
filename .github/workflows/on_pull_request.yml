@@ -26,12 +26,15 @@ jobs:
         rustup target add wasm32-unknown-unknown
     - uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
     - name: setup e2e tests
       working-directory: packages/applications/arithmico-e2e
       run: | 
         npm ci
         npx playwright install --with-deps
+
+    - name: install tailwind cli
+      run: npm i -g tailwindcss postcss autoprefixer
     
     - name: prebuild app
       working-directory: packages/applications/arithmico
