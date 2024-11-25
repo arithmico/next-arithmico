@@ -66,10 +66,17 @@ where
                 move || is_current().to_string()
             }
             tabindex="-1"
-            class=move || { format!("{}", if is_current() { &active_class } else { &class }) }
+            class=move || {
+                format!("{}", if is_current() { &active_class } else { &class })
+            }
             on:click={
                 let value = value.clone();
-                move |_| { dispatch.call(ListboxDispatchAction::Change(value.clone())) }
+                move |_| {
+                    dispatch.call(ListboxDispatchAction::Change(value.clone()))
+                }
+            }
+            on:focusout=move |_| {
+                dispatch.call(ListboxDispatchAction::Close(false))
             }
 
             on:keydown={
