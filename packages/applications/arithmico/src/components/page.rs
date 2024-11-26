@@ -11,7 +11,7 @@ pub fn Page(children: Children) -> impl IntoView {
             "absolute",
             "inset-0",
             "max-h-full",
-            "theme-light:bg-neutral-100",
+            "theme-light:bg-white",
             "theme-dark:bg-neutral-900",
             "theme-light:text-black",
             "theme-dark:text-white",

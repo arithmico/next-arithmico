@@ -11,7 +11,7 @@ pub fn Card(
         <div class=class_names!(
             "theme-light:text-black",
             "theme-dark:text-white",
-            "theme-light:bg-white",
+            "theme-light:bg-neutral-100",
             "theme-dark:bg-neutral-800",
             "rounded-sm",
             "border",

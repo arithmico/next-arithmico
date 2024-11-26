@@ -12,7 +12,7 @@ pub fn Sidebar(children: Children) -> impl IntoView {
             "h-screen",
             "theme-light:text-black",
             "theme-dark:text-white",
-            "theme-light:bg-white",
+            "theme-light:bg-neutral-100",
             "theme-dark:bg-neutral-800",
             "border-r",
             "theme-light:border-neutral-200",

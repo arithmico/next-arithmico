@@ -21,7 +21,11 @@ export const content = {
   }
 };
 export const theme = {
-  extend: {},
+  extend: {
+    colors: {
+      "neutral-850": "rgb(32, 32, 32)",
+    },
+  },
 };
 export const plugins = [
   plugin(function ({ addVariant }) {
