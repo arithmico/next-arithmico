@@ -15,7 +15,7 @@ pub fn NavigationItem(children: Children, to: String) -> impl IntoView {
                     "px-6",
                     "rounded-md",
                     "theme-light:hover:bg-neutral-200",
-                    "theme-dark:hover:bg-neutral-700"
+                    "theme-dark:hover:bg-neutral-800"
                 )
                 href=to
             >

@@ -12,7 +12,7 @@ pub fn Card(
             "theme-light:text-black",
             "theme-dark:text-white",
             "theme-light:bg-neutral-100",
-            "theme-dark:bg-neutral-800",
+            "theme-dark:bg-neutral-850",
             "rounded-sm",
             "border",
             "theme-light:border-neutral-200",
