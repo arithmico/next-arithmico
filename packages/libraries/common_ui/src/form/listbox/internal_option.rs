@@ -69,13 +69,13 @@ where
             class=move || {
                 format!("{}", if is_current() { &active_class } else { &class })
             }
-            on:click={
+            on:mousedown={
                 let value = value.clone();
                 move |_| {
                     dispatch.call(ListboxDispatchAction::Change(value.clone()))
                 }
             }
-            on:focusout=move |_| {
+            on:blur=move |_| {
                 dispatch.call(ListboxDispatchAction::Close(false))
             }
 
