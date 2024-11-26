@@ -11,8 +11,8 @@ use editor_core::{
 use leptos::*;
 
 use crate::{
-    pages::calculator::use_error_trace::use_error_trace, state::AppAction,
-    utils::expect_dispatch,
+    class_names, pages::calculator::use_error_trace::use_error_trace,
+    state::AppAction, utils::expect_dispatch,
 };
 
 #[component]
@@ -126,13 +126,30 @@ fn InputFieldEditor() -> impl IntoView {
                 if event.key() == "Enter" {
                     event.prevent_default();
                     let content: Option<String> = editor_state
-                        .with_untracked(|state| state.serialize_node(state.get_root_id()));
+                        .with_untracked(|state| {
+                            state.serialize_node(state.get_root_id())
+                        });
                     if let Some(content) = content {
                         dispatch.call(AppAction::Evaluate(content))
                     }
                 }
             }
-            class="p-2 text-xl whitespace-pre-wrap bg-white rounded-sm border outline-none focus-visible:border-black border-neutral-300"
+            class=class_names!(
+                "p-2",
+                "text-xl",
+                "whitespace-pre-wrap",
+                "rounded-sm",
+                "outline-none",
+                "border-2",
+                "theme-light:text-black",
+                "theme-dark:text-white",
+                "theme-light:bg-white",
+                "theme-dark:bg-neutral-800",
+                "theme-light:border-neutral-300",
+                "theme-dark:border-neutral-700",
+                "theme-light:focus-visible:border-neutral-700",
+                "theme-dark:focus-visible:border-neutral-500"
+            )
         />
     }
 }
