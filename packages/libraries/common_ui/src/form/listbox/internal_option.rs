@@ -69,14 +69,31 @@ where
             class=move || {
                 format!("{}", if is_current() { &active_class } else { &class })
             }
-            on:mousedown={
+            on:click={
                 let value = value.clone();
                 move |_| {
                     dispatch.call(ListboxDispatchAction::Change(value.clone()))
                 }
             }
+
+            on:mouseup=move |_| {
+                dispatch.call(ListboxDispatchAction::BlurLock(false));
+            }
+
+            on:mousedown=move |_| {
+                dispatch.call(ListboxDispatchAction::BlurLock(true));
+            }
+
+            on:mouseleave=move |_| {
+                dispatch.call(ListboxDispatchAction::BlurLock(false));
+            }
+
+            on:focusout=move |_| {
+                dispatch.call(ListboxDispatchAction::BlurLock(false));
+            }
+
             on:blur=move |_| {
-                dispatch.call(ListboxDispatchAction::Close(false))
+                dispatch.call(ListboxDispatchAction::Blur);
             }
 
             on:keydown={
