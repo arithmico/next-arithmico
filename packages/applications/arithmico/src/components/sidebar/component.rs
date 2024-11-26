@@ -15,7 +15,8 @@ pub fn Sidebar(children: Children) -> impl IntoView {
             "theme-light:bg-white",
             "theme-dark:bg-neutral-800",
             "border-r",
-            "border-neutral-200"
+            "theme-light:border-neutral-200",
+            "theme-dark:border-neutral-700"
         )>
             <h1 class="py-4 pr-10 text-2xl font-light">Arithmico</h1>
             {children()}

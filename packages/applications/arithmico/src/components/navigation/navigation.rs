@@ -1,10 +1,16 @@
 use leptos::*;
 
+use crate::class_names;
+
 #[component]
 pub fn Navigation(children: Children) -> impl IntoView {
     view! {
         <nav>
-            <h2 class="my-2 text-sm font-bold">Navigation</h2>
+            <h2 class=class_names!(
+                "my-2",
+                "text-sm",
+                "font-bold"
+            )>Navigation</h2>
             <ul>{children()}</ul>
         </nav>
     }

@@ -25,6 +25,7 @@ struct ListboxContext<T: PartialEq + Clone + 'static> {
     pub is_open: bool,
     pub current: T,
     pub focused: T,
+    pub blur_lock: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -34,6 +35,8 @@ enum ListboxDispatchAction<T: PartialEq + Clone + 'static> {
     Close(bool),
     SelectPrevious,
     SelectNext,
+    Blur,
+    BlurLock(bool),
 }
 
 #[derive(Clone, Debug)]
@@ -53,7 +56,7 @@ pub fn Listbox<T>(
     #[prop(optional, into)] class: Option<AttributeValue>,
 ) -> impl IntoView
 where
-    T: PartialEq + Clone + 'static,
+    T: PartialEq + std::fmt::Debug + Clone + 'static,
 {
     let id = NEXT_LISTBOX_ID.with_borrow_mut(|value| {
         let id = *value;
@@ -76,6 +79,7 @@ where
             is_open: false,
             current: value.clone(),
             focused: value,
+            blur_lock: false,
         }
     });
 
@@ -128,8 +132,10 @@ where
                     .value
                     .clone();
 
-                set_context
-                    .update(move |context| context.focused = next_focused);
+                set_context.update(move |context| {
+                    context.focused = next_focused;
+                    context.blur_lock = true;
+                });
             }
             ListboxDispatchAction::SelectNext => {
                 let focused = context.get_untracked().focused;
@@ -149,8 +155,23 @@ where
                     .value
                     .clone();
 
-                set_context
-                    .update(move |context| context.focused = next_focused);
+                set_context.update(move |context| {
+                    context.focused = next_focused;
+                    context.blur_lock = true;
+                });
+            }
+            ListboxDispatchAction::Blur => {
+                if !context.get().blur_lock {
+                    set_context.update(|context| {
+                        context.is_open = false;
+                        context.focused = context.current.clone();
+                    });
+                }
+            }
+            ListboxDispatchAction::BlurLock(value) => {
+                set_context.update(|context| {
+                    context.blur_lock = value;
+                });
             }
         }
     }));
@@ -175,12 +196,41 @@ where
                 definition=button_definition
                 is_open=is_open
                 on:click=move |_| {
-                    let action = if context.get().is_open {
+                    let context = context.get();
+                    let action = if context.is_open {
                         ListboxDispatchAction::Close(false)
                     } else {
                         ListboxDispatchAction::Open
                     };
                     dispatch.0.call(action)
+                }
+
+                on:mouseup=move |_| {
+                    set_context
+                        .update(|context| {
+                            context.blur_lock = false;
+                        });
+                }
+
+                on:mousedown=move |_| {
+                    set_context
+                        .update(|context| {
+                            context.blur_lock = true;
+                        });
+                }
+
+                on:mouseleave=move |_| {
+                    set_context
+                        .update(|context| {
+                            context.blur_lock = false;
+                        });
+                }
+
+                on:focusout=move |_| {
+                    set_context
+                        .update(|context| {
+                            context.blur_lock = false;
+                        });
                 }
             />
 

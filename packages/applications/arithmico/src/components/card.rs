@@ -13,9 +13,10 @@ pub fn Card(
             "theme-dark:text-white",
             "theme-light:bg-white",
             "theme-dark:bg-neutral-800",
-            "rounded-md",
+            "rounded-sm",
             "border",
-            "border-neutral-200",
+            "theme-light:border-neutral-200",
+            "theme-dark:border-neutral-700",
             class
         )>{children()}</div>
     }

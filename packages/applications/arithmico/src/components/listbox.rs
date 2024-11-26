@@ -15,7 +15,7 @@ pub fn Listbox<T>(
     #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView
 where
-    T: PartialEq + Clone + 'static,
+    T: PartialEq + std::fmt::Debug + Clone + 'static,
 {
     view! {
         <HeadlessListbox
@@ -50,7 +50,8 @@ pub fn ListboxOptions(
                 "border",
                 "theme-light:bg-neutral-200",
                 "theme-dark:bg-neutral-700",
-                "border-neutral-300",
+                "theme-light:border-neutral-300",
+                "theme-dark:border-neutral-500",
                 "rounded-sm",
                 class.unwrap_or(String::new())
             )
@@ -74,7 +75,8 @@ pub fn ListboxButton(
                 "border",
                 "theme-light:bg-neutral-200",
                 "theme-dark:bg-neutral-700",
-                "border-neutral-300",
+                "theme-light:border-neutral-300",
+                "theme-dark:border-neutral-500",
                 "theme-light:hover:bg-neutral-300",
                 "theme-dark:hover:bg-neutral-600",
                 class.unwrap_or(String::new())
