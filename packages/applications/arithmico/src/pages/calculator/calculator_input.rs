@@ -16,16 +16,16 @@ use crate::{
 };
 
 #[component]
-pub fn InputField() -> impl IntoView {
+pub fn CaluclatorInput() -> impl IntoView {
     view! {
         <EditorProvider>
-            <InputFieldEditor />
+            <CalculatorInputEditor />
         </EditorProvider>
     }
 }
 
 #[component]
-fn InputFieldEditor() -> impl IntoView {
+fn CalculatorInputEditor() -> impl IntoView {
     let editor_state = use_editor_context();
     let dispatch = expect_dispatch();
     let error_trace = use_error_trace();

@@ -18,9 +18,7 @@ pub fn SettingsPage() -> impl IntoView {
             <PageTitle>
                 <FormattedMessage id="settings.title" />
             </PageTitle>
-            <Card class=class_names!(
-                "flex", "flex-col", "gap-2", "p-2", "w-1/2"
-            )>
+            <Card class=class_names!("flex", "flex-col", "gap-2", "p-2")>
                 <LanguageSetting />
 
                 <OverrideDecimalFormatSetting />

@@ -22,7 +22,7 @@ pub fn PageWithSidebar(children: Children) -> impl IntoView {
                     </NavigationItem>
                 </Navigation>
             </Sidebar>
-            <main class="px-4">{children()}</main>
+            <main class="pr-4 pl-4 lg:pr-16">{children()}</main>
         </Page>
     }
 }

@@ -11,3 +11,7 @@ details > summary.list-none::-webkit-details-marker,
 details > summary.list-none::marker {
   display: none;
 }
+
+* {
+  box-sizing: border-box;
+}
