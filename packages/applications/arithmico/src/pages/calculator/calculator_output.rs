@@ -11,7 +11,7 @@ mod parse_node_error_output;
 mod serialize_node_error_output;
 
 #[component]
-pub fn OutputField(
+pub fn CalculatorOutput(
     value: Signal<Option<Result<String, SessionError>>>,
 ) -> impl IntoView {
     view! {

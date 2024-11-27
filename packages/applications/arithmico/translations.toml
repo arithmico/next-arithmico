@@ -30,6 +30,18 @@ German = "Fehlertyp"
 English = "Evaluation Error"
 German = "Auswertungsfehler"
 
+[calculator.toolbar.actions]
+English = "Actions"
+German = "Aktionen"
+
+[calculator.toolbar.definitions]
+English = "Definitions"
+German = "Definitionen"
+
+[calculator.toolbar.history]
+English = "History"
+German = "Verlauf"
+
 [settings.title]
 English = "Settings"
 German = "Einstellungen"
@@ -69,6 +81,10 @@ German = "Dunkel"
 [reference.title]
 English = "Reference"
 German = "Referenz"
+
+[reference.search]
+English = "Search"
+German = "Suche"
 
 [about.title]
 English = "About"

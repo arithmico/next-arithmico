@@ -1,18 +1,39 @@
 use crate::{class_names, components::*, utils::use_app_state};
 use common::Language;
 use leptos::*;
-use translate::FormattedMessage;
+use translate::{use_translate, FormattedMessage};
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
     let app_state = use_app_state();
+    let translate = use_translate();
 
     view! {
         <PageWithSidebar>
-            <PageTitle>
-                <FormattedMessage id="reference.title" />
+            <div class=class_names!("flex", "items-center")>
+                <PageTitle>
+                    <FormattedMessage id="reference.title" />
+                </PageTitle>
+                <input
+                    type="search"
+                    placeholder=translate("reference.search", None)
+                        .unwrap_or(String::from("TranslationError"))
+                    class=class_names!(
+                        "border",
+                        "py-2",
+                        "pr-3",
+                        "pl-2",
+                        "text-xs",
+                        "rounded-sm",
+                        "w-full",
+                        "outline-none",
+                        "theme-dark:text-white",
+                        "theme-dark:border-neutral-700",
+                        "theme-dark:bg-neutral-850",
+                    )
+                />
 
-            </PageTitle>
+            </div>
             {move || {
                 app_state
                     .get()
