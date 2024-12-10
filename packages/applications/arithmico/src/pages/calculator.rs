@@ -1,11 +1,11 @@
-use calculator_input::CaluclatorInput;
-use calculator_output::CalculatorOutput;
 use header::CalculatorHeader;
+use input::CaluclatorInput;
 use leptos::*;
+use output::CalculatorOutput;
 
-mod calculator_input;
-mod calculator_output;
 mod header;
+mod input;
+mod output;
 mod use_error_trace;
 mod use_last_output;
 
