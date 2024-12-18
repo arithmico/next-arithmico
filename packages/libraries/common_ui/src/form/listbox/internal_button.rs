@@ -1,10 +1,10 @@
-use leptos::*;
+use leptos::{html::Button, prelude::*};
 
 use super::ListboxButtonDefinition;
 
 #[component]
 pub(super) fn InternalButton(
-    node_ref: NodeRef<html::Button>,
+    node_ref: NodeRef<Button>,
     definition: ListboxButtonDefinition,
     is_open: Signal<bool>,
 ) -> impl IntoView {

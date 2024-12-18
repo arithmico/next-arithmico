@@ -1,5 +1,5 @@
 use common::Language;
-use leptos::*;
+use leptos::prelude::*;
 use translate::FormattedMessage;
 
 use crate::{

@@ -12,7 +12,7 @@ use crate::{
     },
 };
 
-use leptos::*;
+use leptos::prelude::*;
 use translate::FormattedMessage;
 
 #[component]

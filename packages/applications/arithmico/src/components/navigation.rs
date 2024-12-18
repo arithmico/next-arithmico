@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::class_names;
 pub use navigation_item::NavigationItem;

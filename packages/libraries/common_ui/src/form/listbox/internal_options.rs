@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::form::listbox::{internal_option::InternalOption, ListboxContext};
 

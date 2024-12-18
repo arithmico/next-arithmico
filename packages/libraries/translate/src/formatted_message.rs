@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{use_translate, IntoTranslationId};
-use leptos::*;
+use leptos::{either::Either, prelude::*};
 
 #[component]
 pub fn FormattedMessage(
@@ -16,10 +16,11 @@ pub fn FormattedMessage(
     view! {
         <>
             {move || match translate(&id, Some(keys.get())) {
-                Ok(value) => view! { <>{value}</> }.into_view(),
+                Ok(value) => Either::Left(view! { <>{value}</> }),
                 Err(value) => {
-                    view! { <span class="bg-red-400">{value}</span> }
-                        .into_view()
+                    Either::Right(
+                        view! { <span class="bg-red-400">{value}</span> },
+                    )
                 }
             }}
         </>

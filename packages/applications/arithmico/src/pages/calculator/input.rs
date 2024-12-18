@@ -8,7 +8,7 @@ use editor_core::{
     selection::{SelectionRange, SelectionRangePoint},
     EditorContainerNode, EditorLeafNode,
 };
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::{
     class_names, pages::calculator::use_error_trace::use_error_trace,

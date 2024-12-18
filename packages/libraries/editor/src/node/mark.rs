@@ -1,5 +1,5 @@
 use editor_core::EditorContainerNode;
-use leptos::document;
+use leptos_dom::document;
 use web_sys::{wasm_bindgen::JsCast, Node};
 
 #[derive(Debug, Clone)]

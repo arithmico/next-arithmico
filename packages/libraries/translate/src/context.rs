@@ -1,4 +1,4 @@
-use leptos::{Signal, SignalGet};
+use leptos::prelude::{Get, Signal};
 use translate_core::{Language, TranslationTemplateProvider};
 
 #[derive(Debug, Clone)]

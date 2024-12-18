@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use leptos::expect_context;
+use leptos::prelude::expect_context;
 
 use crate::TranslateContext;
 

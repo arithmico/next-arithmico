@@ -1,4 +1,4 @@
-use leptos::document;
+use leptos_dom::document;
 
 use crate::state::EditorState;
 
