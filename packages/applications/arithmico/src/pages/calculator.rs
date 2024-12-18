@@ -1,6 +1,6 @@
 use header::CalculatorHeader;
 use input::CaluclatorInput;
-use leptos::*;
+use leptos::prelude::*;
 use output::CalculatorOutput;
 
 mod header;

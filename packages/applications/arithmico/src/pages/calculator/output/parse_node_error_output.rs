@@ -1,5 +1,5 @@
 use engine::ParseNodeError;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 #[allow(unused_variables)]

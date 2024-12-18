@@ -1,6 +1,6 @@
 use std::any::Any;
 
-use leptos::document;
+use leptos_dom::document;
 use web_sys::wasm_bindgen::JsCast;
 
 use crate::EditorContainerNode;

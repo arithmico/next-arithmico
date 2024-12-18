@@ -1,7 +1,7 @@
 use std::any::Any;
 
 use editor_core::{EditorLeafNode, EditorNode};
-use leptos::document;
+use leptos_dom::document;
 use unicode_segmentation::UnicodeSegmentation;
 use web_sys::{wasm_bindgen::JsCast, Text};
 

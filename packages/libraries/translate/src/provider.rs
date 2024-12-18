@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 use translate_core::{Language, TranslationTemplateProvider};
 
 use crate::context::TranslateContext;

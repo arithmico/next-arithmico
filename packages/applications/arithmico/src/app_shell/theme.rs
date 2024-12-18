@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::utils::use_app_state;
 
@@ -6,5 +6,9 @@ use crate::utils::use_app_state;
 pub fn ThemeProvider(children: Children) -> impl IntoView {
     let state = use_app_state();
 
-    view! { <div class=move || state.get().settings.theme.get_class().to_string()>{children()}</div> }
+    view! {
+        <div class=move || {
+            state.get().settings.theme.get_class().to_string()
+        }>{children()}</div>
+    }
 }

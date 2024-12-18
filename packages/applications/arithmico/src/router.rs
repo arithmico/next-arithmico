@@ -1,6 +1,6 @@
 use crate::pages::*;
-use leptos::*;
-use leptos_router::{Route, Router as LeptosRouter, Routes};
+use leptos::prelude::*;
+use leptos_router::components::*;
 
 #[component]
 pub fn Router() -> impl IntoView {

@@ -1,5 +1,5 @@
 use engine::SerializeNodeError;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component]
 #[allow(unused_variables)]

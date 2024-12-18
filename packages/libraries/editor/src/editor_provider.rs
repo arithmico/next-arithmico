@@ -1,5 +1,5 @@
 use editor_core::EditorState;
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
@@ -7,7 +7,7 @@ use crate::transform::{
 
 #[component]
 pub fn EditorProvider(children: Children) -> impl IntoView {
-    let editor_state = create_rw_signal({
+    let editor_state = RwSignal::new_local({
         let mut editor_state = EditorState::new();
         editor_state.add_transform(MergeTextNodesTransform::new());
         editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());

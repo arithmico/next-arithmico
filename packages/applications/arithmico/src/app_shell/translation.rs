@@ -1,6 +1,6 @@
 use crate::utils::use_app_state;
 use common::Language;
-use leptos::*;
+use leptos::prelude::*;
 use translate::{TranslateProvider as Provider, TranslationTemplateProvider};
 
 #[component]
@@ -14,7 +14,11 @@ pub fn TranslationProvider(children: Children) -> impl IntoView {
     .expect("translations");
 
     view! {
-        <Provider current_language fallback_language=Language::English translations>
+        <Provider
+            current_language
+            fallback_language=Language::English
+            translations
+        >
             {children()}
         </Provider>
     }

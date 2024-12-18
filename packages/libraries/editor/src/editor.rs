@@ -1,9 +1,10 @@
 use std::ops::Deref;
 
-use html::Div;
-use leptos::*;
-use wasm_bindgen::{prelude::Closure, JsCast};
-use web_sys::Node;
+use leptos::{html::Div, prelude::*};
+use web_sys::{
+    wasm_bindgen::{prelude::Closure, JsCast},
+    Node,
+};
 
 use crate::{
     command::{
@@ -20,7 +21,7 @@ pub fn Editor(
     #[prop(optional, into)] data_test_id: Option<String>,
     #[prop(default = false)] autofocus: bool,
 ) -> impl IntoView {
-    let editor_ref = create_node_ref::<Div>();
+    let editor_ref = NodeRef::<Div>::new();
     let editor_state = use_editor_context();
     let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
         editor_state.update_untracked(move |state| {
@@ -34,7 +35,7 @@ pub fn Editor(
         .expect("add event listener");
     handler.forget();
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let node_ref = editor_ref.get();
         if node_ref.is_none() {
             return;
@@ -44,12 +45,7 @@ pub fn Editor(
             div.focus().expect("focus");
         }
 
-        let node = div
-            .into_any()
-            .deref()
-            .clone()
-            .dyn_into::<Node>()
-            .expect("node");
+        let node = div.deref().clone().dyn_into::<Node>().expect("node");
 
         editor_state.update_untracked(move |state| {
             state.apply_transforms();
@@ -117,7 +113,7 @@ pub fn Editor(
             data-testid=data_test_id
             role="textbox"
             class=class
-            ref=editor_ref
+            node_ref=editor_ref
             contenteditable
             on:beforeinput=beforeinput
         ></div>

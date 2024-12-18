@@ -1,5 +1,5 @@
 use app::App;
-use leptos::*;
+use leptos::prelude::*;
 
 mod app;
 mod app_shell;

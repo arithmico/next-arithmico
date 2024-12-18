@@ -1,5 +1,5 @@
 use common::EvaluateNodeError;
-use leptos::*;
+use leptos::prelude::*;
 use translate::{FormattedMessage, TranslatableObject};
 
 #[component]

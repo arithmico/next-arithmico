@@ -1,6 +1,6 @@
 use crate::{class_names, components::*, utils::use_app_state};
 use common::Language;
-use leptos::*;
+use leptos::prelude::*;
 use translate::{use_translate, FormattedMessage};
 
 #[component]

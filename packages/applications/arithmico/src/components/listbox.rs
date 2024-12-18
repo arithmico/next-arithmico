@@ -3,7 +3,7 @@ use common_ui::form::listbox::{
     ListboxOption as HeadlessListboxOption,
     ListboxOptions as HeadlessListboxOptions,
 };
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::class_names;
 
