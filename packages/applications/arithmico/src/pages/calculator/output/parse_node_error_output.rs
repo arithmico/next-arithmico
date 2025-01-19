@@ -1,8 +1,6 @@
-use engine::ParseNodeError;
 use leptos::prelude::*;
 
 #[component]
-#[allow(unused_variables)]
-pub fn ParseNodeErrorOutput(value: ParseNodeError) -> impl IntoView {
+pub fn ParseNodeErrorOutput() -> impl IntoView {
     view! { <>ParseError</> }
 }

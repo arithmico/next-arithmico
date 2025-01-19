@@ -27,7 +27,7 @@ mod tests {
     use common::{
         EvaluateNodeOptions, HostApi, HostApiModule, Language, Stack,
     };
-    use std::rc::Rc;
+    use std::sync::Arc;
     use trace::TracableMut;
 
     #[test]
@@ -44,7 +44,7 @@ mod tests {
         let context = EvaluateNodeContext::new(
             stack,
             EvaluateNodeOptions::default(),
-            Rc::new(HostApi::empty()),
+            Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x").evaluate(&context).unwrap();
         assert_eq!(result, Number::new(42.));
@@ -57,7 +57,7 @@ mod tests {
         let context = EvaluateNodeContext::new(
             stack,
             EvaluateNodeOptions::default(),
-            Rc::new(HostApi::empty()),
+            Arc::new(HostApi::empty()),
         );
         let result =
             Symbol::new("x").with_span(0, 0).evaluate(&context).unwrap();

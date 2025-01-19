@@ -5,7 +5,13 @@ import plugin from 'tailwindcss/plugin';
 const themes = ["light", "dark"];
 
 export const content = {
-  files: ["*.html", "./src/**/*.rs", "../../libraries/editor/src/**/*.rs", "../../libraries/translate/src/**/*.rs"],
+  files: [
+    "*.html",
+    "./src/**/*.rs",
+    "../../libraries/editor/src/**/*.rs",
+    "../../libraries/translate/src/**/*.rs",
+    "../../libraries/ui/src/**/*.rs"
+  ],
   extract: {
     rs: (content) => {
       const result = (content.match(/"(?:[^"\\]|\\.)*"|class:(.*)=/g) ?? [])

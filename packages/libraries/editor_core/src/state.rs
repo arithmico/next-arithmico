@@ -1,6 +1,6 @@
 use std::{
     collections::{HashMap, HashSet},
-    rc::Rc,
+    sync::Arc,
 };
 
 use selection::SelectionRange;
@@ -23,7 +23,7 @@ pub struct EditorState {
     root_node_id: usize,
     modified_nodes: HashSet<usize>,
     selection: Option<SelectionRange>,
-    transforms: Vec<Rc<dyn EditorTransform>>,
+    transforms: Vec<Arc<dyn EditorTransform>>,
 }
 
 impl EditorState {

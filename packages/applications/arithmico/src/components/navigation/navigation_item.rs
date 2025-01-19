@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use leptos_router::*;
 
 use crate::class_names;
 
@@ -7,7 +6,7 @@ use crate::class_names;
 pub fn NavigationItem(children: Children, to: String) -> impl IntoView {
     view! {
         <li class="flex flex-col">
-            <A
+            <a
                 class=class_names!(
                     "flex",
                     "items-center",
@@ -20,7 +19,7 @@ pub fn NavigationItem(children: Children, to: String) -> impl IntoView {
                 href=to
             >
                 {children()}
-            </A>
+            </a>
         </li>
     }
 }

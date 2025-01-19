@@ -1,5 +1,5 @@
 use engine::SessionError;
-use leptos::{Signal, SignalGet};
+use leptos::prelude::{Get, Signal};
 
 use crate::utils::use_app_state;
 

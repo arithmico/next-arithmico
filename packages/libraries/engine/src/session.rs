@@ -4,7 +4,7 @@ use common::{EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack};
 use evaluator::evaluate_node;
 use parser::{parse, ParseNodeOptions};
 use serializer::{serialize_node, SerializeNodeOptions};
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub use entry::SessionEntry;
 pub use error::*;
@@ -15,7 +15,7 @@ mod error;
 #[derive(Debug, Clone)]
 pub struct Session {
     stack: Stack,
-    host_api: Rc<HostApi>,
+    host_api: Arc<HostApi>,
     entries: Vec<SessionEntry>,
 }
 
@@ -23,7 +23,7 @@ impl Session {
     pub fn new() -> Self {
         Self {
             stack: Stack::new(),
-            host_api: Rc::new(load_host_api()),
+            host_api: Arc::new(load_host_api()),
             entries: Vec::new(),
         }
     }

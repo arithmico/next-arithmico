@@ -1,9 +1,11 @@
 use common::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
+use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
 
 use crate::{
-    components::{Listbox, ListboxButton, ListboxOption, ListboxOptions},
+    class_names,
+    components::MenuIcon,
     state::AppAction,
     utils::{expect_dispatch, use_app_state},
 };
@@ -13,6 +15,68 @@ pub fn LanguageSetting() -> impl IntoView {
     let app_state = use_app_state();
     let dispatch = expect_dispatch();
 
+    let on_change: Callback<Language> =
+        Callback::new(move |language: Language| {
+            dispatch.run(AppAction::SetLanguage(language))
+        });
+
+    let listbox_definition = ListboxDefinition::new()
+    .button(|button| {
+        button
+            .view(move || {
+                let is_open = use_listbox_is_open();
+
+                view! {
+                    <>
+                        {match app_state.get().settings.language {
+                            Language::German => {
+                                view! { <FormattedMessage id="settings.language.german" /> }
+                                    .into_any()
+                            }
+                            Language::English => {
+                                view! {
+                                    <FormattedMessage id="settings.language.english" />
+                                }
+                                    .into_any()
+                            }
+                        }}
+                        <MenuIcon class=Signal::derive(move || {
+                            class_names!(
+                                "w-5",
+                                "h-5",
+                                "ml-auto",
+                                "theme-dark:fill-white/50",
+                                "theme-dark:group-hover:fill-white",
+                                if is_open.get() {
+                                    "rotate-0"
+                                } else {
+                                    "rotate-180"
+                                }
+                            )
+                        }) />
+                    </>
+                }
+            })
+
+    })
+    .options(|options| {
+        options
+            .option(|option| {
+                option
+                    .value(Language::English)
+                    .view(|| {
+                        view! { <FormattedMessage id="settings.language.english" /> }
+                    })
+            })
+            .option(|option| {
+                option
+                    .value(Language::German)
+                    .view(|| {
+                        view! { <FormattedMessage id="settings.language.german" /> }
+                    })
+            })
+    });
+
     view! {
         <div class="flex items-center">
             <span>
@@ -20,31 +84,11 @@ pub fn LanguageSetting() -> impl IntoView {
             </span>
 
             <Listbox
-                value=move || app_state.get().settings.language
-                on_change=move |language: Language| {
-                    dispatch.call(AppAction::SetLanguage(language))
-                }
-            >
-                <ListboxButton>
-                    {move || {
-                        view! {
-                            <FormattedMessage id=format!(
-                                "settings.language.{}",
-                                app_state.get().settings.language.to_string().to_lowercase(),
-                            ) />
-                        }
-                    }}
+                on_change=on_change
+                definition=listbox_definition
+                value=Signal::derive(move || app_state.get().settings.language)
+            />
 
-                </ListboxButton>
-                <ListboxOptions>
-                    <ListboxOption value=Language::German>
-                        <FormattedMessage id="settings.language.german" />
-                    </ListboxOption>
-                    <ListboxOption value=Language::English>
-                        <FormattedMessage id="settings.language.english" />
-                    </ListboxOption>
-                </ListboxOptions>
-            </Listbox>
         </div>
     }
 }

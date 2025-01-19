@@ -74,7 +74,7 @@ impl EvaluateNode for FunctionCall {
 
 #[cfg(test)]
 mod tests {
-    use std::rc::Rc;
+    use std::sync::Arc;
 
     use ast::{Function, FunctionSignature, NodeType, Number, Power, Symbol};
 
@@ -122,7 +122,7 @@ mod tests {
         let context = EvaluateNodeContext::new(
             Stack::new(),
             EvaluateNodeOptions::default(),
-            Rc::new(
+            Arc::new(
                 HostApi::builder()
                     .module(true, || {
                         HostApiModule::builder()
@@ -167,7 +167,7 @@ mod tests {
         let context = EvaluateNodeContext::new(
             Stack::new(),
             EvaluateNodeOptions::default(),
-            Rc::new(
+            Arc::new(
                 HostApi::builder()
                     .module(true, || {
                         HostApiModule::builder()

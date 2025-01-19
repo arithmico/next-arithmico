@@ -13,9 +13,14 @@
             ]
         }
     },
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
     "forwardPorts": [8080],
     "mounts": [
         "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
     ],
-    "postCreateCommand": "bash ./.devcontainer/post-create.sh"
+    "postCreateCommand": "bash ./.devcontainer/setup.sh"
 }

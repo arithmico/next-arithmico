@@ -36,24 +36,23 @@ pub fn CalculatorOutput(
             {move || match value.get() {
                 Some(result) => {
                     match result {
-                        Ok(value) => view! { <>{value}</> }.into_view(),
+                        Ok(value) => view! { <>{value}</> }.into_any(),
                         Err(error) => {
                             match error {
-                                SessionError::ParseNodeError(error) => {
-                                    view! { <ParseNodeErrorOutput value=error /> }.into_view()
+                                SessionError::ParseNodeError(_) => {
+                                    view! { <ParseNodeErrorOutput /> }.into_any()
                                 }
-                                SessionError::SerializeNodeError(error) => {
-                                    view! { <SerializeNodeErrorOutput value=error /> }
-                                        .into_view()
+                                SessionError::SerializeNodeError(_) => {
+                                    view! { <SerializeNodeErrorOutput /> }.into_any()
                                 }
                                 SessionError::EvaluateNodeError(error) => {
-                                    view! { <EvaluateNodeErrorOutput value=error /> }
+                                    view! { <EvaluateNodeErrorOutput value=error /> }.into_any()
                                 }
                             }
                         }
                     }
                 }
-                None => view! { <>" "</> }.into_view(),
+                None => view! { <>" "</> }.into_any(),
             }}
 
         </output>
