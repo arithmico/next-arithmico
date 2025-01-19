@@ -2,7 +2,9 @@ use leptos::prelude::*;
 
 #[component]
 pub fn MenuIcon(
-    #[prop(into, default = String::new())] class: String,
+    #[prop(into, default = Signal::derive(|| String::new()))] class: Signal<
+        String,
+    >,
 ) -> impl IntoView {
     view! {
         <svg

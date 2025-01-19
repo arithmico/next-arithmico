@@ -1,6 +1,5 @@
-mod language;
-mod override_decimal_format;
-mod theme;
+use leptos::prelude::*;
+use translate::FormattedMessage;
 
 use crate::{
     class_names,
@@ -12,8 +11,9 @@ use crate::{
     },
 };
 
-use leptos::prelude::*;
-use translate::FormattedMessage;
+mod language;
+mod override_decimal_format;
+mod theme;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {

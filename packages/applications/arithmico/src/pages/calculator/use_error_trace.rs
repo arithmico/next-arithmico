@@ -1,6 +1,6 @@
 use super::use_last_output::use_last_output;
 use engine::SessionError;
-use leptos::{Signal, SignalGet};
+use leptos::prelude::{Get, Signal};
 use trace::Trace;
 
 pub fn use_error_trace() -> Signal<Option<Trace>> {

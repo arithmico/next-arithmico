@@ -30,7 +30,7 @@ fn CalculatorInputEditor() -> impl IntoView {
     let dispatch = expect_dispatch();
     let error_trace = use_error_trace();
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(trace) = error_trace.get() {
             let content = editor_state
                 .with_untracked(|state| {
@@ -130,7 +130,7 @@ fn CalculatorInputEditor() -> impl IntoView {
                             state.serialize_node(state.get_root_id())
                         });
                     if let Some(content) = content {
-                        dispatch.call(AppAction::Evaluate(content))
+                        dispatch.run(AppAction::Evaluate(content))
                     }
                 }
             }

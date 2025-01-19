@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::{EditorState, EditorTransform};
 
@@ -7,6 +7,6 @@ impl EditorState {
         &mut self,
         transform: T,
     ) {
-        self.transforms.push(Rc::new(transform));
+        self.transforms.push(Arc::new(transform));
     }
 }

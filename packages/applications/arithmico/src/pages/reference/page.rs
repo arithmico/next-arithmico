@@ -60,7 +60,7 @@ pub fn ReferencePage() -> impl IntoView {
                                     "rounded-sm",
                                     "theme-dark:bg-neutral-800",
                                     "theme-light:bg-neutral-200"
-                                )>{module.name(&Language::English)}</summary>
+                                )>{module.name(&Language::English).cloned()}</summary>
                                 <dl class=class_names!(
                                     "grid",
                                     "grid-cols-[1fr_3fr]",
@@ -74,10 +74,10 @@ pub fn ReferencePage() -> impl IntoView {
                                                 <>
                                                     <dt class=class_names!(
                                                         "py-2"
-                                                    )>{item.synopsis(&Language::English)}</dt>
+                                                    )>{item.synopsis(&Language::English).cloned()}</dt>
                                                     <dd class=class_names!(
                                                         "py-2"
-                                                    )>{item.description(&Language::English)}</dd>
+                                                    )>{item.description(&Language::English).cloned()}</dd>
                                                 </>
                                             }
                                         })

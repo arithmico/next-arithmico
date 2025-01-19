@@ -3,7 +3,7 @@ mod options;
 mod stack;
 
 use ast::{HostFunction, Node};
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub use host_api::*;
 pub use options::*;
@@ -13,7 +13,7 @@ pub use stack::*;
 pub struct EvaluateNodeContext {
     pub stack: Stack,
     pub options: EvaluateNodeOptions,
-    pub host_api: Rc<HostApi>,
+    pub host_api: Arc<HostApi>,
 }
 
 impl Default for EvaluateNodeContext {
@@ -30,7 +30,7 @@ impl EvaluateNodeContext {
     pub fn new(
         stack: Stack,
         options: EvaluateNodeOptions,
-        host_api: Rc<HostApi>,
+        host_api: Arc<HostApi>,
     ) -> EvaluateNodeContext {
         EvaluateNodeContext {
             stack,

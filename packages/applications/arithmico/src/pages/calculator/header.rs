@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use leptos_router::A;
 use translate::FormattedMessage;
 
 use crate::{
@@ -93,7 +92,7 @@ fn ToolbarNavigationItem(
 ) -> impl IntoView {
     view! {
         <li class="flex">
-            <A
+            <a
                 class=class_names!(
                     "theme-dark:text-white/75",
                     "theme-dark:border-neutral-700",
@@ -116,7 +115,7 @@ fn ToolbarNavigationItem(
                 href=to.to_string()
             >
                 {children()}
-            </A>
+            </a>
         </li>
     }
 }
