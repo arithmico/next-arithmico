@@ -7,4 +7,5 @@ members = [
 
 [workspace.dependencies]
 thiserror = "1.0.64"
-leptos = { version = "0.7.1", features = ["csr"] }
+leptos = { version = "0.7.7", features = ["csr"] }
+leptos_dom = { version = "0.7.7" }
