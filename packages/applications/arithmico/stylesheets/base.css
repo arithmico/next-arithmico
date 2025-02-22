@@ -1,0 +1,40 @@
+:root {
+    font-size: 18pt;
+    font-family: sans-serif;
+}
+
+/* Fix Safari issue related to <summary> / <details> arrow */
+details > summary.list-none::-webkit-details-marker,
+details > summary.list-none::marker {
+  display: none;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+}
+
+*:focus-visible {
+  outline-width: 2px;
+  outline-offset: 2px;
+  outline-style: solid;
+}
+
+.theme-dark *:focus-visible {
+  outline-color: white;
+}
+
+
+.theme-light *:focus-visible {
+  outline-color: black;
+}

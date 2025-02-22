@@ -1,11 +1,10 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
+use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
 
 use crate::{
-    class_names,
     components::MenuIcon,
-    state::{AppAction, theme::Theme},
+    state::{theme::Theme, AppAction},
     utils::{expect_dispatch, use_app_state},
 };
 
@@ -25,19 +24,14 @@ pub fn ThemeSetting() -> impl IntoView {
 
                 view! {
                     <>
-                        <FormattedMessage id=app_state.get().settings.theme />
+                        {move || {
+                            let theme = app_state.get().settings.theme;
+                            view! { <FormattedMessage id=theme /> }
+                        }}
                         <MenuIcon class=Signal::derive(move || {
-                            class_names!(
-                                "w-5",
-                                "h-5",
-                                "ml-auto",
-                                "theme-dark:fill-white/50",
-                                "theme-dark:group-hover:fill-white",
-                                if is_open.get() {
-                                    "rotate-0"
-                                } else {
-                                    "rotate-180"
-                                }
+                            format!(
+                                "icon-hover {}",
+                                if is_open.get() { "rotate-0" } else { "rotate-180" },
                             )
                         }) />
                     </>

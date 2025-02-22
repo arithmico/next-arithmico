@@ -20,7 +20,7 @@ pub fn CalculatorPage() -> impl IntoView {
     view! {
         <PageWithSidebar>
             <CalculatorHeader />
-            <div class="flex flex-col gap-4">
+            <div class="calculator-layout">
                 <CaluclatorInput />
                 <CalculatorOutput value=output />
             </div>

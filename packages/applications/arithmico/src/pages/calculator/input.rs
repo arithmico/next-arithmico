@@ -5,14 +5,14 @@ use editor::{
     use_editor_context::use_editor_context,
 };
 use editor_core::{
-    EditorContainerNode, EditorLeafNode,
     selection::{SelectionRange, SelectionRangePoint},
+    EditorContainerNode, EditorLeafNode,
 };
 use leptos::prelude::*;
 
 use crate::{
-    class_names, pages::calculator::use_error_trace::use_error_trace,
-    state::AppAction, utils::expect_dispatch,
+    pages::calculator::use_error_trace::use_error_trace, state::AppAction,
+    utils::expect_dispatch,
 };
 
 #[component]
@@ -134,22 +134,7 @@ fn CalculatorInputEditor() -> impl IntoView {
                     }
                 }
             }
-            class=class_names!(
-                "p-2",
-                "text-xl",
-                "whitespace-pre-wrap",
-                "rounded-sm",
-                "outline-none",
-                "border-2",
-                "theme-light:text-black",
-                "theme-dark:text-white",
-                "theme-light:bg-white",
-                "theme-dark:bg-neutral-800",
-                "theme-light:border-neutral-300",
-                "theme-dark:border-neutral-700",
-                "theme-light:focus-visible:border-neutral-700",
-                "theme-dark:focus-visible:border-neutral-500"
-            )
+            class="calculator-input"
         />
     }
 }

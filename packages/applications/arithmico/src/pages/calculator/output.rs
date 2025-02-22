@@ -4,8 +4,6 @@ use leptos::prelude::*;
 use parse_node_error_output::ParseNodeErrorOutput;
 use serialize_node_error_output::SerializeNodeErrorOutput;
 
-use crate::class_names;
-
 mod evaluate_node_error_output;
 mod parse_node_error_output;
 mod serialize_node_error_output;
@@ -18,20 +16,7 @@ pub fn CalculatorOutput(
         <output
             for="calculator-output"
             data-testid="calculator-output"
-            class=class_names!(
-                "p-2",
-                "text-xl",
-                "whitespace-pre-wrap",
-                "rounded-sm",
-                "border-2",
-                "outline-none",
-                "theme-light:text-black",
-                "theme-dark:text-white",
-                "theme-light:bg-white",
-                "theme-dark:bg-neutral-800",
-                "theme-light:border-neutral-300",
-                "theme-dark:border-neutral-700"
-            )
+            class="calculator-output"
         >
             {move || match value.get() {
                 Some(result) => {
