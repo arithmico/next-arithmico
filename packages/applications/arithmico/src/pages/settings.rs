@@ -1,8 +1,8 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
+use ui::container::card::Card;
 
 use crate::{
-    class_names,
     components::*,
     pages::settings::{
         language::LanguageSetting,
@@ -22,7 +22,7 @@ pub fn SettingsPage() -> impl IntoView {
             <PageTitle>
                 <FormattedMessage id="settings.title" />
             </PageTitle>
-            <Card class=class_names!("flex", "flex-col", "gap-2", "p-2")>
+            <Card class="settings-card">
                 <LanguageSetting />
 
                 <OverrideDecimalFormatSetting />

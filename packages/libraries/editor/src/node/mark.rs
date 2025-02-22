@@ -1,6 +1,6 @@
 use editor_core::EditorContainerNode;
 use leptos::prelude::document;
-use web_sys::{Node, wasm_bindgen::JsCast};
+use web_sys::{wasm_bindgen::JsCast, Node};
 
 #[derive(Debug, Clone)]
 pub struct MarkNode;
@@ -14,7 +14,7 @@ impl MarkNode {
 impl EditorContainerNode for MarkNode {
     fn create_node(&self) -> web_sys::Node {
         let node = document().create_element("span").expect("element");
-        let class = "theme-light:bg-red-300 theme-dark:bg-red-500 rounded-sm";
+        let class = "editor-error-mark";
         node.set_class_name(&class);
         node.dyn_into::<Node>().expect("node")
     }

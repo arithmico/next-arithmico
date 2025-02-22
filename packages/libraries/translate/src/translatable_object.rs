@@ -22,9 +22,7 @@ pub fn TranslatableObject<T: Translatable + Send + 'static>(
                             Err(_) => {
                                 EitherOf3::C(
                                     view! {
-                                        <span class="bg-red-400 border border-red-700">
-                                            TranslationError
-                                        </span>
+                                        <span class="translation-error">TranslationError</span>
                                     },
                                 )
                             }

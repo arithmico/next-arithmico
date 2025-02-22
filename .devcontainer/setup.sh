@@ -1,5 +1,4 @@
 # install tailwind
-npm i -g tailwindcss@3
 npx -y playwright install --with-deps
 
 # install rust toolchain and utilities

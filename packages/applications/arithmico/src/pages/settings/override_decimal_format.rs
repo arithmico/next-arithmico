@@ -4,7 +4,6 @@ use translate::FormattedMessage;
 use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
 
 use crate::{
-    class_names,
     components::MenuIcon,
     state::{AppAction, override_decimal_format::OverrideDecimalFormat},
     utils::{expect_dispatch, use_app_state},
@@ -27,7 +26,7 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
 
             view! {
                 <>
-                    {match app_state
+                    {move || match app_state
                         .get()
                         .settings
                         .override_decimal_format
@@ -52,17 +51,9 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
                         }
                     }}
                     <MenuIcon class=Signal::derive(move || {
-                        class_names!(
-                            "w-5",
-                            "h-5",
-                            "ml-auto",
-                            "theme-dark:fill-white/50",
-                            "theme-dark:group-hover:fill-white",
-                            if is_open.get() {
-                                "rotate-0"
-                            } else {
-                                "rotate-180"
-                            }
+                        format!(
+                            "icon-hover {}",
+                            if is_open.get() { "rotate-0" } else { "rotate-180" },
                         )
                     }) />
                 </>

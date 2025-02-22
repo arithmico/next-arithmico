@@ -1,10 +1,9 @@
 use common::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
+use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
 
 use crate::{
-    class_names,
     components::MenuIcon,
     state::AppAction,
     utils::{expect_dispatch, use_app_state},
@@ -28,7 +27,7 @@ pub fn LanguageSetting() -> impl IntoView {
 
                 view! {
                     <>
-                        {match app_state.get().settings.language {
+                        {move || match app_state.get().settings.language {
                             Language::German => {
                                 view! { <FormattedMessage id="settings.language.german" /> }
                                     .into_any()
@@ -41,17 +40,9 @@ pub fn LanguageSetting() -> impl IntoView {
                             }
                         }}
                         <MenuIcon class=Signal::derive(move || {
-                            class_names!(
-                                "w-5",
-                                "h-5",
-                                "ml-auto",
-                                "theme-dark:fill-white/50",
-                                "theme-dark:group-hover:fill-white",
-                                if is_open.get() {
-                                    "rotate-0"
-                                } else {
-                                    "rotate-180"
-                                }
+                            format!(
+                                "icon-hover {}",
+                                if is_open.get() { "rotate-0" } else { "rotate-180" },
                             )
                         }) />
                     </>

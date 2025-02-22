@@ -1,8 +1,8 @@
-use leptos::{html, logging::log, prelude::*};
+use leptos::{html, prelude::*};
 
 use super::ListboxDefinition;
 
-use crate::{class_names, widget_id::use_widget_id};
+use crate::widget_id::use_widget_id;
 
 #[derive(Clone)]
 struct ListboxContext {
@@ -10,7 +10,6 @@ struct ListboxContext {
 }
 
 pub fn use_listbox_is_open() -> ReadSignal<bool> {
-    log!("use_is_open");
     let context = expect_context::<ListboxContext>();
     context.is_open
 }
@@ -28,13 +27,8 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     let button_ref = NodeRef::<html::Button>::new();
     let close_lock = RwSignal::new(false);
 
-    log!("provide context");
     provide_context(ListboxContext {
         is_open: is_open.split().0,
-    });
-
-    Effect::new(move |_| {
-        log!("toggle: {}", is_open.get());
     });
 
     Effect::new({
@@ -73,15 +67,8 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     });
 
     view! {
-        <div class=move || {
-            class_names!(
-                "flex",
-                "relative",
-                "flex-col",
-                "ml-auto",
-                "w-32",
-            )
-        }>
+        <div class="listbox-container">
+
             <button
                 id=format!("widget-{}-listbox-button", widget_id)
 
@@ -101,22 +88,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
 
                 node_ref=button_ref
 
-                class=move || {
-                    class_names!(
-                        "flex",
-                        "py-1",
-                        "px-2",
-                        "text-left",
-                        "rounded-sm",
-                        "border",
-                        "theme-light:bg-neutral-200",
-                        "theme-dark:bg-neutral-700",
-                        "border-neutral-300",
-                        "theme-light:hover:bg-neutral-300",
-                        "theme-dark:hover:bg-neutral-600",
-                        definition.button.class.get(),
-                    )
-                }
+                class="listbox-button"
 
                 on:mousedown=move |_| {
                     close_lock.set(true);
@@ -136,12 +108,14 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
             >
                 {definition.button.view.run()}
             </button>
-            <div class="flex relative flex-col">
+            <div class="listbox-options-container">
                 <Show when=move || is_open.get()>
                     <ul
                         id=format!("widget-{}-listbox-options", widget_id)
 
                         role="listbox"
+
+                        class="listbox-options"
 
                         aria-orientation="vertical"
 
@@ -163,22 +137,8 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                 None
                             }
                         }
-
-                        class=move || {
-                            class_names!(
-                                "absolute",
-                                "z-10",
-                                "mt-1",
-                                "w-full",
-                                "border",
-                                "theme-light:bg-neutral-200",
-                                "theme-dark:bg-neutral-700",
-                                "border-neutral-300",
-                                "rounded-sm",
-                                definition.options.class.get()
-                            )
-                        }
                     >
+
                         {definition
                             .options
                             .options
@@ -215,22 +175,9 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                             tabindex="-1"
 
                                             class=move || {
-                                                class_names!(
-                                                    "flex",
-                                                    "items-center",
-                                                    "px-2",
-                                                    "py-1",
-                                                    "theme-light:hover:bg-neutral-300",
-                                                    "theme-dark:hover:bg-neutral-600",
-                                                    "rounded-sm",
-                                                    "focus-visible:outline-2",
-                                                    "outline-black",
-                                                    if selected.get() {
-                                                        "font-bold"
-                                                    } else {
-                                                        "font-normal"
-                                                    },
-                                                    option.class.get(),
+                                                format!(
+                                                    "listbox-option {}",
+                                                    if selected.get() { "selected" } else { "" },
                                                 )
                                             }
 
