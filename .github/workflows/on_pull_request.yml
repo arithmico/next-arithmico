@@ -34,7 +34,7 @@ jobs:
         npx playwright install --with-deps
 
     - name: install tailwind cli
-      run: npm i -g tailwindcss postcss autoprefixer
+      run: npm i -g tailwindcss@3 postcss autoprefixer
     
     - name: prebuild app
       working-directory: packages/applications/arithmico
