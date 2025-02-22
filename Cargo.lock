@@ -174,7 +174,7 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
  "trace",
  "translate_core",
 ]
@@ -345,7 +345,7 @@ dependencies = [
  "evaluator",
  "parser",
  "serializer",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -362,7 +362,7 @@ dependencies = [
  "common",
  "log",
  "serializer",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
  "trace",
 ]
 
@@ -1117,7 +1117,7 @@ dependencies = [
  "ast",
  "common",
  "nom",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
  "trace",
 ]
 
@@ -1469,7 +1469,7 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "common",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -1735,7 +1735,7 @@ version = "0.1.0"
 dependencies = [
  "nom",
  "serde",
- "thiserror 1.0.69",
+ "thiserror 2.0.11",
  "toml",
 ]
 
