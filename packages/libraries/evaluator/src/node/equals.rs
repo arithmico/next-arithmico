@@ -37,23 +37,23 @@ impl EvaluateNode for Equals {
                     return Ok(Boolean::new(false));
                 }
 
-                let comparison_result: Result<bool, EvaluateNodeError> = zip(
-                    left.elements.into_iter(),
-                    right.elements.into_iter(),
-                )
-                .map(|(left, right)| {
-                    Equals::new(left, right).evaluate(context).map(|element| {
-                        if let Node::Boolean(element) = element {
+                let comparison_result: Result<bool, EvaluateNodeError> =
+                    zip(left.elements.into_iter(), right.elements.into_iter())
+                        .map(|(left, right)| {
+                            Equals::new(left, right).evaluate(context).map(
+                                |element| {
+                                    match element { Node::Boolean(element) => {
                             Ok(element.value)
-                        } else {
+                        } _ => {
                             Err(EvaluateNodeError::unsupported_operation())
-                        }
-                    })
-                })
-                .try_fold(true, |acc, comparison_result| {
-                    let is_equal = comparison_result??;
-                    Ok(acc && is_equal)
-                });
+                        }}
+                                },
+                            )
+                        })
+                        .try_fold(true, |acc, comparison_result| {
+                            let is_equal = comparison_result??;
+                            Ok(acc && is_equal)
+                        });
 
                 Ok(Boolean::new(comparison_result?))
             }

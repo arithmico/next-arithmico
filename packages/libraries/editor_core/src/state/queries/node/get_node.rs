@@ -1,4 +1,4 @@
-use crate::{state::EditorState, EditorNode};
+use crate::{EditorNode, state::EditorState};
 
 impl EditorState {
     pub fn get_node(&self, node_id: usize) -> Option<&EditorNode> {

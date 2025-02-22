@@ -3,7 +3,7 @@ use std::any::Any;
 use editor_core::{EditorLeafNode, EditorNode};
 use leptos::prelude::document;
 use unicode_segmentation::UnicodeSegmentation;
-use web_sys::{wasm_bindgen::JsCast, Text};
+use web_sys::{Text, wasm_bindgen::JsCast};
 
 #[derive(Debug, Clone)]
 pub struct TextNode {
@@ -48,14 +48,15 @@ impl EditorLeafNode for TextNode {
     }
 
     fn requires_update(&self, dom_node: &web_sys::Node) -> bool {
-        if let Ok(text_node) = dom_node.clone().dyn_into::<Text>() {
-            let requires_update = text_node
-                .text_content()
-                .and_then(|content| Some(content != self.content))
-                .unwrap_or(true);
-            requires_update
-        } else {
-            true
+        match dom_node.clone().dyn_into::<Text>() {
+            Ok(text_node) => {
+                let requires_update = text_node
+                    .text_content()
+                    .and_then(|content| Some(content != self.content))
+                    .unwrap_or(true);
+                requires_update
+            }
+            _ => true,
         }
     }
 
@@ -85,11 +86,7 @@ impl EditorLeafNode for TextNode {
             .grapheme_indices(true)
             .filter_map(
                 |(index, grapheme)| {
-                    if grapheme == " " {
-                        Some(index)
-                    } else {
-                        None
-                    }
+                    if grapheme == " " { Some(index) } else { None }
                 },
             )
             .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {

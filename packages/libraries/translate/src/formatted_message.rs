@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{use_translate, IntoTranslationId};
+use crate::{IntoTranslationId, use_translate};
 use leptos::{either::Either, prelude::*};
 
 #[component]

@@ -1,6 +1,6 @@
 use trace::Trace;
 
-use crate::{impl_node_traits, FunctionSignature};
+use crate::{FunctionSignature, impl_node_traits};
 
 use super::Node;
 

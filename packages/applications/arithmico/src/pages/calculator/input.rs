@@ -5,8 +5,8 @@ use editor::{
     use_editor_context::use_editor_context,
 };
 use editor_core::{
-    selection::{SelectionRange, SelectionRangePoint},
     EditorContainerNode, EditorLeafNode,
+    selection::{SelectionRange, SelectionRangePoint},
 };
 use leptos::prelude::*;
 

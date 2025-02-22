@@ -10,7 +10,7 @@ use nom::{
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
 
-use super::{relation::parse_relation, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, relation::parse_relation};
 
 impl ParseNode for And {
     fn parse(input: &str) -> ParseResult {

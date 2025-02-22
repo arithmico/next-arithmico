@@ -2,8 +2,8 @@ use std::ops::Deref;
 
 use leptos::{html::Div, prelude::*};
 use web_sys::{
-    wasm_bindgen::{prelude::Closure, JsCast},
     Node,
+    wasm_bindgen::{JsCast, prelude::Closure},
 };
 
 use crate::{

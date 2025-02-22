@@ -4,8 +4,8 @@ use ast::FunctionSignature;
 use translate_core::Language;
 
 use super::{
-    endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
     TranslatedString,
+    endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
 };
 
 #[derive(Debug, Clone, PartialEq)]

@@ -1,5 +1,5 @@
 use editor_core::{
-    selection::SelectionRange, EditorCommand, EditorLeafNode, EditorState,
+    EditorCommand, EditorLeafNode, EditorState, selection::SelectionRange,
 };
 
 use crate::node::TextNode;

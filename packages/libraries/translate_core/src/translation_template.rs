@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{language::Language, template::Template, TranslationError};
+use crate::{TranslationError, language::Language, template::Template};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TranslationTemplate {

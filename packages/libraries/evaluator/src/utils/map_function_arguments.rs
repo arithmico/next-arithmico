@@ -1,11 +1,11 @@
 use std::collections::VecDeque;
 
 use ast::{
-    argument_options::{Cardinality, Preprocess},
     FunctionSignature, GetNodeType, Node,
+    argument_options::{Cardinality, Preprocess},
 };
 use common::{
-    argument_mapping::ArgumentMapping, EvaluateNodeContext, EvaluateNodeError,
+    EvaluateNodeContext, EvaluateNodeError, argument_mapping::ArgumentMapping,
 };
 
 use crate::evaluate::EvaluateNode;
@@ -25,7 +25,7 @@ pub fn map_function_parameters(
             let name = name.clone();
             match options.cardinality() {
                 Cardinality::Required => {
-                    return Err(EvaluateNodeError::missing_parameter(name))
+                    return Err(EvaluateNodeError::missing_parameter(name));
                 }
                 Cardinality::Optional => {
                     mapping.insert_none(name);

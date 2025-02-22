@@ -4,8 +4,8 @@ use leptos::prelude::expect_context;
 
 use crate::TranslateContext;
 
-pub fn use_translate(
-) -> impl Fn(&str, Option<HashMap<String, String>>) -> Result<String, &'static str>
+pub fn use_translate()
+-> impl Fn(&str, Option<HashMap<String, String>>) -> Result<String, &'static str>
 {
     |id: &str, keys: Option<HashMap<String, String>>| {
         let context = expect_context::<TranslateContext>();

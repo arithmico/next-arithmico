@@ -1,4 +1,4 @@
-use crate::{selection::SelectionRange, EditorState};
+use crate::{EditorState, selection::SelectionRange};
 
 impl EditorState {
     pub fn delete_selection_and_preserve_focus_node(&mut self) -> Option<()> {

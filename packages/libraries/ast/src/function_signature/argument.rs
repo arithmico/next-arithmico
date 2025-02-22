@@ -33,29 +33,33 @@ impl Argument {
     }
 
     pub fn min_repetitions(mut self, min: usize) -> Self {
-        if let Cardinality::Multiple { min: _, max } =
-            self.options.cardinality()
-        {
-            self.options
-                .set_cardinality(Cardinality::Multiple { min, max });
-        } else {
-            self.options
-                .set_cardinality(Cardinality::Multiple { min, max: None });
+        match self.options.cardinality() {
+            Cardinality::Multiple { min: _, max } => {
+                self.options
+                    .set_cardinality(Cardinality::Multiple { min, max });
+            }
+            _ => {
+                self.options
+                    .set_cardinality(Cardinality::Multiple { min, max: None });
+            }
         }
         self
     }
 
     pub fn max_repetitions(mut self, max: usize) -> Self {
-        if let Cardinality::Multiple { min, max: _ } =
-            self.options.cardinality()
-        {
-            self.options.set_cardinality(Cardinality::Multiple {
-                min,
-                max: Some(max),
-            });
-        } else {
-            self.options
-                .set_cardinality(Cardinality::Multiple { min: 1, max: None });
+        match self.options.cardinality() {
+            Cardinality::Multiple { min, max: _ } => {
+                self.options.set_cardinality(Cardinality::Multiple {
+                    min,
+                    max: Some(max),
+                });
+            }
+            _ => {
+                self.options.set_cardinality(Cardinality::Multiple {
+                    min: 1,
+                    max: None,
+                });
+            }
         }
         self
     }

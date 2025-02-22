@@ -1,4 +1,4 @@
-use editor_core::{selection::SelectionRange, EditorCommand};
+use editor_core::{EditorCommand, selection::SelectionRange};
 
 pub struct DeleteWordBackwardCommand;
 

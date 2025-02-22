@@ -5,7 +5,7 @@ use common::{
     DecimalFormat, DecimalPlaces, HostApi, HostEndpoint, Language,
     TranslatedString,
 };
-use serializer::{serialize_node, SerializeNodeOptions};
+use serializer::{SerializeNodeOptions, serialize_node};
 
 pub struct DocumentationItem {
     synopsis: TranslatedString,

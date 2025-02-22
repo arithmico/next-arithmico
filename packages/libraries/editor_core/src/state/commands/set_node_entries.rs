@@ -1,6 +1,6 @@
 use web_sys::Node;
 
-use crate::{state::EditorState, EditorNode};
+use crate::{EditorNode, state::EditorState};
 
 impl EditorState {
     pub fn set_node_entries(

@@ -2,9 +2,8 @@ use ast::{FunctionCall, Node};
 use common::HostEndpoint;
 
 use crate::{
-    evaluate::EvaluateNode,
+    EvaluateNodeContext, EvaluateNodeError, evaluate::EvaluateNode,
     utils::map_function_arguments::map_function_parameters,
-    EvaluateNodeContext, EvaluateNodeError,
 };
 
 impl EvaluateNode for FunctionCall {

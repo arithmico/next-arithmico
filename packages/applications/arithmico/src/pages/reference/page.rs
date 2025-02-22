@@ -1,7 +1,7 @@
 use crate::{class_names, components::*, utils::use_app_state};
 use common::Language;
 use leptos::prelude::*;
-use translate::{use_translate, FormattedMessage};
+use translate::{FormattedMessage, use_translate};
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {

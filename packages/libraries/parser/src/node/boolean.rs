@@ -1,5 +1,5 @@
 use ast::Boolean;
-use nom::{branch::alt, bytes::complete::tag, Parser};
+use nom::{Parser, branch::alt, bytes::complete::tag};
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
 
