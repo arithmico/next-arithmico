@@ -5,5 +5,5 @@ edition = "2021"
 
 [dependencies]
 leptos = { workspace = true }
-leptos_dom = { version = "0.6.15", features = ["csr", "web"] }
+leptos_dom = { workspace = true }
 web-sys = { version = "0.3.72", features = ["Document", "Element", "Selection"] }
