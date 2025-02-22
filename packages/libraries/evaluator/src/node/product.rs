@@ -1,7 +1,7 @@
 use std::iter::zip;
 
 use ast::{
-    convert_to_outer_index, GetNodeType, Node, Number, Product, Sum, Tensor,
+    GetNodeType, Node, Number, Product, Sum, Tensor, convert_to_outer_index,
 };
 use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;

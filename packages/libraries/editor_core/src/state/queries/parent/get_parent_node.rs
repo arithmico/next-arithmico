@@ -1,4 +1,4 @@
-use crate::{state::EditorState, EditorNode};
+use crate::{EditorNode, state::EditorState};
 
 #[allow(dead_code)]
 impl EditorState {

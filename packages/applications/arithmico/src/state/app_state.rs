@@ -1,7 +1,7 @@
 use engine::{EvaluateNodeOptions, Session};
 use gloo_storage::{LocalStorage, Storage};
 
-use super::{settings::Settings, AppAction};
+use super::{AppAction, settings::Settings};
 
 #[derive(Debug, Clone)]
 pub struct AppState {

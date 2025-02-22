@@ -17,7 +17,7 @@ mod symbol;
 mod tensor;
 
 use ast::{Function, Node};
-use nom::{branch::alt, IResult};
+use nom::{IResult, branch::alt};
 use sub_expression::parse_sub_expression;
 
 use crate::error::ParseNodeError;

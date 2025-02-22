@@ -1,10 +1,13 @@
 use common::DecimalFormat;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
+use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
 
 use crate::{
-    class_names, components::MenuIcon, state::{override_decimal_format::OverrideDecimalFormat, AppAction}, utils::{expect_dispatch, use_app_state}
+    class_names,
+    components::MenuIcon,
+    state::{AppAction, override_decimal_format::OverrideDecimalFormat},
+    utils::{expect_dispatch, use_app_state},
 };
 
 #[component]
@@ -64,7 +67,6 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
                     }) />
                 </>
             }
-            
         }
     )).options(|options| 
         options

@@ -1,11 +1,11 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
+use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
 
 use crate::{
     class_names,
     components::MenuIcon,
-    state::{theme::Theme, AppAction},
+    state::{AppAction, theme::Theme},
     utils::{expect_dispatch, use_app_state},
 };
 

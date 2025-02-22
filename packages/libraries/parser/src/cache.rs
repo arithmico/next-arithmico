@@ -2,7 +2,7 @@ use std::{cell::RefCell, collections::HashMap};
 
 use ast::Node;
 
-use crate::{error::ParseNodeError, ParseResult};
+use crate::{ParseResult, error::ParseNodeError};
 
 type CachedParseResult = Result<(String, Node), nom::Err<ParseNodeError>>;
 

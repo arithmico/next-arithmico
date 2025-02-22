@@ -1,9 +1,9 @@
-use crate::{api::load_host_api, Documentation};
+use crate::{Documentation, api::load_host_api};
 use ast::Node;
 use common::{EvaluateNodeContext, EvaluateNodeOptions, HostApi, Stack};
 use evaluator::evaluate_node;
-use parser::{parse, ParseNodeOptions};
-use serializer::{serialize_node, SerializeNodeOptions};
+use parser::{ParseNodeOptions, parse};
+use serializer::{SerializeNodeOptions, serialize_node};
 use std::sync::Arc;
 
 pub use entry::SessionEntry;

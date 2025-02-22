@@ -1,7 +1,7 @@
 use ast::Node;
 
 use crate::{
-    serialize_node::SerializeNode, SerializeNodeError, SerializeNodeOptions,
+    SerializeNodeError, SerializeNodeOptions, serialize_node::SerializeNode,
 };
 
 pub(crate) fn serialize_child(

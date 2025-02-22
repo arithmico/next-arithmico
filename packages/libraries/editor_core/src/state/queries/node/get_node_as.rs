@@ -1,4 +1,4 @@
-use crate::{state::EditorState, EditorContainerNode, EditorLeafNode};
+use crate::{EditorContainerNode, EditorLeafNode, state::EditorState};
 
 impl EditorState {
     pub fn get_container_node_as<T: EditorContainerNode>(

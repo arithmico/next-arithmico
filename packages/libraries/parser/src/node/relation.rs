@@ -6,13 +6,13 @@ use ast::{
     Node, Sum,
 };
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
     multi::many1,
     sequence::{delimited, tuple},
-    IResult,
 };
 use trace::IntoTrace;
 use trace::TracableMut;

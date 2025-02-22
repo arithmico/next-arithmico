@@ -1,4 +1,4 @@
-use crate::{state::EditorState, EditorCommand};
+use crate::{EditorCommand, state::EditorState};
 
 impl EditorState {
     pub fn execute_command(&mut self, command: Box<dyn EditorCommand>) {

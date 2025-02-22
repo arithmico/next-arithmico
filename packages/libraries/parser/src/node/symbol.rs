@@ -1,11 +1,11 @@
 use ast::Symbol;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
     multi::many0,
     sequence::tuple,
-    IResult,
 };
 
 use crate::{

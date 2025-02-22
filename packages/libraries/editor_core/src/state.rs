@@ -7,8 +7,8 @@ use selection::SelectionRange;
 use web_sys::Node;
 
 use crate::{
-    utils::get_node_id, EditorContainerNode, EditorNode, EditorTransform,
-    RootNode,
+    EditorContainerNode, EditorNode, EditorTransform, RootNode,
+    utils::get_node_id,
 };
 
 pub mod commands;
