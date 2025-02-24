@@ -6,8 +6,6 @@
             "extensions": [
                 "rust-lang.rust-analyzer",
                 "vivaxy.vscode-conventional-commits",
-                "bradlc.vscode-tailwindcss",
-                "xoronic.pestfile",
                 "ms-playwright.playwright",
                 "github.vscode-github-actions"
             ]
