@@ -7,7 +7,7 @@ use leptos_router::path;
 pub fn AppRouter() -> impl IntoView {
     view! {
         <Router>
-            <Routes fallback=|| "Not Found.">
+            <Routes fallback=NotFoundPage>
                 <Route path=path!("/") view=CalculatorPage />
                 <Route path=path!("/settings") view=SettingsPage />
                 <Route path=path!("/reference") view=ReferencePage />

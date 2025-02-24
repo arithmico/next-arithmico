@@ -89,3 +89,11 @@ German = "Suche"
 [about.title]
 English = "About"
 German = "Über"
+
+[not-found.title]
+English = "Page Not Found"
+German = "Seite nicht gefunden"
+
+[not-found.description]
+English = "The page you are looking for might have been moved, deleted, or never existed. Try going back to the homepage."
+German = "Die Seite, die Sie suchen, wurde möglicherweise verschoben oder gelöscht. Versuchen Sie, zur Startseite zurückzukehren."
