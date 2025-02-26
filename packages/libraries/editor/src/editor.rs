@@ -2,8 +2,8 @@ use std::ops::Deref;
 
 use leptos::{html::Div, prelude::*};
 use web_sys::{
+    wasm_bindgen::{prelude::Closure, JsCast},
     Node,
-    wasm_bindgen::{JsCast, prelude::Closure},
 };
 
 use crate::{
@@ -24,9 +24,11 @@ pub fn Editor(
     let editor_ref = NodeRef::<Div>::new();
     let editor_state = use_editor_context();
     let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
-        editor_state.update_untracked(move |state| {
-            state.read_selection_from_dom();
-        });
+        if !editor_state.is_disposed() {
+            editor_state.update_untracked(move |state| {
+                state.read_selection_from_dom();
+            });
+        }
     });
     document()
         .add_event_listener_with_callback("selectionchange", {

@@ -11,7 +11,6 @@ pub fn EditorProvider(children: Children) -> impl IntoView {
         let mut editor_state = EditorState::new();
         editor_state.add_transform(MergeTextNodesTransform::new());
         editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());
-
         editor_state
     });
 
