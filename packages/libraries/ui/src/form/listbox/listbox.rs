@@ -1,4 +1,5 @@
 use leptos::{html, prelude::*};
+use web_sys::{wasm_bindgen::JsCast, Node};
 
 use super::ListboxDefinition;
 
@@ -25,7 +26,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     let selected_pos = RwSignal::new(None);
     let length = definition.options.options.len();
     let button_ref = NodeRef::<html::Button>::new();
-    let close_lock = RwSignal::new(false);
+    let container_ref = NodeRef::<html::Div>::new();
 
     provide_context(ListboxContext {
         is_open: is_open.split().0,
@@ -59,15 +60,12 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
         selected_pos.set(None);
         if let Some(button_ref) = button_ref.get_untracked() {
             button_ref.focus().expect("focus");
-            if !close_lock.get() {
-                is_open.set(false);
-            }
-            close_lock.set(false);
+            is_open.set(false);
         }
     });
 
     view! {
-        <div class="listbox-container">
+        <div node_ref=container_ref class="listbox-container">
 
             <button
                 id=format!("widget-{}-listbox-button", widget_id)
@@ -89,18 +87,6 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                 node_ref=button_ref
 
                 class="listbox-button"
-
-                on:mousedown=move |_| {
-                    close_lock.set(true);
-                }
-
-                on:mouseleave=move |_| {
-                    close_lock.set(false);
-                }
-
-                on:mouseup=move |_| {
-                    close_lock.set(false);
-                }
 
                 on:click=move |_| {
                     is_open.set(!is_open.get());
@@ -157,11 +143,9 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                         if Some(pos) == selected_pos.get() {
                                             if let Some(node_ref) = node_ref.get() {
                                                 node_ref.focus().expect("focus");
-                                                close_lock.set(false);
                                             }
                                         }
                                     });
-
                                     view! {
                                         <li
                                             id=format!("widget-{}-listbox-option-{}", widget_id, pos)
@@ -181,21 +165,17 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                                 )
                                             }
 
-                                            on:mousedown=move |_| {
-                                                close_lock.set(true);
-                                            }
-
-                                            on:mouseleave=move |_| {
-                                                close_lock.set(false);
-                                            }
-
-                                            on:mouseup=move |_| {
-                                                close_lock.set(false);
-                                            }
-
-                                            on:focusout=move |_| {
-                                                if !close_lock.get() {
-                                                    on_cancel.run(());
+                                            on:focusout=move |e| {
+                                                let target = e.related_target();
+                                                if let Some(container_ref) = container_ref.get_untracked() {
+                                                    if let Some(target) = target {
+                                                        let target = target.dyn_into::<Node>().ok();
+                                                        if !container_ref.contains(target.as_ref()) {
+                                                            on_cancel.run(());
+                                                        }
+                                                    } else {
+                                                        on_cancel.run(());
+                                                    }
                                                 }
                                             }
 
@@ -212,7 +192,6 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                                         "ArrowUp" => {
                                                             if let Some(pos) = selected_pos.get_untracked() {
                                                                 if pos > 0 {
-                                                                    close_lock.set(true);
                                                                     selected_pos.set(Some(pos - 1));
                                                                 }
                                                             }
@@ -220,7 +199,6 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                                         "ArrowDown" => {
                                                             if let Some(pos) = selected_pos.get_untracked() {
                                                                 if pos < length - 1 {
-                                                                    close_lock.set(true);
                                                                     selected_pos.set(Some(pos + 1));
                                                                 }
                                                             }

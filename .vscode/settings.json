@@ -9,14 +9,11 @@
         "ast",
         "evaluator",
         "serializer",
-        "common_ui",
+        "ui",
         "trace",
         "common",
         "editor",
         "translate"
     ],
-    "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
-    "tailwindCSS.includeLanguages": {
-        "rust": "html"
-    }
+    "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
