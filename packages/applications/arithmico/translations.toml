@@ -97,3 +97,11 @@ German = "Seite nicht gefunden"
 [not-found.description]
 English = "The page you are looking for might have been moved, deleted, or never existed. Try going back to the homepage."
 German = "Die Seite, die Sie suchen, wurde möglicherweise verschoben oder gelöscht. Versuchen Sie, zur Startseite zurückzukehren."
+
+[calculator.toolbar.actions.clear-input]
+English = "Clear Input"
+German = "Eingabe löschen"
+
+[calculator.toolbar.actions.clear-output]
+English = "Clear Output"
+German = "Ausgabe löschen"

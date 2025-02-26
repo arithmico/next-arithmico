@@ -1,10 +1,31 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
+use ui::form::menu::{Menu, MenuDefinition};
 
 use crate::components::{HistoryIcon, ListIcon, MenuIcon, PageTitle};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {
+    let menu_definition = MenuDefinition::new()
+        .button(|| {
+            view! {
+                <>
+                    <FormattedMessage id="calculator.toolbar.actions" />
+                    <MenuIcon class="rotate-180 icon-hover" />
+                </>
+            }
+        })
+        .item(|| view! {
+            <button>
+                <FormattedMessage id="calculator.toolbar.actions.clear-input" />
+            </button>
+        })
+        .item(|| view! {
+            <button>
+                <FormattedMessage id="calculator.toolbar.actions.clear-output" />
+            </button>
+        });
+
     view! {
         <div class="calculator-header">
             <PageTitle>
@@ -22,10 +43,7 @@ pub fn CalculatorHeader() -> impl IntoView {
                 </ToolbarNavigationItem>
             </ToolbarNavigation>
 
-            <button class="calculator-header-action-element">
-                <FormattedMessage id="calculator.toolbar.actions" />
-                <MenuIcon class="rotate-180 icon-hover" />
-            </button>
+            <Menu definition=menu_definition />
 
         </div>
     }

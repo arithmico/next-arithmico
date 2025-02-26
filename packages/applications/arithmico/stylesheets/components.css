@@ -449,3 +449,59 @@ button.calculator-header-action-element {
 .reference-section>dl>dd {
     padding: var(--spacing-2) 0;
 }
+
+/* menu */
+.menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-items-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: var(--radius-sm);
+    color: inherit;
+    padding: var(--spacing-1) var(--spacing-3);
+    gap: var(--spacing-2);
+    font-size: var(--text-xs);
+}
+
+.theme-dark .menu-button {
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-600);
+}
+
+.theme-light .menu-button {
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-dark .menu-button:hover {
+    background-color: var(--color-neutral-800);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-light .menu-button:hover {
+    background-color: var(--color-neutral-300);
+    border-color: var(--color-neutral-500);
+}
+
+.menu-items {
+    position: absolute;
+    z-index: 10;
+    margin-top: var(--spacing-1);
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: var(--radius-sm);
+}
+
