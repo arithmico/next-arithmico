@@ -3,9 +3,10 @@ use translate::FormattedMessage;
 use ui::{
     common::page_title::PageTitle,
     form::menu::{Menu, MenuDefinition},
+    icon::{
+        history_icon::HistoryIcon, list_icon::ListIcon, menu_icon::MenuIcon,
+    },
 };
-
-use crate::components::{HistoryIcon, ListIcon, MenuIcon};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {

@@ -1,9 +1,11 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition};
+use ui::{
+    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
+    icon::menu_icon::MenuIcon,
+};
 
 use crate::{
-    components::MenuIcon,
     state::{theme::Theme, AppAction},
     utils::{expect_dispatch, use_app_state},
 };
