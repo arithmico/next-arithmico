@@ -1,0 +1,19 @@
+/* card */
+.card {
+    border-width: 1px;
+    border-style: solid;
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-2);
+}
+
+.theme-light .card {
+    color: black;
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-300);
+}
+
+.theme-dark .card {
+    color: white;
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-700);
+}

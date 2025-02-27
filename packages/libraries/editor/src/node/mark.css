@@ -1,0 +1,11 @@
+.editor-error-mark {
+    border-radius: var(--radius-sm);
+}
+
+.theme-light .editor-error-mark {
+    background-color: var(--color-red-200);
+}
+
+.theme-dark .editor-error-mark {
+    background-color: var(--color-red-700);
+}

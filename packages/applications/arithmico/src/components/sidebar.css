@@ -1,0 +1,27 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 var(--spacing-2);
+    border-right-width: 1px;
+    border-right-style: solid;
+}
+
+.sidebar>h1 {
+    padding-top: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
+    padding-right: var(--spacing-10);
+    font-weight: 100;
+}
+
+.theme-light .sidebar {
+    color: black;
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-300);
+}
+
+.theme-dark .sidebar {
+    color: white;
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-700);
+}
