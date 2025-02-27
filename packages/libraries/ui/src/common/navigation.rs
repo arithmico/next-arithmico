@@ -1,9 +1,5 @@
 use leptos::prelude::*;
 
-pub use navigation_item::NavigationItem;
-
-mod navigation_item;
-
 #[component]
 pub fn Navigation(children: Children) -> impl IntoView {
     view! {
