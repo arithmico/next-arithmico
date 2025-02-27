@@ -1,8 +1,11 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::menu::{Menu, MenuDefinition};
+use ui::{
+    common::page_title::PageTitle,
+    form::menu::{Menu, MenuDefinition},
+};
 
-use crate::components::{HistoryIcon, ListIcon, MenuIcon, PageTitle};
+use crate::components::{HistoryIcon, ListIcon, MenuIcon};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {

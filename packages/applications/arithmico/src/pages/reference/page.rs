@@ -2,6 +2,7 @@ use crate::{components::*, utils::use_app_state};
 use common::Language;
 use leptos::prelude::*;
 use translate::{use_translate, FormattedMessage};
+use ui::common::page_title::PageTitle;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
