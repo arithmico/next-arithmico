@@ -1,13 +1,13 @@
 use crate::components::*;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::container::page::Page;
+use ui::container::{page::Page, sidebar::Sidebar};
 
 #[component]
 pub fn PageWithSidebar(children: Children) -> impl IntoView {
     view! {
         <Page>
-            <Sidebar>
+            <Sidebar title="Arithmico">
                 <Navigation>
                     <NavigationItem to="/".to_string()>
                         <FormattedMessage id="navigation.calculator" />
