@@ -1,7 +1,9 @@
-use crate::components::*;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::container::{page::Page, sidebar::Sidebar};
+use ui::{
+    common::{navigation::Navigation, navigation_item::NavigationItem},
+    container::{page::Page, sidebar::Sidebar},
+};
 
 #[component]
 pub fn PageWithSidebar(children: Children) -> impl IntoView {
