@@ -1,7 +1,13 @@
 [watch]
 watch = ["../../"]
+ignore = ["./index.css"]
 
 [build]
 target = "index.html"
 dist = "dist"
 minify = "on_release"
+
+[[hooks]]
+stage = "pre_build"
+command = "sh"
+command_arguments = ["-c", 'cssbundler -i "./**/*.css" -o index.css -e "$TRUNK_DIST_DIR/**/*.css"']

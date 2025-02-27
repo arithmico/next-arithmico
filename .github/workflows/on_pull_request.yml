@@ -21,9 +21,7 @@ jobs:
     - uses: actions-rust-lang/setup-rust-toolchain@v1
     - uses: cargo-bins/cargo-binstall@main
     - shell: bash
-      run: |
-        cargo binstall -y --force trunk
-        rustup target add wasm32-unknown-unknown
+      run: .github/workflows/setup.sh
     - uses: actions/setup-node@v4
       with:
         node-version: 22

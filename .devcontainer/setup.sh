@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # install tailwind
 npx -y playwright install --with-deps
 
@@ -6,3 +8,4 @@ rustup target add wasm32-unknown-unknown
 cargo install trunk
 cargo install leptosfmt
 cargo install cargo-watch
+cargo install cssbundler --path packages/applications/cssbundler
