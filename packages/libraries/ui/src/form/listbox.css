@@ -1,0 +1,87 @@
+.listbox-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: var(--spacing-32);
+    margin-left: auto;
+}
+
+.listbox-button {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    border-width: 1px;
+    border-style: solid;
+    color: inherit;
+    font-size: var(--text-base);
+}
+
+.listbox-button svg:last-child {
+    margin-left: auto;
+}
+
+.theme-dark .listbox-button {
+    background-color: var(--color-neutral-700);
+    border-color: var(--color-neutral-500);
+}
+
+.theme-dark .listbox-button:hover {
+    background-color: var(--color-neutral-600);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-light .listbox-button {
+    background-color: var(--color-neutral-200);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-light .listbox-button:hover {
+    background-color: var(--color-neutral-300);
+    border-color: var(--color-neutral-500);
+}
+
+.listbox-options-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.listbox-options {
+    position: absolute;
+    z-index: 10;
+    margin-top: var(--spacing-1);
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: var(--radius-sm);
+}
+
+.theme-light .listbox-options {
+    background-color: var(--color-neutral-200);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-dark .listbox-options {
+    background-color: var(--color-neutral-700);
+    border-color: var(--color-neutral-500);
+}
+
+.listbox-option {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+}
+
+.listbox-option.selected {
+    font-weight: bolder;
+}
+
+.theme-dark .listbox-option:hover {
+    background-color: var(--color-neutral-600);
+}
+
+.theme-light .listbox-option:hover {
+    background-color: var(--color-neutral-300);
+}

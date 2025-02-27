@@ -11,10 +11,10 @@ use glob::{glob, Paths};
 
 #[derive(Parser, Debug)]
 struct Arguments {
-    #[arg(short, long, value_parser, value_delimiter = ' ')]
+    #[arg(short, long, value_parser, value_delimiter = ',')]
     include: Vec<String>,
 
-    #[arg(short, long, value_parser, value_delimiter = ' ')]
+    #[arg(short, long, value_parser, value_delimiter = ',')]
     exclude: Vec<String>,
 
     #[arg(short, long)]

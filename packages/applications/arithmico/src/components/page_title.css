@@ -1,0 +1,5 @@
+.page-title {
+    padding: var(--spacing-4) var(--spacing-10) var(--spacing-4) 0;
+    font-size: var(--text-2xl);
+    font-weight: 500;
+}

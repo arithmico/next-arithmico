@@ -1,0 +1,9 @@
+.page-with-sidebar-container {
+    padding: 0 var(--spacing-4);
+}
+
+@media (width > 80rem) {
+    .page-with-sidebar-container {
+        padding-right: var(--spacing-16);
+    }
+}

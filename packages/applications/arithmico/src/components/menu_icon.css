@@ -1,0 +1,21 @@
+/* icon */
+.icon {
+    width: var(--spacing-5);
+    height: var(--spacing-5);
+}
+
+.theme-dark .icon {
+    fill: white;
+}
+
+.theme-light .icon {
+    fill: black;
+}
+
+.icon-hover {
+    opacity: 0.5;
+}
+
+*:hover>.icon-hover {
+    opacity: 1;
+}
