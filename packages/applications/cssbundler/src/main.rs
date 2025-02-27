@@ -1,6 +1,6 @@
 use std::{
     collections::HashSet,
-    fs::{File, OpenOptions},
+    fs::{remove_file, File, OpenOptions},
     io::{Read, Write},
     path::{Path, PathBuf},
     process::ExitCode,
@@ -41,10 +41,16 @@ fn run(arguments: &Arguments) -> Result<(), String> {
     )?;
     let chunks: String = read_files(&paths)?.join("\n");
     let output_path = Path::new(&arguments.output);
-    if !output_path.exists() {
-        File::create(&arguments.output)
-            .map_err(|_| String::from("Failed to create output file"))?;
+    if output_path.exists() {
+        remove_file(output_path).map_err(|_| {
+            format!(
+                "Failed to delete file {}",
+                output_path.to_str().unwrap_or("")
+            )
+        })?;
     }
+    File::create(&arguments.output)
+        .map_err(|_| String::from("Failed to create output file"))?;
     let mut file = OpenOptions::new()
         .write(true)
         .truncate(true)
@@ -61,13 +67,29 @@ fn get_included_paths(
     output: &str,
 ) -> Result<HashSet<PathBuf>, String> {
     let include_paths = get_paths_for_pattern_list(include_patterns)?;
-    let exclude_paths = get_paths_for_pattern_list(excluded_patterns)?;
+    let exclude_paths = get_paths_for_pattern_list(excluded_patterns)?
+        .iter()
+        .filter_map(|item| item.to_str())
+        .map(|item| item.to_string())
+        .collect::<HashSet<_>>();
+
+    let output = Path::new(output)
+        .canonicalize()
+        .map_err(|_| String::from("Failed to normalize output path"))?
+        .to_str()
+        .ok_or(String::from("Failed to serialize normalized output path"))?
+        .to_string();
+
     let mut result_paths = HashSet::new();
     for include_path in include_paths {
-        if exclude_paths.contains(&include_path) {
+        let Some(path) = include_path.to_str() else {
+            continue;
+        };
+        let path = path.to_string();
+        if exclude_paths.contains(&path) {
             continue;
         }
-        if include_path == Path::new(output) {
+        if path == output {
             continue;
         }
         let extension = include_path
@@ -96,10 +118,14 @@ fn get_paths_for_pattern_list(
     for pattern in patterns {
         for path in get_paths_for_pattern(pattern)? {
             let path = path.map_err(|_| String::from("IO Error"))?;
-            paths.insert(
-                path.canonicalize()
-                    .map_err(|_| String::from("Failed to normalize path"))?,
-            );
+            if let Ok(path) = path.canonicalize() {
+                paths.insert(path);
+            } else {
+                println!(
+                    "Warning: Failed to normalize path {}",
+                    path.to_str().unwrap_or("")
+                );
+            }
         }
     }
     Ok(paths)
