@@ -19,6 +19,8 @@ jobs:
         run: cargo install --path packages/applications/create_version
       - name: Create and push tag
         shell: bash
+        env: 
+            SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
         run: |
           VERSION_TAG=$(create_version)
           git tag $VERSION_TAG
