@@ -10,4 +10,4 @@ minify = "on_release"
 [[hooks]]
 stage = "pre_build"
 command = "sh"
-command_arguments = ["-c", 'cssbundler -i "./**/*.css","../../libraries/ui/**/*.css","../../libraries/editor/**/*.css" -o index.css -e "$TRUNK_DIST_DIR/**/*.css"']
+command_arguments = ["-c", 'cssbundler -i "./**/*.css","../../libraries/ui/**/*.css","../../libraries/editor/**/*.css","../../../styles/**/*.css" -o index.css -e "$TRUNK_DIST_DIR/**/*.css"']
