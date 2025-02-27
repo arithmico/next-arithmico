@@ -34,7 +34,9 @@ jobs:
     - name: prebuild app
       working-directory: packages/applications/arithmico
       shell: bash
-      run: ~/.cargo/bin/trunk build
+      run: |
+        touch index.css 
+        ~/.cargo/bin/trunk build
     
     - name: setup e2e tests
       working-directory: packages/applications/arithmico-e2e
