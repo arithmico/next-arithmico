@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "packages/applications/arithmico",
+    "packages/applications/arithmico", "packages/applications/cssbundler",
     "packages/libraries/*"
 ]
 

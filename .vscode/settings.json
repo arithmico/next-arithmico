@@ -13,7 +13,8 @@
         "trace",
         "common",
         "editor",
-        "translate"
+        "translate",
+        "cssbundler"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
