@@ -1,0 +1,16 @@
+.translation-error {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-1);
+}
+
+.theme-dark .translation-error {
+    border-color: var(--color-red-500);
+    background-color: var(--color-red-700);
+}
+
+.theme-light .translation-error {
+    border-color: var(--color-red-400);
+    background-color: var(--color-red-200);
+}
