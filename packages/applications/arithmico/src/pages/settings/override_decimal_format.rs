@@ -1,10 +1,9 @@
 use common::DecimalFormat;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open};
+use ui::{form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition}, icon::menu_icon::MenuIcon};
 
 use crate::{
-    components::MenuIcon,
     state::{AppAction, override_decimal_format::OverrideDecimalFormat},
     utils::{expect_dispatch, use_app_state},
 };
