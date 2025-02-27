@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::container::card::Card;
+use ui::{common::page_title::PageTitle, container::card::Card};
 
 use crate::{
     components::*,
