@@ -8,6 +8,7 @@ pub enum FocusRingOrientation {
 pub struct FocusRing {
     orientation: FocusRingOrientation,
     position: usize,
+    reset_position: usize,
     length: usize,
 }
 
@@ -21,15 +22,21 @@ impl FocusRing {
             orientation,
             position,
             length,
+            reset_position: position,
         }
     }
 
     pub fn set_position(&mut self, position: usize) {
         self.position = position;
+        self.reset_position = position;
     }
 
     pub fn get_position(&self) -> usize {
         self.position
+    }
+
+    pub fn reset_position(&mut self) {
+        self.position = self.reset_position;
     }
 
     pub fn handle_keydown(&mut self, key: &str) -> bool {
