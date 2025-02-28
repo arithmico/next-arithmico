@@ -5,8 +5,9 @@ use common::{
     DecimalFormat, DecimalPlaces, HostApi, HostEndpoint, Language,
     TranslatedString,
 };
-use serializer::{SerializeNodeOptions, serialize_node};
+use serializer::{serialize_node, SerializeNodeOptions};
 
+#[derive(Clone, Debug)]
 pub struct DocumentationItem {
     synopsis: TranslatedString,
     description: TranslatedString,
@@ -101,6 +102,7 @@ impl DocumentationItem {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct DocumentationModule {
     name: TranslatedString,
     items: Vec<DocumentationItem>,
