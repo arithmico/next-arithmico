@@ -1,12 +1,12 @@
 use leptos::prelude::*;
 
 #[derive(Clone)]
-pub struct ListboxOption<V: Send + Sync + Clone> {
+pub struct ListboxOptionDefinition<V: Send + Sync + Clone> {
     pub value: V,
     pub view: ViewFn,
 }
 
-impl<V: Send + Sync + Clone> ListboxOption<V> {
+impl<V: Send + Sync + Clone> ListboxOptionDefinition<V> {
     fn new(value: V, view: ViewFn) -> Self {
         Self { value, view }
     }
@@ -24,15 +24,18 @@ impl ListboxOptionBuilder {
         Self
     }
 
-    pub fn value<V: Send + Sync + Clone>(self, value: V) -> ListboxOption<V> {
-        ListboxOption::new(value, (|| ().into_view()).into())
+    pub fn value<V: Send + Sync + Clone>(
+        self,
+        value: V,
+    ) -> ListboxOptionDefinition<V> {
+        ListboxOptionDefinition::new(value, (|| ().into_view()).into())
     }
 }
 
 #[derive(Clone)]
 pub struct ListboxDefinition<V: Send + Sync + Clone> {
     pub button: ViewFn,
-    pub options: Vec<ListboxOption<V>>,
+    pub options: Vec<ListboxOptionDefinition<V>>,
 }
 
 impl<V: Send + Sync + Clone> ListboxDefinition<V> {
@@ -50,7 +53,7 @@ impl<V: Send + Sync + Clone> ListboxDefinition<V> {
 
     pub fn option(
         mut self,
-        option: impl Fn(ListboxOptionBuilder) -> ListboxOption<V>,
+        option: impl Fn(ListboxOptionBuilder) -> ListboxOptionDefinition<V>,
     ) -> Self {
         self.options.push(option(ListboxOptionBuilder::new()));
         self
