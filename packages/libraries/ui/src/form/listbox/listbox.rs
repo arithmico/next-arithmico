@@ -3,7 +3,10 @@ use web_sys::{wasm_bindgen::JsCast, Node};
 
 use super::ListboxDefinition;
 
-use crate::widget_id::use_widget_id;
+use crate::{
+    control::focus_ring::{FocusRing, FocusRingOrientation},
+    widget_id::use_widget_id,
+};
 
 #[derive(Clone)]
 struct ListboxContext {
@@ -23,10 +26,16 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
 ) -> impl IntoView {
     let widget_id = use_widget_id();
     let is_open = RwSignal::new(false);
-    let selected_pos = RwSignal::new(None);
-    let length = definition.options.options.len();
     let button_ref = NodeRef::<html::Button>::new();
     let container_ref = NodeRef::<html::Div>::new();
+
+    let focus_ring = RwSignal::new(FocusRing::new(
+        definition
+            .position_of(&value.get_untracked())
+            .expect("position"),
+        definition.len(),
+        FocusRingOrientation::Vertical,
+    ));
 
     provide_context(ListboxContext {
         is_open: is_open.split().0,
@@ -35,14 +44,10 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     Effect::new({
         let definition = definition.clone();
         move |_| {
-            let value = value.get();
-            if is_open.get() {
-                let pos = definition
-                    .options
-                    .options
-                    .iter()
-                    .position(|v| v.value.eq(&value));
-                selected_pos.set(pos);
+            let position = definition.position_of(&value.get());
+            if let Some(position) = position {
+                focus_ring
+                    .update(|focus_ring| focus_ring.set_position(position));
             }
         }
     });
@@ -50,14 +55,12 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     let on_select = Callback::new(move |value: V| {
         on_change.run(value);
         is_open.set(false);
-        selected_pos.set(None);
         if let Some(button_ref) = button_ref.get_untracked() {
             button_ref.focus().expect("focus");
         }
     });
 
     let on_cancel = Callback::new(move |()| {
-        selected_pos.set(None);
         if let Some(button_ref) = button_ref.get_untracked() {
             button_ref.focus().expect("focus");
             is_open.set(false);
@@ -111,12 +114,12 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                         )
 
                         aria-activedescendant=move || {
-                            if let Some(selected_pos) = selected_pos.get() {
+                            if is_open.get() {
                                 Some(
                                     format!(
                                         "widget-{}-listbox-option-{}",
                                         widget_id,
-                                        selected_pos,
+                                        focus_ring.get().get_position(),
                                     ),
                                 )
                             } else {
@@ -140,7 +143,8 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                         move || { value.get() == option_value }
                                     });
                                     Effect::new(move |_| {
-                                        if Some(pos) == selected_pos.get() {
+                                        let focus_ring = focus_ring.get();
+                                        if pos == focus_ring.get_position() {
                                             if let Some(node_ref) = node_ref.get() {
                                                 node_ref.focus().expect("focus");
                                             }
@@ -188,32 +192,23 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                                 let value = option.value.clone();
                                                 move |event| {
                                                     let key = event.key();
-                                                    match key.as_str() {
-                                                        "ArrowUp" => {
-                                                            if let Some(pos) = selected_pos.get_untracked() {
-                                                                if pos > 0 {
-                                                                    selected_pos.set(Some(pos - 1));
-                                                                }
+                                                    let mut new_focus_ring = focus_ring.get();
+                                                    if new_focus_ring.handle_keydown(&key) {
+                                                        focus_ring.set(new_focus_ring);
+                                                    } else {
+                                                        match key.as_str() {
+                                                            " " | "Enter" => {
+                                                                on_select.run(value.clone());
+                                                                event.prevent_default();
                                                             }
-                                                        }
-                                                        "ArrowDown" => {
-                                                            if let Some(pos) = selected_pos.get_untracked() {
-                                                                if pos < length - 1 {
-                                                                    selected_pos.set(Some(pos + 1));
-                                                                }
+                                                            "Tab" => {
+                                                                event.prevent_default();
                                                             }
+                                                            "Escape" => {
+                                                                on_cancel.run(());
+                                                            }
+                                                            _ => {}
                                                         }
-                                                        " " | "Enter" => {
-                                                            on_select.run(value.clone());
-                                                            event.prevent_default();
-                                                        }
-                                                        "Tab" => {
-                                                            event.prevent_default();
-                                                        }
-                                                        "Escape" => {
-                                                            on_cancel.run(());
-                                                        }
-                                                        _ => {}
                                                     }
                                                 }
                                             }

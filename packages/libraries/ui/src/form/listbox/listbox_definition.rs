@@ -97,4 +97,14 @@ impl<V: Send + Sync + Clone> ListboxDefinition<V> {
         self.options = options(self.options);
         self
     }
+
+    pub fn len(&self) -> usize {
+        self.options.options.len()
+    }
+}
+
+impl<V: Send + Sync + Clone + PartialEq> ListboxDefinition<V> {
+    pub fn position_of(&self, value: &V) -> Option<usize> {
+        self.options.options.iter().position(|x| &x.value == value)
+    }
 }
