@@ -1,9 +1,9 @@
-use header::CalculatorHeader;
+use calculator_header::CalculatorHeader;
 use input::CaluclatorInput;
 use leptos::prelude::*;
 use output::CalculatorOutput;
 
-mod header;
+mod calculator_header;
 mod input;
 mod output;
 mod use_error_trace;
