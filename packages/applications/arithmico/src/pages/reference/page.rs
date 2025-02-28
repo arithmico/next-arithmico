@@ -2,7 +2,7 @@ use crate::{components::*, utils::use_app_state};
 use common::Language;
 use leptos::prelude::*;
 use translate::{use_translate, FormattedMessage};
-use ui::common::page_title::PageTitle;
+use ui::{common::page_title::PageTitle, container::page_header::PageHeader};
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
@@ -11,7 +11,7 @@ pub fn ReferencePage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <div class="reference-header">
+            <PageHeader>
                 <PageTitle>
                     <FormattedMessage id="reference.title" />
                 </PageTitle>
@@ -21,8 +21,7 @@ pub fn ReferencePage() -> impl IntoView {
                     placeholder=translate("reference.search", None)
                         .unwrap_or(String::from("TranslationError"))
                 />
-
-            </div>
+            </PageHeader>
             {move || {
                 app_state
                     .get()
