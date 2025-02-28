@@ -20,6 +20,7 @@
     padding: var(--spacing-1) var(--spacing-3);
     gap: var(--spacing-2);
     font-size: var(--text-xs);
+    cursor: pointer;
 }
 
 .theme-dark .menu-button {
@@ -52,3 +53,27 @@
     border-radius: var(--radius-sm);
 }
 
+.theme-light .menu-items {
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-400);
+}
+
+.theme-dark .menu-items {
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-600);
+}
+
+.menu-item {
+    font-size: var(--text-xs);
+    padding: var(--spacing-2);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.theme-dark .menu-item:hover {
+    background-color: var(--color-neutral-800);
+}
+
+.theme-light .menu-item:hover {
+    background-color: var(--color-neutral-300);
+}

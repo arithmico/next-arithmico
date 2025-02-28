@@ -21,14 +21,14 @@ pub fn CalculatorHeader() -> impl IntoView {
             }
         })
         .item(|| view! {
-            <button>
+            <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-input" />
-            </button>
+            </>
         })
         .item(|| view! {
-            <button>
+            <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
-            </button>
+            </>
         });
 
     view! {
