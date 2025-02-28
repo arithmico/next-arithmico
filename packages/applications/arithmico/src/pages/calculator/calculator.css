@@ -49,21 +49,12 @@
 }
 
 /* calculator header */
-.calculator-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-2);
-}
-
-.calculator-header>.page-title {
-    margin-right: auto;
-}
-
-.calculator-header>nav {
+.calculator-toolbar {
+    margin-left: auto;
     display: flex;
 }
 
-.calculator-header>nav>ul {
+.calculator-toolbar > ul {
     display: flex;
     gap: var(--spacing-2);
 }

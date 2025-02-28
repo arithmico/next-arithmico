@@ -2,6 +2,7 @@ use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
     common::page_title::PageTitle,
+    container::page_header::PageHeader,
     form::menu::{Menu, MenuDefinition},
     icon::{
         history_icon::HistoryIcon, list_icon::ListIcon, menu_icon::MenuIcon,
@@ -31,7 +32,7 @@ pub fn CalculatorHeader() -> impl IntoView {
         });
 
     view! {
-        <div class="calculator-header">
+        <PageHeader>
             <PageTitle>
                 <FormattedMessage id="calculator.title" />
             </PageTitle>
@@ -48,15 +49,14 @@ pub fn CalculatorHeader() -> impl IntoView {
             </ToolbarNavigation>
 
             <Menu definition=menu_definition />
-
-        </div>
+        </PageHeader>
     }
 }
 
 #[component]
 fn ToolbarNavigation(children: Children) -> impl IntoView {
     view! {
-        <nav>
+        <nav class="calculator-toolbar">
             <ul>{children()}</ul>
         </nav>
     }
