@@ -1,0 +1,21 @@
+
+.calculator-input {
+    padding: var(--spacing-2);
+    font-size: var(--text-xl);
+    border-radius: var(--radius-sm);
+    border-width: 1px;
+    border-style: solid;
+    white-space: pre-wrap;
+}
+
+.theme-dark .calculator-input {
+    color: white;
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-700);
+}
+
+.theme-light .calculator-input {
+    color: black;
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-300);
+}

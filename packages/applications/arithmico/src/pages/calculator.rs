@@ -1,17 +1,15 @@
 use calculator_header::CalculatorHeader;
-use input::CaluclatorInput;
+use calculator_input::CaluclatorInput;
 use leptos::prelude::*;
-use output::CalculatorOutput;
 
 mod calculator_header;
-mod input;
-mod output;
+mod calculator_input;
 mod use_error_trace;
 mod use_last_output;
 
 use use_last_output::use_last_output;
 
-use crate::components::PageWithSidebar;
+use crate::components::{CalculatorOutput, PageWithSidebar};
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
