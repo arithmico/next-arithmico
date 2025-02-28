@@ -24,11 +24,13 @@ impl<V: PartialEq + Send + Sync + Clone + 'static> ListboxContext<V> {
         on_change: Callback<V>,
         on_cancel: Callback<()>,
     ) -> Self {
+        let initial_position =
+            definition.position_of(&value).expect("position");
         Self {
             widget_id: use_widget_id(),
             is_open: false,
             focus_ring: FocusRing::new(
-                definition.position_of(&value).expect("position"),
+                initial_position,
                 definition.len(),
                 FocusRingOrientation::Vertical,
             ),
@@ -51,10 +53,15 @@ impl<V: PartialEq + Send + Sync + Clone + 'static> ListboxContext<V> {
 
     pub fn close(&mut self) {
         self.is_open = false;
+        self.focus_ring.reset_position();
     }
 
     pub fn toggle(&mut self) {
-        self.is_open = !self.is_open;
+        if self.is_open {
+            self.close();
+        } else {
+            self.is_open = true;
+        }
     }
 
     pub fn widget_id(&self) -> usize {
@@ -62,13 +69,13 @@ impl<V: PartialEq + Send + Sync + Clone + 'static> ListboxContext<V> {
     }
 
     pub fn select(&mut self, value: &V) {
-        self.on_change.run(value.clone());
         self.close();
+        self.on_change.run(value.clone());
     }
 
     pub fn cancel(&mut self) {
-        self.on_cancel.run(());
         self.close();
+        self.on_cancel.run(());
     }
 
     pub fn on_keydown(&mut self, event: KeyboardEvent, value: &V) {
