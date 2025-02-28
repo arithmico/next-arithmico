@@ -40,18 +40,15 @@ pub fn ThemeSetting() -> impl IntoView {
                 }
             })
         })
-        .options(|options| {
-            options
-                .option(|option| {
-                    option.value(Theme::Light).view(
-                        move || view! { <FormattedMessage id=Theme::Light /> },
-                    )
-                })
-                .option(|option| {
-                    option.value(Theme::Dark).view(
-                        move || view! { <FormattedMessage id=Theme::Dark /> },
-                    )
-                })
+        .option(|option| {
+            option.value(Theme::Light).view(
+                move || view! { <FormattedMessage id=Theme::Light /> },
+            )
+        })
+        .option(|option| {
+            option.value(Theme::Dark).view(
+                move || view! { <FormattedMessage id=Theme::Dark /> },
+            )
         });
 
     view! {

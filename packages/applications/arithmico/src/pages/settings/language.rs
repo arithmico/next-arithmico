@@ -50,23 +50,19 @@ pub fn LanguageSetting() -> impl IntoView {
                     </>
                 }
             })
-
     })
-    .options(|options| {
-        options
-            .option(|option| {
-                option
-                    .value(Language::English)
-                    .view(|| {
-                        view! { <FormattedMessage id="settings.language.english" /> }
-                    })
+    .option(|option| {
+        option
+            .value(Language::English)
+            .view(|| {
+                view! { <FormattedMessage id="settings.language.english" /> }
             })
-            .option(|option| {
-                option
-                    .value(Language::German)
-                    .view(|| {
-                        view! { <FormattedMessage id="settings.language.german" /> }
-                    })
+    })
+    .option(|option| {
+        option
+            .value(Language::German)
+            .view(|| {
+                view! { <FormattedMessage id="settings.language.german" /> }
             })
     });
 
