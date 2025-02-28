@@ -130,7 +130,6 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
 
                         {definition
                             .options
-                            .options
                             .iter()
                             .cloned()
                             .enumerate()
