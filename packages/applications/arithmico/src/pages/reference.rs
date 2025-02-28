@@ -1,50 +1,34 @@
 use crate::{components::*, utils::use_app_state};
-use common::Language;
 use leptos::prelude::*;
 use reference_header::ReferenceHeader;
+use reference_section::ReferenceSection;
 
 mod reference_header;
+mod reference_section;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
     let app_state = use_app_state();
+    let modules = Signal::derive(move || {
+        app_state
+            .get()
+            .session
+            .documentation()
+            .modules()
+            .into_iter()
+            .cloned()
+            .collect::<Vec<_>>()
+    });
 
     view! {
         <PageWithSidebar>
             <ReferenceHeader />
             {move || {
-                app_state
+                modules
                     .get()
-                    .session
-                    .documentation()
-                    .modules()
-                    .iter()
+                    .into_iter()
                     .map(|module| {
-                        view! {
-                            <details open class="reference-section">
-                                <summary>
-                                    {module.name(&Language::English).cloned()}
-                                </summary>
-                                <dl>
-                                    {module
-                                        .items()
-                                        .iter()
-                                        .map(|item| {
-                                            view! {
-                                                <>
-                                                    <dt class="py-2">
-                                                        {item.synopsis(&Language::English).cloned()}
-                                                    </dt>
-                                                    <dd class="py-2">
-                                                        {item.description(&Language::English).cloned()}
-                                                    </dd>
-                                                </>
-                                            }
-                                        })
-                                        .collect_view()}
-                                </dl>
-                            </details>
-                        }
+                        view! { <ReferenceSection module=module /> }
                     })
                     .collect_view()
             }}
