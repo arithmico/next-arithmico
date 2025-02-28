@@ -95,7 +95,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                     is_open.set(!is_open.get());
                 }
             >
-                {definition.button.view.run()}
+                {definition.button.run()}
             </button>
             <div class="listbox-options-container">
                 <Show when=move || is_open.get()>
