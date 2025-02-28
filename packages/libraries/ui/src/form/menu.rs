@@ -46,7 +46,7 @@ pub fn Menu(definition: MenuDefinition) -> impl IntoView {
                             .iter()
                             .enumerate()
                             .map(|(_pos, item)| {
-                                view! { <li>{item.run()}</li> }
+                                view! { <li class="menu-item">{item.run()}</li> }
                             })
                             .collect_view()}
                     </ul>
