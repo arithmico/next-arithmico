@@ -1,22 +1,15 @@
 use leptos::{html, prelude::*};
 use web_sys::{wasm_bindgen::JsCast, Node};
 
-use super::ListboxDefinition;
+use super::{listbox_context::ListboxContext, ListboxDefinition};
 
-use crate::{
-    control::focus_ring::{FocusRing, FocusRingOrientation},
-    widget_id::use_widget_id,
-};
+pub fn use_listbox_is_open() -> Signal<bool> {
+    let context = expect_context::<Signal<ListboxIsOpen>>();
+    Signal::derive(move || context.get().0)
+}
 
 #[derive(Clone)]
-struct ListboxContext {
-    is_open: ReadSignal<bool>,
-}
-
-pub fn use_listbox_is_open() -> ReadSignal<bool> {
-    let context = expect_context::<ListboxContext>();
-    context.is_open
-}
+struct ListboxIsOpen(bool);
 
 #[component]
 pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
@@ -24,46 +17,40 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     #[prop(into)] on_change: Callback<V>,
     #[prop(into)] value: Signal<V>,
 ) -> impl IntoView {
-    let widget_id = use_widget_id();
-    let is_open = RwSignal::new(false);
     let button_ref = NodeRef::<html::Button>::new();
     let container_ref = NodeRef::<html::Div>::new();
-
-    let focus_ring = RwSignal::new(FocusRing::new(
-        definition
-            .position_of(&value.get_untracked())
-            .expect("position"),
-        definition.len(),
-        FocusRingOrientation::Vertical,
+    let on_change = Callback::new(move |value| {
+        on_change.run(value);
+        if let Some(button_ref) = button_ref.get_untracked() {
+            button_ref.focus().expect("focus");
+        }
+    });
+    let on_cancel = Callback::new(move |()| {
+        if let Some(button_ref) = button_ref.get_untracked() {
+            button_ref.focus().expect("focus");
+        }
+    });
+    let listbox_context = RwSignal::new(ListboxContext::new(
+        &definition,
+        &value.get_untracked(),
+        on_change,
+        on_cancel,
     ));
 
-    provide_context(ListboxContext {
-        is_open: is_open.split().0,
-    });
+    provide_context(listbox_context);
+    provide_context(Signal::derive(move || {
+        ListboxIsOpen(listbox_context.get().is_open())
+    }));
 
     Effect::new({
         let definition = definition.clone();
         move |_| {
             let position = definition.position_of(&value.get());
             if let Some(position) = position {
-                focus_ring
-                    .update(|focus_ring| focus_ring.set_position(position));
+                listbox_context.update(|listbox_context| {
+                    listbox_context.set_position(position)
+                });
             }
-        }
-    });
-
-    let on_select = Callback::new(move |value: V| {
-        on_change.run(value);
-        is_open.set(false);
-        if let Some(button_ref) = button_ref.get_untracked() {
-            button_ref.focus().expect("focus");
-        }
-    });
-
-    let on_cancel = Callback::new(move |()| {
-        if let Some(button_ref) = button_ref.get_untracked() {
-            button_ref.focus().expect("focus");
-            is_open.set(false);
         }
     });
 
@@ -71,17 +58,29 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
         <div node_ref=container_ref class="listbox-container">
 
             <button
-                id=format!("widget-{}-listbox-button", widget_id)
+                id=move || {
+                    format!(
+                        "widget-{}-listbox-button",
+                        listbox_context.get().widget_id(),
+                    )
+                }
 
                 type="button"
 
                 aria-haspopup="listbox"
 
-                aria-expanded=move || is_open.get().to_string()
+                aria-expanded=move || {
+                    listbox_context.get().is_open().to_string()
+                }
 
                 aria-controls=move || {
-                    if is_open.get() {
-                        Some(format!("widget-{}-listbox-options", widget_id))
+                    if listbox_context.get().is_open() {
+                        Some(
+                            format!(
+                                "widget-{}-listbox-options",
+                                listbox_context.get().widget_id(),
+                            ),
+                        )
                     } else {
                         None
                     }
@@ -92,15 +91,21 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                 class="listbox-button"
 
                 on:click=move |_| {
-                    is_open.set(!is_open.get());
+                    listbox_context
+                        .update(|listbox_context| listbox_context.toggle());
                 }
             >
                 {definition.button.run()}
             </button>
             <div class="listbox-options-container">
-                <Show when=move || is_open.get()>
+                <Show when=move || listbox_context.get().is_open()>
                     <ul
-                        id=format!("widget-{}-listbox-options", widget_id)
+                        id=move || {
+                            format!(
+                                "widget-{}-listbox-options",
+                                listbox_context.get().widget_id(),
+                            )
+                        }
 
                         role="listbox"
 
@@ -108,18 +113,21 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
 
                         aria-orientation="vertical"
 
-                        aria-labelledby=format!(
-                            "widget-{}-listbox-button",
-                            widget_id,
-                        )
+                        aria-labelledby=move || {
+                            format!(
+                                "widget-{}-listbox-button",
+                                listbox_context.get().widget_id(),
+                            )
+                        }
 
                         aria-activedescendant=move || {
-                            if is_open.get() {
+                            let listbox_context = listbox_context.get();
+                            if listbox_context.is_open() {
                                 Some(
                                     format!(
                                         "widget-{}-listbox-option-{}",
-                                        widget_id,
-                                        focus_ring.get().get_position(),
+                                        listbox_context.widget_id(),
+                                        listbox_context.get_position(),
                                     ),
                                 )
                             } else {
@@ -142,8 +150,8 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                         move || { value.get() == option_value }
                                     });
                                     Effect::new(move |_| {
-                                        let focus_ring = focus_ring.get();
-                                        if pos == focus_ring.get_position() {
+                                        let listbox_context = listbox_context.get();
+                                        if pos == listbox_context.get_position() {
                                             if let Some(node_ref) = node_ref.get() {
                                                 node_ref.focus().expect("focus");
                                             }
@@ -151,7 +159,13 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                     });
                                     view! {
                                         <li
-                                            id=format!("widget-{}-listbox-option-{}", widget_id, pos)
+                                            id=move || {
+                                                format!(
+                                                    "widget-{}-listbox-option-{}",
+                                                    listbox_context.get().widget_id(),
+                                                    pos,
+                                                )
+                                            }
 
                                             role="option"
 
@@ -174,41 +188,31 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                                                     if let Some(target) = target {
                                                         let target = target.dyn_into::<Node>().ok();
                                                         if !container_ref.contains(target.as_ref()) {
-                                                            on_cancel.run(());
+                                                            listbox_context
+                                                                .update(|listbox_context| listbox_context.cancel());
                                                         }
                                                     } else {
-                                                        on_cancel.run(());
+                                                        listbox_context
+                                                            .update(|listbox_context| listbox_context.cancel());
                                                     }
                                                 }
                                             }
 
                                             on:click={
                                                 let value = option.value.clone();
-                                                move |_| { on_select.run(value.clone()) }
+                                                move |_| {
+                                                    listbox_context
+                                                        .update(|listbox_context| listbox_context.select(&value))
+                                                }
                                             }
 
                                             on:keydown={
                                                 let value = option.value.clone();
                                                 move |event| {
-                                                    let key = event.key();
-                                                    let mut new_focus_ring = focus_ring.get();
-                                                    if new_focus_ring.handle_keydown(&key) {
-                                                        focus_ring.set(new_focus_ring);
-                                                    } else {
-                                                        match key.as_str() {
-                                                            " " | "Enter" => {
-                                                                on_select.run(value.clone());
-                                                                event.prevent_default();
-                                                            }
-                                                            "Tab" => {
-                                                                event.prevent_default();
-                                                            }
-                                                            "Escape" => {
-                                                                on_cancel.run(());
-                                                            }
-                                                            _ => {}
-                                                        }
-                                                    }
+                                                    listbox_context
+                                                        .update(|listbox_context| {
+                                                            listbox_context.on_keydown(event, &value)
+                                                        })
                                                 }
                                             }
                                         >
