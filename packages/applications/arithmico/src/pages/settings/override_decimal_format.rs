@@ -19,46 +19,44 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
     });
 
     let listbox_definition = ListboxDefinition::new()
-    .button(|button| button.view(
-        move || {
-            let is_open = use_listbox_is_open();
+    .button(move || {
+        let is_open = use_listbox_is_open();
 
-            view! {
-                <>
-                    {move || match app_state
-                        .get()
-                        .settings
-                        .override_decimal_format
-                        .decimal_format()
-                    {
-                        Some(override_format) => {
-                            match override_format {
-                                DecimalFormat::Comma => {
-                                    view! { <FormattedMessage id="settings.language.german" /> }
-                                }
-                                DecimalFormat::Dot => {
-                                    view! {
-                                        <FormattedMessage id="settings.language.english" />
-                                    }
+        view! {
+            <>
+                {move || match app_state
+                    .get()
+                    .settings
+                    .override_decimal_format
+                    .decimal_format()
+                {
+                    Some(override_format) => {
+                        match override_format {
+                            DecimalFormat::Comma => {
+                                view! { <FormattedMessage id="settings.language.german" /> }
+                            }
+                            DecimalFormat::Dot => {
+                                view! {
+                                    <FormattedMessage id="settings.language.english" />
                                 }
                             }
                         }
-                        None => {
-                            view! {
-                                <FormattedMessage id="settings.override_decimal_format.no" />
-                            }
+                    }
+                    None => {
+                        view! {
+                            <FormattedMessage id="settings.override_decimal_format.no" />
                         }
-                    }}
-                    <MenuIcon class=Signal::derive(move || {
-                        format!(
-                            "icon-hover {}",
-                            if is_open.get() { "rotate-0" } else { "rotate-180" },
-                        )
-                    }) />
-                </>
-            }
+                    }
+                }}
+                <MenuIcon class=Signal::derive(move || {
+                    format!(
+                        "icon-hover {}",
+                        if is_open.get() { "rotate-0" } else { "rotate-180" },
+                    )
+                }) />
+            </>
         }
-    ))
+    })
     .option(|option| 
         option
             .value(OverrideDecimalFormat::new())

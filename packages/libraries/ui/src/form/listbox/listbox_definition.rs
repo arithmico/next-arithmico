@@ -30,42 +30,21 @@ impl ListboxOptionBuilder {
 }
 
 #[derive(Clone)]
-pub struct ListboxButton {
-    pub view: ViewFn,
-}
-
-impl ListboxButton {
-    fn new() -> Self {
-        Self {
-            view: (|| ().into_view()).into(),
-        }
-    }
-
-    pub fn view(mut self, view: impl Into<ViewFn>) -> Self {
-        self.view = view.into();
-        self
-    }
-}
-
-#[derive(Clone)]
 pub struct ListboxDefinition<V: Send + Sync + Clone> {
-    pub button: ListboxButton,
+    pub button: ViewFn,
     pub options: Vec<ListboxOption<V>>,
 }
 
 impl<V: Send + Sync + Clone> ListboxDefinition<V> {
     pub fn new() -> Self {
         Self {
-            button: ListboxButton::new(),
+            button: (|| ().into_view()).into(),
             options: Vec::new(),
         }
     }
 
-    pub fn button(
-        mut self,
-        button: impl Fn(ListboxButton) -> ListboxButton,
-    ) -> Self {
-        self.button = button(ListboxButton::new());
+    pub fn button(mut self, view: impl Into<ViewFn>) -> Self {
+        self.button = view.into();
         self
     }
 

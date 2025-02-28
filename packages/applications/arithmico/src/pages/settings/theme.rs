@@ -20,25 +20,23 @@ pub fn ThemeSetting() -> impl IntoView {
     });
 
     let listbox_definition = ListboxDefinition::new()
-        .button(|button| {
-            button.view(move || {
-                let is_open = use_listbox_is_open();
+        .button(move || {
+            let is_open = use_listbox_is_open();
 
-                view! {
-                    <>
-                        {move || {
-                            let theme = app_state.get().settings.theme;
-                            view! { <FormattedMessage id=theme /> }
-                        }}
-                        <MenuIcon class=Signal::derive(move || {
-                            format!(
-                                "icon-hover {}",
-                                if is_open.get() { "rotate-0" } else { "rotate-180" },
-                            )
-                        }) />
-                    </>
-                }
-            })
+            view! {
+                <>
+                    {move || {
+                        let theme = app_state.get().settings.theme;
+                        view! { <FormattedMessage id=theme /> }
+                    }}
+                    <MenuIcon class=Signal::derive(move || {
+                        format!(
+                            "icon-hover {}",
+                            if is_open.get() { "rotate-0" } else { "rotate-180" },
+                        )
+                    }) />
+                </>
+            }
         })
         .option(|option| {
             option.value(Theme::Light).view(

@@ -22,34 +22,31 @@ pub fn LanguageSetting() -> impl IntoView {
         });
 
     let listbox_definition = ListboxDefinition::new()
-    .button(|button| {
-        button
-            .view(move || {
-                let is_open = use_listbox_is_open();
+    .button(move || {
+        let is_open = use_listbox_is_open();
 
-                view! {
-                    <>
-                        {move || match app_state.get().settings.language {
-                            Language::German => {
-                                view! { <FormattedMessage id="settings.language.german" /> }
-                                    .into_any()
-                            }
-                            Language::English => {
-                                view! {
-                                    <FormattedMessage id="settings.language.english" />
-                                }
-                                    .into_any()
-                            }
-                        }}
-                        <MenuIcon class=Signal::derive(move || {
-                            format!(
-                                "icon-hover {}",
-                                if is_open.get() { "rotate-0" } else { "rotate-180" },
-                            )
-                        }) />
-                    </>
-                }
-            })
+        view! {
+            <>
+                {move || match app_state.get().settings.language {
+                    Language::German => {
+                        view! { <FormattedMessage id="settings.language.german" /> }
+                            .into_any()
+                    }
+                    Language::English => {
+                        view! {
+                            <FormattedMessage id="settings.language.english" />
+                        }
+                            .into_any()
+                    }
+                }}
+                <MenuIcon class=Signal::derive(move || {
+                    format!(
+                        "icon-hover {}",
+                        if is_open.get() { "rotate-0" } else { "rotate-180" },
+                    )
+                }) />
+            </>
+        }
     })
     .option(|option| {
         option
