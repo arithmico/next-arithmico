@@ -1,6 +1,8 @@
 use leptos::{html, prelude::*};
 use web_sys::{wasm_bindgen::JsCast, Node};
 
+use crate::form::listbox::listbox_button::ListboxButton;
+
 use super::{listbox_context::ListboxContext, ListboxDefinition};
 
 pub fn use_listbox_is_open() -> Signal<bool> {
@@ -56,47 +58,11 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
 
     view! {
         <div node_ref=container_ref class="listbox-container">
+            <ListboxButton
+                listbox_definition=definition.clone()
+                button_ref=button_ref
+            />
 
-            <button
-                id=move || {
-                    format!(
-                        "widget-{}-listbox-button",
-                        listbox_context.get().widget_id(),
-                    )
-                }
-
-                type="button"
-
-                aria-haspopup="listbox"
-
-                aria-expanded=move || {
-                    listbox_context.get().is_open().to_string()
-                }
-
-                aria-controls=move || {
-                    if listbox_context.get().is_open() {
-                        Some(
-                            format!(
-                                "widget-{}-listbox-options",
-                                listbox_context.get().widget_id(),
-                            ),
-                        )
-                    } else {
-                        None
-                    }
-                }
-
-                node_ref=button_ref
-
-                class="listbox-button"
-
-                on:click=move |_| {
-                    listbox_context
-                        .update(|listbox_context| listbox_context.toggle());
-                }
-            >
-                {definition.button.run()}
-            </button>
             <div class="listbox-options-container">
                 <Show when=move || listbox_context.get().is_open()>
                     <ul
