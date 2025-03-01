@@ -23,8 +23,22 @@ pub fn Menu(definition: MenuDefinition) -> impl IntoView {
     view! {
         <div class="menu-container" node_ref=container_ref>
             <button
+                id=move || {
+                    format!("widget-{}-menu-button", context.get().widget_id())
+                }
+
+                aria-haspopup="menu"
+
+                aria-expanded=move || context.get().is_open().to_string()
+
+                aria-controls=move || {
+                    format!("widget-{}-menu-items", context.get().widget_id())
+                }
+
                 node_ref=button_ref
+
                 class="menu-button"
+
                 on:click=move |_| {
                     context.update(|context| context.toggle());
                 }
