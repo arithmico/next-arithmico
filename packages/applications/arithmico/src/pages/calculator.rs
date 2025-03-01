@@ -16,7 +16,7 @@ pub fn CalculatorPage() -> impl IntoView {
     let output = use_last_output();
 
     view! {
-        <PageWithSidebar>
+        <PageWithSidebar class="calculator">
             <CalculatorHeader />
             <div class="calculator-layout">
                 <CaluclatorInput />

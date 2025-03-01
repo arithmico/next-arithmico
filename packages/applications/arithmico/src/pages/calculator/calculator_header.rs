@@ -1,4 +1,4 @@
-use leptos::prelude::*;
+use leptos::{logging::log, prelude::*};
 use translate::FormattedMessage;
 use ui::{
     common::page_title::PageTitle,
@@ -24,12 +24,12 @@ pub fn CalculatorHeader() -> impl IntoView {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-input" />
             </>
-        })
+        }, || log!("clear input"))
         .item(|| view! {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
             </>
-        });
+        }, || log!("clear output"));
 
     view! {
         <PageHeader>

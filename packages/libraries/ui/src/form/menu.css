@@ -23,6 +23,10 @@
     cursor: pointer;
 }
 
+.menu-button:has( .icon:last-child) {
+    padding-right: var(--spacing-1);
+}
+
 .theme-dark .menu-button {
     background-color: var(--color-neutral-900);
     border-color: var(--color-neutral-600);
