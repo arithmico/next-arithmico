@@ -6,9 +6,12 @@ use ui::{
 };
 
 #[component]
-pub fn PageWithSidebar(children: Children) -> impl IntoView {
+pub fn PageWithSidebar(
+    children: Children,
+    #[prop(optional, into)] class: Option<String>,
+) -> impl IntoView {
     view! {
-        <Page>
+        <Page class=class>
             <Sidebar title="Arithmico">
                 <Navigation>
                     <NavigationItem to="/".to_string()>

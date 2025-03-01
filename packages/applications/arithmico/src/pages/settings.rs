@@ -24,9 +24,7 @@ pub fn SettingsPage() -> impl IntoView {
             </PageTitle>
             <Card class="settings-card">
                 <LanguageSetting />
-
                 <OverrideDecimalFormatSetting />
-
                 <ThemeSetting />
             </Card>
         </PageWithSidebar>
