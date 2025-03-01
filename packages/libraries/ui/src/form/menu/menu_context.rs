@@ -1,12 +1,16 @@
 use leptos::prelude::{Callable, Callback};
 use web_sys::KeyboardEvent;
 
-use crate::control::focus_ring::{FocusRing, FocusRingOrientation};
+use crate::{
+    control::focus_ring::{FocusRing, FocusRingOrientation},
+    widget_id::use_widget_id,
+};
 
 use super::MenuDefinition;
 
 #[derive(Debug, Clone)]
 pub struct MenuContext {
+    widget_id: usize,
     is_open: bool,
     focus_ring: FocusRing,
     on_cancel: Callback<()>,
@@ -20,6 +24,7 @@ impl MenuContext {
         on_submit: Callback<()>,
     ) -> Self {
         Self {
+            widget_id: use_widget_id(),
             is_open: false,
             on_cancel,
             on_submit,
@@ -29,6 +34,14 @@ impl MenuContext {
                 FocusRingOrientation::Vertical,
             ),
         }
+    }
+
+    pub fn widget_id(&self) -> usize {
+        self.widget_id
+    }
+
+    pub fn get_position(&self) -> usize {
+        self.focus_ring.get_position()
     }
 
     pub fn open(&mut self) {
@@ -52,10 +65,6 @@ impl MenuContext {
         self.is_open
     }
 
-    pub fn get_position(&self) -> usize {
-        self.focus_ring.get_position()
-    }
-
     pub fn cancel(&mut self) {
         self.close();
         self.on_cancel.run(())
@@ -72,6 +81,7 @@ impl MenuContext {
             " " | "Enter" => {
                 self.submit();
                 action.run(());
+                event.prevent_default();
             }
             "Tab" => {
                 event.prevent_default();

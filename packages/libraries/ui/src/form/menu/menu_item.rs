@@ -25,8 +25,20 @@ pub fn MenuItem(
 
     view! {
         <li
+            id=move || {
+                format!(
+                    "widget-{}-menu-item-{}",
+                    context.get().widget_id(),
+                    pos,
+                )
+            }
+
+            role="menuitem"
+
             node_ref=node_ref
+
             class="menu-item"
+
             tabindex="-1"
 
             on:keydown={
