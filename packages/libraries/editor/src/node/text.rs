@@ -1,9 +1,9 @@
-use std::any::Any;
+use std::{any::Any, sync::Arc};
 
 use editor_core::{EditorLeafNode, EditorNode};
 use leptos::prelude::document;
 use unicode_segmentation::UnicodeSegmentation;
-use web_sys::{Text, wasm_bindgen::JsCast};
+use web_sys::{wasm_bindgen::JsCast, Text};
 
 #[derive(Debug, Clone)]
 pub struct TextNode {
@@ -60,16 +60,16 @@ impl EditorLeafNode for TextNode {
         }
     }
 
-    fn as_any(&self) -> Box<&dyn Any> {
-        Box::new(self)
+    fn as_any(&self) -> Arc<&dyn Any> {
+        Arc::new(self)
     }
 
     fn into_editor_node(self) -> editor_core::EditorNode {
-        EditorNode::Leaf(Box::new(self))
+        EditorNode::Leaf(Arc::new(self))
     }
 
-    fn boxed_clone(&self) -> Box<dyn EditorLeafNode> {
-        Box::new(self.clone())
+    fn arc_clone(&self) -> Arc<dyn EditorLeafNode> {
+        Arc::new(self.clone())
     }
 
     fn length(&self) -> usize {
@@ -86,7 +86,11 @@ impl EditorLeafNode for TextNode {
             .grapheme_indices(true)
             .filter_map(
                 |(index, grapheme)| {
-                    if grapheme == " " { Some(index) } else { None }
+                    if grapheme == " " {
+                        Some(index)
+                    } else {
+                        None
+                    }
                 },
             )
             .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {

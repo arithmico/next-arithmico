@@ -1,4 +1,4 @@
-use std::any::Any;
+use std::{any::Any, sync::Arc};
 
 use leptos::prelude::document;
 use web_sys::wasm_bindgen::JsCast;
@@ -27,16 +27,16 @@ impl EditorContainerNode for RootNode {
         false
     }
 
-    fn as_any(&self) -> Box<&dyn Any> {
-        Box::new(self)
+    fn as_any(&self) -> Arc<&dyn Any> {
+        Arc::new(self)
     }
 
-    fn boxed_clone(&self) -> Box<dyn EditorContainerNode> {
-        Box::new(self.clone())
+    fn arc_clone(&self) -> Arc<dyn EditorContainerNode> {
+        Arc::new(self.clone())
     }
 
     fn into_editor_node(self) -> crate::EditorNode {
-        crate::EditorNode::Container(Box::new(self))
+        crate::EditorNode::Container(Arc::new(self))
     }
 
     fn delete_if_empty(&self) -> bool {

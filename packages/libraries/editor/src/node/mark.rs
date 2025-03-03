@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use editor_core::EditorContainerNode;
 use leptos::prelude::document;
 use web_sys::{wasm_bindgen::JsCast, Node};
@@ -23,16 +25,16 @@ impl EditorContainerNode for MarkNode {
         false
     }
 
-    fn as_any(&self) -> Box<&dyn std::any::Any> {
-        Box::new(self)
+    fn as_any(&self) -> Arc<&dyn std::any::Any> {
+        Arc::new(self)
     }
 
-    fn boxed_clone(&self) -> Box<dyn EditorContainerNode> {
-        Box::new(self.clone())
+    fn arc_clone(&self) -> Arc<dyn EditorContainerNode> {
+        Arc::new(self.clone())
     }
 
     fn into_editor_node(self) -> editor_core::EditorNode {
-        editor_core::EditorNode::Container(Box::new(self))
+        editor_core::EditorNode::Container(Arc::new(self))
     }
 
     fn delete_if_empty(&self) -> bool {

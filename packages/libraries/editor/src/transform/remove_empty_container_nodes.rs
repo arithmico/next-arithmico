@@ -1,5 +1,5 @@
 use editor_core::{
-    EditorNode, EditorState, EditorTransform, selection::SelectionRange,
+    selection::SelectionRange, EditorNode, EditorState, EditorTransform,
 };
 
 pub struct RemoveEmptyContainerNodesTransform;
@@ -52,7 +52,7 @@ impl EditorTransform for RemoveEmptyContainerNodesTransform {
                 let child_id =
                     state.get_child_id_at(node_id, 0).expect("child id");
                 let child =
-                    state.get_leaf_node(child_id).expect("child").boxed_clone();
+                    state.get_leaf_node(child_id).expect("child").arc_clone();
                 let length = child.length();
                 state.replace_node(node_id, EditorNode::Leaf(child));
                 state.set_selection(SelectionRange::new_at(node_id, length));

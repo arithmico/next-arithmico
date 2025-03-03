@@ -7,14 +7,15 @@ use selection::SelectionRange;
 use web_sys::Node;
 
 use crate::{
-    EditorContainerNode, EditorNode, EditorTransform, RootNode,
-    utils::get_node_id,
+    utils::get_node_id, EditorContainerNode, EditorNode, EditorTransform,
+    RootNode,
 };
 
 pub mod commands;
 pub mod queries;
 pub mod selection;
 
+#[derive(Clone)]
 pub struct EditorState {
     editor_nodes: HashMap<usize, EditorNode>,
     dom_nodes: HashMap<usize, Option<Node>>,
