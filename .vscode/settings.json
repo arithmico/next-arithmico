@@ -15,7 +15,8 @@
         "editor",
         "translate",
         "cssbundler",
-        "create_version"
+        "create_version",
+        "web_state"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
