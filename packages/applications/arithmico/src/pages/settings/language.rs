@@ -5,20 +5,17 @@ use ui::{
     form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
     icon::menu_icon::MenuIcon,
 };
+use web_state::WebState;
 
-use crate::{
-    state::AppAction,
-    utils::{expect_dispatch, use_app_state},
-};
+use crate::state::{SetLanguageAction, State};
 
 #[component]
 pub fn LanguageSetting() -> impl IntoView {
-    let app_state = use_app_state();
-    let dispatch = expect_dispatch();
-
+    let state = State::use_state();
+    let language = state.select(|state| state.settings.language);
     let on_change: Callback<Language> =
         Callback::new(move |language: Language| {
-            dispatch.run(AppAction::SetLanguage(language))
+            state.dispatch(&SetLanguageAction::new(language));
         });
 
     let listbox_definition = ListboxDefinition::new()
@@ -27,7 +24,7 @@ pub fn LanguageSetting() -> impl IntoView {
 
         view! {
             <>
-                {move || match app_state.get().settings.language {
+                {move || match language.get() {
                     Language::German => {
                         view! { <FormattedMessage id="settings.language.german" /> }
                             .into_any()
@@ -72,7 +69,7 @@ pub fn LanguageSetting() -> impl IntoView {
             <Listbox
                 on_change=on_change
                 definition=listbox_definition
-                value=Signal::derive(move || app_state.get().settings.language)
+                value=language
             />
 
         </div>

@@ -1,13 +1,14 @@
-use crate::utils::use_app_state;
 use common::Language;
 use leptos::prelude::*;
 use translate::{TranslateProvider as Provider, TranslationTemplateProvider};
+use web_state::WebState;
+
+use crate::state::State;
 
 #[component]
 pub fn TranslationProvider(children: Children) -> impl IntoView {
-    let state = use_app_state();
-    let current_language =
-        Signal::derive(move || state.get().settings.language);
+    let state = State::use_state();
+    let current_language = state.select(|state| state.settings.language);
     let translations = TranslationTemplateProvider::try_from_toml(
         include_str!("../../translations.toml"),
     )

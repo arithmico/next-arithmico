@@ -7,8 +7,6 @@ mod state;
 mod theme;
 mod translation;
 
-pub use state::Dispatch;
-
 #[component]
 pub fn AppShell(children: Children) -> impl IntoView {
     view! {

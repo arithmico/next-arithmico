@@ -1,7 +1,7 @@
-mod action;
-mod app_state;
+mod actions;
 mod settings;
+mod state;
 
-pub use action::AppAction;
-pub use app_state::AppState;
+pub use actions::*;
 pub use settings::*;
+pub use state::State;

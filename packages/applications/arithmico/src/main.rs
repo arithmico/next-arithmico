@@ -7,7 +7,6 @@ mod components;
 mod pages;
 mod router;
 mod state;
-mod utils;
 
 fn main() {
     console_error_panic_hook::set_once();

@@ -1,17 +1,17 @@
-use crate::{components::*, utils::use_app_state};
+use crate::{components::*, state::State};
 use leptos::prelude::*;
 use reference_header::ReferenceHeader;
 use reference_section::ReferenceSection;
+use web_state::WebState;
 
 mod reference_header;
 mod reference_section;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
-    let app_state = use_app_state();
-    let modules = Signal::derive(move || {
-        app_state
-            .get()
+    let state = State::use_state();
+    let modules = state.select(|state| {
+        state
             .session
             .documentation()
             .modules()
