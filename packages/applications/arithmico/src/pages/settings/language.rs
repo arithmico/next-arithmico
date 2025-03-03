@@ -11,7 +11,7 @@ use crate::state::{SetLanguageAction, State};
 
 #[component]
 pub fn LanguageSetting() -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
     let language = state.select(|state| state.settings.language);
     let on_change: Callback<Language> =
         Callback::new(move |language: Language| {

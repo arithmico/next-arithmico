@@ -9,7 +9,7 @@ mod reference_section;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
     let modules = state.select(|state| {
         state
             .session
