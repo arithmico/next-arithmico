@@ -1,4 +1,5 @@
 use common::EvaluateNodeOptions;
+use engine::SessionError;
 use web_state::WebStateAction;
 
 use crate::state::State;
@@ -31,5 +32,21 @@ impl WebStateAction<State> for EvaluateAction {
             .session
             .last_entry()
             .and_then(|statement| Some(statement.output.clone()));
+        state.current_error_trace = state
+            .current_output
+            .as_ref()
+            .map(|output| {
+                output
+                    .as_ref()
+                    .err()
+                    .map(|session_error| match session_error {
+                        SessionError::EvaluateNodeError(
+                            evaluate_node_error,
+                        ) => evaluate_node_error.stack_trace().first().cloned(),
+                        _ => None,
+                    })
+            })
+            .flatten()
+            .flatten();
     }
 }

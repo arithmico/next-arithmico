@@ -5,7 +5,6 @@ use web_state::WebState;
 
 mod calculator_header;
 mod calculator_input;
-mod use_error_trace;
 
 use crate::{
     components::{CalculatorOutput, PageWithSidebar},

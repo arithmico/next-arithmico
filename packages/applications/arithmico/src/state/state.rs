@@ -1,4 +1,5 @@
 use engine::{Session, SessionError};
+use trace::Trace;
 use web_state::WebState;
 
 use super::Settings;
@@ -8,6 +9,7 @@ pub struct State {
     pub session: Session,
     pub settings: Settings,
     pub current_output: Option<Result<String, SessionError>>,
+    pub current_error_trace: Option<Trace>,
 }
 
 impl State {
@@ -16,6 +18,7 @@ impl State {
             session: Session::new(),
             settings: Settings::load(),
             current_output: None,
+            current_error_trace: None,
         }
     }
 }
