@@ -11,10 +11,7 @@ use editor_core::{
 use leptos::prelude::*;
 use web_state::WebState;
 
-use crate::{
-    pages::calculator::use_error_trace::use_error_trace,
-    state::{EvaluateAction, State},
-};
+use crate::state::{EvaluateAction, State};
 
 #[component]
 pub fn CaluclatorInput() -> impl IntoView {
@@ -29,7 +26,7 @@ pub fn CaluclatorInput() -> impl IntoView {
 fn CalculatorInputEditor() -> impl IntoView {
     let state = State::expect_state();
     let editor_state = use_editor_context();
-    let error_trace = use_error_trace();
+    let error_trace = state.select(|state| state.current_error_trace);
 
     Effect::new(move |_| {
         if let Some(trace) = error_trace.get() {
