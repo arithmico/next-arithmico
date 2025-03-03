@@ -1,4 +1,4 @@
-use engine::Session;
+use engine::{Session, SessionError};
 use web_state::WebState;
 
 use super::Settings;
@@ -7,6 +7,7 @@ use super::Settings;
 pub struct State {
     pub session: Session,
     pub settings: Settings,
+    pub current_output: Option<Result<String, SessionError>>,
 }
 
 impl State {
@@ -14,6 +15,7 @@ impl State {
         Self {
             session: Session::new(),
             settings: Settings::load(),
+            current_output: None,
         }
     }
 }

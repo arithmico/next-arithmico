@@ -9,13 +9,14 @@ pub trait WebState: Clone + Send + Sync + 'static {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct WebStateApi<S: WebState> {
     context: RwSignal<WebStateWrapper<S>>,
 }
 
 impl<S: WebState> WebStateApi<S> {
     pub fn dispatch<A: WebStateAction<S>>(&self, action: &A) {
-        let mut state = self.context.get().0;
+        let mut state = self.context.get_untracked().0;
         action.apply(&mut state);
         self.context.set(WebStateWrapper(state));
     }

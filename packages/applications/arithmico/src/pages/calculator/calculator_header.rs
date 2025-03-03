@@ -8,9 +8,14 @@ use ui::{
         history_icon::HistoryIcon, list_icon::ListIcon, menu_icon::MenuIcon,
     },
 };
+use web_state::WebState;
+
+use crate::state::{ClearOutputAction, State};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {
+    let state = State::expect_state();
+
     let menu_definition = MenuDefinition::new()
         .button(|| {
             view! {
@@ -29,7 +34,7 @@ pub fn CalculatorHeader() -> impl IntoView {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
             </>
-        }, || log!("clear output"));
+        }, move || state.dispatch(&ClearOutputAction::new()));
 
     view! {
         <PageHeader>

@@ -27,5 +27,9 @@ impl WebStateAction<State> for EvaluateAction {
                 .unwrap_or_else(|| (&state.settings.language).into()),
         );
         state.session.push(&self.input, &options);
+        state.current_output = state
+            .session
+            .last_entry()
+            .and_then(|statement| Some(statement.output.clone()));
     }
 }
