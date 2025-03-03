@@ -22,7 +22,7 @@ impl InsertTextCommand {
         focus_offset: usize,
         anchor_offset: usize,
     ) -> Option<()> {
-        let node = state.get_leaf_node(node_id)?.boxed_clone();
+        let node = state.get_leaf_node(node_id)?.arc_clone();
         let start_offset = focus_offset.min(anchor_offset);
         let end_offset = focus_offset.max(anchor_offset);
 

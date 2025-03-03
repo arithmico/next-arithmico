@@ -1,11 +1,11 @@
-use std::any::Any;
+use std::{any::Any, sync::Arc};
 
 use web_sys::Node;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum EditorNode {
-    Container(Box<dyn EditorContainerNode>),
-    Leaf(Box<dyn EditorLeafNode>),
+    Container(Arc<dyn EditorContainerNode>),
+    Leaf(Arc<dyn EditorLeafNode>),
 }
 
 impl EditorNode {
@@ -16,7 +16,7 @@ impl EditorNode {
         }
     }
 
-    pub fn as_any(&self) -> Box<&dyn Any> {
+    pub fn as_any(&self) -> Arc<&dyn Any> {
         match self {
             EditorNode::Container(container) => container.as_any(),
             EditorNode::Leaf(leaf) => leaf.as_any(),
@@ -43,8 +43,8 @@ impl EditorNode {
 pub trait EditorContainerNode: std::fmt::Debug + Any + 'static {
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
-    fn as_any(&self) -> Box<&dyn Any>;
-    fn boxed_clone(&self) -> Box<dyn EditorContainerNode>;
+    fn as_any(&self) -> Arc<&dyn Any>;
+    fn arc_clone(&self) -> Arc<dyn EditorContainerNode>;
     fn into_editor_node(self) -> EditorNode;
     fn delete_if_empty(&self) -> bool;
 }
@@ -52,8 +52,8 @@ pub trait EditorContainerNode: std::fmt::Debug + Any + 'static {
 pub trait EditorLeafNode: std::fmt::Debug + Any + 'static {
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
-    fn as_any(&self) -> Box<&dyn Any>;
-    fn boxed_clone(&self) -> Box<dyn EditorLeafNode>;
+    fn as_any(&self) -> Arc<&dyn Any>;
+    fn arc_clone(&self) -> Arc<dyn EditorLeafNode>;
     fn into_editor_node(self) -> EditorNode;
     fn length(&self) -> usize;
     fn slice(&self, start: usize, end: usize) -> EditorNode;
