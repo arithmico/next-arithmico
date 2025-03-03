@@ -2,20 +2,18 @@ use common::DecimalFormat;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition}, icon::menu_icon::MenuIcon};
+use web_state::WebState;
 
-use crate::{
-    state::{AppAction, override_decimal_format::OverrideDecimalFormat},
-    utils::{expect_dispatch, use_app_state},
-};
+use crate::state::{ override_decimal_format::OverrideDecimalFormat, SetOverrideDecimalFormatAction, State};
 
 #[component]
 pub fn OverrideDecimalFormatSetting() -> impl IntoView {
-    let app_state = use_app_state();
-    let dispatch = expect_dispatch();
+    let state = State::use_state();
+    let override_decimal_format = state.select(|state| state.settings.override_decimal_format);
+
 
     let on_change = Callback::new(move |override_decimal_format| {
-        dispatch
-            .run(AppAction::SetOverrideDecimalFormat(override_decimal_format))
+        state.dispatch(&SetOverrideDecimalFormatAction::new(override_decimal_format));
     });
 
     let listbox_definition = ListboxDefinition::new()
@@ -24,12 +22,7 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
 
         view! {
             <>
-                {move || match app_state
-                    .get()
-                    .settings
-                    .override_decimal_format
-                    .decimal_format()
-                {
+                {move || match override_decimal_format.get().decimal_format() {
                     Some(override_format) => {
                         match override_format {
                             DecimalFormat::Comma => {
@@ -77,9 +70,7 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
             </span>
 
             <Listbox
-                value=Signal::derive(move || {
-                    app_state.get().settings.override_decimal_format
-                })
+                value=override_decimal_format
                 on_change=on_change
                 definition=listbox_definition
             />

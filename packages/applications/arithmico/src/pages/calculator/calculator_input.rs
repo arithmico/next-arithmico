@@ -9,10 +9,11 @@ use editor_core::{
     EditorContainerNode, EditorLeafNode,
 };
 use leptos::prelude::*;
+use web_state::WebState;
 
 use crate::{
-    pages::calculator::use_error_trace::use_error_trace, state::AppAction,
-    utils::expect_dispatch,
+    pages::calculator::use_error_trace::use_error_trace,
+    state::{EvaluateAction, State},
 };
 
 #[component]
@@ -26,8 +27,8 @@ pub fn CaluclatorInput() -> impl IntoView {
 
 #[component]
 fn CalculatorInputEditor() -> impl IntoView {
+    let state = State::use_state();
     let editor_state = use_editor_context();
-    let dispatch = expect_dispatch();
     let error_trace = use_error_trace();
 
     Effect::new(move |_| {
@@ -130,7 +131,7 @@ fn CalculatorInputEditor() -> impl IntoView {
                             state.serialize_node(state.get_root_id())
                         });
                     if let Some(content) = content {
-                        dispatch.run(AppAction::Evaluate(content))
+                        state.dispatch(&EvaluateAction::new(content));
                     }
                 }
             }

@@ -4,19 +4,16 @@ use ui::{
     form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
     icon::menu_icon::MenuIcon,
 };
+use web_state::WebState;
 
-use crate::{
-    state::{theme::Theme, AppAction},
-    utils::{expect_dispatch, use_app_state},
-};
+use crate::state::{theme::Theme, SetThemeAction, State};
 
 #[component]
 pub fn ThemeSetting() -> impl IntoView {
-    let app_state = use_app_state();
-    let dispatch = expect_dispatch();
-
+    let state = State::use_state();
+    let theme = state.select(|state| state.settings.theme);
     let on_change = Callback::new(move |theme: Theme| {
-        dispatch.run(AppAction::SetTheme(theme))
+        state.dispatch(&SetThemeAction::new(theme));
     });
 
     let listbox_definition = ListboxDefinition::new()
@@ -26,7 +23,7 @@ pub fn ThemeSetting() -> impl IntoView {
             view! {
                 <>
                     {move || {
-                        let theme = app_state.get().settings.theme;
+                        let theme = theme.get();
                         view! { <FormattedMessage id=theme /> }
                     }}
                     <MenuIcon class=Signal::derive(move || {
@@ -57,7 +54,7 @@ pub fn ThemeSetting() -> impl IntoView {
 
             <Listbox
                 definition=listbox_definition
-                value=Signal::derive(move || app_state.get().settings.theme)
+                value=theme
                 on_change=on_change
             />
 

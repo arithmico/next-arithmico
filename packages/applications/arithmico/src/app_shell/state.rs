@@ -1,21 +1,11 @@
 use leptos::prelude::*;
+use web_state::WebStateProvider;
 
-use crate::state::{AppAction, AppState};
-
-#[derive(Clone)]
-pub struct Dispatch(pub Callback<AppAction>);
+use crate::state::State;
 
 #[component]
 pub fn StateProvider(children: Children) -> impl IntoView {
-    let (app_state, set_app_state) = signal(AppState::load_or_default());
+    let state = State::new();
 
-    provide_context::<Dispatch>(Dispatch(Callback::<AppAction>::new(
-        move |action| {
-            set_app_state.update(|app_state| app_state.reduce(action))
-        },
-    )));
-
-    provide_context(app_state);
-
-    view! { <>{children()}</> }
+    view! { <WebStateProvider state=state>{children()}</WebStateProvider> }
 }
