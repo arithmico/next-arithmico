@@ -27,7 +27,7 @@ pub fn CaluclatorInput() -> impl IntoView {
 
 #[component]
 fn CalculatorInputEditor() -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
     let editor_state = use_editor_context();
     let error_trace = use_error_trace();
 

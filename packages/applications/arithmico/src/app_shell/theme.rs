@@ -5,7 +5,7 @@ use crate::state::State;
 
 #[component]
 pub fn ThemeProvider(children: Children) -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
 
     view! {
         <div class=move || {

@@ -5,7 +5,7 @@ use web_state::WebState;
 use crate::state::State;
 
 pub fn use_last_output() -> Signal<Option<Result<String, SessionError>>> {
-    let state = State::use_state();
+    let state = State::expect_state();
 
     state.select(|state| {
         state

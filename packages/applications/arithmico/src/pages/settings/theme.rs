@@ -10,7 +10,7 @@ use crate::state::{theme::Theme, SetThemeAction, State};
 
 #[component]
 pub fn ThemeSetting() -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
     let theme = state.select(|state| state.settings.theme);
     let on_change = Callback::new(move |theme: Theme| {
         state.dispatch(&SetThemeAction::new(theme));

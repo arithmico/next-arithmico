@@ -8,7 +8,7 @@ use crate::state::{ override_decimal_format::OverrideDecimalFormat, SetOverrideD
 
 #[component]
 pub fn OverrideDecimalFormatSetting() -> impl IntoView {
-    let state = State::use_state();
+    let state = State::expect_state();
     let override_decimal_format = state.select(|state| state.settings.override_decimal_format);
 
 
