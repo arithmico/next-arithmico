@@ -17,9 +17,8 @@ pub struct WebStateApi<S: WebState> {
 
 impl<S: WebState> WebStateApi<S> {
     pub fn dispatch<A: WebStateAction<S>>(&self, action: &A) {
-        let mut state = self.context.get_untracked().0;
-        action.apply(&mut state);
-        self.context.set(WebStateWrapper(state));
+        self.context
+            .update(move |WebStateWrapper(state)| action.apply(state));
     }
 
     pub fn select<
