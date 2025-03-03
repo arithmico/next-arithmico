@@ -4,14 +4,15 @@ use crate::{web_state_provider::WebStateWrapper, WebStateAction};
 
 pub trait WebState: Clone + Send + Sync + 'static {
     fn expect_state() -> WebStateApi<Self> {
-        let context = expect_context::<RwSignal<WebStateWrapper<Self>>>();
+        let context =
+            expect_context::<RwSignal<WebStateWrapper<Self>, LocalStorage>>();
         WebStateApi { context }
     }
 }
 
 #[derive(Clone, Copy)]
 pub struct WebStateApi<S: WebState> {
-    context: RwSignal<WebStateWrapper<S>>,
+    context: RwSignal<WebStateWrapper<S>, LocalStorage>,
 }
 
 impl<S: WebState> WebStateApi<S> {

@@ -10,6 +10,6 @@ pub fn WebStateProvider<S: WebState>(
     state: S,
     children: Children,
 ) -> impl IntoView {
-    provide_context(RwSignal::new(WebStateWrapper(state)));
+    provide_context(RwSignal::new_local(WebStateWrapper(state)));
     view! { <>{children()}</> }
 }
