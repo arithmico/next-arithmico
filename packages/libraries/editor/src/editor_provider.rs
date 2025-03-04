@@ -7,7 +7,7 @@ use crate::transform::{
 
 #[component]
 pub fn EditorProvider(children: Children) -> impl IntoView {
-    let editor_state = RwSignal::new_local({
+    let editor_state = RwSignal::new({
         let mut editor_state = EditorState::new();
         editor_state.add_transform(MergeTextNodesTransform::new());
         editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());

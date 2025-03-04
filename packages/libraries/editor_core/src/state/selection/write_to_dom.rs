@@ -4,7 +4,7 @@ use web_sys::Node;
 use crate::state::EditorState;
 
 impl EditorState {
-    fn get_selection_data(&self) -> Option<(&Node, usize, &Node, usize)> {
+    fn get_selection_data(&self) -> Option<(Node, usize, Node, usize)> {
         let range = self.get_selection()?;
         let focus_node = self.get_dom_node(range.get_focus().get_node_id())?;
         let anchor_node =
@@ -27,9 +27,9 @@ impl EditorState {
             Some((anchor_node, anchor_offset, focus_node, focus_offset)) => {
                 selection
                     .set_base_and_extent(
-                        anchor_node,
+                        &anchor_node,
                         anchor_offset as u32,
-                        focus_node,
+                        &focus_node,
                         focus_offset as u32,
                     )
                     .expect("set selection");

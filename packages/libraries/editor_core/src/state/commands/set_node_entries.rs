@@ -1,6 +1,7 @@
+use send_wrapper::SendWrapper;
 use web_sys::Node;
 
-use crate::{EditorNode, state::EditorState};
+use crate::{state::EditorState, EditorNode};
 
 impl EditorState {
     pub fn set_node_entries(
@@ -12,7 +13,8 @@ impl EditorState {
         parent: Option<usize>,
     ) {
         self.editor_nodes.insert(node_id, editor_node);
-        self.dom_nodes.insert(node_id, dom_node);
+        self.dom_nodes
+            .insert(node_id, dom_node.map(|node| SendWrapper::new(node)));
         self.children.insert(node_id, children);
         self.parent.insert(node_id, parent);
         self.mark_node_id_as_modified(node_id);

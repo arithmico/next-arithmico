@@ -1,6 +1,6 @@
 use editor_core::EditorState;
-use leptos::prelude::{LocalStorage, RwSignal, use_context};
+use leptos::prelude::{use_context, RwSignal};
 
-pub fn use_editor_context() -> RwSignal<EditorState, LocalStorage> {
-    use_context::<RwSignal<EditorState, LocalStorage>>().expect("editor state")
+pub fn use_editor_context() -> RwSignal<EditorState> {
+    use_context::<RwSignal<EditorState>>().expect("editor state")
 }

@@ -40,7 +40,9 @@ impl EditorNode {
     }
 }
 
-pub trait EditorContainerNode: std::fmt::Debug + Any + 'static {
+pub trait EditorContainerNode:
+    std::fmt::Debug + Any + Send + Sync + 'static
+{
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Arc<&dyn Any>;
@@ -49,7 +51,9 @@ pub trait EditorContainerNode: std::fmt::Debug + Any + 'static {
     fn delete_if_empty(&self) -> bool;
 }
 
-pub trait EditorLeafNode: std::fmt::Debug + Any + 'static {
+pub trait EditorLeafNode:
+    std::fmt::Debug + Any + Send + Sync + 'static
+{
     fn create_node(&self) -> Node;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Arc<&dyn Any>;

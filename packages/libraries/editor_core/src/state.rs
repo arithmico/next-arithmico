@@ -4,6 +4,7 @@ use std::{
 };
 
 use selection::SelectionRange;
+use send_wrapper::SendWrapper;
 use web_sys::Node;
 
 use crate::{
@@ -18,7 +19,7 @@ pub mod selection;
 #[derive(Clone)]
 pub struct EditorState {
     editor_nodes: HashMap<usize, EditorNode>,
-    dom_nodes: HashMap<usize, Option<Node>>,
+    dom_nodes: HashMap<usize, Option<SendWrapper<Node>>>,
     children: HashMap<usize, Option<Vec<usize>>>,
     parent: HashMap<usize, Option<usize>>,
     root_node_id: usize,

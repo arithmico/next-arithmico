@@ -442,6 +442,7 @@ version = "0.1.0"
 dependencies = [
  "leptos",
  "leptos_dom",
+ "send_wrapper",
  "web-sys",
 ]
 
