@@ -39,8 +39,7 @@ impl EditorState {
         node_id: usize,
         position: usize,
     ) -> (Option<Node>, Option<Node>) {
-        let expected_child =
-            self.get_child_dom_node_at(node_id, position).cloned();
+        let expected_child = self.get_child_dom_node_at(node_id, position);
         let current_child = self.read_child_from_dom(node_id, position);
         (current_child, expected_child)
     }
@@ -85,7 +84,7 @@ impl EditorState {
             .filter(|node_id| {
                 let editor_node = self.get_node(*node_id).expect("editor_node");
                 let dom_node = self.get_dom_node(*node_id).expect("dom node");
-                editor_node.requires_update(dom_node)
+                editor_node.requires_update(&dom_node)
             })
             .collect::<HashSet<_>>();
 
