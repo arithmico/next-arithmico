@@ -2,17 +2,16 @@ use leptos::prelude::*;
 
 use crate::{web_state_provider::WebStateWrapper, WebStateAction};
 
-pub trait WebState: Clone + 'static {
+pub trait WebState: Clone + Send + Sync + 'static {
     fn expect_state() -> WebStateApi<Self> {
-        let context =
-            expect_context::<RwSignal<WebStateWrapper<Self>, LocalStorage>>();
+        let context = expect_context::<RwSignal<WebStateWrapper<Self>>>();
         WebStateApi { context }
     }
 }
 
 #[derive(Clone, Copy)]
 pub struct WebStateApi<S: WebState> {
-    context: RwSignal<WebStateWrapper<S>, LocalStorage>,
+    context: RwSignal<WebStateWrapper<S>>,
 }
 
 impl<S: WebState> WebStateApi<S> {
