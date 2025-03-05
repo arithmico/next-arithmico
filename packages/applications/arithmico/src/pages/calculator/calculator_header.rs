@@ -1,4 +1,4 @@
-use leptos::{logging::log, prelude::*};
+use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
     common::page_title::PageTitle,
@@ -10,7 +10,7 @@ use ui::{
 };
 use web_state::WebState;
 
-use crate::state::{ClearOutputAction, State};
+use crate::state::{ClearInputAction, ClearOutputAction, State};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {
@@ -29,7 +29,7 @@ pub fn CalculatorHeader() -> impl IntoView {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-input" />
             </>
-        }, || log!("clear input"))
+        }, move || state.dispatch(&ClearInputAction::new()))
         .item(|| view! {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
