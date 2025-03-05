@@ -1,20 +1,20 @@
-use editor_core::EditorState;
+use editor::editor::EditorStateMutation;
 use web_state::WebStateAction;
 
 use crate::state::State;
 
-pub struct UpdateInputEditor {
-    command: Box<dyn Fn(&mut EditorState)>,
+pub struct UpdateInputEditorAction {
+    command: EditorStateMutation,
 }
 
-impl UpdateInputEditor {
-    pub fn new(f: Box<dyn Fn(&mut EditorState)>) -> Self {
+impl UpdateInputEditorAction {
+    pub fn new(f: EditorStateMutation) -> Self {
         Self { command: f }
     }
 }
 
-impl WebStateAction<State> for UpdateInputEditor {
+impl WebStateAction<State> for UpdateInputEditorAction {
     fn apply(&self, state: &mut State) {
-        (self.command)(&mut state.input_editor_state);
+        self.command.run(&mut state.input_editor_state);
     }
 }

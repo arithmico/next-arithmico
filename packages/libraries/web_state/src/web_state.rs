@@ -9,15 +9,24 @@ pub trait WebState: Clone + Send + Sync + 'static {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct WebStateApi<S: WebState> {
     context: RwSignal<WebStateWrapper<S>>,
 }
+
+impl<S: WebState> Copy for WebStateApi<S> {}
 
 impl<S: WebState> WebStateApi<S> {
     pub fn dispatch<A: WebStateAction<S>>(&self, action: &A) {
         self.context
             .update(move |WebStateWrapper(state)| action.apply(state));
+    }
+
+    pub fn dispatch_untracked<A: WebStateAction<S>>(&self, action: &A) {
+        self.context
+            .update_untracked(move |WebStateWrapper(state)| {
+                action.apply(state)
+            });
     }
 
     pub fn select<
@@ -32,5 +41,9 @@ impl<S: WebState> WebStateApi<S> {
             let state = context.get().0;
             selector(state)
         })
+    }
+
+    pub fn get(&self) -> S {
+        self.context.get().0
     }
 }

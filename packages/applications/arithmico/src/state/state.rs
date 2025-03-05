@@ -1,3 +1,4 @@
+use editor_core::EditorState;
 use engine::{Session, SessionError};
 use trace::Trace;
 use web_state::WebState;
@@ -10,6 +11,7 @@ pub struct State {
     pub settings: Settings,
     pub current_output: Option<Result<String, SessionError>>,
     pub current_error_trace: Option<Trace>,
+    pub input_editor_state: EditorState,
 }
 
 impl State {
@@ -19,6 +21,7 @@ impl State {
             settings: Settings::load(),
             current_output: None,
             current_error_trace: None,
+            input_editor_state: EditorState::new(),
         }
     }
 }

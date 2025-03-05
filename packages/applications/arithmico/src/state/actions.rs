@@ -3,9 +3,11 @@ mod evaluate;
 mod set_language;
 mod set_override_decimal_format;
 mod set_theme;
+mod update_input_editor;
 
 pub use clear_output::ClearOutputAction;
 pub use evaluate::EvaluateAction;
 pub use set_language::SetLanguageAction;
 pub use set_override_decimal_format::SetOverrideDecimalFormatAction;
 pub use set_theme::SetThemeAction;
+pub use update_input_editor::UpdateInputEditorAction;
