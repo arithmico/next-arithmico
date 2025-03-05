@@ -1,18 +1,68 @@
 use std::ops::Deref;
 
+use editor_core::EditorState;
 use leptos::{html::Div, prelude::*};
 use web_sys::{
     wasm_bindgen::{prelude::Closure, JsCast},
-    Node,
+    Event, Node,
 };
 
-use crate::{
-    command::{
-        DeleteContentBackwardCommand, DeleteContentForwardCommand,
-        DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
-    },
-    use_editor_context::use_editor_context,
+use crate::command::{
+    DeleteContentBackwardCommand, DeleteContentForwardCommand,
+    DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
 };
+
+pub struct EditorStateMutation {
+    mutation: Box<dyn Fn(&mut EditorState)>,
+}
+
+impl EditorStateMutation {
+    pub fn new(f: impl Fn(&mut EditorState) + 'static) -> Self {
+        Self {
+            mutation: Box::new(f),
+        }
+    }
+
+    pub fn run(&self, state: &mut EditorState) {
+        (self.mutation)(state)
+    }
+}
+
+struct Listener {
+    element: web_sys::EventTarget,
+    name: String,
+    cb: Closure<dyn Fn(Event)>,
+}
+
+impl Listener {
+    fn new<F>(element: web_sys::EventTarget, name: impl ToString, cb: F) -> Self
+    where
+        F: Fn(Event) + 'static,
+    {
+        let cb = Closure::new(cb);
+        let name = name.to_string();
+
+        element
+            .add_event_listener_with_callback(
+                &name,
+                cb.as_ref().unchecked_ref(),
+            )
+            .unwrap();
+
+        Self { element, name, cb }
+    }
+}
+
+impl Drop for Listener {
+    fn drop(&mut self) {
+        self.element
+            .remove_event_listener_with_callback(
+                &self.name,
+                self.cb.as_ref().unchecked_ref(),
+            )
+            .unwrap();
+    }
+}
 
 #[component]
 pub fn Editor(
@@ -20,22 +70,19 @@ pub fn Editor(
     #[prop(into, optional)] class: Option<String>,
     #[prop(optional, into)] data_test_id: Option<String>,
     #[prop(default = false)] autofocus: bool,
+    update_editor_state: Callback<EditorStateMutation>,
 ) -> impl IntoView {
     let editor_ref = NodeRef::<Div>::new();
-    let editor_state = use_editor_context();
-    let handler = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
-        if !editor_state.is_disposed() {
-            editor_state.update_untracked(move |state| {
+
+    RwSignal::new_local(Listener::new(
+        document().dyn_into().expect("event target"),
+        "selectionchange",
+        move |_: web_sys::Event| {
+            update_editor_state.run(EditorStateMutation::new(|state| {
                 state.read_selection_from_dom();
-            });
-        }
-    });
-    document()
-        .add_event_listener_with_callback("selectionchange", {
-            handler.as_ref().unchecked_ref()
-        })
-        .expect("add event listener");
-    handler.forget();
+            }));
+        },
+    ));
 
     Effect::new(move |_| {
         let node_ref = editor_ref.get();
@@ -49,64 +96,54 @@ pub fn Editor(
 
         let node = div.deref().clone().dyn_into::<Node>().expect("node");
 
-        editor_state.update_untracked(move |state| {
+        update_editor_state.run(EditorStateMutation::new(move |state| {
             state.apply_transforms();
-            state.mount_to_root(node);
-        });
+            state.mount_to_root(node.clone());
+        }));
     });
 
     let beforeinput = move |event: web_sys::InputEvent| {
         event.prevent_default();
 
-        match event.input_type().as_str() {
-            "insertText" => {
-                let command =
-                    InsertTextCommand::new(event.data().expect("data"));
-                editor_state.update(|state| {
+        update_editor_state.run(EditorStateMutation::new(move |state| {
+            match event.input_type().as_str() {
+                "insertText" => {
+                    let command =
+                        InsertTextCommand::new(event.data().expect("data"));
                     state.execute_command(command.into());
-                });
-            }
-            "deleteContentBackward" => {
-                editor_state.update(|state| {
+                }
+                "deleteContentBackward" => {
                     state.execute_command(
                         DeleteContentBackwardCommand::new().into(),
                     );
-                });
-            }
-            "deleteContentForward" => {
-                editor_state.update(|state| {
+                }
+                "deleteContentForward" => {
                     state.execute_command(
                         DeleteContentForwardCommand::new().into(),
                     );
-                });
-            }
-            "deleteWordBackward" => {
-                editor_state.update(|state| {
+                }
+                "deleteWordBackward" => {
                     state.execute_command(
                         DeleteWordBackwardCommand::new().into(),
                     );
-                });
-            }
-            "deleteWordForward" => {
-                editor_state.update(|state| {
+                }
+                "deleteWordForward" => {
                     state.execute_command(
                         DeleteWordForwardCommand::new().into(),
                     );
-                });
-            }
-            "insertFromPaste" => {
-                let data = event
-                    .data_transfer()
-                    .expect("data transfer")
-                    .get_data("text/plain")
-                    .expect("data");
+                }
+                "insertFromPaste" => {
+                    let data = event
+                        .data_transfer()
+                        .expect("data transfer")
+                        .get_data("text/plain")
+                        .expect("data");
 
-                editor_state.update(|state| {
                     state.execute_command(InsertTextCommand::new(data).into());
-                });
+                }
+                _ => (),
             }
-            _ => (),
-        }
+        }));
     };
 
     view! {
