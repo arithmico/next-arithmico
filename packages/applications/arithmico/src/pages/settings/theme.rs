@@ -35,16 +35,8 @@ pub fn ThemeSetting() -> impl IntoView {
                 </>
             }
         })
-        .option(|option| {
-            option.value(Theme::Light).view(
-                move || view! { <FormattedMessage id=Theme::Light /> },
-            )
-        })
-        .option(|option| {
-            option.value(Theme::Dark).view(
-                move || view! { <FormattedMessage id=Theme::Dark /> },
-            )
-        });
+        .option(Theme::Light, move || view! { <FormattedMessage id=Theme::Light /> })
+        .option(Theme::Dark, move || view! { <FormattedMessage id=Theme::Dark /> });
 
     view! {
         <div class="flex items-center">

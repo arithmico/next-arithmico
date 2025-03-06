@@ -1,19 +1,27 @@
 use common::DecimalFormat;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use ui::{form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition}, icon::menu_icon::MenuIcon};
+use ui::{
+    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
+    icon::menu_icon::MenuIcon,
+};
 use web_state::WebState;
 
-use crate::state::{ override_decimal_format::OverrideDecimalFormat, SetOverrideDecimalFormatAction, State};
+use crate::state::{
+    override_decimal_format::OverrideDecimalFormat,
+    SetOverrideDecimalFormatAction, State,
+};
 
 #[component]
 pub fn OverrideDecimalFormatSetting() -> impl IntoView {
     let state = State::expect_state();
-    let override_decimal_format = state.select(|state| state.settings.override_decimal_format);
-
+    let override_decimal_format =
+        state.select(|state| state.settings.override_decimal_format);
 
     let on_change = Callback::new(move |override_decimal_format| {
-        state.dispatch(&SetOverrideDecimalFormatAction::new(override_decimal_format));
+        state.dispatch(&SetOverrideDecimalFormatAction::new(
+            override_decimal_format,
+        ));
     });
 
     let listbox_definition = ListboxDefinition::new()
@@ -50,18 +58,9 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
             </>
         }
     })
-    .option(|option| 
-        option
-            .value(OverrideDecimalFormat::new())
-            .view(move || view! { <FormattedMessage id="settings.override_decimal_format.no" /> }))
-    .option(|option| 
-        option
-            .value(OverrideDecimalFormat::from(  DecimalFormat::Comma))
-            .view(move || view! { <FormattedMessage id="settings.language.german" /> }))
-    .option(|option| 
-        option
-            .value(OverrideDecimalFormat::from(  DecimalFormat::Dot))
-            .view(move || view! { <FormattedMessage id="settings.language.english" /> }));
+    .option(OverrideDecimalFormat::new(), move || view! { <FormattedMessage id="settings.override_decimal_format.no" /> })
+    .option(OverrideDecimalFormat::from(DecimalFormat::Comma), move || view! { <FormattedMessage id="settings.language.german" /> })
+    .option(OverrideDecimalFormat::from(DecimalFormat::Dot), move || view! { <FormattedMessage id="settings.language.english" /> });
 
     view! {
         <div class="flex items-center">
