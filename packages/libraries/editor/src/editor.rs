@@ -1,15 +1,18 @@
 use std::ops::Deref;
 
-use editor_core::EditorState;
+use editor_core::{selection::SelectionRange, EditorLeafNode, EditorState};
 use leptos::{html::Div, prelude::*};
 use web_sys::{
     wasm_bindgen::{prelude::Closure, JsCast},
     Event, Node,
 };
 
-use crate::command::{
-    DeleteContentBackwardCommand, DeleteContentForwardCommand,
-    DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
+use crate::{
+    command::{
+        DeleteContentBackwardCommand, DeleteContentForwardCommand,
+        DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
+    },
+    node::TextNode,
 };
 
 pub struct EditorStateMutation {
@@ -97,8 +100,28 @@ pub fn Editor(
         let node = div.deref().clone().dyn_into::<Node>().expect("node");
 
         update_editor_state.run(EditorStateMutation::new(move |state| {
+            if state.get_selection().is_none() {
+                if let Some(node_id) = state.get_all_leaf_node_ids().last() {
+                    let length =
+                        state.get_leaf_node(*node_id).expect("node").length();
+                    state.set_selection(SelectionRange::new_at(
+                        *node_id,
+                        length.checked_sub(1).unwrap_or(0),
+                    ));
+                } else {
+                    let root_id = state.get_root_id();
+                    let node_id = state.insert_node(
+                        TextNode::new().into_editor_node(),
+                        Some(root_id),
+                        None,
+                    );
+                    state.set_selection(SelectionRange::new_at(node_id, 0));
+                }
+            }
+
             state.apply_transforms();
             state.mount_to_root(node.clone());
+            state.write_selection_to_dom();
         }));
     });
 
