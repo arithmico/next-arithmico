@@ -1,6 +1,9 @@
 use std::ops::Deref;
 
-use editor_core::{selection::SelectionRange, EditorLeafNode, EditorState};
+use editor_core::{
+    selection::{AbsoluteSelectionRange, SelectionRange},
+    EditorLeafNode, EditorState,
+};
 use leptos::{html::Div, prelude::*};
 use web_sys::{
     wasm_bindgen::{prelude::Closure, JsCast},
@@ -76,12 +79,15 @@ pub fn Editor(
     update_editor_state: Callback<EditorStateMutation>,
 ) -> impl IntoView {
     let editor_ref = NodeRef::<Div>::new();
+    let composition_trigger = RwSignal::<Option<String>>::new(None);
+    let selection_before_composition =
+        RwSignal::<Option<AbsoluteSelectionRange>>::new(None);
 
     RwSignal::new_local(Listener::new(
         document().dyn_into().expect("event target"),
         "selectionchange",
         move |_: web_sys::Event| {
-            update_editor_state.run(EditorStateMutation::new(|state| {
+            update_editor_state.run(EditorStateMutation::new(move |state| {
                 state.read_selection_from_dom();
             }));
         },
@@ -169,6 +175,22 @@ pub fn Editor(
         }));
     };
 
+    Effect::new(move || {
+        update_editor_state.run(EditorStateMutation::new(move |state| {
+            let data = composition_trigger.get();
+            if let Some(data) = data {
+                if let Some(selection) =
+                    selection_before_composition.get_untracked()
+                {
+                    state.set_absolute_selection(selection);
+                }
+                let command = InsertTextCommand::new(data);
+                state.execute_command(command.into());
+                selection_before_composition.set(None);
+            }
+        }));
+    });
+
     view! {
         <div
             id=id
@@ -178,6 +200,19 @@ pub fn Editor(
             node_ref=editor_ref
             contenteditable
             on:beforeinput=beforeinput
+            on:compositionstart=move |_| {
+                update_editor_state
+                    .run(
+                        EditorStateMutation::new(move |state| {
+                            selection_before_composition
+                                .set(state.get_absolute_selection());
+                        }),
+                    );
+            }
+            on:compositionend=move |event| {
+                let data = event.data();
+                composition_trigger.set(data);
+            }
         ></div>
     }
 }

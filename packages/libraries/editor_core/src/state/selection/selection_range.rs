@@ -35,3 +35,23 @@ impl SelectionRange {
             && self.anchor.get_offset() == self.focus.get_offset()
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct AbsoluteSelectionRange {
+    focus: usize,
+    anchor: usize,
+}
+
+impl AbsoluteSelectionRange {
+    pub fn new(focus: usize, anchor: usize) -> Self {
+        Self { focus, anchor }
+    }
+
+    pub fn focus(&self) -> usize {
+        self.focus
+    }
+
+    pub fn anchor(&self) -> usize {
+        self.anchor
+    }
+}
