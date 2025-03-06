@@ -117,3 +117,7 @@ German = "Eingabe löschen"
 [calculator.toolbar.actions.clear-output]
 English = "Clear Output"
 German = "Ausgabe löschen"
+
+[calculator.toolbar.actions.reset-session]
+English = "Reset Session"
+German = "Sitzung zurücksetzen"

@@ -1,5 +1,5 @@
 use editor::node::TextNode;
-use editor_core::{EditorCommand, EditorLeafNode};
+use editor_core::{selection::SelectionRange, EditorCommand, EditorLeafNode};
 use web_state::WebStateAction;
 
 use crate::state::State;
@@ -17,7 +17,9 @@ impl EditorCommand for ClearInputAction {
     fn apply(&self, state: &mut editor_core::EditorState) -> Option<()> {
         let root_children = state.get_children_ids(state.get_root_id());
         if let Some(first) = root_children.first().copied() {
-            state.insert_node_before(TextNode::new().into_editor_node(), first);
+            let node_id = state
+                .insert_node_before(TextNode::new().into_editor_node(), first);
+            state.set_selection(SelectionRange::new_at(node_id, 0));
             state.delete_many_nodes(root_children.into_iter().collect());
         }
         Some(())

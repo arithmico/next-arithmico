@@ -10,7 +10,9 @@ use ui::{
 };
 use web_state::WebState;
 
-use crate::state::{ClearInputAction, ClearOutputAction, State};
+use crate::state::{
+    ClearInputAction, ClearOutputAction, ResetSessionAction, State,
+};
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {
@@ -34,7 +36,12 @@ pub fn CalculatorHeader() -> impl IntoView {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
             </>
-        }, move || state.dispatch(&ClearOutputAction::new()));
+        }, move || state.dispatch(&ClearOutputAction::new()))
+        .item(|| view! {
+            <>
+                <FormattedMessage id="calculator.toolbar.actions.reset-session" />
+            </>
+        }, move || state.dispatch(&ResetSessionAction::new()));
 
     view! {
         <PageHeader>
