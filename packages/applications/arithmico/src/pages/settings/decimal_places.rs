@@ -37,11 +37,8 @@ pub fn DecimalPlacesSetting() -> impl IntoView {
         });
 
     for i in 0..15u8 {
-        definition = definition.option(move |option| {
-            option
-                .value(DecimalPlaces::from(i))
-                .view(move || view! { <>{i}</> })
-        })
+        definition = definition
+            .option(DecimalPlaces::from(i), move || view! { <>{i}</> })
     }
 
     let on_change: Callback<DecimalPlaces> = Callback::new(move |value| {

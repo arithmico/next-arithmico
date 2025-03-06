@@ -17,21 +17,6 @@ impl<V: Send + Sync + Clone> ListboxOptionDefinition<V> {
     }
 }
 
-pub struct ListboxOptionBuilder;
-
-impl ListboxOptionBuilder {
-    fn new() -> Self {
-        Self
-    }
-
-    pub fn value<V: Send + Sync + Clone>(
-        self,
-        value: V,
-    ) -> ListboxOptionDefinition<V> {
-        ListboxOptionDefinition::new(value, (|| ().into_view()).into())
-    }
-}
-
 #[derive(Clone)]
 pub struct ListboxDefinition<V: Send + Sync + Clone> {
     pub button: ViewFn,
@@ -51,11 +36,9 @@ impl<V: Send + Sync + Clone> ListboxDefinition<V> {
         self
     }
 
-    pub fn option(
-        mut self,
-        option: impl Fn(ListboxOptionBuilder) -> ListboxOptionDefinition<V>,
-    ) -> Self {
-        self.options.push(option(ListboxOptionBuilder::new()));
+    pub fn option(mut self, value: V, view: impl Into<ViewFn>) -> Self {
+        self.options
+            .push(ListboxOptionDefinition::new(value, view.into()));
         self
     }
 
