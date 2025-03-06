@@ -1,7 +1,8 @@
 use decimal_places::DecimalPlacesSetting;
 use leptos::prelude::*;
+use settings_section::SettingsSection;
 use translate::FormattedMessage;
-use ui::{common::page_title::PageTitle, container::card::Card};
+use ui::common::page_title::PageTitle;
 
 use crate::{
     components::*,
@@ -15,21 +16,26 @@ use crate::{
 mod decimal_places;
 mod language;
 mod override_decimal_format;
+mod settings_section;
 mod theme;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {
     view! {
-        <PageWithSidebar>
+        <PageWithSidebar class="settings-page">
             <PageTitle>
                 <FormattedMessage id="settings.title" />
             </PageTitle>
-            <Card class="settings-card">
+
+            <SettingsSection title="settings.section.general">
                 <LanguageSetting />
-                <OverrideDecimalFormatSetting />
                 <ThemeSetting />
+            </SettingsSection>
+
+            <SettingsSection title="settings.section.calculator">
+                <OverrideDecimalFormatSetting />
                 <DecimalPlacesSetting />
-            </Card>
+            </SettingsSection>
         </PageWithSidebar>
     }
 }

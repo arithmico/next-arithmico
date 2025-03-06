@@ -1,5 +1,6 @@
 use common::DecimalPlaces;
 use leptos::prelude::*;
+use translate::FormattedMessage;
 use ui::{
     form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
     icon::menu_icon::MenuIcon,
@@ -49,7 +50,9 @@ pub fn DecimalPlacesSetting() -> impl IntoView {
 
     view! {
         <div class="flex items-center decimal-places-setting">
-            <span>Decimal Places</span>
+            <span>
+                <FormattedMessage id="settings.decimal_places" />
+            </span>
 
             <Listbox
                 definition=definition
