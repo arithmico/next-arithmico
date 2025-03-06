@@ -74,6 +74,10 @@
     border-radius: var(--radius-sm);
 }
 
+.listbox-option:focus-visible {
+    z-index: 10;
+}
+
 .listbox-option.selected {
     font-weight: bolder;
 }
