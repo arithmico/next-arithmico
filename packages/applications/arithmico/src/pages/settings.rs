@@ -1,3 +1,4 @@
+use decimal_places::DecimalPlacesSetting;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{common::page_title::PageTitle, container::card::Card};
@@ -11,6 +12,7 @@ use crate::{
     },
 };
 
+mod decimal_places;
 mod language;
 mod override_decimal_format;
 mod theme;
@@ -26,6 +28,7 @@ pub fn SettingsPage() -> impl IntoView {
                 <LanguageSetting />
                 <OverrideDecimalFormatSetting />
                 <ThemeSetting />
+                <DecimalPlacesSetting />
             </Card>
         </PageWithSidebar>
     }

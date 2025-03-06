@@ -1,0 +1,10 @@
+.decimal-places-setting .listbox-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.decimal-places-setting .listbox-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
