@@ -28,6 +28,13 @@ pub fn ListboxButton<V: Send + Sync + Clone + PartialEq + 'static>(
                 listbox_context.get().is_open().to_string()
             }
 
+            aria-labelledby=move || {
+                format!(
+                    "widget-{}-listbox-label",
+                    listbox_context.get().widget_id(),
+                )
+            }
+
             aria-controls=move || {
                 if listbox_context.get().is_open() {
                     Some(
