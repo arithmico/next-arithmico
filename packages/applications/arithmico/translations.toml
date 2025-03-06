@@ -46,6 +46,14 @@ German = "Verlauf"
 English = "Settings"
 German = "Einstellungen"
 
+[settings.section.general]
+English = "Genral"
+German = "Allgemein"
+
+[settings.section.calculator]
+English = "Calculator"
+German = "Rechner"
+
 [settings.language]
 English = "Language"
 German = "Sprache"
@@ -65,6 +73,10 @@ German = "Dezimalformat überschreiben"
 [settings.override_decimal_format.no]
 English = "No"
 German = "Nein"
+
+[settings.decimal_places]
+English = "Decimal places"
+German = "Dezimalstellen"
 
 [settings.theme]
 English = "Color Theme"
