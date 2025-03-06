@@ -3,6 +3,7 @@ use leptos::prelude::*;
 use settings_section::SettingsSection;
 use translate::FormattedMessage;
 use ui::common::page_title::PageTitle;
+use web_state::WebState;
 
 use crate::{
     components::*,
@@ -11,6 +12,7 @@ use crate::{
         override_decimal_format::OverrideDecimalFormatSetting,
         theme::ThemeSetting,
     },
+    state::{ResetSettingsAction, State},
 };
 
 mod decimal_places;
@@ -21,6 +23,8 @@ mod theme;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {
+    let state = State::expect_state();
+
     view! {
         <PageWithSidebar class="settings-page">
             <PageTitle>
@@ -35,6 +39,22 @@ pub fn SettingsPage() -> impl IntoView {
             <SettingsSection title="settings.section.calculator">
                 <OverrideDecimalFormatSetting />
                 <DecimalPlacesSetting />
+            </SettingsSection>
+
+            <SettingsSection title="settings.section.misc">
+                <div class="reset-settings-container">
+                    <span>
+                        <FormattedMessage id="settings.section.reset-settings" />
+                    </span>
+                    <button
+                        class="reset-settings-button"
+                        on:click=move |_| {
+                            state.dispatch(&ResetSettingsAction::new());
+                        }
+                    >
+                        <FormattedMessage id="settings.section.reset-settings.reset" />
+                    </button>
+                </div>
             </SettingsSection>
         </PageWithSidebar>
     }
