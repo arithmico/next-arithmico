@@ -90,6 +90,18 @@ German = "Hell"
 English = "Dark"
 German = "Dunkel"
 
+[settings.section.misc]
+English = "Miscellaneous"
+German = "Verschiedenes"
+
+[settings.section.reset-settings]
+English = "Resetting the settings will restore all personal customizations to their default values. This action cannot be undone."
+German = "Durch das Zurücksetzen der Einstellungen werden alle persönlichen Anpassungen auf die Standardeinstellungen zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden."
+
+[settings.section.reset-settings.reset]
+English = "Reset"
+German = "Zurücksetzen"
+
 [reference.title]
 English = "Reference"
 German = "Referenz"

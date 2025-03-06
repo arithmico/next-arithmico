@@ -26,6 +26,10 @@
     font-size: var(--text-base);
 }
 
+.listbox-button:hover {
+    cursor: pointer;
+}
+
 .listbox-button svg:last-child {
     margin-left: auto;
 }
@@ -85,6 +89,10 @@
 
 .listbox-option:focus-visible {
     z-index: 10;
+}
+
+.listbox-option:hover {
+    cursor: pointer;
 }
 
 .listbox-option.selected {
