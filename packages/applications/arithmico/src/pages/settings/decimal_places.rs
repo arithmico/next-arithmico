@@ -34,6 +34,8 @@ pub fn DecimalPlacesSetting() -> impl IntoView {
                     }) />
                 </>
             }
+        }).label(|| {
+            view! { <FormattedMessage id="settings.decimal_places" /> }
         });
 
     for i in 0..15u8 {
@@ -46,16 +48,11 @@ pub fn DecimalPlacesSetting() -> impl IntoView {
     });
 
     view! {
-        <div class="flex items-center decimal-places-setting">
-            <span>
-                <FormattedMessage id="settings.decimal_places" />
-            </span>
-
-            <Listbox
-                definition=definition
-                value=state.select(|state| state.settings.decimal_places)
-                on_change=on_change
-            />
-        </div>
+        <Listbox
+            class="decimal-places-setting"
+            definition=definition
+            value=state.select(|state| state.settings.decimal_places)
+            on_change=on_change
+        />
     }
 }

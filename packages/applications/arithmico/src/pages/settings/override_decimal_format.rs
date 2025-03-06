@@ -58,22 +58,18 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
             </>
         }
     })
+    .label(|| {
+        view! { <FormattedMessage id="settings.override_decimal_format" /> }
+    })
     .option(OverrideDecimalFormat::new(), move || view! { <FormattedMessage id="settings.override_decimal_format.no" /> })
     .option(OverrideDecimalFormat::from(DecimalFormat::Comma), move || view! { <FormattedMessage id="settings.language.german" /> })
     .option(OverrideDecimalFormat::from(DecimalFormat::Dot), move || view! { <FormattedMessage id="settings.language.english" /> });
 
     view! {
-        <div class="flex items-center">
-            <span>
-                <FormattedMessage id="settings.override_decimal_format" />
-            </span>
-
-            <Listbox
-                value=override_decimal_format
-                on_change=on_change
-                definition=listbox_definition
-            />
-
-        </div>
+        <Listbox
+            value=override_decimal_format
+            on_change=on_change
+            definition=listbox_definition
+        />
     }
 }

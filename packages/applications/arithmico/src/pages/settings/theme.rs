@@ -35,21 +35,15 @@ pub fn ThemeSetting() -> impl IntoView {
                 </>
             }
         })
+        .label(|| view! { <FormattedMessage id="settings.theme" /> })
         .option(Theme::Light, move || view! { <FormattedMessage id=Theme::Light /> })
         .option(Theme::Dark, move || view! { <FormattedMessage id=Theme::Dark /> });
 
     view! {
-        <div class="flex items-center">
-            <span>
-                <FormattedMessage id="settings.theme" />
-            </span>
-
-            <Listbox
-                definition=listbox_definition
-                value=theme
-                on_change=on_change
-            />
-
-        </div>
+        <Listbox
+            definition=listbox_definition
+            value=theme
+            on_change=on_change
+        />
     }
 }

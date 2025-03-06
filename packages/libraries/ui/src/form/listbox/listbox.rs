@@ -19,6 +19,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     definition: ListboxDefinition<V>,
     #[prop(into)] on_change: Callback<V>,
     #[prop(into)] value: Signal<V>,
+    #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView {
     let button_ref = NodeRef::<html::Button>::new();
     let container_ref = NodeRef::<html::Div>::new();
@@ -58,20 +59,40 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     });
 
     view! {
-        <div node_ref=container_ref class="listbox-container">
-            <ListboxButton
-                listbox_definition=definition.clone()
-                button_ref=button_ref
-            />
+        <div class=format!("listbox {}", class.unwrap_or(String::new()))>
+            <label
+                id=move || {
+                    format!(
+                        "widget-{}-listbox-label",
+                        listbox_context.get().widget_id(),
+                    )
+                }
+                for=move || {
+                    format!(
+                        "widget-{}-listbox-button",
+                        listbox_context.get().widget_id(),
+                    )
+                }
+                class="listbox-label"
+            >
+                {definition.label.run()}
+            </label>
 
-            <div class="listbox-options-container">
-                <Show when=move || listbox_context.get().is_open()>
-                    <ListboxOptions
-                        definition=definition.clone()
-                        value=value
-                        container_ref=container_ref
-                    />
-                </Show>
+            <div node_ref=container_ref class="listbox-container">
+                <ListboxButton
+                    listbox_definition=definition.clone()
+                    button_ref=button_ref
+                />
+
+                <div class="listbox-options-container">
+                    <Show when=move || listbox_context.get().is_open()>
+                        <ListboxOptions
+                            definition=definition.clone()
+                            value=value
+                            container_ref=container_ref
+                        />
+                    </Show>
+                </div>
             </div>
         </div>
     }

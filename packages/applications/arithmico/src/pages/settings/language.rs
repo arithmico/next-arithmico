@@ -18,29 +18,7 @@ pub fn LanguageSetting() -> impl IntoView {
             state.dispatch(&SetLanguageAction::new(language));
         });
 
-    let listbox_definition = create_listbox_definition();
-
-    view! {
-        <div class="flex items-center">
-            <span>
-                <FormattedMessage id="settings.language" />
-            </span>
-
-            <Listbox
-                on_change=on_change
-                definition=listbox_definition
-                value=language
-            />
-
-        </div>
-    }
-}
-
-fn create_listbox_definition() -> ListboxDefinition<Language> {
-    let state = State::expect_state();
-    let language = state.select(|state| state.settings.language);
-
-    ListboxDefinition::new()
+    let listbox_definition = ListboxDefinition::new()
     .button(move || {
         let is_open = use_listbox_is_open();
 
@@ -67,6 +45,17 @@ fn create_listbox_definition() -> ListboxDefinition<Language> {
             </>
         }
     })
+    .label(|| {
+        view! { <FormattedMessage id="settings.language" /> }
+    })
     .option(Language::English, || view! { <FormattedMessage id="settings.language.english" /> })
-    .option(Language::German, || view! { <FormattedMessage id="settings.language.german" /> })
+    .option(Language::German, || view! { <FormattedMessage id="settings.language.german" /> });
+
+    view! {
+        <Listbox
+            on_change=on_change
+            definition=listbox_definition
+            value=language
+        />
+    }
 }

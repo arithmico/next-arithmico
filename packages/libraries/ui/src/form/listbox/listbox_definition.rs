@@ -19,6 +19,7 @@ impl<V: Send + Sync + Clone> ListboxOptionDefinition<V> {
 
 #[derive(Clone)]
 pub struct ListboxDefinition<V: Send + Sync + Clone> {
+    pub label: ViewFn,
     pub button: ViewFn,
     pub options: Vec<ListboxOptionDefinition<V>>,
 }
@@ -26,9 +27,15 @@ pub struct ListboxDefinition<V: Send + Sync + Clone> {
 impl<V: Send + Sync + Clone> ListboxDefinition<V> {
     pub fn new() -> Self {
         Self {
+            label: (|| ().into_view()).into(),
             button: (|| ().into_view()).into(),
             options: Vec::new(),
         }
+    }
+
+    pub fn label(mut self, view: impl Into<ViewFn>) -> Self {
+        self.label = view.into();
+        self
     }
 
     pub fn button(mut self, view: impl Into<ViewFn>) -> Self {
