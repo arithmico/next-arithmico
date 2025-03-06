@@ -1,4 +1,4 @@
-use editor_core::{EditorCommand, selection::SelectionRange};
+use editor_core::{selection::SelectionRange, EditorCommand};
 
 pub struct DeleteContentForwardCommand;
 
@@ -10,6 +10,8 @@ impl DeleteContentForwardCommand {
 
 impl EditorCommand for DeleteContentForwardCommand {
     fn apply(&self, state: &mut editor_core::EditorState) -> Option<()> {
+        state.log_state();
+
         let selection = state.get_selection()?;
 
         if selection.is_collapsed() {
