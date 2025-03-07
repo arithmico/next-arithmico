@@ -114,6 +114,22 @@ German = "Suche"
 English = "About"
 German = "Über"
 
+[about.team]
+English = "Team"
+German = "Team"
+
+[about.team.member.name]
+English = "Name"
+German = "Name"
+
+[about.team.member.role]
+English = "Role"
+German = "Rolle"
+
+[about.team.member.email]
+English = "Email"
+German = "Email"
+
 [not-found.title]
 English = "Page Not Found"
 German = "Seite nicht gefunden"
