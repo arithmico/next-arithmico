@@ -1,7 +1,8 @@
-use crate::pages::*;
 use leptos::prelude::*;
 use leptos_router::components::*;
 use leptos_router::path;
+
+use crate::pages::*;
 
 #[component]
 pub fn AppRouter() -> impl IntoView {
@@ -12,6 +13,7 @@ pub fn AppRouter() -> impl IntoView {
                 <Route path=path!("/settings") view=SettingsPage />
                 <Route path=path!("/reference") view=ReferencePage />
                 <Route path=path!("/about") view=AboutPage />
+                <Route path=path!("/history") view=HistoryPage />
             </Routes>
         </Router>
     }

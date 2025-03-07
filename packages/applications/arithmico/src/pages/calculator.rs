@@ -21,7 +21,10 @@ pub fn CalculatorPage() -> impl IntoView {
             <CalculatorHeader />
             <div class="calculator-layout">
                 <CaluclatorInput />
-                <CalculatorOutput value=current_output />
+                <CalculatorOutput
+                    class="calculator-output-field"
+                    value=current_output
+                />
             </div>
         </PageWithSidebar>
     }

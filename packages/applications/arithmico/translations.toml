@@ -133,3 +133,15 @@ German = "Ausgabe löschen"
 [calculator.toolbar.actions.reset-session]
 English = "Reset Session"
 German = "Sitzung zurücksetzen"
+
+[history.title]
+English = "History"
+German = "Verlauf"
+
+[history.input]
+English = "Input"
+German = "Ausgabe"
+
+[history.output]
+English = "Output"
+German = "Ausgabe"

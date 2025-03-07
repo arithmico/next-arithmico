@@ -6,13 +6,17 @@ use crate::components::CalculatorErrorOutput;
 
 #[component]
 pub fn CalculatorOutput(
-    value: Signal<Option<Result<String, SessionError>>>,
+    #[prop(into)] value: Signal<Option<Result<String, SessionError>>>,
+    #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView {
     view! {
         <output
             for="calculator-output"
             data-testid="calculator-output"
-            class="calculator-output"
+            class=format!(
+                "calculator-output {}",
+                class.unwrap_or(String::new()),
+            )
         >
             {move || match value.get() {
                 Some(result) => {
