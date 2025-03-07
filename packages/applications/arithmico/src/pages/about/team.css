@@ -1,0 +1,50 @@
+.team-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-4);
+}
+
+.team-member {
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-2);
+    border-style: solid;
+    border-width: 1px;
+}
+
+.team-member > dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--spacing-2);
+    row-gap: var(--spacing-1);
+    font-size: var(--text-2xs);
+
+}
+
+.team-member > dl > dd {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.team-member > .name {
+    font-weight: bolder;
+    margin-bottom: var(--spacing-2);
+}
+
+.theme-light .team-member > dl > dd {
+    color: var(--color-neutral-400);
+}
+
+.theme-dark .team-member > dl > dd {
+    color: var(--color-neutral-500);
+}
+
+.theme-light .team-member {
+    background-color: var(--color-neutral-100);
+    border-color: var(--color-neutral-300);
+}
+
+.theme-dark .team-member {
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-700);
+}

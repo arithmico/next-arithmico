@@ -28,4 +28,5 @@ editor = { path = "../../libraries/editor" }
 trace = { path = "../../libraries/trace" }
 editor_core = { path = "../../libraries/editor_core" }
 translate = { path = "../../libraries/translate" }
-web_state ={ path = "../../libraries/web_state" }
+web_state = { path = "../../libraries/web_state" }
+toml = "0.8.20"
