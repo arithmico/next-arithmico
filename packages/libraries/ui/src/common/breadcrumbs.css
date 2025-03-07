@@ -1,0 +1,23 @@
+.breadcrumbs {
+    display: flex;
+    padding: var(--spacing-4) var(--spacing-10) var(--spacing-4) 0;
+}
+
+.breadcrumbs > ol {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.theme-dark .breadcrumbs > ol > .icon {
+    fill: var(--color-neutral-400);
+}
+
+.theme-light .breadcrumbs > ol > .icon {
+    fill: var(--color-neutral-400);
+}
+
+.page-header .breadcrumbs-item {
+    font-size: var(--text-2xl);
+    font-weight: 500;
+}
