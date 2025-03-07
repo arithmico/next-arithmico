@@ -5,9 +5,10 @@ use translate::FormattedMessage;
 use crate::components::CalculatorOutput;
 
 #[component]
-pub fn HistoryItem(item: SessionEntry) -> impl IntoView {
+pub fn HistoryItem(item: SessionEntry, position: usize) -> impl IntoView {
     view! {
         <li class="history-item">
+            <span class="history-item-id">{format!("#{}", position)}</span>
             <dl>
                 <dt>
                     <FormattedMessage id="history.input" />

@@ -11,8 +11,9 @@ pub fn HistoryList(items: Signal<Vec<SessionEntry>>) -> impl IntoView {
                 let items = items.get();
                 items
                     .into_iter()
-                    .map(|item| {
-                        view! { <HistoryItem item=item /> }
+                    .enumerate()
+                    .map(|(position, item)| {
+                        view! { <HistoryItem item=item position=position /> }
                     })
                     .collect_view()
             }}
