@@ -1,11 +1,10 @@
+use crate::{components::PageWithSidebar, state::State};
+use history_header::HistoryHeader;
 use history_list::HistoryList;
 use leptos::prelude::*;
-use translate::FormattedMessage;
-use ui::common::page_title::PageTitle;
 use web_state::WebState;
 
-use crate::{components::PageWithSidebar, state::State};
-
+mod history_header;
 mod history_item;
 mod history_list;
 
@@ -16,9 +15,7 @@ pub fn HistoryPage() -> impl IntoView {
 
     view! {
         <PageWithSidebar>
-            <PageTitle>
-                <FormattedMessage id="history.title" />
-            </PageTitle>
+            <HistoryHeader />
             <HistoryList items=items />
         </PageWithSidebar>
     }
