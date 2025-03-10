@@ -1,5 +1,5 @@
 pub use ast::EvaluateNodeError;
-pub use parser::ParseNodeError;
+use ast::ParseNodeError;
 pub use serializer::SerializeNodeError;
 use thiserror::Error;
 

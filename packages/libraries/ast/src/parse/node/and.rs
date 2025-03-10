@@ -1,10 +1,11 @@
-use ast::{And, Sum};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::parse::with_parser::with_parser;
+use crate::Sum;
+use crate::{parse::trace::TraceUtils, And};
 
 use super::{relation::parse_relation, ParseNode, ParseResult};
 
@@ -33,8 +34,9 @@ fn parse_and_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Boolean, Symbol};
     use trace::TracableMut;
+
+    use crate::{Boolean, Symbol};
 
     use super::*;
 

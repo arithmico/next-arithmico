@@ -1,4 +1,3 @@
-use ast::{DecimalFormat, Definition, Node};
 use cache::clear_cache;
 use node::ParseNode;
 
@@ -9,8 +8,9 @@ mod trace;
 mod with_parser;
 
 pub use error::ParseNodeError;
-use node::ParseResult;
 use nom::{combinator::all_consuming, Parser};
+
+use crate::{DecimalFormat, Definition, Node};
 
 pub struct ParseNodeOptions {
     pub decimal_format: DecimalFormat,

@@ -1,8 +1,8 @@
 use std::{cell::RefCell, collections::HashMap};
 
-use ast::Node;
+use crate::Node;
 
-use crate::{ParseResult, error::ParseNodeError};
+use super::{node::ParseResult, ParseNodeError};
 
 type CachedParseResult = Result<(String, Node), nom::Err<ParseNodeError>>;
 

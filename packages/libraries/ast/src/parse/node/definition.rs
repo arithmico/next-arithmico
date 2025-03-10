@@ -1,4 +1,3 @@
-use ast::{Definition, Function, FunctionSignature, Node, NodeType};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -9,10 +8,11 @@ use nom::{
 };
 
 use crate::{
-    node::symbol::parse_raw_symbol, trace::TraceUtils, with_parser::with_parser,
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Definition, Function, FunctionSignature, Node, NodeType,
 };
 
-use super::{ParseNode, ParseResult};
+use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
 
 impl ParseNode for Definition {
     fn parse(input: &str) -> ParseResult {
@@ -77,8 +77,9 @@ fn parse_define_function(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Power, Symbol};
     use trace::TracableMut;
+
+    use crate::{Number, Power, Symbol};
 
     use super::*;
 

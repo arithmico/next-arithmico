@@ -1,10 +1,12 @@
-use ast::{FunctionCall, Node, Tensor};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::cut, multi::separated_list0, sequence::delimited, Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    FunctionCall, Node, Tensor,
+};
 
 use super::{ParseNode, ParseResult};
 
@@ -41,8 +43,9 @@ fn parse_tensor(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
+    use crate::Number;
+
     use super::*;
-    use ast::Number;
     use trace::TracableMut;
     use trace::Trace;
 

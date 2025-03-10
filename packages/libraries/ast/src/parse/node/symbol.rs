@@ -1,4 +1,3 @@
-use ast::Symbol;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -8,7 +7,8 @@ use nom::{
 };
 
 use crate::{
-    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    ParseNodeError, Symbol,
 };
 
 use super::{ParseNode, ParseResult};

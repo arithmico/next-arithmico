@@ -1,11 +1,10 @@
-use ast::{Division, Power};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::with_parser::with_parser;
+use crate::{parse::with_parser::with_parser, Division, Power};
 
 use super::{ParseNode, ParseResult};
 
@@ -44,7 +43,8 @@ pub fn parse_division_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
+
+    use crate::Number;
 
     use super::*;
 

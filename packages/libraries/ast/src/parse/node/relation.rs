@@ -1,10 +1,14 @@
-use crate::{
-    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
-};
-use ast::{
-    And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
-    Node, Sum,
-};
+use crate::parse::trace::TraceUtils;
+use crate::parse::with_parser::with_parser;
+use crate::And;
+use crate::Equals;
+use crate::GreaterThan;
+use crate::GreaterThanOrEquals;
+use crate::LessThan;
+use crate::LessThanOrEquals;
+use crate::Node;
+use crate::ParseNodeError;
+use crate::Sum;
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::cut, multi::many1, sequence::delimited, IResult, Parser,
@@ -76,8 +80,9 @@ fn parse_relation_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
+    use crate::Symbol;
+
     use super::*;
-    use ast::Symbol;
 
     #[test]
     fn parse_equals() {

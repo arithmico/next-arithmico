@@ -1,10 +1,12 @@
-use ast::{Negate, Product, Sum};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Negate, Product, Sum,
+};
 
 use super::{ParseNode, ParseResult};
 
@@ -40,10 +42,10 @@ fn parse_sum_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use crate::error::ParseNodeError;
-    use ast::{Node, Number};
     use nom::combinator::all_consuming;
     use trace::TracableMut;
+
+    use crate::{Node, Number, ParseNodeError};
 
     use super::*;
 

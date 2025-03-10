@@ -1,10 +1,12 @@
-use ast::{And, Or};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    And, Or,
+};
 
 use super::{ParseNode, ParseResult};
 
@@ -33,8 +35,9 @@ fn parse_or_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Boolean, Symbol};
     use trace::TracableMut;
+
+    use crate::{Boolean, Symbol};
 
     use super::*;
 

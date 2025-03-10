@@ -1,4 +1,3 @@
-use ast::{FunctionCall, Node, Symbol};
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -10,11 +9,14 @@ use nom::{
 };
 
 use crate::{
-    error::ParseNodeError, node::parse_sub_expression, trace::TraceUtils,
-    with_parser::with_parser,
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    FunctionCall, Node, ParseNodeError, Symbol,
 };
 
-use super::{literal::parse_literal, ParseNode, ParseResult};
+use super::{
+    literal::parse_literal, sub_expression::parse_sub_expression, ParseNode,
+    ParseResult,
+};
 
 impl ParseNode for FunctionCall {
     fn parse(input: &str) -> ParseResult {

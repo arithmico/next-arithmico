@@ -1,11 +1,11 @@
-use ast::{Function, FunctionSignature, Node, NodeType, Or};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::opt, multi::many0, sequence::delimited, IResult, Parser,
 };
 
 use crate::{
-    error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Function, FunctionSignature, Node, NodeType, Or, ParseNodeError,
 };
 
 use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
@@ -63,8 +63,9 @@ fn parse_function_argument_item(
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Sum, Symbol};
     use trace::TracableMut;
+
+    use crate::{Number, Sum, Symbol};
 
     use super::*;
 

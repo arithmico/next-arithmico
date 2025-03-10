@@ -1,10 +1,12 @@
-use ast::{Negate, Product};
 use nom::{
     bytes::complete::tag, character::complete::space0, sequence::preceded,
     Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Negate, Product,
+};
 
 use super::{ParseNode, ParseResult};
 
@@ -26,8 +28,9 @@ fn parse_negate(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
     use trace::TracableMut;
+
+    use crate::Number;
 
     use super::*;
 

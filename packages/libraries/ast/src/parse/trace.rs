@@ -1,9 +1,10 @@
 use std::cell::RefCell;
 
-use ast::Node;
 use trace::{Span, TracableMut};
 
-use crate::node::ParseResult;
+use crate::Node;
+
+use super::node::ParseResult;
 
 thread_local! {
     static INPUT_LENGTH: RefCell<Option<usize>> = RefCell::new(None);

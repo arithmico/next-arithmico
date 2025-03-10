@@ -1,10 +1,12 @@
-use ast::{Division, Product};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Division, Product,
+};
 
 use super::{ParseNode, ParseResult};
 
@@ -37,10 +39,11 @@ fn parse_product_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use crate::error::ParseNodeError;
     use ast::{Node, Number, Sum, Symbol};
     use nom::combinator::all_consuming;
     use trace::TracableMut;
+
+    use crate::{ast, ParseNodeError};
 
     use super::*;
 
