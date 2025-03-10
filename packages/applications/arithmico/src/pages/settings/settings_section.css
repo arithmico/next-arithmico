@@ -4,20 +4,6 @@
     gap: var(--spacing-2);
     margin-bottom: var(--spacing-4);
     padding-bottom: var(--spacing-2);
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-}
-
-.settings-section:last-child {
-    border-bottom-width: 0;
-}
-
-.theme-dark .settings-section {
-    border-bottom-color: var(--color-neutral-700);
-}
-
-.theme-light .settings-section {
-    border-bottom-color: var(--color-neutral-300);
 }
 
 .settings-section-content {
@@ -27,7 +13,15 @@
     padding-left: var(--spacing-4);
 }
 
+.theme-light .settings-section-content {
+    color: var(--color-neutral-600);
+}
+
+.theme-dark .settings-section-content {
+    color: var(--color-neutral-300);
+}
+
 .settings-section-heading {
-    font-weight: normal;
-    font-size: var(--text-xl);
+    font-weight: 500;
+    font-size: var(--text-base);
 }

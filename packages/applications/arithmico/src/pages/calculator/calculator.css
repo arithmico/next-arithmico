@@ -26,5 +26,5 @@
 .theme-light .calculator-output-field {
     color: black;
     background-color: var(--color-neutral-100);
-    border-color: var(--color-neutral-300);
+    border-color: var(--color-neutral-400);
 }
