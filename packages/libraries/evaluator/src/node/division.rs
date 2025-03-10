@@ -1,5 +1,6 @@
-use ast::{Division, Node, Number, Tensor};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{
+    Division, EvaluateNodeContext, EvaluateNodeError, Node, Number, Tensor,
+};
 
 use crate::evaluate::EvaluateNode;
 

@@ -1,4 +1,4 @@
-use common::DecimalPlaces;
+use ast::DecimalPlaces;
 use web_state::WebStateAction;
 
 use crate::state::State;

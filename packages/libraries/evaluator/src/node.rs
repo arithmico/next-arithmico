@@ -1,5 +1,4 @@
-use ast::Node;
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{EvaluateNodeContext, EvaluateNodeError, Node};
 use trace::TracableMut;
 
 use crate::evaluate::EvaluateNode;

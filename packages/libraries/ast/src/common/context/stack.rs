@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ast::Node;
+use crate::Node;
 
 pub type Stackframe = HashMap<String, Node>;
 

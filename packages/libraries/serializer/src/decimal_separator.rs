@@ -1,8 +1,10 @@
+use ast::DecimalFormat;
+
 use crate::SerializeNodeOptions;
 
 pub(crate) fn get_decimal_separator(options: &SerializeNodeOptions) -> String {
     match options.decimal_format {
-        common::DecimalFormat::Comma => String::from(","),
-        common::DecimalFormat::Dot => String::from("."),
+        DecimalFormat::Comma => String::from(","),
+        DecimalFormat::Dot => String::from("."),
     }
 }

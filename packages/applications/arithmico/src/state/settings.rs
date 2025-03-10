@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use common::{DecimalPlaces, Language};
+use ast::{DecimalPlaces, Language};
 use gloo_storage::{LocalStorage, Storage};
 use override_decimal_format::OverrideDecimalFormat;
 use serde::{Deserialize, Serialize};

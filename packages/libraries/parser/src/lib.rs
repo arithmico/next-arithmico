@@ -1,6 +1,5 @@
-use ast::{Definition, Node};
+use ast::{DecimalFormat, Definition, Node};
 use cache::clear_cache;
-use common::DecimalFormat;
 use node::ParseNode;
 
 mod cache;

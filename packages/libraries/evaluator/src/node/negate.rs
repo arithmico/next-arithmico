@@ -1,5 +1,7 @@
-use ast::{Boolean, Negate, Node, Number, Tensor};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{
+    Boolean, EvaluateNodeContext, EvaluateNodeError, Negate, Node, Number,
+    Tensor,
+};
 
 use crate::evaluate::EvaluateNode;
 

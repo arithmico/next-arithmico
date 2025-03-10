@@ -1,9 +1,9 @@
 use std::iter::zip;
 
 use ast::{
-    GetNodeType, Node, Number, Product, Sum, Tensor, convert_to_outer_index,
+    convert_to_outer_index, EvaluateNodeContext, EvaluateNodeError,
+    GetNodeType, Node, Number, Product, Sum, Tensor,
 };
-use common::{EvaluateNodeContext, EvaluateNodeError};
 use trace::TracableMut;
 
 use crate::evaluate::EvaluateNode;

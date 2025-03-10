@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use common::DecimalFormat;
+use ast::DecimalFormat;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize, PartialEq)]

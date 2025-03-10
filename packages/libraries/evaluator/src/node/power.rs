@@ -1,5 +1,4 @@
-use ast::{Node, Number, Power};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{EvaluateNodeContext, EvaluateNodeError, Node, Number, Power};
 
 use crate::evaluate::EvaluateNode;
 

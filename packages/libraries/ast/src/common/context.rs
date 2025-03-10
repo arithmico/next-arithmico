@@ -2,7 +2,7 @@ mod host_api;
 mod options;
 mod stack;
 
-use ast::{HostFunction, Node};
+use crate::{HostFunction, Node};
 use std::sync::Arc;
 
 pub use host_api::*;

@@ -1,4 +1,4 @@
-use common::{DecimalFormat, DecimalPlaces};
+use ast::{DecimalFormat, DecimalPlaces};
 
 pub struct SerializeNodeOptions {
     pub decimal_places: DecimalPlaces,

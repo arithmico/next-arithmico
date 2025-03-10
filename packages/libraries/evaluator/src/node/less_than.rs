@@ -1,5 +1,4 @@
-use ast::{Boolean, LessThan, Node};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{Boolean, EvaluateNodeContext, EvaluateNodeError, LessThan, Node};
 
 use crate::evaluate::EvaluateNode;
 

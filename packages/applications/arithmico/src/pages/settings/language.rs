@@ -1,4 +1,4 @@
-use common::Language;
+use ast::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
