@@ -1,18 +1,18 @@
-use ast::{GreaterThanOrEquals, Node};
+use crate::{LessThan, Node};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
     serialize_node_utils::SerializeNodeUtils,
 };
 
-impl SerializeNodeUtils for GreaterThanOrEquals {
+impl SerializeNodeUtils for LessThan {
     fn prepare_serialization(
         &self,
         options: &SerializeNodeOptions,
     ) -> Result<Node, SerializeNodeError> {
-        Ok(GreaterThanOrEquals::new(
+        Ok(LessThan::new(
             self.left.prepare_serialization(options)?,
             self.right.prepare_serialization(options)?,
         ))
@@ -32,13 +32,13 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for GreaterThanOrEquals {
+impl SerializeNode for LessThan {
     fn serialize(
         &self,
         options: &SerializeNodeOptions,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
-            "{} >= {}",
+            "{} < {}",
             serialize_child(&self.left, options, child_requires_parenthesis)?,
             serialize_child(&self.right, options, child_requires_parenthesis)?,
         ))
@@ -48,66 +48,66 @@ impl SerializeNode for GreaterThanOrEquals {
 #[cfg(test)]
 mod tests {
 
-    use ast::{And, Equals, Or, Symbol};
+    use crate::{And, Equals, Or, Symbol};
 
     use crate::serialize_node;
 
     use super::*;
 
     #[test]
-    fn serialize_greater_than_or_equals_with_symbols() {
+    fn serialize_less_than_with_symbols() {
         assert_eq!(
             serialize_node(
-                &GreaterThanOrEquals::new(Symbol::new("x"), Symbol::new("y")),
+                &LessThan::new(Symbol::new("x"), Symbol::new("y")),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
-            "x >= y"
+            "x < y"
         );
     }
 
     #[test]
-    fn serialize_greater_than_or_equals_with_or() {
+    fn serialize_less_than_with_or() {
         assert_eq!(
             serialize_node(
-                &GreaterThanOrEquals::new(
+                &LessThan::new(
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
-            "(a | b) >= (c | d)"
+            "(a | b) < (c | d)"
         );
     }
 
     #[test]
-    fn serialize_greater_than_or_equals_with_and() {
+    fn serialize_less_than_with_and() {
         assert_eq!(
             serialize_node(
-                &GreaterThanOrEquals::new(
+                &LessThan::new(
                     And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
-            "(a & b) >= (c & d)"
+            "(a & b) < (c & d)"
         );
     }
 
     #[test]
-    fn serialize_greater_than_or_equals_with_equals() {
+    fn serialize_less_than_with_equals() {
         assert_eq!(
             serialize_node(
-                &GreaterThanOrEquals::new(
+                &LessThan::new(
                     Equals::new(Symbol::new("a"), Symbol::new("b"),),
                     Equals::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
                 &SerializeNodeOptions::default()
             )
             .unwrap(),
-            "(a = b) >= (c = d)"
+            "(a = b) < (c = d)"
         );
     }
 }

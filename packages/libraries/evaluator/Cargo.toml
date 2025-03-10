@@ -5,7 +5,6 @@ edition = "2024"
 
 [dependencies]
 ast = { path = "../ast"}
-serializer = { path = "../serializer" }
 log = "0.4.22"
 thiserror = { workspace = true }
 trace = { path = "../trace" }

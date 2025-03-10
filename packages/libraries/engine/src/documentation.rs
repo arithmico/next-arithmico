@@ -1,11 +1,9 @@
 use std::collections::HashMap;
 
 use ast::{
-    DecimalFormat, DecimalPlaces, FunctionCall, HostApi, HostEndpoint,
-    Language, Symbol, TranslatedString,
+    serialize_node, DecimalFormat, DecimalPlaces, FunctionCall, HostApi,
+    HostEndpoint, Language, SerializeNodeOptions, Symbol, TranslatedString,
 };
-
-use serializer::{serialize_node, SerializeNodeOptions};
 
 #[derive(Clone, Debug)]
 pub struct DocumentationItem {

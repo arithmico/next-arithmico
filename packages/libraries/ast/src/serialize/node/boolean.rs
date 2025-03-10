@@ -1,9 +1,8 @@
-use ast::{Boolean, Node};
-
 use crate::{
-    error::SerializeNodeError, serialize_node::SerializeNode,
-    serialize_node_options::SerializeNodeOptions,
-    serialize_node_utils::SerializeNodeUtils,
+    serialize::{
+        serialize_node::SerializeNode, serialize_node_utils::SerializeNodeUtils,
+    },
+    Boolean, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Boolean {

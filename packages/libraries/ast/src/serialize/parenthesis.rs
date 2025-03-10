@@ -1,8 +1,6 @@
-use ast::Node;
+use crate::{Node, SerializeNodeError, SerializeNodeOptions};
 
-use crate::{
-    SerializeNodeError, SerializeNodeOptions, serialize_node::SerializeNode,
-};
+use super::serialize_node::SerializeNode;
 
 pub(crate) fn serialize_child(
     node: &Node,

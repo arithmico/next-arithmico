@@ -1,6 +1,6 @@
 pub use ast::EvaluateNodeError;
 use ast::ParseNodeError;
-pub use serializer::SerializeNodeError;
+pub use ast::SerializeNodeError;
 use thiserror::Error;
 
 #[derive(Error, Debug, Clone)]

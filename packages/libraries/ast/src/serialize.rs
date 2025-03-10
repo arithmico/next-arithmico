@@ -7,11 +7,12 @@ mod serialize_node;
 mod serialize_node_options;
 mod serialize_node_utils;
 
-use ast::Node;
 pub use error::SerializeNodeError;
 use serialize_node::SerializeNode;
 pub use serialize_node_options::SerializeNodeOptions;
 use serialize_node_utils::SerializeNodeUtils;
+
+use crate::Node;
 
 pub fn serialize_node(
     node: &Node,

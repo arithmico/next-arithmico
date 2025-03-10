@@ -1,6 +1,6 @@
-use ast::{Node, Symbol};
+use crate::{Node, Symbol};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
     serialize_node_utils::SerializeNodeUtils,
@@ -27,7 +27,7 @@ impl SerializeNode for Symbol {
 #[cfg(test)]
 mod tests {
 
-    use ast::Symbol;
+    use crate::Symbol;
 
     use crate::serialize_node;
 

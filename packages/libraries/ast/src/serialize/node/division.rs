@@ -1,10 +1,9 @@
-use ast::{Division, Node};
-
 use crate::{
-    error::SerializeNodeError, parenthesis::serialize_child,
-    serialize_node::SerializeNode,
-    serialize_node_options::SerializeNodeOptions,
-    serialize_node_utils::SerializeNodeUtils,
+    serialize::{
+        parenthesis::serialize_child, serialize_node::SerializeNode,
+        serialize_node_utils::SerializeNodeUtils,
+    },
+    Division, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Division {
@@ -66,11 +65,11 @@ impl SerializeNode for Division {
 
 #[cfg(test)]
 mod tests {
-    use ast::{
-        And, Function, FunctionSignature, NodeType, Or, Product, Sum, Symbol,
-    };
 
-    use crate::serialize_node;
+    use crate::{
+        serialize_node, And, Function, FunctionSignature, NodeType, Or,
+        Product, Sum, Symbol,
+    };
 
     use super::*;
 
