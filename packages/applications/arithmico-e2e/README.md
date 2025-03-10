@@ -1,20 +1,37 @@
 # arithmico-e2e
 
-The `arithmico-e2e` package ensures the functionality and reliability of the Arithmico application through comprehensive end-to-end testing. By leveraging Playwright, the tests simulate real user interactions and verify that the application behaves as expected.
+arithmico-e2e is an end-to-end (E2E) testing suite for the Arithmico web application. It is built using Node.js and Playwright to ensure the reliability and correctness of the application.
 
-## Installation
+## Getting Started
 
-To set up the testing environment, you need to install Playwright and its dependencies. Run the following commands:
+### Prerequisites
 
-```bash
+This project uses a development container (devcontainer) for a consistent development environment. Make sure you have:
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+Open the project in VS Code and reopen it in the devcontainer when prompted.
+
+### Installation
+
+First, install the required dependencies:
+
+```sh
 npm ci
 npx playwright install --with-deps
 ```
 
-## Running Tests
+### Running Tests
 
-To execute the end-to-end tests, use the following command:
+To execute the Playwright tests, run:
 
-```bash
-npx playwright test
+```sh
+CI=true npx playwright test
 ```
+
+## Technologies Used
+
+- **Testing Framework:** Playwright
+- **Runtime:** Node.js
+- **Package Manager:** npm
