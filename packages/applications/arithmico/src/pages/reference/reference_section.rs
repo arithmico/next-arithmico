@@ -5,8 +5,8 @@ use leptos::prelude::*;
 #[component]
 pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
     view! {
-        <details open class="reference-section">
-            <summary>{module.name(&Language::English).cloned()}</summary>
+        <section class="reference-section">
+            <h2>{module.name(&Language::English).cloned()}</h2>
             <dl>
                 {module
                     .items()
@@ -21,6 +21,6 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
                     })
                     .collect_view()}
             </dl>
-        </details>
+        </section>
     }
 }

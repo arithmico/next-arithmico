@@ -2,21 +2,22 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 0 var(--spacing-2);
     border-right-width: 1px;
     border-right-style: solid;
 }
 
-.sidebar>h1 {
+.sidebar > h1 {
     padding-top: var(--spacing-4);
     padding-bottom: var(--spacing-4);
-    padding-right: var(--spacing-10);
+    padding-right: var(--spacing-8);
+    padding-left: var(--spacing-4);
     font-weight: 100;
+    font-size: var(--text-3xl);
 }
 
 .theme-light .sidebar {
     color: black;
-    background-color: var(--color-neutral-100);
+    background-color: var(--color-neutral-200);
     border-color: var(--color-neutral-300);
 }
 

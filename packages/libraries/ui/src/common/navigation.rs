@@ -4,7 +4,7 @@ use leptos::prelude::*;
 pub fn Navigation(children: Children) -> impl IntoView {
     view! {
         <nav class="navigation">
-            <h2>Navigation</h2>
+            <h2 class="sr-only">Navigation</h2>
             <ul>{children()}</ul>
         </nav>
     }

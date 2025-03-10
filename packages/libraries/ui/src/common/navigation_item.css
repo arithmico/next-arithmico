@@ -1,10 +1,13 @@
 .navigation-item>a {
     display: flex;
     align-items: center;
-    padding: var(--spacing-2) var(--spacing-6);
-    border-radius: var(--radius-sm);
+    padding: var(--spacing-2) var(--spacing-4);
     color: inherit;
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
+}
+
+.theme-light .navigation-item {
+    color: var(--color-neutral-600)
 }
 
 .theme-dark .navigation-item>a:hover {
@@ -12,5 +15,6 @@
 }
 
 .theme-light .navigation-item>a:hover {
-    background-color: var(--color-neutral-200);
+    background-color: var(--color-neutral-100);
+    color: black;
 }
