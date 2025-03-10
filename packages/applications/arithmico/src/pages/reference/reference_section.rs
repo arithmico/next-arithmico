@@ -1,4 +1,4 @@
-use common::Language;
+use ast::Language;
 use engine::DocumentationModule;
 use leptos::prelude::*;
 

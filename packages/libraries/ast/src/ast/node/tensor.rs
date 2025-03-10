@@ -181,7 +181,7 @@ pub fn dimension_offsets(shape: &Vec<usize>) -> Vec<usize> {
 #[cfg(test)]
 mod tests {
 
-    use crate::node::Number;
+    use crate::Number;
 
     use super::*;
 

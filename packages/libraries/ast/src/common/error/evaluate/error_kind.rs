@@ -1,6 +1,6 @@
 use translate_core::{Translatable, TranslatedMessage};
 
-use crate::translation_provider::translation_resolver;
+use crate::common::translation_provider::translation_resolver;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum EvaluateNodeErrorKind {

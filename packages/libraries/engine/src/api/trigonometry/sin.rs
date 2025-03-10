@@ -1,7 +1,9 @@
 use std::f64::consts::PI;
 
-use ast::{FunctionSignature, Node, NodeType, Number};
-use common::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language};
+use ast::{
+    EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+    Language, Node, NodeType, Number,
+};
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()

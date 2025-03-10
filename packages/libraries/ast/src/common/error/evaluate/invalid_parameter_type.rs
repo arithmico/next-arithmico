@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 
-use ast::NodeType;
+use crate::NodeType;
 use translate_core::TranslatedMessage;
 
-use crate::translation_provider::translation_resolver;
+use crate::common::translation_provider::translation_resolver;
 
 use super::{EvaluateNodeError, EvaluateNodeErrorKind};
 

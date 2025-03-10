@@ -1,4 +1,4 @@
-use common::Language;
+use ast::Language;
 use web_state::WebStateAction;
 
 use crate::state::State;

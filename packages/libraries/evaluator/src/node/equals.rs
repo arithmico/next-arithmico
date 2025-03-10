@@ -1,7 +1,6 @@
 use std::iter::zip;
 
-use ast::{Boolean, Equals, Node};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{Boolean, Equals, EvaluateNodeContext, EvaluateNodeError, Node};
 
 use crate::evaluate::EvaluateNode;
 

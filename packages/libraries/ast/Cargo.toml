@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
+serde = { version = "1.0.210", features = ["derive"] }
+thiserror = { workspace = true }

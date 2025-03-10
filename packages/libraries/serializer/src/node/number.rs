@@ -78,7 +78,7 @@ impl SerializeNode for Number {
 #[cfg(test)]
 mod tests {
 
-    use common::DecimalPlaces;
+    use ast::{DecimalFormat, DecimalPlaces};
 
     use crate::serialize_node;
 
@@ -119,7 +119,7 @@ mod tests {
             serialize_node(
                 &Number::new(1.23),
                 &SerializeNodeOptions {
-                    decimal_format: common::DecimalFormat::Comma,
+                    decimal_format: DecimalFormat::Comma,
                     decimal_places: DecimalPlaces::from(5)
                 }
             )

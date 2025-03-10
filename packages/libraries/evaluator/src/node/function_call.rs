@@ -1,9 +1,9 @@
-use ast::{FunctionCall, Node};
-use common::HostEndpoint;
+use ast::{FunctionCall, HostEndpoint, Node};
 
 use crate::{
-    EvaluateNodeContext, EvaluateNodeError, evaluate::EvaluateNode,
+    evaluate::EvaluateNode,
     utils::map_function_arguments::map_function_parameters,
+    EvaluateNodeContext, EvaluateNodeError,
 };
 
 impl EvaluateNode for FunctionCall {
@@ -75,10 +75,9 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use ast::{Function, FunctionSignature, NodeType, Number, Power, Symbol};
-
-    use common::{
-        EvaluateNodeOptions, HostApi, HostApiModule, Language, Stack,
+    use ast::{
+        EvaluateNodeOptions, Function, FunctionSignature, HostApi,
+        HostApiModule, Language, NodeType, Number, Power, Stack, Symbol,
     };
 
     use super::*;
@@ -129,10 +128,7 @@ mod tests {
                             .name(Language::English, "test")
                             .endpoint(true, "f", |builder| {
                                 builder
-                                    .description(
-                                        common::Language::English,
-                                        "test",
-                                    )
+                                    .description(Language::English, "test")
                                     .function(
                                         FunctionSignature::new()
                                             .argument("x", |argument| {
@@ -174,10 +170,7 @@ mod tests {
                             .name(Language::English, "test")
                             .endpoint(true, "f", |builder| {
                                 builder
-                                    .description(
-                                        common::Language::English,
-                                        "test",
-                                    )
+                                    .description(Language::English, "test")
                                     .function(
                                         FunctionSignature::new()
                                             .argument("x", |argument| {

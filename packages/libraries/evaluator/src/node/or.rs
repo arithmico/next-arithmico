@@ -1,6 +1,7 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Boolean, GetNodeType, Node, Or};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{
+    Boolean, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Or,
+};
 use trace::TracableMut;
 
 impl EvaluateNode for Or {

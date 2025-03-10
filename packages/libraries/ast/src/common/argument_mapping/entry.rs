@@ -1,4 +1,4 @@
-use ast::Node;
+use crate::Node;
 
 #[derive(Debug, Clone)]
 pub enum ArgumentMappingEntry {

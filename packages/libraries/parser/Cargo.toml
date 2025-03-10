@@ -7,5 +7,4 @@ edition = "2024"
 nom = "8.0.0"
 ast = { path = "../ast"}
 thiserror = { workspace = true }
-common = { path = "../common" }
 trace = { path = "../trace" }

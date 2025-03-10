@@ -1,6 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{GetNodeType, Node, Tensor};
-use common::{EvaluateNodeContext, EvaluateNodeError};
+use ast::{EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Tensor};
 
 impl EvaluateNode for Tensor {
     fn evaluate(
@@ -68,13 +67,11 @@ mod tests {
     #[test]
     fn evaluate_tensor_with_sum_with_trace() {
         let context = EvaluateNodeContext::default();
-        let result = Tensor::new(vec![
-            Sum::new(vec![
-                Number::new(1.).with_span(1, 1),
-                Number::new(2.).with_span(3, 3),
-            ])
-            .with_span(1, 3),
+        let result = Tensor::new(vec![Sum::new(vec![
+            Number::new(1.).with_span(1, 1),
+            Number::new(2.).with_span(3, 3),
         ])
+        .with_span(1, 3)])
         .with_span(0, 4)
         .evaluate(&context)
         .unwrap();

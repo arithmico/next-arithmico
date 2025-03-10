@@ -1,7 +1,5 @@
-use ast::NodeType;
+use crate::{common::translation_provider::translation_resolver, NodeType};
 use translate_core::TranslatedMessage;
-
-use crate::translation_provider::translation_resolver;
 
 use super::{EvaluateNodeError, EvaluateNodeErrorKind};
 
