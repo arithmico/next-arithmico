@@ -1,11 +1,8 @@
 use crate::with_parser::with_parser;
 use ast::{Power, Tensor};
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    multi::many1,
-    sequence::{preceded, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
@@ -14,14 +11,14 @@ use super::{ParseNode, ParseResult};
 impl ParseNode for Power {
     fn parse(input: &str) -> ParseResult {
         with_parser("Power::parse", |input| {
-            alt((parse_power, parse_power_element))(input)
+            alt((parse_power, parse_power_element)).parse(input)
         })(input)
     }
 }
 
 fn parse_power(input: &str) -> ParseResult {
     let (remaining_input, (first, rest)) =
-        tuple((parse_power_element, many1(parse_power_item)))(input)?;
+        (parse_power_element, many1(parse_power_item)).parse(input)?;
 
     Ok((
         remaining_input,
@@ -33,10 +30,9 @@ fn parse_power(input: &str) -> ParseResult {
 }
 
 fn parse_power_item(input: &str) -> ParseResult {
-    let (remaining_input, node) = preceded(
-        tuple((space0, tag("^"), space0)),
-        parse_power_element,
-    )(input)?;
+    let (remaining_input, node) =
+        preceded((space0, tag("^"), space0), parse_power_element)
+            .parse(input)?;
 
     Ok((remaining_input, node))
 }

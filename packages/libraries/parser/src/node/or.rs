@@ -1,10 +1,7 @@
 use ast::{And, Or};
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    multi::many1,
-    sequence::{preceded, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
@@ -13,15 +10,15 @@ use super::{ParseNode, ParseResult};
 
 impl ParseNode for Or {
     fn parse(input: &str) -> ParseResult {
-        with_parser("Or::parse", |input| alt((parse_or, And::parse))(input))(
-            input,
-        )
+        with_parser("Or::parse", |input| {
+            alt((parse_or, And::parse)).parse(input)
+        })(input)
     }
 }
 
 fn parse_or(input: &str) -> ParseResult {
     let (remaining_input, (first, mut rest)) =
-        tuple((And::parse, many1(parse_or_item)))(input)?;
+        (And::parse, many1(parse_or_item)).parse(input)?;
 
     rest.insert(0, first);
     Ok((
@@ -31,7 +28,7 @@ fn parse_or(input: &str) -> ParseResult {
 }
 
 fn parse_or_item(input: &str) -> ParseResult {
-    preceded(tuple((space0, tag("|"), space0)), And::parse)(input)
+    preceded((space0, tag("|"), space0), And::parse).parse(input)
 }
 
 #[cfg(test)]

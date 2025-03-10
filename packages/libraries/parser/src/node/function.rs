@@ -1,37 +1,33 @@
 use ast::{Function, FunctionSignature, Node, NodeType, Or};
 use nom::{
-    IResult,
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    combinator::opt,
-    multi::many0,
-    sequence::{delimited, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    combinator::opt, multi::many0, sequence::delimited, IResult, Parser,
 };
 
 use crate::{
     error::ParseNodeError, trace::TraceUtils, with_parser::with_parser,
 };
 
-use super::{ParseNode, ParseResult, symbol::parse_raw_symbol};
+use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
 
 impl ParseNode for Function {
     fn parse(input: &str) -> ParseResult {
         with_parser("Function::parse", |input| {
-            alt((parse_function, Or::parse))(input)
+            alt((parse_function, Or::parse)).parse(input)
         })(input)
     }
 }
 
 fn parse_function(input: &str) -> ParseResult {
-    let (remaining_input, (arguments, expression)) = tuple((
+    let (remaining_input, (arguments, expression)) = (
         delimited(
-            tuple((tag("("), space0)),
+            (tag("("), space0),
             opt(parse_function_arguments),
-            tuple((space0, tag(")"), space0, tag("->"), space0)),
+            (space0, tag(")"), space0, tag("->"), space0),
         ),
         Node::parse,
-    ))(input)?;
+    )
+        .parse(input)?;
 
     let mut signature = FunctionSignature::new();
     for name in arguments.unwrap_or(vec![]) {
@@ -51,7 +47,7 @@ fn parse_function_arguments(
     input: &str,
 ) -> IResult<&str, Vec<String>, ParseNodeError> {
     let (remaining_input, (first, mut rest)) =
-        tuple((parse_raw_symbol, many0(parse_function_argument_item)))(input)?;
+        (parse_raw_symbol, many0(parse_function_argument_item)).parse(input)?;
     rest.insert(0, first);
     Ok((remaining_input, rest))
 }
@@ -60,7 +56,7 @@ fn parse_function_argument_item(
     input: &str,
 ) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (_, _, _, name)) =
-        tuple((space0, tag(","), space0, parse_raw_symbol))(input)?;
+        (space0, tag(","), space0, parse_raw_symbol).parse(input)?;
 
     Ok((remaining_input, name))
 }

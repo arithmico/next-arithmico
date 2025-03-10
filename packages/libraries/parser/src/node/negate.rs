@@ -1,8 +1,7 @@
 use ast::{Negate, Product};
 use nom::{
-    bytes::complete::tag,
-    character::complete::space0,
-    sequence::{preceded, tuple},
+    bytes::complete::tag, character::complete::space0, sequence::preceded,
+    Parser,
 };
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
@@ -17,7 +16,7 @@ impl ParseNode for Negate {
 
 fn parse_negate(input: &str) -> ParseResult {
     let (remaining_input, value) =
-        preceded(tuple((space0, tag("-"), space0)), Product::parse)(input)?;
+        preceded((space0, tag("-"), space0), Product::parse).parse(input)?;
     Ok((
         remaining_input,
         Negate::new(value)

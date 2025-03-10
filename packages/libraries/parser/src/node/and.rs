@@ -1,28 +1,24 @@
 use ast::{And, Sum};
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    combinator::cut,
-    multi::many1,
-    sequence::{preceded, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
 use crate::{trace::TraceUtils, with_parser::with_parser};
 
-use super::{ParseNode, ParseResult, relation::parse_relation};
+use super::{relation::parse_relation, ParseNode, ParseResult};
 
 impl ParseNode for And {
     fn parse(input: &str) -> ParseResult {
         with_parser("And::parse", |input| {
-            alt((parse_and, parse_relation))(input)
+            alt((parse_and, parse_relation)).parse(input)
         })(input)
     }
 }
 
 fn parse_and(input: &str) -> ParseResult {
     let (remaining_input, (first, mut rest)) =
-        tuple((Sum::parse, many1(parse_and_item)))(input)?;
+        (Sum::parse, many1(parse_and_item)).parse(input)?;
 
     rest.insert(0, first);
     Ok((
@@ -32,7 +28,7 @@ fn parse_and(input: &str) -> ParseResult {
 }
 
 fn parse_and_item(input: &str) -> ParseResult {
-    preceded(tuple((space0, tag("&"), space0)), cut(parse_relation))(input)
+    preceded((space0, tag("&"), space0), cut(parse_relation)).parse(input)
 }
 
 #[cfg(test)]

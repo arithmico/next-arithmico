@@ -1,10 +1,7 @@
 use ast::{Division, Power};
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    multi::many1,
-    sequence::{preceded, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
@@ -15,14 +12,14 @@ use super::{ParseNode, ParseResult};
 impl ParseNode for Division {
     fn parse(input: &str) -> ParseResult {
         with_parser("Division::parse", |input| {
-            alt((parse_division, parse_division_element))(input)
+            alt((parse_division, parse_division_element)).parse(input)
         })(input)
     }
 }
 
 fn parse_division(input: &str) -> ParseResult {
     let (remaining_input, (first, rest)) =
-        tuple((parse_division_element, many1(parse_division_item)))(input)?;
+        (parse_division_element, many1(parse_division_item)).parse(input)?;
 
     Ok((
         remaining_input,
@@ -34,10 +31,9 @@ fn parse_division(input: &str) -> ParseResult {
 }
 
 fn parse_division_item(input: &str) -> ParseResult {
-    let (remaining_input, node) = preceded(
-        tuple((space0, tag("/"), space0)),
-        parse_division_element,
-    )(input)?;
+    let (remaining_input, node) =
+        preceded((space0, tag("/"), space0), parse_division_element)
+            .parse(input)?;
 
     Ok((remaining_input, node))
 }

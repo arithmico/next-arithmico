@@ -1,11 +1,10 @@
 use ast::Symbol;
 use nom::{
-    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
     multi::many0,
-    sequence::tuple,
+    IResult, Parser,
 };
 
 use crate::{
@@ -30,7 +29,7 @@ fn parse_symbol(input: &str) -> ParseResult {
 
 pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (start, rest)) =
-        tuple((alpha1, many0(alt((alphanumeric1, tag("_"))))))(input)?;
+        (alpha1, many0(alt((alphanumeric1, tag("_"))))).parse(input)?;
 
     Ok((
         remaining_input,

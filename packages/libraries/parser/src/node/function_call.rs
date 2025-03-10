@@ -1,12 +1,12 @@
 use ast::{FunctionCall, Node, Symbol};
 use nom::{
-    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
     multi::many0,
-    sequence::{delimited, preceded, tuple},
+    sequence::{delimited, preceded},
+    IResult, Parser,
 };
 
 use crate::{
@@ -14,25 +14,26 @@ use crate::{
     with_parser::with_parser,
 };
 
-use super::{ParseNode, ParseResult, literal::parse_literal};
+use super::{literal::parse_literal, ParseNode, ParseResult};
 
 impl ParseNode for FunctionCall {
     fn parse(input: &str) -> ParseResult {
         with_parser("FunctionCall::parse", |input| {
-            alt((parse_function_call, parse_literal))(input)
+            alt((parse_function_call, parse_literal)).parse(input)
         })(input)
     }
 }
 
 fn parse_function_call(input: &str) -> ParseResult {
-    let (remaining_input, (target, arguments)) = tuple((
+    let (remaining_input, (target, arguments)) = (
         parse_function_call_target,
         delimited(
-            tuple((space0, tag("("), space0)),
+            (space0, tag("("), space0),
             cut(opt(parse_function_call_arguments)),
-            tuple((space0, tag(")"))),
+            (space0, tag(")")),
         ),
-    ))(input)?;
+    )
+        .parse(input)?;
 
     Ok((
         remaining_input,
@@ -42,21 +43,22 @@ fn parse_function_call(input: &str) -> ParseResult {
 }
 
 fn parse_function_call_target(input: &str) -> ParseResult {
-    alt((Symbol::parse, parse_sub_expression))(input)
+    alt((Symbol::parse, parse_sub_expression)).parse(input)
 }
 
 fn parse_function_call_arguments(
     input: &str,
 ) -> IResult<&str, Vec<Node>, ParseNodeError> {
     let (remaining_input, (first, mut rest)) =
-        tuple((Node::parse, many0(parse_function_call_arguments_item)))(input)?;
+        (Node::parse, many0(parse_function_call_arguments_item))
+            .parse(input)?;
 
     rest.insert(0, first);
     Ok((remaining_input, rest))
 }
 
 fn parse_function_call_arguments_item(input: &str) -> ParseResult {
-    preceded(tuple((space0, tag(","), space0)), Node::parse)(input)
+    preceded((space0, tag(","), space0), Node::parse).parse(input)
 }
 
 #[cfg(test)]
@@ -121,19 +123,15 @@ mod tests {
                 "",
                 FunctionCall::new(
                     Symbol::new("f").with_span(0, 0),
-                    vec![
-                        FunctionCall::new(
-                            Symbol::new("f").with_span(2, 2),
-                            vec![
-                                FunctionCall::new(
-                                    Symbol::new("f").with_span(4, 4),
-                                    vec![Symbol::new("x").with_span(6, 6)]
-                                )
-                                .with_span(4, 7)
-                            ]
+                    vec![FunctionCall::new(
+                        Symbol::new("f").with_span(2, 2),
+                        vec![FunctionCall::new(
+                            Symbol::new("f").with_span(4, 4),
+                            vec![Symbol::new("x").with_span(6, 6)]
                         )
-                        .with_span(2, 8)
-                    ]
+                        .with_span(4, 7)]
+                    )
+                    .with_span(2, 8)]
                 )
                 .with_span(0, 9)
             )

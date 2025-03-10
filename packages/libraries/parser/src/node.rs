@@ -17,7 +17,7 @@ mod symbol;
 mod tensor;
 
 use ast::{Function, Node};
-use nom::{IResult, branch::alt};
+use nom::{branch::alt, IResult, Parser};
 use sub_expression::parse_sub_expression;
 
 use crate::error::ParseNodeError;
@@ -30,6 +30,6 @@ pub trait ParseNode {
 
 impl ParseNode for Node {
     fn parse(input: &str) -> ParseResult {
-        alt((Function::parse, parse_sub_expression))(input)
+        alt((Function::parse, parse_sub_expression)).parse(input)
     }
 }

@@ -6,13 +6,8 @@ use ast::{
     Node, Sum,
 };
 use nom::{
-    IResult,
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::space0,
-    combinator::cut,
-    multi::many1,
-    sequence::{delimited, tuple},
+    branch::alt, bytes::complete::tag, character::complete::space0,
+    combinator::cut, multi::many1, sequence::delimited, IResult, Parser,
 };
 use trace::IntoTrace;
 use trace::TracableMut;
@@ -21,15 +16,14 @@ use super::{ParseNode, ParseResult};
 
 pub fn parse_relation(input: &str) -> ParseResult {
     with_parser("parse_relation", |input| {
-        alt((parse_relation_chain, parse_relation_element))(input)
+        alt((parse_relation_chain, parse_relation_element)).parse(input)
     })(input)
 }
 
 fn parse_relation_chain(input: &str) -> ParseResult {
-    let (remaining_input, (first, rest)) = tuple((
-        parse_relation_element,
-        many1(parse_relation_chain_item),
-    ))(input)?;
+    let (remaining_input, (first, rest)) =
+        (parse_relation_element, many1(parse_relation_chain_item))
+            .parse(input)?;
 
     let (mut relations, _) = rest.into_iter().fold(
         (Vec::<Node>::new(), first),
@@ -65,14 +59,15 @@ fn parse_relation_chain(input: &str) -> ParseResult {
 fn parse_relation_chain_item(
     input: &str,
 ) -> IResult<&str, (&str, Node), ParseNodeError> {
-    tuple((
+    (
         delimited(space0, parse_relation_operator, space0),
         cut(parse_relation_element),
-    ))(input)
+    )
+        .parse(input)
 }
 
 fn parse_relation_operator(input: &str) -> IResult<&str, &str, ParseNodeError> {
-    alt((tag("="), tag("<="), tag(">="), tag("<"), tag(">")))(input)
+    alt((tag("="), tag("<="), tag(">="), tag("<"), tag(">"))).parse(input)
 }
 
 fn parse_relation_element(input: &str) -> ParseResult {

@@ -11,7 +11,7 @@ mod with_parser;
 
 pub use error::ParseNodeError;
 use node::ParseResult;
-use nom::combinator::all_consuming;
+use nom::{combinator::all_consuming, Parser};
 
 pub struct ParseNodeOptions {
     pub decimal_format: DecimalFormat,
@@ -32,7 +32,8 @@ pub fn parse(
         DecimalFormat::Dot => input.to_string(),
     };
 
-    let result = all_consuming(Definition::parse)(&input)
+    let result = all_consuming(Definition::parse)
+        .parse(&input)
         .map(|(_, node)| node)
         .map_err(|error| match error {
             nom::Err::Incomplete(_) => {
