@@ -1,6 +1,6 @@
-use ast::{Node, Or};
+use crate::{Node, Or};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -52,7 +52,7 @@ impl SerializeNode for Or {
 #[cfg(test)]
 mod tests {
 
-    use ast::Symbol;
+    use crate::Symbol;
 
     use crate::serialize_node;
 

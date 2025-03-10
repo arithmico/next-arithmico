@@ -461,7 +461,6 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "evaluator",
- "serializer",
  "thiserror 2.0.12",
 ]
 
@@ -477,7 +476,6 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "log",
- "serializer",
  "thiserror 2.0.12",
  "trace",
 ]
@@ -1687,14 +1685,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87607cb1398ed59d48732e575a4c28a7a8ebf2454b964fe3f224f2afc07909e1"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "serializer"
-version = "0.1.0"
-dependencies = [
- "ast",
- "thiserror 2.0.12",
 ]
 
 [[package]]

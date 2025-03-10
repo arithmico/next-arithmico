@@ -1,9 +1,8 @@
-use ast::Node;
+use crate::Node;
 
-use crate::{
-    error::SerializeNodeError, serialize_node::SerializeNode,
-    serialize_node_options::SerializeNodeOptions,
-    serialize_node_utils::SerializeNodeUtils,
+use super::{
+    serialize_node::SerializeNode, serialize_node_utils::SerializeNodeUtils,
+    SerializeNodeError, SerializeNodeOptions,
 };
 
 mod and;

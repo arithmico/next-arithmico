@@ -1,6 +1,6 @@
-use ast::{HostFunction, Node};
+use crate::{HostFunction, Node};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
     serialize_node_utils::SerializeNodeUtils,

@@ -1,6 +1,4 @@
-use ast::DecimalFormat;
-
-use crate::SerializeNodeOptions;
+use crate::{DecimalFormat, SerializeNodeOptions};
 
 pub(crate) fn get_decimal_separator(options: &SerializeNodeOptions) -> String {
     match options.decimal_format {

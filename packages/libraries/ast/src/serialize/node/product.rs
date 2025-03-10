@@ -1,6 +1,6 @@
-use ast::{Node, Product};
+use crate::{Node, Product};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -58,7 +58,7 @@ impl SerializeNode for Product {
 #[cfg(test)]
 mod tests {
 
-    use ast::{
+    use crate::{
         And, Division, Function, FunctionSignature, Negate, NodeType, Or,
         Product, Sum, Symbol,
     };

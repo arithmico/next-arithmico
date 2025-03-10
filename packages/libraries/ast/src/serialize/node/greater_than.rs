@@ -1,6 +1,6 @@
-use ast::{GreaterThan, Node};
+use crate::{GreaterThan, Node};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -48,7 +48,7 @@ impl SerializeNode for GreaterThan {
 #[cfg(test)]
 mod tests {
 
-    use ast::{And, Equals, Or, Symbol};
+    use crate::{And, Equals, Or, Symbol};
 
     use crate::serialize_node;
 

@@ -1,6 +1,6 @@
-use ast::{Negate, Node};
+use crate::{Negate, Node};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -43,7 +43,7 @@ impl SerializeNode for Negate {
 #[cfg(test)]
 mod tests {
 
-    use ast::{And, Function, FunctionSignature, NodeType, Or, Sum, Symbol};
+    use crate::{And, Function, FunctionSignature, NodeType, Or, Sum, Symbol};
 
     use crate::serialize_node;
 

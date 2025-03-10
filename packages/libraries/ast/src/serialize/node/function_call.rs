@@ -1,6 +1,6 @@
-use ast::{FunctionCall, Node};
+use crate::{FunctionCall, Node};
 
-use crate::{
+use crate::serialize::{
     argument_separator::get_argument_separator, error::SerializeNodeError,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -52,7 +52,7 @@ impl SerializeNode for FunctionCall {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Function, FunctionSignature, NodeType, Sum, Symbol};
+    use crate::{Function, FunctionSignature, NodeType, Sum, Symbol};
 
     use crate::serialize_node;
 

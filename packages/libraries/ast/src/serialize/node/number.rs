@@ -1,6 +1,6 @@
-use ast::{Negate, Node, Number, Power, Product};
+use crate::{Negate, Node, Number, Power, Product};
 
-use crate::{
+use crate::serialize::{
     decimal_separator::get_decimal_separator, error::SerializeNodeError,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -78,7 +78,7 @@ impl SerializeNode for Number {
 #[cfg(test)]
 mod tests {
 
-    use ast::{DecimalFormat, DecimalPlaces};
+    use crate::{DecimalFormat, DecimalPlaces};
 
     use crate::serialize_node;
 

@@ -1,10 +1,11 @@
-use ast::{Equals, Node};
-
 use crate::{
-    error::SerializeNodeError, parenthesis::serialize_child,
-    serialize_node::SerializeNode,
-    serialize_node_options::SerializeNodeOptions,
-    serialize_node_utils::SerializeNodeUtils,
+    serialize::{
+        error::SerializeNodeError, parenthesis::serialize_child,
+        serialize_node::SerializeNode,
+        serialize_node_options::SerializeNodeOptions,
+        serialize_node_utils::SerializeNodeUtils,
+    },
+    Equals, Node,
 };
 
 impl SerializeNodeUtils for Equals {
@@ -48,7 +49,7 @@ impl SerializeNode for Equals {
 #[cfg(test)]
 mod tests {
 
-    use ast::{
+    use crate::{
         And, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, Or,
         Symbol,
     };

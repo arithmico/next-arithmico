@@ -1,10 +1,10 @@
-use ast::{Definition, Node};
-
 use crate::{
-    argument_separator::get_argument_separator, error::SerializeNodeError,
-    serialize_node::SerializeNode,
-    serialize_node_options::SerializeNodeOptions,
-    serialize_node_utils::SerializeNodeUtils,
+    serialize::{
+        argument_separator::get_argument_separator,
+        serialize_node::SerializeNode,
+        serialize_node_utils::SerializeNodeUtils,
+    },
+    Definition, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Definition {
@@ -45,9 +45,11 @@ impl SerializeNode for Definition {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Function, FunctionSignature, NodeType, Number, Symbol};
 
-    use crate::serialize_node;
+    use crate::{
+        serialize::serialize_node, Function, FunctionSignature, NodeType,
+        Number, SerializeNodeOptions, Symbol,
+    };
 
     use super::*;
 

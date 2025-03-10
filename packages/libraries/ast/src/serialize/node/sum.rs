@@ -1,6 +1,6 @@
-use ast::{Node, Sum};
+use crate::{Node, Sum};
 
-use crate::{
+use crate::serialize::{
     error::SerializeNodeError, parenthesis::serialize_child,
     serialize_node::SerializeNode,
     serialize_node_options::SerializeNodeOptions,
@@ -88,7 +88,7 @@ impl SerializeNode for Sum {
 #[cfg(test)]
 mod tests {
 
-    use ast::{Negate, Sum, Symbol};
+    use crate::{Negate, Sum, Symbol};
 
     use crate::serialize_node;
 
