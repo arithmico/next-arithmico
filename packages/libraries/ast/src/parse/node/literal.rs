@@ -1,7 +1,6 @@
-use ast::{Boolean, Number, Symbol};
 use nom::{branch::alt, Parser};
 
-use crate::with_parser::with_parser;
+use crate::{parse::with_parser::with_parser, Boolean, Number, Symbol};
 
 use super::{sub_expression::parse_sub_expression, ParseNode, ParseResult};
 

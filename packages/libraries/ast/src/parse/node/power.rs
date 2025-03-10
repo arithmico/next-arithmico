@@ -1,10 +1,10 @@
-use crate::with_parser::with_parser;
-use ast::{Power, Tensor};
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
     multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
+
+use crate::{parse::with_parser::with_parser, Power, Tensor};
 
 use super::{ParseNode, ParseResult};
 
@@ -43,7 +43,8 @@ fn parse_power_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Symbol};
+
+    use crate::{Number, Symbol};
 
     use super::*;
 

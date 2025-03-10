@@ -1,7 +1,9 @@
-use ast::Boolean;
-use nom::{Parser, branch::alt, bytes::complete::tag};
+use nom::{branch::alt, bytes::complete::tag, Parser};
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Boolean,
+};
 
 use super::{ParseNode, ParseResult};
 

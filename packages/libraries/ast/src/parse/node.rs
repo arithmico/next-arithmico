@@ -16,11 +16,12 @@ mod sum;
 mod symbol;
 mod tensor;
 
-use ast::{Function, Node};
 use nom::{branch::alt, IResult, Parser};
 use sub_expression::parse_sub_expression;
 
-use crate::error::ParseNodeError;
+use crate::{Function, Node};
+
+use super::ParseNodeError;
 
 pub type ParseResult<'a> = IResult<&'a str, Node, ParseNodeError>;
 

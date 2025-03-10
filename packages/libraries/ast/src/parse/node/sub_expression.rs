@@ -1,10 +1,9 @@
-use ast::Node;
 use nom::{
     bytes::complete::tag, character::complete::space0, sequence::delimited,
     Parser,
 };
 
-use crate::with_parser::with_parser;
+use crate::{parse::with_parser::with_parser, Node};
 
 use super::{ParseNode, ParseResult};
 

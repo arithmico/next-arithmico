@@ -105,6 +105,7 @@ dependencies = [
 name = "ast"
 version = "0.1.0"
 dependencies = [
+ "nom 8.0.0",
  "serde",
  "thiserror 2.0.12",
  "trace",
@@ -460,7 +461,6 @@ version = "0.1.0"
 dependencies = [
  "ast",
  "evaluator",
- "parser",
  "serializer",
  "thiserror 2.0.12",
 ]
@@ -1333,16 +1333,6 @@ dependencies = [
  "redox_syscall",
  "smallvec",
  "windows-targets",
-]
-
-[[package]]
-name = "parser"
-version = "0.1.0"
-dependencies = [
- "ast",
- "nom 8.0.0",
- "thiserror 2.0.12",
- "trace",
 ]
 
 [[package]]

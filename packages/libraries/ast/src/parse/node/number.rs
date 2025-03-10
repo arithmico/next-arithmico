@@ -1,7 +1,9 @@
-use ast::Number;
 use nom::number::complete::double;
 
-use crate::{trace::TraceUtils, with_parser::with_parser};
+use crate::{
+    parse::{trace::TraceUtils, with_parser::with_parser},
+    Number,
+};
 
 use super::{ParseNode, ParseResult};
 

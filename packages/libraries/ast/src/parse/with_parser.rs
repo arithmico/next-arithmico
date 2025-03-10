@@ -1,4 +1,4 @@
-use crate::{cache::with_cache, node::ParseResult, trace::with_input_len};
+use super::{cache::with_cache, node::ParseResult, trace::with_input_len};
 
 pub fn with_parser<'a>(
     parser_id: &'static str,
