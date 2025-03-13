@@ -1,10 +1,8 @@
-use ast::{
-    Boolean, EvaluateNodeContext, EvaluateNodeError, GreaterThanOrEquals, Node,
-};
+use crate::{Boolean, EvaluateNodeContext, EvaluateNodeError, LessThan, Node};
 
 use crate::evaluate::EvaluateNode;
 
-impl EvaluateNode for GreaterThanOrEquals {
+impl EvaluateNode for LessThan {
     fn evaluate(
         &self,
         context: &EvaluateNodeContext,
@@ -14,7 +12,7 @@ impl EvaluateNode for GreaterThanOrEquals {
 
         match (left, right) {
             (Node::Number(left), Node::Number(right)) => {
-                Ok(Boolean::new(left.value >= right.value))
+                Ok(Boolean::new(left.value < right.value))
             }
             _ => Err(EvaluateNodeError::unsupported_operation()),
         }
@@ -23,32 +21,23 @@ impl EvaluateNode for GreaterThanOrEquals {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
+    use crate::Number;
 
     use super::*;
 
     #[test]
-    fn evaluate_greater_than_or_equals_number_number_true() {
+    fn evaluate_less_than_number_number_true() {
         let context = EvaluateNodeContext::default();
-        let result = GreaterThanOrEquals::new(Number::new(2.), Number::new(1.))
+        let result = LessThan::new(Number::new(1.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(true));
     }
 
     #[test]
-    fn evaluate_greater_than_or_equals_number_number_true_equals() {
+    fn evaluate_less_than_number_number_false() {
         let context = EvaluateNodeContext::default();
-        let result = GreaterThanOrEquals::new(Number::new(2.), Number::new(2.))
-            .evaluate(&context)
-            .unwrap();
-        assert_eq!(result, Boolean::new(true));
-    }
-
-    #[test]
-    fn evaluate_greater_than_or_equals_number_number_false() {
-        let context = EvaluateNodeContext::default();
-        let result = GreaterThanOrEquals::new(Number::new(1.), Number::new(2.))
+        let result = LessThan::new(Number::new(2.), Number::new(1.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(false));

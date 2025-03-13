@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use ast::{
+use crate::{
     EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Number, Sum,
     Tensor,
 };
@@ -86,7 +86,7 @@ fn add_sum_elements(
 
 #[cfg(test)]
 mod tests {
-    use ast::NodeType;
+    use crate::NodeType;
 
     use super::*;
 

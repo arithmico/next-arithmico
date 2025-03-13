@@ -1,10 +1,10 @@
-use ast::{
-    Boolean, EvaluateNodeContext, EvaluateNodeError, LessThanOrEquals, Node,
+use crate::{
+    Boolean, EvaluateNodeContext, EvaluateNodeError, GreaterThanOrEquals, Node,
 };
 
 use crate::evaluate::EvaluateNode;
 
-impl EvaluateNode for LessThanOrEquals {
+impl EvaluateNode for GreaterThanOrEquals {
     fn evaluate(
         &self,
         context: &EvaluateNodeContext,
@@ -14,7 +14,7 @@ impl EvaluateNode for LessThanOrEquals {
 
         match (left, right) {
             (Node::Number(left), Node::Number(right)) => {
-                Ok(Boolean::new(left.value <= right.value))
+                Ok(Boolean::new(left.value >= right.value))
             }
             _ => Err(EvaluateNodeError::unsupported_operation()),
         }
@@ -23,32 +23,32 @@ impl EvaluateNode for LessThanOrEquals {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
+    use crate::Number;
 
     use super::*;
 
     #[test]
-    fn evaluate_less_than_or_equals_number_number_true() {
+    fn evaluate_greater_than_or_equals_number_number_true() {
         let context = EvaluateNodeContext::default();
-        let result = LessThanOrEquals::new(Number::new(1.), Number::new(2.))
+        let result = GreaterThanOrEquals::new(Number::new(2.), Number::new(1.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(true));
     }
 
     #[test]
-    fn evaluate_less_than_or_equals_number_number_true_equals() {
+    fn evaluate_greater_than_or_equals_number_number_true_equals() {
         let context = EvaluateNodeContext::default();
-        let result = LessThanOrEquals::new(Number::new(2.), Number::new(2.))
+        let result = GreaterThanOrEquals::new(Number::new(2.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(true));
     }
 
     #[test]
-    fn evaluate_less_than_or_equals_number_number_false() {
+    fn evaluate_greater_than_or_equals_number_number_false() {
         let context = EvaluateNodeContext::default();
-        let result = LessThanOrEquals::new(Number::new(2.), Number::new(1.))
+        let result = GreaterThanOrEquals::new(Number::new(1.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(false));

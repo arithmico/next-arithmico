@@ -1,4 +1,6 @@
-use ast::{Boolean, EvaluateNodeContext, EvaluateNodeError, GreaterThan, Node};
+use crate::{
+    Boolean, EvaluateNodeContext, EvaluateNodeError, GreaterThan, Node,
+};
 
 use crate::evaluate::EvaluateNode;
 
@@ -21,7 +23,7 @@ impl EvaluateNode for GreaterThan {
 
 #[cfg(test)]
 mod tests {
-    use ast::Number;
+    use crate::Number;
 
     use super::*;
 

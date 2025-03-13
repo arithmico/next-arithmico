@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use ast::{
+use crate::{
     convert_to_outer_index, EvaluateNodeContext, EvaluateNodeError,
     GetNodeType, Node, Number, Product, Sum, Tensor,
 };
@@ -177,7 +177,7 @@ fn multiply_matrices(
 
 #[cfg(test)]
 mod tests {
-    use ast::{NodeType, Tensor};
+    use crate::{NodeType, Tensor};
 
     use super::*;
 

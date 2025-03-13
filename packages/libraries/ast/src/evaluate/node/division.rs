@@ -1,4 +1,4 @@
-use ast::{
+use crate::{
     Division, EvaluateNodeContext, EvaluateNodeError, Node, Number, Tensor,
 };
 

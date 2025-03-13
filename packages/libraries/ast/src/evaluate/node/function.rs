@@ -1,4 +1,4 @@
-use ast::{
+use crate::{
     EvaluateNodeContext, EvaluateNodeError, Function, GetNodeType, Node,
 };
 
@@ -21,7 +21,7 @@ impl EvaluateNode for Function {
 
 #[cfg(test)]
 mod tests {
-    use ast::{FunctionSignature, NodeType, Symbol};
+    use crate::{FunctionSignature, NodeType, Symbol};
 
     use super::*;
 

@@ -1,10 +1,7 @@
-use ast::{FunctionCall, HostEndpoint, Node};
+use crate::evaluate::utils::map_function_arguments::map_function_parameters;
+use crate::{FunctionCall, HostEndpoint, Node};
 
-use crate::{
-    evaluate::EvaluateNode,
-    utils::map_function_arguments::map_function_parameters,
-    EvaluateNodeContext, EvaluateNodeError,
-};
+use crate::{evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError};
 
 impl EvaluateNode for FunctionCall {
     fn evaluate(
@@ -75,7 +72,7 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use ast::{
+    use crate::{
         EvaluateNodeOptions, Function, FunctionSignature, HostApi,
         HostApiModule, Language, NodeType, Number, Power, Stack, Symbol,
     };

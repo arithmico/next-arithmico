@@ -1,4 +1,4 @@
-use ast::{EvaluateNodeContext, EvaluateNodeError, Node, Number, Power};
+use crate::{EvaluateNodeContext, EvaluateNodeError, Node, Number, Power};
 
 use crate::evaluate::EvaluateNode;
 

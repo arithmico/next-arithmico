@@ -1,5 +1,5 @@
 use crate::evaluate::EvaluateNode;
-use ast::{
+use crate::{
     Boolean, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Or,
 };
 use trace::TracableMut;
@@ -48,7 +48,7 @@ fn combine_or_elements(
 
 #[cfg(test)]
 mod tests {
-    use ast::NodeType;
+    use crate::NodeType;
 
     use super::*;
 

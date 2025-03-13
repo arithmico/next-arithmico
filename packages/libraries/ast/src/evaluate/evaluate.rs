@@ -1,4 +1,4 @@
-use ast::{EvaluateNodeContext, EvaluateNodeError, Node};
+use crate::{EvaluateNodeContext, EvaluateNodeError, Node};
 
 pub trait EvaluateNode {
     fn evaluate(
