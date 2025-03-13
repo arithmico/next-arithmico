@@ -1,4 +1,4 @@
-use ast::HostApi;
+use crate::core::HostApi;
 use trigonometry::load_trigonometry_module;
 
 mod trigonometry;

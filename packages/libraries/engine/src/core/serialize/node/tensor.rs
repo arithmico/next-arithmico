@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use crate::{Node, Tensor};
+use crate::core::{Node, Tensor};
 
 use crate::core::serialize::{
     argument_separator::get_argument_separator, error::SerializeNodeError,
@@ -85,9 +85,9 @@ impl SerializeNode for Tensor {
 #[cfg(test)]
 mod tests {
 
-    use crate::{Number, Symbol};
+    use crate::core::{Number, Symbol};
 
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

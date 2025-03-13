@@ -1,5 +1,6 @@
 use crate::Node;
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ArgumentMappingEntry {
     Value(Node),

@@ -1,4 +1,4 @@
-use ast::DecimalPlaces;
+use engine::DecimalPlaces;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{

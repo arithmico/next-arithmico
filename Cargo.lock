@@ -82,7 +82,6 @@ checksum = "dcfed56ad506cb2c684a14971b8861fdc3baaaae314b9e5f9bb532cbe3ba7a4f"
 name = "arithmico"
 version = "0.1.0"
 dependencies = [
- "ast",
  "console_error_panic_hook",
  "editor",
  "editor_core",
@@ -99,17 +98,6 @@ dependencies = [
  "ui",
  "web-sys",
  "web_state",
-]
-
-[[package]]
-name = "ast"
-version = "0.1.0"
-dependencies = [
- "nom 8.0.0",
- "serde",
- "thiserror 2.0.12",
- "trace",
- "translate_core",
 ]
 
 [[package]]
@@ -459,8 +447,11 @@ dependencies = [
 name = "engine"
 version = "0.1.0"
 dependencies = [
- "ast",
+ "nom 8.0.0",
+ "serde",
  "thiserror 2.0.12",
+ "trace",
+ "translate_core",
 ]
 
 [[package]]

@@ -4,47 +4,81 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-ast = { path = "../ast" }
 thiserror = { workspace = true }
+trace = { path = "../trace" }
+translate_core = { version = "0.1.0", path = "../translate_core" }
+serde = { version = "1.0.210", features = ["derive"] }
+nom = "8.0.0"
 
 [features]
-default = ["ast/default", "api_modules"]
+default = ["datatypes", "operators", "api_modules"]
 
 # feature groups
-datatypes = ["ast/datatypes"]
-operators = ["ast/operators"]
+datatypes = [
+    "datatype_number",
+    "datatype_symbol",
+    "datatype_tensor",
+    "datatype_function",
+    "datatype_boolean"
+]
+operators = [
+    "operator_negate_number",
+    "operator_sum_number_number",
+    "operator_sum_vector_vector",
+    "operator_product_number_number",
+    "operator_division_number_number",
+    "operator_power_number_number",
+    "operator_function_call",
+    "operator_definition",
+    "operator_negate_tensor",
+    "operator_product_vector_vector",
+    "operator_product_number_tensor",
+    "operator_division_tensor_number",
+    "operator_product_matrix_matrix",
+    "operator_and_boolean_boolean",
+    "operator_negate_boolean",
+    "operator_or_boolean_boolean",
+    "operator_equals_number_number",
+    "operator_equals_tensor_tensor",
+    "operator_equals_boolean_boolean",
+    "operator_less_than_number_number",
+    "operator_greater_than_number_number",
+    "operator_less_than_or_equals_number_number",
+    "operator_greater_than_or_equals_number_number"
+]
 
 # data type features
-datatype_number = ["ast/datatype_number"]
-datatype_symbol = ["ast/datatype_symbol"]
-datatype_tensor = ["ast/datatype_tensor"]
-datatype_function = ["ast/datatype_function"]
-datatype_boolean = ["ast/datatype_boolean"]
+datatype_number = []
+datatype_symbol = []
+datatype_tensor = []
+datatype_function = []
+datatype_boolean = []
 
 # operator features
-operator_negate_number = ["ast/operator_negate_number"]
-operator_negate_tensor = ["ast/operator_negate_tensor"]
-operator_negate_boolean = ["ast/operator_negate_boolean"]
-operator_sum_number_number = ["ast/operator_sum_number_number"]
-operator_sum_vector_vector = ["ast/operator_sum_vector_vector"]
-operator_product_number_number = ["ast/operator_product_number_number"]
-operator_product_number_tensor = ["ast/operator_product_number_tensor"]
-operator_product_vector_vector = ["ast/operator_product_vector_vector"]
-operator_division_number_number = ["ast/operator_division_number_number"]
-operator_division_tensor_number = ["ast/operator_division_tensor_number"]
-operator_power_number_number = ["ast/operator_power_number_number"]
-operator_function_call = ["ast/operator_function_call"]
-operator_definition = ["ast/operator_definition"]
-operator_product_matrix_matrix = ["ast/operator_product_matrix_matrix"]
-operator_and_boolean_boolean = ["ast/operator_and_boolean_boolean"]
-operator_or_boolean_boolean = ["ast/operator_or_boolean_boolean"]
-operator_equals_number_number = ["ast/operator_equals_number_number"]
-operator_equals_tensor_tensor = ["ast/operator_equals_tensor_tensor"]
-operator_equals_boolean_boolean = ["ast/operator_equals_boolean_boolean"]
-operator_less_than_number_number = ["ast/operator_less_than_number_number"]
-operator_greater_than_number_number = ["ast/operator_greater_than_number_number"]
-operator_less_than_or_equals_number_number = ["ast/operator_less_than_or_equals_number_number"]
-operator_greater_than_or_equals_number_number = ["ast/operator_greater_than_or_equals_number_number"]
+operator_negate_number = ["datatype_number"]
+operator_negate_tensor = ["datatype_tensor"]
+operator_negate_boolean = ["datatype_boolean"]
+operator_sum_number_number = ["datatype_number"]
+operator_sum_vector_vector = ["datatype_tensor"]
+operator_product_number_number = ["datatype_number"]
+operator_product_number_tensor = ["datatype_number", "datatype_tensor"]
+operator_product_vector_vector = ["datatype_tensor"]
+operator_division_number_number = ["datatype_number"]
+operator_division_tensor_number = ["datatype_tensor", "datatype_number"]
+operator_power_number_number = ["datatype_number"]
+operator_function_call = [
+] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
+operator_definition = ["datatype_symbol"]
+operator_product_matrix_matrix = ["datatype_tensor"]
+operator_and_boolean_boolean = ["datatype_boolean"]
+operator_or_boolean_boolean = ["datatype_boolean"]
+operator_equals_number_number = ["datatype_boolean", "datatype_number"]
+operator_equals_tensor_tensor = ["datatype_boolean", "datatype_tensor"]
+operator_equals_boolean_boolean = ["datatype_boolean"]
+operator_less_than_number_number = ["datatype_boolean", "datatype_number"]
+operator_greater_than_number_number = ["datatype_boolean", "datatype_number"]
+operator_less_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
+operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
 
 # api modules
 api_modules = ["api_module_trigonometry"]
