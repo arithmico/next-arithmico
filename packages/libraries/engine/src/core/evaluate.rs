@@ -1,9 +1,6 @@
 use crate::{EvaluateNodeContext, EvaluateNodeError, Node};
-use evaluate::EvaluateNode;
 
-mod evaluate;
-mod node;
-mod utils;
+use super::EvaluateNode;
 
 pub fn evaluate_node(
     node: &Node,
