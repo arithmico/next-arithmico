@@ -1,6 +1,6 @@
 use std::f64::consts::PI;
 
-use ast::{EndpointBuilder, HostEndpoint, Language, Number};
+use crate::core::{EndpointBuilder, HostEndpoint, Language, Number};
 
 pub fn load_pi_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     builder

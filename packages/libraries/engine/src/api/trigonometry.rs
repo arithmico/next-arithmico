@@ -1,4 +1,4 @@
-use ast::{HostApiModule, Language};
+use crate::core::{HostApiModule, Language};
 use cos::load_cos_endpoint;
 use pi::load_pi_endpoint;
 use sin::load_sin_endpoint;
