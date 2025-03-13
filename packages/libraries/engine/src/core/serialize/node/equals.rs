@@ -1,11 +1,11 @@
 use crate::{
+    Equals, Node,
     core::serialize::{
         error::SerializeNodeError, parenthesis::serialize_child,
         serialize_node::SerializeNode,
         serialize_node_options::SerializeNodeOptions,
         serialize_node_utils::SerializeNodeUtils,
     },
-    Equals, Node,
 };
 
 impl SerializeNodeUtils for Equals {

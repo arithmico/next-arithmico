@@ -1,14 +1,15 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::opt, multi::many0, sequence::delimited, IResult, Parser,
+    IResult, Parser, branch::alt, bytes::complete::tag,
+    character::complete::space0, combinator::opt, multi::many0,
+    sequence::delimited,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     Function, FunctionSignature, Node, NodeType, Or, ParseNodeError,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
-use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, symbol::parse_raw_symbol};
 
 impl ParseNode for Function {
     fn parse(input: &str) -> ParseResult {

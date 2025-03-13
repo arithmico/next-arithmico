@@ -1,5 +1,5 @@
 use leptos::{html, prelude::*};
-use web_sys::{wasm_bindgen::JsCast, Node};
+use web_sys::{Node, wasm_bindgen::JsCast};
 
 use crate::form::menu::menu_context::MenuContext;
 

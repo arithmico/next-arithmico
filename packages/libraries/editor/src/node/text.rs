@@ -3,7 +3,7 @@ use std::{any::Any, sync::Arc};
 use editor_core::{EditorLeafNode, EditorNode};
 use leptos::prelude::document;
 use unicode_segmentation::UnicodeSegmentation;
-use web_sys::{wasm_bindgen::JsCast, Text};
+use web_sys::{Text, wasm_bindgen::JsCast};
 
 #[derive(Debug, Clone)]
 pub struct TextNode {
@@ -86,11 +86,7 @@ impl EditorLeafNode for TextNode {
             .grapheme_indices(true)
             .filter_map(
                 |(index, grapheme)| {
-                    if grapheme == " " {
-                        Some(index)
-                    } else {
-                        None
-                    }
+                    if grapheme == " " { Some(index) } else { None }
                 },
             )
             .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {

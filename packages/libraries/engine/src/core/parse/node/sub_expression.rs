@@ -1,9 +1,9 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, sequence::delimited,
-    Parser,
+    Parser, bytes::complete::tag, character::complete::space0,
+    sequence::delimited,
 };
 
-use crate::{core::parse::with_parser::with_parser, Node};
+use crate::{Node, core::parse::with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 

@@ -1,6 +1,6 @@
 use web_state::WebStateAction;
 
-use crate::state::{theme::Theme, State};
+use crate::state::{State, theme::Theme};
 
 pub struct SetThemeAction {
     value: Theme,

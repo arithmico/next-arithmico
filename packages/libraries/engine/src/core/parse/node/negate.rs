@@ -1,11 +1,11 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, sequence::preceded,
-    Parser,
+    Parser, bytes::complete::tag, character::complete::space0,
+    sequence::preceded,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     Negate, Product,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};

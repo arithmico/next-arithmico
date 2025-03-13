@@ -1,9 +1,9 @@
 use crate::{
+    Division, Node, SerializeNodeError, SerializeNodeOptions,
     core::serialize::{
         parenthesis::serialize_child, serialize_node::SerializeNode,
         serialize_node_utils::SerializeNodeUtils,
     },
-    Division, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Division {
@@ -67,8 +67,8 @@ impl SerializeNode for Division {
 mod tests {
 
     use crate::{
-        serialize_node, And, Function, FunctionSignature, NodeType, Or,
-        Product, Sum, Symbol,
+        And, Function, FunctionSignature, NodeType, Or, Product, Sum, Symbol,
+        serialize_node,
     };
 
     use super::*;

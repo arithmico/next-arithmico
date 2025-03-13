@@ -8,7 +8,7 @@ mod trace;
 mod with_parser;
 
 pub use error::ParseNodeError;
-use nom::{combinator::all_consuming, Parser};
+use nom::{Parser, combinator::all_consuming};
 
 use crate::{DecimalFormat, Definition, Node};
 

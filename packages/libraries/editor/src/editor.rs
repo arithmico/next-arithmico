@@ -1,13 +1,13 @@
 use std::ops::Deref;
 
 use editor_core::{
-    selection::{AbsoluteSelectionRange, SelectionRange},
     EditorLeafNode, EditorState,
+    selection::{AbsoluteSelectionRange, SelectionRange},
 };
 use leptos::{html::Div, prelude::*};
 use web_sys::{
-    wasm_bindgen::{prelude::Closure, JsCast},
     Event, Node,
+    wasm_bindgen::{JsCast, prelude::Closure},
 };
 
 use crate::{

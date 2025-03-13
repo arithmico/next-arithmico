@@ -2,14 +2,14 @@ use engine::DecimalFormat;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
-    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
+    form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
 use web_state::WebState;
 
 use crate::state::{
-    override_decimal_format::OverrideDecimalFormat,
     SetOverrideDecimalFormatAction, State,
+    override_decimal_format::OverrideDecimalFormat,
 };
 
 #[component]

@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::preceded,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     And, Or,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};

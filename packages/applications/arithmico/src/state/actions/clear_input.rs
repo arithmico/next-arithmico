@@ -1,5 +1,5 @@
 use editor::node::TextNode;
-use editor_core::{selection::SelectionRange, EditorCommand, EditorLeafNode};
+use editor_core::{EditorCommand, EditorLeafNode, selection::SelectionRange};
 use web_state::WebStateAction;
 
 use crate::state::State;

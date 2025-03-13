@@ -1,8 +1,8 @@
-use nom::{branch::alt, Parser};
+use nom::{Parser, branch::alt};
 
-use crate::{core::parse::with_parser::with_parser, Boolean, Number, Symbol};
+use crate::{Boolean, Number, Symbol, core::parse::with_parser::with_parser};
 
-use super::{sub_expression::parse_sub_expression, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, sub_expression::parse_sub_expression};
 
 pub fn parse_literal(input: &str) -> ParseResult {
     with_parser("parse_literal", |input| {

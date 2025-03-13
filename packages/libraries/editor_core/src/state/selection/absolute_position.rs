@@ -1,8 +1,8 @@
 use crate::EditorState;
 
 use super::{
-    selection_range::AbsoluteSelectionRange, SelectionRange,
-    SelectionRangePoint,
+    SelectionRange, SelectionRangePoint,
+    selection_range::AbsoluteSelectionRange,
 };
 
 impl EditorState {

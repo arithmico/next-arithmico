@@ -3,8 +3,8 @@ use editor::{
     node::{MarkNode, TextNode},
 };
 use editor_core::{
-    selection::{SelectionRange, SelectionRangePoint},
     EditorContainerNode, EditorLeafNode,
+    selection::{SelectionRange, SelectionRangePoint},
 };
 use leptos::prelude::*;
 use web_state::WebState;

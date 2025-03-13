@@ -1,9 +1,8 @@
 use crate::core::{
-    evaluate_node, parse, serialize_node, EvaluateNodeContext,
-    EvaluateNodeOptions, HostApi, Node, ParseNodeOptions, SerializeNodeOptions,
-    Stack,
+    EvaluateNodeContext, EvaluateNodeOptions, HostApi, Node, ParseNodeOptions,
+    SerializeNodeOptions, Stack, evaluate_node, parse, serialize_node,
 };
-use crate::{api::load_host_api, Documentation};
+use crate::{Documentation, api::load_host_api};
 use std::sync::Arc;
 
 pub use entry::SessionEntry;

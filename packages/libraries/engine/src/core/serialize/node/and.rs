@@ -1,9 +1,9 @@
 use crate::{
+    And, Node, SerializeNodeError, SerializeNodeOptions,
     core::serialize::{
         parenthesis::serialize_child, serialize_node::SerializeNode,
         serialize_node_utils::SerializeNodeUtils,
     },
-    And, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for And {
@@ -52,7 +52,7 @@ impl SerializeNode for And {
 #[cfg(test)]
 mod tests {
 
-    use crate::{serialize_node, Or, Symbol};
+    use crate::{Or, Symbol, serialize_node};
 
     use super::*;
 

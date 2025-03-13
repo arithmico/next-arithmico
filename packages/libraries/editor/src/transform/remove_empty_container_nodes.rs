@@ -1,5 +1,5 @@
 use editor_core::{
-    selection::SelectionRange, EditorNode, EditorState, EditorTransform,
+    EditorNode, EditorState, EditorTransform, selection::SelectionRange,
 };
 
 pub struct RemoveEmptyContainerNodesTransform;

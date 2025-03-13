@@ -1,10 +1,10 @@
 use crate::{
+    Definition, Node, SerializeNodeError, SerializeNodeOptions,
     core::serialize::{
         argument_separator::get_argument_separator,
         serialize_node::SerializeNode,
         serialize_node_utils::SerializeNodeUtils,
     },
-    Definition, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Definition {
@@ -47,8 +47,8 @@ impl SerializeNode for Definition {
 mod tests {
 
     use crate::{
-        core::serialize::serialize_node, Function, FunctionSignature, NodeType,
-        Number, SerializeNodeOptions, Symbol,
+        Function, FunctionSignature, NodeType, Number, SerializeNodeOptions,
+        Symbol, core::serialize::serialize_node,
     };
 
     use super::*;

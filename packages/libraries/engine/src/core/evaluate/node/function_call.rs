@@ -2,7 +2,7 @@ use crate::core::evaluate::utils::map_function_arguments::map_function_parameter
 use crate::{FunctionCall, HostEndpoint, Node};
 
 use crate::{
-    core::evaluate::EvaluateNode, EvaluateNodeContext, EvaluateNodeError,
+    EvaluateNodeContext, EvaluateNodeError, core::evaluate::EvaluateNode,
 };
 
 impl EvaluateNode for FunctionCall {
