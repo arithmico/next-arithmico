@@ -1,5 +1,7 @@
 use crate::evaluate::EvaluateNode;
-use ast::{Boolean, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node};
+use crate::{
+    Boolean, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
+};
 
 impl EvaluateNode for Boolean {
     fn evaluate(

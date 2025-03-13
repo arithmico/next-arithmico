@@ -1,6 +1,6 @@
 use std::iter::zip;
 
-use ast::{Boolean, Equals, EvaluateNodeContext, EvaluateNodeError, Node};
+use crate::{Boolean, Equals, EvaluateNodeContext, EvaluateNodeError, Node};
 
 use crate::evaluate::EvaluateNode;
 
@@ -63,7 +63,7 @@ impl EvaluateNode for Equals {
 
 #[cfg(test)]
 mod tests {
-    use ast::{Number, Tensor};
+    use crate::{Number, Tensor};
 
     use super::*;
 

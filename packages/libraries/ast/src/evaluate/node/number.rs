@@ -1,5 +1,7 @@
 use crate::evaluate::EvaluateNode;
-use ast::{EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Number};
+use crate::{
+    EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Number,
+};
 
 impl EvaluateNode for Number {
     fn evaluate(

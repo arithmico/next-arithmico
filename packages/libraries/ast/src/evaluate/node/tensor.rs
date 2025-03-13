@@ -1,5 +1,7 @@
 use crate::evaluate::EvaluateNode;
-use ast::{EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Tensor};
+use crate::{
+    EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Tensor,
+};
 
 impl EvaluateNode for Tensor {
     fn evaluate(
@@ -25,7 +27,7 @@ impl EvaluateNode for Tensor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ast::{Number, Sum};
+    use crate::{Number, Sum};
     use trace::TracableMut;
 
     #[test]

@@ -1,4 +1,4 @@
-use ast::{EvaluateNodeContext, EvaluateNodeError, Node};
+use crate::{EvaluateNodeContext, EvaluateNodeError, Node};
 use evaluate::EvaluateNode;
 
 mod evaluate;
