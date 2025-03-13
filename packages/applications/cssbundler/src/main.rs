@@ -1,13 +1,13 @@
 use std::{
     collections::HashSet,
-    fs::{remove_file, File, OpenOptions},
+    fs::{File, OpenOptions, remove_file},
     io::{Read, Write},
     path::{Path, PathBuf},
     process::ExitCode,
 };
 
 use clap::Parser;
-use glob::{glob, Paths};
+use glob::{Paths, glob};
 
 #[derive(Parser, Debug)]
 struct Arguments {

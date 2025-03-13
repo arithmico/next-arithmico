@@ -4,7 +4,7 @@ use crate::form::listbox::{
     listbox_button::ListboxButton, listbox_options::ListboxOptions,
 };
 
-use super::{listbox_context::ListboxContext, ListboxDefinition};
+use super::{ListboxDefinition, listbox_context::ListboxContext};
 
 pub fn use_listbox_is_open() -> Signal<bool> {
     let context = expect_context::<Signal<ListboxIsOpen>>();

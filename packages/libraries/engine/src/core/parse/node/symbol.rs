@@ -1,14 +1,14 @@
 use nom::{
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
     multi::many0,
-    IResult, Parser,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     ParseNodeError, Symbol,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};

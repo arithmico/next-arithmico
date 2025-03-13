@@ -16,7 +16,7 @@ mod sum;
 mod symbol;
 mod tensor;
 
-use nom::{branch::alt, IResult, Parser};
+use nom::{IResult, Parser, branch::alt};
 use sub_expression::parse_sub_expression;
 
 use crate::{Function, Node};

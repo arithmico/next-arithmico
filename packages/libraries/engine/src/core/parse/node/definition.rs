@@ -1,18 +1,18 @@
 use nom::{
+    Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
     multi::separated_list0,
     sequence::{delimited, terminated},
-    Parser,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     Definition, Function, FunctionSignature, Node, NodeType,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
-use super::{symbol::parse_raw_symbol, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, symbol::parse_raw_symbol};
 
 impl ParseNode for Definition {
     fn parse(input: &str) -> ParseResult {

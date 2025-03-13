@@ -1,8 +1,8 @@
 use std::iter::zip;
 
 use crate::{
-    convert_to_outer_index, EvaluateNodeContext, EvaluateNodeError,
-    GetNodeType, Node, Number, Product, Sum, Tensor,
+    EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node, Number, Product,
+    Sum, Tensor, convert_to_outer_index,
 };
 use trace::TracableMut;
 

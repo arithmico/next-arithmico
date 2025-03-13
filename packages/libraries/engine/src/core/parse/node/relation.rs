@@ -1,5 +1,3 @@
-use crate::core::parse::trace::TraceUtils;
-use crate::core::parse::with_parser::with_parser;
 use crate::And;
 use crate::Equals;
 use crate::GreaterThan;
@@ -9,9 +7,12 @@ use crate::LessThanOrEquals;
 use crate::Node;
 use crate::ParseNodeError;
 use crate::Sum;
+use crate::core::parse::trace::TraceUtils;
+use crate::core::parse::with_parser::with_parser;
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::delimited, IResult, Parser,
+    IResult, Parser, branch::alt, bytes::complete::tag,
+    character::complete::space0, combinator::cut, multi::many1,
+    sequence::delimited,
 };
 use trace::IntoTrace;
 use trace::TracableMut;

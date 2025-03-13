@@ -1,6 +1,6 @@
 use editor_core::{
-    selection::{SelectionRange, SelectionRangePoint},
     EditorLeafNode, EditorState, EditorTransform,
+    selection::{SelectionRange, SelectionRangePoint},
 };
 
 use crate::node::TextNode;

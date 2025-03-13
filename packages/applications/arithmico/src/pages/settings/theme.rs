@@ -1,12 +1,12 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
-    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
+    form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
 use web_state::WebState;
 
-use crate::state::{theme::Theme, SetThemeAction, State};
+use crate::state::{SetThemeAction, State, theme::Theme};
 
 #[component]
 pub fn ThemeSetting() -> impl IntoView {

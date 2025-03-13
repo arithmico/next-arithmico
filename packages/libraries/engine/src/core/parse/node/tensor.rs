@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::separated_list0, sequence::delimited, Parser,
+    Parser, branch::alt, bytes::complete::tag, character::complete::space0,
+    combinator::cut, multi::separated_list0, sequence::delimited,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     FunctionCall, Node, Tensor,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};

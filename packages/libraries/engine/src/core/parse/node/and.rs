@@ -1,14 +1,14 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, bytes::complete::tag, character::complete::space0,
+    combinator::cut, multi::many1, sequence::preceded,
 };
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     And, Sum,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
-use super::{relation::parse_relation, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, relation::parse_relation};
 
 impl ParseNode for And {
     fn parse(input: &str) -> ParseResult {

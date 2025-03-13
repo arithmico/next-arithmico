@@ -1,10 +1,10 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, bytes::complete::tag, character::complete::space0,
+    multi::many1, sequence::preceded,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::{core::parse::with_parser::with_parser, Division, Power};
+use crate::{Division, Power, core::parse::with_parser::with_parser};
 
 use super::{ParseNode, ParseResult};
 

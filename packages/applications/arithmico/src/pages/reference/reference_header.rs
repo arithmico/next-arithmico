@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use translate::{use_translate, FormattedMessage};
+use translate::{FormattedMessage, use_translate};
 use ui::{common::page_title::PageTitle, container::page_header::PageHeader};
 
 #[component]

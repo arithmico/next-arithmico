@@ -1,6 +1,6 @@
 use crate::state::EditorState;
 
-use super::{selection_range::AbsoluteSelectionRange, SelectionRange};
+use super::{SelectionRange, selection_range::AbsoluteSelectionRange};
 
 impl EditorState {
     pub fn set_selection(&mut self, range: SelectionRange) {

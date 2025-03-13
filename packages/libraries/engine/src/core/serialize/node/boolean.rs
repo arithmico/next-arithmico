@@ -1,8 +1,8 @@
 use crate::{
+    Boolean, Node, SerializeNodeError, SerializeNodeOptions,
     core::serialize::{
         serialize_node::SerializeNode, serialize_node_utils::SerializeNodeUtils,
     },
-    Boolean, Node, SerializeNodeError, SerializeNodeOptions,
 };
 
 impl SerializeNodeUtils for Boolean {

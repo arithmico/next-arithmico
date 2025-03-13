@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use editor_core::EditorContainerNode;
 use leptos::prelude::document;
-use web_sys::{wasm_bindgen::JsCast, Node};
+use web_sys::{Node, wasm_bindgen::JsCast};
 
 #[derive(Debug, Clone)]
 pub struct MarkNode;

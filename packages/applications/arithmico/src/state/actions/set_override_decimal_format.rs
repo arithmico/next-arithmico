@@ -1,6 +1,6 @@
 use web_state::WebStateAction;
 
-use crate::state::{override_decimal_format::OverrideDecimalFormat, State};
+use crate::state::{State, override_decimal_format::OverrideDecimalFormat};
 
 pub struct SetOverrideDecimalFormatAction {
     value: OverrideDecimalFormat,

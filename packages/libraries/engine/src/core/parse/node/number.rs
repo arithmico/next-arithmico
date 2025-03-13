@@ -1,8 +1,8 @@
 use nom::number::complete::double;
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     Number,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};

@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-use crate::{web_state_provider::WebStateWrapper, WebStateAction};
+use crate::{WebStateAction, web_state_provider::WebStateWrapper};
 
 pub trait WebState: Clone + Send + Sync + 'static {
     fn expect_state() -> WebStateApi<Self> {

@@ -1,8 +1,8 @@
-use nom::{branch::alt, bytes::complete::tag, Parser};
+use nom::{Parser, branch::alt, bytes::complete::tag};
 
 use crate::{
-    core::parse::{trace::TraceUtils, with_parser::with_parser},
     Boolean,
+    core::parse::{trace::TraceUtils, with_parser::with_parser},
 };
 
 use super::{ParseNode, ParseResult};
