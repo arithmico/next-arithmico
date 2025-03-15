@@ -2,7 +2,7 @@ use crate::Node;
 
 use super::{SerializeNodeError, SerializeNodeOptions};
 
-pub(crate) trait SerializeNodeUtils {
+pub trait SerializeNodeUtils {
     fn prepare_serialization(
         &self,
         options: &SerializeNodeOptions,
