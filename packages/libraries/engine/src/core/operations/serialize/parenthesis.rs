@@ -2,7 +2,7 @@ use crate::{Node, SerializeNodeError, SerializeNodeOptions};
 
 use super::SerializeNode;
 
-pub(crate) fn serialize_child(
+pub fn serialize_child(
     node: &Node,
     options: &SerializeNodeOptions,
     f: impl Fn(&Node) -> bool,
