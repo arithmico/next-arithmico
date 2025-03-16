@@ -20,6 +20,7 @@ mod symbol;
 mod tensor;
 
 mod evaluate;
+mod for_each;
 mod parse;
 mod serialize;
 mod trace;
