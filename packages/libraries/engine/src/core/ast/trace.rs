@@ -1,9 +1,9 @@
-use trace::{Tracable, TracableMut, Trace};
+use trace::Trace;
 
 use crate::core::Node;
 
-impl TracableMut for Node {
-    fn trace_mut(&mut self) -> &mut Trace {
+impl AsMut<Trace> for Node {
+    fn as_mut(&mut self) -> &mut Trace {
         match self {
             Node::Boolean(node) => &mut node.trace,
             Node::Sum(node) => &mut node.trace,
@@ -29,8 +29,8 @@ impl TracableMut for Node {
     }
 }
 
-impl Tracable for Node {
-    fn trace(&self) -> &Trace {
+impl AsRef<Trace> for Node {
+    fn as_ref(&self) -> &Trace {
         match self {
             Node::Boolean(node) => &node.trace,
             Node::Sum(node) => &node.trace,
