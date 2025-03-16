@@ -1,8 +1,9 @@
 use crate::core::{
-    EvaluateNodeContext, EvaluateNodeOptions, HostApi, Node, ParseNodeOptions,
-    SerializeNodeOptions, Stack, evaluate_node, parse, serialize_node,
+    evaluate_node, parse, serialize_node, EvaluateNodeContext, HostApi, Node,
+    ParseNodeOptions, SerializeNodeOptions, Stack,
 };
-use crate::{Documentation, api::load_host_api};
+use crate::{api::load_host_api, Documentation};
+use crate::{DecimalFormat, DecimalPlaces};
 use std::sync::Arc;
 
 pub use entry::SessionEntry;
@@ -29,24 +30,33 @@ impl Session {
 
     fn create_context(
         &self,
-        options: &EvaluateNodeOptions,
+        decimal_places: DecimalPlaces,
+        decimal_format: DecimalFormat,
     ) -> EvaluateNodeContext {
         EvaluateNodeContext::new(
             self.stack.clone(),
-            options.clone(),
+            decimal_places,
+            decimal_format,
             self.host_api.clone(),
         )
     }
 
-    pub fn push(&mut self, input: &str, options: &EvaluateNodeOptions) {
-        let parse_node_options =
-            ParseNodeOptions::new(options.get_decimal_format());
+    pub fn push(
+        &mut self,
+        input: &str,
+        decimal_places: DecimalPlaces,
+        decimal_format: DecimalFormat,
+    ) {
+        let parse_node_options = ParseNodeOptions::new(decimal_format);
         let output: Result<String, SessionError> =
             parse(input, parse_node_options)
                 .map_err(|error| SessionError::from(error))
                 .and_then(|node| {
-                    evaluate_node(&node, &self.create_context(options))
-                        .map_err(|error| SessionError::from(error))
+                    evaluate_node(
+                        &node,
+                        &self.create_context(decimal_places, decimal_format),
+                    )
+                    .map_err(|error| SessionError::from(error))
                 })
                 .and_then(|node: Node| {
                     if let Node::Definition(definition) = &node {
@@ -59,8 +69,8 @@ impl Session {
                     serialize_node(
                         &node,
                         &SerializeNodeOptions::new(
-                            options.get_decimal_places().into(),
-                            options.get_decimal_format(),
+                            decimal_places,
+                            decimal_format,
                         ),
                     )
                     .map_err(|error| SessionError::from(error))

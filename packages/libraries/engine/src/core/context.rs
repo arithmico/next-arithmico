@@ -1,18 +1,22 @@
-mod host_api;
-mod options;
-mod stack;
-
-use crate::core::{HostFunction, Node};
 use std::sync::Arc;
 
+use crate::core::{HostFunction, Node};
+
+mod decimal_format;
+mod decimal_places;
+mod host_api;
+mod stack;
+
+pub use decimal_format::*;
+pub use decimal_places::*;
 pub use host_api::*;
-pub use options::*;
 pub use stack::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct EvaluateNodeContext {
     pub stack: Stack,
-    pub options: EvaluateNodeOptions,
+    pub decimal_places: DecimalPlaces,
+    pub decimal_format: DecimalFormat,
     pub host_api: Arc<HostApi>,
 }
 
@@ -20,7 +24,8 @@ impl Default for EvaluateNodeContext {
     fn default() -> Self {
         Self {
             stack: Stack::new(),
-            options: EvaluateNodeOptions::default(),
+            decimal_places: DecimalPlaces::default(),
+            decimal_format: DecimalFormat::default(),
             host_api: HostApi::empty().into(),
         }
     }
@@ -29,12 +34,14 @@ impl Default for EvaluateNodeContext {
 impl EvaluateNodeContext {
     pub fn new(
         stack: Stack,
-        options: EvaluateNodeOptions,
+        decimal_places: DecimalPlaces,
+        decimal_format: DecimalFormat,
         host_api: Arc<HostApi>,
     ) -> EvaluateNodeContext {
         EvaluateNodeContext {
             stack,
-            options,
+            decimal_format,
+            decimal_places,
             host_api,
         }
     }
