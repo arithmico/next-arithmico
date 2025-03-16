@@ -4,12 +4,11 @@ use nom::{
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::{
-    And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
-    Node, Sum,
+use crate::core::{
+    with_parser, And, Equals, GreaterThan, GreaterThanOrEquals, LessThan,
+    LessThanOrEquals, Node, ParseNode, ParseNodeError, ParseResult, Sum,
+    TraceUtils,
 };
-
-use super::{with_parser, ParseNode, ParseNodeError, ParseResult, TraceUtils};
 
 pub fn parse_relation(input: &str) -> ParseResult {
     with_parser("parse_relation", |input| {
@@ -73,7 +72,7 @@ fn parse_relation_element(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use crate::Symbol;
+    use crate::core::Symbol;
 
     use super::*;
 

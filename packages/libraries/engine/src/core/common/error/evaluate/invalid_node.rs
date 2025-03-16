@@ -1,4 +1,4 @@
-use crate::NodeType;
+use crate::core::NodeType;
 use translate_core::TranslatedMessage;
 
 use crate::core::common::translation_provider::translation_resolver;

@@ -1,4 +1,4 @@
-use crate::DecimalFormat;
+use crate::core::DecimalFormat;
 
 pub struct ParseNodeOptions {
     pub decimal_format: DecimalFormat,

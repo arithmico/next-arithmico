@@ -3,7 +3,7 @@ use nom::{
     Parser,
 };
 
-use crate::{with_parser, ParseNode, ParseResult, Product, TraceUtils};
+use crate::core::{with_parser, ParseNode, ParseResult, Product, TraceUtils};
 
 use super::Negate;
 
@@ -27,7 +27,7 @@ fn parse_negate(input: &str) -> ParseResult {
 mod tests {
     use trace::TracableMut;
 
-    use crate::Number;
+    use crate::core::Number;
 
     use super::*;
 

@@ -1,4 +1,4 @@
-use crate::Node;
+use crate::core::Node;
 
 impl Node {
     pub fn for_each_node<F>(&self, f: F)

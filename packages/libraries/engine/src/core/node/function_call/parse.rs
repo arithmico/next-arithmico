@@ -8,7 +8,7 @@ use nom::{
     IResult, Parser,
 };
 
-use crate::{
+use crate::core::{
     parse_literal, parse_sub_expression, with_parser, FunctionCall, Node,
     ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
 };

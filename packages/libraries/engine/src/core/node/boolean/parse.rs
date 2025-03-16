@@ -1,6 +1,6 @@
 use nom::{branch::alt, bytes::complete::tag, Parser};
 
-use crate::{with_parser, Boolean, ParseNode, ParseResult, TraceUtils};
+use crate::core::{with_parser, Boolean, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Boolean {
     fn parse(input: &str) -> ParseResult {

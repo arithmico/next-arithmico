@@ -6,7 +6,7 @@ use nom::{
     IResult, Parser,
 };
 
-use crate::{
+use crate::core::{
     with_parser, ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
 };
 

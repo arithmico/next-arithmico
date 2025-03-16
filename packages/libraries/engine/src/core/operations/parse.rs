@@ -1,4 +1,4 @@
-use crate::{DecimalFormat, Definition, Node};
+use crate::core::{DecimalFormat, Definition, Node};
 use nom::{combinator::all_consuming, IResult, Parser};
 
 mod cache;

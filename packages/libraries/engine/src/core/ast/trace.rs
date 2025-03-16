@@ -1,6 +1,6 @@
 use trace::{Tracable, TracableMut, Trace};
 
-use crate::Node;
+use crate::core::Node;
 
 impl TracableMut for Node {
     fn trace_mut(&mut self) -> &mut Trace {

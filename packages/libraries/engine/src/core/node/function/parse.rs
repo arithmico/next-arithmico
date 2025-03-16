@@ -3,7 +3,7 @@ use nom::{
     combinator::opt, multi::many0, sequence::delimited, IResult, Parser,
 };
 
-use crate::{
+use crate::core::{
     parse_raw_symbol, with_parser, FunctionSignature, Node, NodeType, Or,
     ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
@@ -65,7 +65,7 @@ fn parse_function_argument_item(
 mod tests {
     use trace::TracableMut;
 
-    use crate::{Number, Sum, Symbol};
+    use crate::core::{Number, Sum, Symbol};
 
     use super::*;
 

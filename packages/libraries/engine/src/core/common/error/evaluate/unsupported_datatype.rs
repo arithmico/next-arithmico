@@ -1,5 +1,5 @@
-use crate::{
-    NodeType, core::common::translation_provider::translation_resolver,
+use crate::core::{
+    common::translation_provider::translation_resolver, NodeType,
 };
 use translate_core::TranslatedMessage;
 

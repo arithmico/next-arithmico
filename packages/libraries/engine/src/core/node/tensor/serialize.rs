@@ -1,9 +1,8 @@
 use std::iter::zip;
 
-use crate::{
-    core::{Node, Tensor},
-    get_argument_separator, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+use crate::core::{
+    get_argument_separator, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeOptions, SerializeNodeUtils, Tensor,
 };
 
 impl SerializeNodeUtils for Tensor {

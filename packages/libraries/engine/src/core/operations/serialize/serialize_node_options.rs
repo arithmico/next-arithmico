@@ -1,4 +1,4 @@
-use crate::{DecimalFormat, DecimalPlaces};
+use crate::core::{DecimalFormat, DecimalPlaces};
 
 pub struct SerializeNodeOptions {
     pub decimal_places: DecimalPlaces,

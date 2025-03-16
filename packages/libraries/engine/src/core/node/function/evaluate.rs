@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     EvaluateNode, EvaluateNodeContext, EvaluateNodeError, Function,
     GetNodeType, Node,
 };
@@ -20,7 +20,7 @@ impl EvaluateNode for Function {
 
 #[cfg(test)]
 mod tests {
-    use crate::{FunctionSignature, NodeType, Symbol};
+    use crate::core::{FunctionSignature, NodeType, Symbol};
 
     use super::*;
 

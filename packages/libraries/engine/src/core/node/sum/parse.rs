@@ -3,7 +3,7 @@ use nom::{
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{
+use crate::core::{
     with_parser, Negate, ParseNode, ParseResult, Product, Sum, TraceUtils,
 };
 
@@ -42,7 +42,7 @@ mod tests {
     use nom::combinator::all_consuming;
     use trace::TracableMut;
 
-    use crate::{Node, Number, ParseNodeError};
+    use crate::core::{Node, Number, ParseNodeError};
 
     use super::*;
 

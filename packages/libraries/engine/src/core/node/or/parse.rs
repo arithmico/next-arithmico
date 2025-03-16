@@ -3,7 +3,7 @@ use nom::{
     multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{with_parser, And, Or, ParseNode, ParseResult, TraceUtils};
+use crate::core::{with_parser, And, Or, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Or {
     fn parse(input: &str) -> ParseResult {
@@ -32,7 +32,7 @@ fn parse_or_item(input: &str) -> ParseResult {
 mod tests {
     use trace::TracableMut;
 
-    use crate::{Boolean, Symbol};
+    use crate::core::{Boolean, Symbol};
 
     use super::*;
 

@@ -1,6 +1,6 @@
 use trace::TracableMut;
 
-use crate::{
+use crate::core::{
     Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType,
     Node, Or,
 };
@@ -49,7 +49,7 @@ fn combine_or_elements(
 
 #[cfg(test)]
 mod tests {
-    use crate::NodeType;
+    use crate::core::NodeType;
 
     use super::*;
 

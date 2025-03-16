@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use crate::{FunctionSignature, Node};
+use crate::core::{FunctionSignature, Node};
 use translate_core::Language;
 
-use crate::{
-    EvaluateNodeContext, EvaluateNodeError, argument_mapping::ArgumentMapping,
+use crate::core::{
+    argument_mapping::ArgumentMapping, EvaluateNodeContext, EvaluateNodeError,
 };
 
 pub type FunctionExecutor = fn(

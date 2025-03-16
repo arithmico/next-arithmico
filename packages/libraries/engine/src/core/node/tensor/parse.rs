@@ -3,7 +3,7 @@ use nom::{
     combinator::cut, multi::separated_list0, sequence::delimited, Parser,
 };
 
-use crate::{
+use crate::core::{
     with_parser, FunctionCall, Node, ParseNode, ParseResult, Tensor, TraceUtils,
 };
 
@@ -40,7 +40,7 @@ fn parse_tensor(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use crate::Number;
+    use crate::core::Number;
 
     use super::*;
     use trace::TracableMut;

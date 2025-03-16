@@ -1,4 +1,4 @@
-use crate::DecimalFormat;
+use crate::core::DecimalFormat;
 
 use super::SerializeNodeOptions;
 

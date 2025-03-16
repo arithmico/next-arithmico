@@ -7,7 +7,7 @@ use nom::{
     Parser,
 };
 
-use crate::{
+use crate::core::{
     parse_raw_symbol, with_parser, Definition, Function, FunctionSignature,
     Node, NodeType, ParseNode, ParseResult, TraceUtils,
 };
@@ -77,7 +77,7 @@ fn parse_define_function(input: &str) -> ParseResult {
 mod tests {
     use trace::TracableMut;
 
-    use crate::{Number, Power, Symbol};
+    use crate::core::{Number, Power, Symbol};
 
     use super::*;
 

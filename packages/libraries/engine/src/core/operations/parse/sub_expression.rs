@@ -3,7 +3,7 @@ use nom::{
     Parser,
 };
 
-use crate::Node;
+use crate::core::Node;
 
 use super::{with_parser, ParseNode, ParseResult};
 

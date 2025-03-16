@@ -1,6 +1,6 @@
 use nom::number::complete::double;
 
-use crate::{with_parser, Number, ParseNode, ParseResult, TraceUtils};
+use crate::core::{with_parser, Number, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Number {
     fn parse(input: &str) -> ParseResult {

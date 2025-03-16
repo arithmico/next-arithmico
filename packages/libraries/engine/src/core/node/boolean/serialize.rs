@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     Boolean, Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
     SerializeNodeUtils,
 };
@@ -27,7 +27,7 @@ impl SerializeNode for Boolean {
 
 #[cfg(test)]
 mod tests {
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

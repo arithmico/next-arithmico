@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
     SerializeNodeUtils,
 };

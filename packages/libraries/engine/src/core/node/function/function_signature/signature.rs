@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::NodeType;
+use crate::core::NodeType;
 
 use super::argument::Argument;
 

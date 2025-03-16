@@ -4,7 +4,7 @@ use nom::{
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::{with_parser, ParseNode, ParseResult, Tensor};
+use crate::core::{with_parser, ParseNode, ParseResult, Tensor};
 
 use super::Power;
 
@@ -44,7 +44,7 @@ fn parse_power_element(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
 
-    use crate::{Number, Symbol};
+    use crate::core::{Number, Symbol};
 
     use super::*;
 

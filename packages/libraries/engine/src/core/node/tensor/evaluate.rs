@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
     Tensor,
 };
@@ -27,7 +27,7 @@ impl EvaluateNode for Tensor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{Number, Sum};
+    use crate::core::{Number, Sum};
     use trace::TracableMut;
 
     #[test]

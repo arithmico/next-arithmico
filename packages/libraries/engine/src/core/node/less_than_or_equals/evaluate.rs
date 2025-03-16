@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError,
     LessThanOrEquals, Node,
 };
@@ -22,7 +22,7 @@ impl EvaluateNode for LessThanOrEquals {
 
 #[cfg(test)]
 mod tests {
-    use crate::Number;
+    use crate::core::Number;
 
     use super::*;
 
