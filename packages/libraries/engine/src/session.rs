@@ -1,6 +1,6 @@
 use crate::core::{
     evaluate_node, parse, serialize_node, Context, HostApi, Node,
-    ParseNodeOptions, SerializeNodeOptions, Stack,
+    SerializeNodeOptions, Stack,
 };
 use crate::{api::load_host_api, Documentation};
 use crate::{DecimalFormat, DecimalPlaces};
@@ -47,34 +47,28 @@ impl Session {
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,
     ) {
-        let parse_node_options = ParseNodeOptions::new(decimal_format);
-        let output: Result<String, SessionError> =
-            parse(input, parse_node_options)
-                .map_err(|error| SessionError::from(error))
-                .and_then(|node| {
-                    evaluate_node(
-                        &node,
-                        &self.create_context(decimal_places, decimal_format),
-                    )
-                    .map_err(|error| SessionError::from(error))
-                })
-                .and_then(|node: Node| {
-                    if let Node::Definition(definition) = &node {
-                        self.stack.insert(
-                            &definition.symbol,
-                            *definition.expression.clone(),
-                        );
-                    }
+        let context = self.create_context(decimal_places, decimal_format);
 
-                    serialize_node(
-                        &node,
-                        &SerializeNodeOptions::new(
-                            decimal_places,
-                            decimal_format,
-                        ),
-                    )
+        let output: Result<String, SessionError> = parse(input, &context)
+            .map_err(|error| SessionError::from(error))
+            .and_then(|node| {
+                evaluate_node(&node, &context)
                     .map_err(|error| SessionError::from(error))
-                });
+            })
+            .and_then(|node: Node| {
+                if let Node::Definition(definition) = &node {
+                    self.stack.insert(
+                        &definition.symbol,
+                        *definition.expression.clone(),
+                    );
+                }
+
+                serialize_node(
+                    &node,
+                    &SerializeNodeOptions::new(decimal_places, decimal_format),
+                )
+                .map_err(|error| SessionError::from(error))
+            });
 
         self.entries.push(SessionEntry {
             input: input.to_string(),
