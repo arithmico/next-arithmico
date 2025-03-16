@@ -1,6 +1,6 @@
-use crate::core::Node;
+use crate::core::{Node, SerializeNodeError};
 
-use super::{SerializeNodeError, SerializeNodeOptions};
+use super::SerializeNodeOptions;
 
 pub trait SerializeNodeUtils {
     fn prepare_serialization(

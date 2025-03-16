@@ -1,15 +1,15 @@
 use translate_core::TranslatedMessage;
 
-use crate::core::common::translation_provider::translation_resolver;
+use crate::core::translation_resolver;
 
 use super::{EvaluateNodeError, EvaluateNodeErrorKind};
 
 impl EvaluateNodeError {
-    pub fn missing_parameter(name: impl ToString) -> Self {
+    pub fn unknown_symbol<T: ToString>(name: T) -> Self {
         Self::new(
-            EvaluateNodeErrorKind::MissingParameter,
+            EvaluateNodeErrorKind::UnknownSymbol,
             TranslatedMessage::new(
-                "engine.evaluate.error.missing_parameter",
+                "engine.evaluate.error.unknown_symbol",
                 translation_resolver,
             )
             .key("name", name),
