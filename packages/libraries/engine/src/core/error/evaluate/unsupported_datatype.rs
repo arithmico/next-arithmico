@@ -1,6 +1,4 @@
-use crate::core::{
-    common::translation_provider::translation_resolver, NodeType,
-};
+use crate::core::{translation_resolver, NodeType};
 use translate_core::TranslatedMessage;
 
 use super::{EvaluateNodeError, EvaluateNodeErrorKind};

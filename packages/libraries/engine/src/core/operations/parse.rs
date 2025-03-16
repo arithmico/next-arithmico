@@ -1,8 +1,7 @@
-use crate::core::{DecimalFormat, Definition, Node};
+use crate::core::{DecimalFormat, Definition, Node, ParseNodeError};
 use nom::{combinator::all_consuming, IResult, Parser};
 
 mod cache;
-mod error;
 mod literal;
 mod parse_node_options;
 mod relation;
@@ -11,7 +10,6 @@ mod trace;
 mod with_parser;
 
 pub use cache::*;
-pub use error::*;
 pub use literal::*;
 pub use parse_node_options::*;
 pub use relation::*;
