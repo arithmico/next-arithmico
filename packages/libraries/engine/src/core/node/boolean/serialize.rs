@@ -1,12 +1,12 @@
 use crate::core::{
-    Boolean, Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
+    Boolean, Context, Node, SerializeNode, SerializeNodeError,
     SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Boolean {
     fn prepare_serialization(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Boolean::new(self.value))
     }
@@ -15,7 +15,7 @@ impl SerializeNodeUtils for Boolean {
 impl SerializeNode for Boolean {
     fn serialize(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<String, SerializeNodeError> {
         if self.value {
             Ok(String::from("true"))
@@ -34,11 +34,7 @@ mod tests {
     #[test]
     fn serialize_boolean_true() {
         assert_eq!(
-            serialize_node(
-                &Boolean::new(true),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Boolean::new(true), &Context::default()).unwrap(),
             "true"
         );
     }
@@ -46,11 +42,7 @@ mod tests {
     #[test]
     fn serialize_boolean_false() {
         assert_eq!(
-            serialize_node(
-                &Boolean::new(false),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Boolean::new(false), &Context::default()).unwrap(),
             "false"
         );
     }

@@ -1,12 +1,12 @@
 use crate::core::{
-    Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
-    SerializeNodeUtils, Symbol,
+    Context, Node, SerializeNode, SerializeNodeError, SerializeNodeUtils,
+    Symbol,
 };
 
 impl SerializeNodeUtils for Symbol {
     fn prepare_serialization(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Symbol::new(&self.name))
     }
@@ -15,7 +15,7 @@ impl SerializeNodeUtils for Symbol {
 impl SerializeNode for Symbol {
     fn serialize(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(self.name.clone())
     }
@@ -33,8 +33,7 @@ mod tests {
     #[test]
     fn serialize_symbol() {
         assert_eq!(
-            serialize_node(&Symbol::new("a"), &SerializeNodeOptions::default())
-                .unwrap(),
+            serialize_node(&Symbol::new("a"), &Context::default()).unwrap(),
             "a"
         );
     }

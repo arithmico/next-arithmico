@@ -1,47 +1,46 @@
 use crate::core::{
-    Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
-    SerializeNodeUtils,
+    Context, Node, SerializeNode, SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Node {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         match self {
-            Node::Boolean(boolean) => boolean.prepare_serialization(options),
-            Node::Sum(sum) => sum.prepare_serialization(options),
-            Node::Negate(negate) => negate.prepare_serialization(options),
-            Node::Product(product) => product.prepare_serialization(options),
-            Node::Division(division) => division.prepare_serialization(options),
-            Node::Power(power) => power.prepare_serialization(options),
-            Node::Tensor(tensor) => tensor.prepare_serialization(options),
-            Node::Number(number) => number.prepare_serialization(options),
-            Node::Symbol(symbol) => symbol.prepare_serialization(options),
-            Node::Function(function) => function.prepare_serialization(options),
+            Node::Boolean(boolean) => boolean.prepare_serialization(context),
+            Node::Sum(sum) => sum.prepare_serialization(context),
+            Node::Negate(negate) => negate.prepare_serialization(context),
+            Node::Product(product) => product.prepare_serialization(context),
+            Node::Division(division) => division.prepare_serialization(context),
+            Node::Power(power) => power.prepare_serialization(context),
+            Node::Tensor(tensor) => tensor.prepare_serialization(context),
+            Node::Number(number) => number.prepare_serialization(context),
+            Node::Symbol(symbol) => symbol.prepare_serialization(context),
+            Node::Function(function) => function.prepare_serialization(context),
             Node::FunctionCall(function_call) => {
-                function_call.prepare_serialization(options)
+                function_call.prepare_serialization(context)
             }
-            Node::And(and) => and.prepare_serialization(options),
-            Node::Or(or) => or.prepare_serialization(options),
-            Node::Equals(equals) => equals.prepare_serialization(options),
+            Node::And(and) => and.prepare_serialization(context),
+            Node::Or(or) => or.prepare_serialization(context),
+            Node::Equals(equals) => equals.prepare_serialization(context),
             Node::LessThan(less_than) => {
-                less_than.prepare_serialization(options)
+                less_than.prepare_serialization(context)
             }
             Node::LessThanOrEquals(less_than_or_equals) => {
-                less_than_or_equals.prepare_serialization(options)
+                less_than_or_equals.prepare_serialization(context)
             }
             Node::GreaterThan(greater_than) => {
-                greater_than.prepare_serialization(options)
+                greater_than.prepare_serialization(context)
             }
             Node::GreaterThanOrEquals(greater_than_or_equals) => {
-                greater_than_or_equals.prepare_serialization(options)
+                greater_than_or_equals.prepare_serialization(context)
             }
             Node::HostFunction(host_function) => {
-                host_function.prepare_serialization(options)
+                host_function.prepare_serialization(context)
             }
             Node::Definition(definition) => {
-                definition.prepare_serialization(options)
+                definition.prepare_serialization(context)
             }
         }
     }
@@ -50,37 +49,37 @@ impl SerializeNodeUtils for Node {
 impl SerializeNode for Node {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         match self {
-            Node::Boolean(boolean) => boolean.serialize(options),
-            Node::Sum(sum) => sum.serialize(options),
-            Node::Negate(negate) => negate.serialize(options),
-            Node::Product(product) => product.serialize(options),
-            Node::Division(division) => division.serialize(options),
-            Node::Power(power) => power.serialize(options),
-            Node::Tensor(tensor) => tensor.serialize(options),
-            Node::Number(number) => number.serialize(options),
-            Node::Symbol(symbol) => symbol.serialize(options),
-            Node::Function(function) => function.serialize(options),
+            Node::Boolean(boolean) => boolean.serialize(context),
+            Node::Sum(sum) => sum.serialize(context),
+            Node::Negate(negate) => negate.serialize(context),
+            Node::Product(product) => product.serialize(context),
+            Node::Division(division) => division.serialize(context),
+            Node::Power(power) => power.serialize(context),
+            Node::Tensor(tensor) => tensor.serialize(context),
+            Node::Number(number) => number.serialize(context),
+            Node::Symbol(symbol) => symbol.serialize(context),
+            Node::Function(function) => function.serialize(context),
             Node::FunctionCall(function_call) => {
-                function_call.serialize(options)
+                function_call.serialize(context)
             }
-            Node::And(and) => and.serialize(options),
-            Node::Or(or) => or.serialize(options),
-            Node::Equals(equals) => equals.serialize(options),
-            Node::LessThan(less_than) => less_than.serialize(options),
+            Node::And(and) => and.serialize(context),
+            Node::Or(or) => or.serialize(context),
+            Node::Equals(equals) => equals.serialize(context),
+            Node::LessThan(less_than) => less_than.serialize(context),
             Node::LessThanOrEquals(less_than_or_equals) => {
-                less_than_or_equals.serialize(options)
+                less_than_or_equals.serialize(context)
             }
-            Node::GreaterThan(greater_than) => greater_than.serialize(options),
+            Node::GreaterThan(greater_than) => greater_than.serialize(context),
             Node::GreaterThanOrEquals(greater_than_or_equals) => {
-                greater_than_or_equals.serialize(options)
+                greater_than_or_equals.serialize(context)
             }
             Node::HostFunction(host_function) => {
-                host_function.serialize(options)
+                host_function.serialize(context)
             }
-            Node::Definition(definition) => definition.serialize(options),
+            Node::Definition(definition) => definition.serialize(context),
         }
     }
 }

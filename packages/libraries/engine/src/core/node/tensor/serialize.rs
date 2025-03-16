@@ -1,19 +1,19 @@
 use std::iter::zip;
 
 use crate::core::{
-    get_argument_separator, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils, Tensor,
+    get_argument_separator, Context, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils, Tensor,
 };
 
 impl SerializeNodeUtils for Tensor {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(options))
+            .map(|element| element.prepare_serialization(context))
             .collect();
 
         Ok(Tensor::new_with_shape(self.shape.clone(), elements?))
@@ -23,12 +23,12 @@ impl SerializeNodeUtils for Tensor {
 impl SerializeNode for Tensor {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         let serialized_elements: Result<Vec<_>, _> = self
             .elements
             .iter()
-            .map(|element| element.serialize(options))
+            .map(|element| element.serialize(context))
             .collect();
 
         let rank = self.get_rank();
@@ -61,7 +61,7 @@ impl SerializeNode for Tensor {
             }
 
             if current_inner_index != 0 {
-                separator.push_str(&get_argument_separator(options));
+                separator.push_str(&get_argument_separator(context));
             }
 
             for _ in 0..sep_count {
@@ -90,11 +90,7 @@ mod tests {
     #[test]
     fn serialize_empty_tensor() {
         assert_eq!(
-            serialize_node(
-                &Tensor::new(vec![]),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Tensor::new(vec![]), &Context::default()).unwrap(),
             "[]"
         );
     }
@@ -104,7 +100,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Tensor::new(vec![Symbol::new("a")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "[a]"
@@ -116,7 +112,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "[a, b]"
@@ -131,7 +127,7 @@ mod tests {
                     Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Tensor::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "[[a, b], [c, d]]"
@@ -154,7 +150,7 @@ mod tests {
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     ]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "[[[a, b], [a, b], [a, b]], [[a, b], [a, b], [a, b]]]"
@@ -173,7 +169,7 @@ mod tests {
                     ]),
                     Number::new(1.)
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "[[[a, b], [a, b], [a, b]], 1]"

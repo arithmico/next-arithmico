@@ -1,16 +1,16 @@
 use crate::core::{
-    get_argument_separator, Definition, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeOptions, SerializeNodeUtils,
+    get_argument_separator, Context, Definition, Node, SerializeNode,
+    SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Definition {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Definition::new(
             self.symbol.clone(),
-            self.expression.prepare_serialization(options)?,
+            self.expression.prepare_serialization(context)?,
         ))
     }
 }
@@ -18,7 +18,7 @@ impl SerializeNodeUtils for Definition {
 impl SerializeNode for Definition {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         match self.expression.as_ref() {
             Node::Function(function) => Ok(format!(
@@ -27,13 +27,13 @@ impl SerializeNode for Definition {
                 function
                     .signature
                     .argument_names()
-                    .join(&get_argument_separator(options)),
-                function.expression.serialize(options)?
+                    .join(&get_argument_separator(context)),
+                function.expression.serialize(context)?
             )),
             _ => Ok(format!(
                 "{} := {}",
                 self.symbol,
-                self.expression.serialize(options)?
+                self.expression.serialize(context)?
             )),
         }
     }
@@ -43,8 +43,8 @@ impl SerializeNode for Definition {
 mod tests {
 
     use crate::core::{
-        serialize_node, Function, FunctionSignature, NodeType, Number,
-        SerializeNodeOptions, Symbol,
+        serialize_node, Context, Function, FunctionSignature, NodeType, Number,
+        Symbol,
     };
 
     use super::*;
@@ -54,7 +54,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Definition::new("a", Number::new(1.)),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a := 1"
@@ -75,7 +75,7 @@ mod tests {
                         Symbol::new("x")
                     )
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "f(x) := x"

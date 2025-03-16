@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, LessThanOrEquals, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, Context, LessThanOrEquals, Node, SerializeNode,
+    SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for LessThanOrEquals {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(LessThanOrEquals::new(
-            self.left.prepare_serialization(options)?,
-            self.right.prepare_serialization(options)?,
+            self.left.prepare_serialization(context)?,
+            self.right.prepare_serialization(context)?,
         ))
     }
 }
@@ -31,12 +31,12 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for LessThanOrEquals {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} <= {}",
-            serialize_child(&self.left, options, child_requires_parenthesis)?,
-            serialize_child(&self.right, options, child_requires_parenthesis)?,
+            serialize_child(&self.left, context, child_requires_parenthesis)?,
+            serialize_child(&self.right, context, child_requires_parenthesis)?,
         ))
     }
 }
@@ -55,7 +55,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &LessThanOrEquals::new(Symbol::new("x"), Symbol::new("y")),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "x <= y"
@@ -70,7 +70,7 @@ mod tests {
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a | b) <= (c | d)"
@@ -85,7 +85,7 @@ mod tests {
                     And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a & b) <= (c & d)"
@@ -100,7 +100,7 @@ mod tests {
                     Equals::new(Symbol::new("a"), Symbol::new("b"),),
                     Equals::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a = b) <= (c = d)"

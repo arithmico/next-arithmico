@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use crate::core::{
-    DecimalFormat, DecimalPlaces, FunctionCall, HostApi, HostEndpoint,
-    Language, SerializeNodeOptions, Symbol, TranslatedString, serialize_node,
+    serialize_node, Context, DecimalFormat, DecimalPlaces, FunctionCall,
+    HostApi, HostEndpoint, Language, Stack, Symbol, TranslatedString,
 };
 
 #[derive(Clone, Debug)]
@@ -48,9 +48,11 @@ impl DocumentationItem {
                     Language::English,
                     serialize_node(
                         &synopsis_expression,
-                        &SerializeNodeOptions::new(
+                        &Context::new(
+                            Stack::new(),
                             DecimalPlaces::default(),
                             DecimalFormat::Dot,
+                            HostApi::empty().into(),
                         ),
                     )
                     .expect("serialized"),
@@ -59,9 +61,11 @@ impl DocumentationItem {
                     Language::German,
                     serialize_node(
                         &synopsis_expression,
-                        &SerializeNodeOptions::new(
+                        &Context::new(
+                            Stack::new(),
                             DecimalPlaces::default(),
                             DecimalFormat::Comma,
+                            HostApi::empty().into(),
                         ),
                     )
                     .expect("serialized"),
@@ -76,9 +80,11 @@ impl DocumentationItem {
                     Language::English,
                     serialize_node(
                         &synopsis_expression,
-                        &SerializeNodeOptions::new(
+                        &Context::new(
+                            Stack::new(),
                             DecimalPlaces::default(),
                             DecimalFormat::Dot,
+                            HostApi::empty().into(),
                         ),
                     )
                     .expect("serialized"),
@@ -87,9 +93,11 @@ impl DocumentationItem {
                     Language::German,
                     serialize_node(
                         &synopsis_expression,
-                        &SerializeNodeOptions::new(
+                        &Context::new(
+                            Stack::new(),
                             DecimalPlaces::default(),
                             DecimalFormat::Comma,
+                            HostApi::empty().into(),
                         ),
                     )
                     .expect("serialized"),

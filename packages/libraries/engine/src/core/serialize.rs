@@ -1,13 +1,11 @@
 use crate::core::Node;
 
-use super::{
-    SerializeNode, SerializeNodeError, SerializeNodeOptions, SerializeNodeUtils,
-};
+use super::{Context, SerializeNode, SerializeNodeError, SerializeNodeUtils};
 
 pub fn serialize_node(
     node: &Node,
-    options: &SerializeNodeOptions,
+    context: &Context,
 ) -> Result<String, SerializeNodeError> {
-    let transformed_node = node.prepare_serialization(options)?;
-    transformed_node.serialize(options)
+    let transformed_node = node.prepare_serialization(context)?;
+    transformed_node.serialize(context)
 }

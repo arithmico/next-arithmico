@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, And, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, And, Context, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for And {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(options))
+            .map(|element| element.prepare_serialization(context))
             .collect();
 
         Ok(And::new(elements?))
@@ -28,7 +28,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for And {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        options: &Context,
     ) -> Result<String, SerializeNodeError> {
         if self.elements.len() < 2 {
             return Err(SerializeNodeError::InvalidNode);
@@ -58,7 +58,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &And::new(vec![Symbol::new("a")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             ),
             Err(SerializeNodeError::InvalidNode)
         );
@@ -69,7 +69,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a & b"
@@ -85,7 +85,7 @@ mod tests {
                     Symbol::new("b"),
                     Symbol::new("c")
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a & b & c"
@@ -100,7 +100,7 @@ mod tests {
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a | b) & (c | d)"

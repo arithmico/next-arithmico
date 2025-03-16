@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, Node, Power, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, Context, Node, Power, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Power {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Power::new(
-            self.base.prepare_serialization(options)?,
-            self.exponent.prepare_serialization(options)?,
+            self.base.prepare_serialization(context)?,
+            self.exponent.prepare_serialization(context)?,
         ))
     }
 }
@@ -34,14 +34,14 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for Power {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} ^ {}",
-            serialize_child(&self.base, options, child_requires_parenthesis)?,
+            serialize_child(&self.base, context, child_requires_parenthesis)?,
             serialize_child(
                 &self.exponent,
-                options,
+                context,
                 child_requires_parenthesis
             )?,
         ))
@@ -63,7 +63,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Power::new(Symbol::new("a"), Symbol::new("b")),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a ^ b"
@@ -75,7 +75,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Power::new(Number::new(2.), Number::new(3.)),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "2 ^ 3"
@@ -90,7 +90,7 @@ mod tests {
                     Product::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Product::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a * b) ^ (c * d)"
@@ -105,7 +105,7 @@ mod tests {
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a + b) ^ (c + d)"
@@ -120,7 +120,7 @@ mod tests {
                     Division::new(Symbol::new("a"), Symbol::new("b"),),
                     Division::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a / b) ^ (c / d)"
@@ -135,7 +135,7 @@ mod tests {
                     Power::new(Symbol::new("a"), Symbol::new("b"),),
                     Power::new(Symbol::new("c"), Symbol::new("d"),),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a ^ b) ^ (c ^ d)"
@@ -150,7 +150,7 @@ mod tests {
                     Negate::new(Symbol::new("a")),
                     Negate::new(Symbol::new("b"))
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(-a) ^ (-b)"
@@ -165,7 +165,7 @@ mod tests {
                     FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
                     FunctionCall::new(Symbol::new("g"), vec![Symbol::new("x")]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(f(x)) ^ (g(x))"
@@ -199,7 +199,7 @@ mod tests {
                         ])
                     ),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "((x, y) -> x + y) ^ ((x, y) -> x - y)"
@@ -214,7 +214,7 @@ mod tests {
                     And::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a & b) ^ (c & d)"
@@ -229,7 +229,7 @@ mod tests {
                     Or::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a | b) ^ (c | d)"
