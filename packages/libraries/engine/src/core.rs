@@ -5,6 +5,7 @@ mod node;
 mod node_type;
 mod operations;
 mod serialize;
+mod stack;
 mod translation_provider;
 
 pub use context::*;
@@ -14,5 +15,6 @@ pub use node::*;
 pub use node_type::*;
 pub use operations::*;
 pub use serialize::*;
+pub use stack::*;
 pub use translate_core::Language;
 pub use translation_provider::*;
