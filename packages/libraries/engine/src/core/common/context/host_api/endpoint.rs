@@ -3,9 +3,7 @@ use std::collections::HashMap;
 use crate::core::{FunctionSignature, Node};
 use translate_core::Language;
 
-use crate::core::{
-    argument_mapping::ArgumentMapping, EvaluateNodeContext, EvaluateNodeError,
-};
+use crate::core::{ArgumentMapping, EvaluateNodeContext, EvaluateNodeError};
 
 pub type FunctionExecutor = fn(
     arguments: &ArgumentMapping,
