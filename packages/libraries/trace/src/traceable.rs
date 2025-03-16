@@ -2,13 +2,13 @@ use crate::{IntoTrace, Span};
 
 use super::trace::Trace;
 
-pub trait Tracable {
+pub trait Tracable: AsRef<Trace> {
     fn trace(&self) -> &Trace;
 }
 
-impl<T: Tracable> Tracable for &T {
+impl<T: AsRef<Trace>> Tracable for T {
     fn trace(&self) -> &Trace {
-        (*self).trace()
+        self.as_ref()
     }
 }
 
@@ -28,6 +28,12 @@ pub trait TracableMut: Sized {
     fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
         self.trace_mut().append_trace(&tracable.into_trace());
         self
+    }
+}
+
+impl<T: AsMut<Trace>> TracableMut for T {
+    fn trace_mut(&mut self) -> &mut Trace {
+        self.as_mut()
     }
 }
 

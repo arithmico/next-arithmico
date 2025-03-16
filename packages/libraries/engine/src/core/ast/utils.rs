@@ -7,14 +7,14 @@ macro_rules! impl_node_traits {
             }
         }
 
-        impl trace::Tracable for $node {
-            fn trace(&self) -> &Trace {
+        impl AsRef<trace::Trace> for $node {
+            fn as_ref(&self) -> &Trace {
                 &self.trace
             }
         }
 
-        impl trace::TracableMut for $node {
-            fn trace_mut(&mut self) -> &mut Trace {
+        impl AsMut<trace::Trace> for $node {
+            fn as_mut(&mut self) -> &mut Trace {
                 &mut self.trace
             }
         }
