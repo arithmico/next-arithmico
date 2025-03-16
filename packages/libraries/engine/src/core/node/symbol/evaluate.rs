@@ -23,8 +23,9 @@ impl EvaluateNode for Symbol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::{
-        EvaluateNodeOptions, HostApi, HostApiModule, Language, Number, Stack,
+    use crate::{
+        core::{HostApi, HostApiModule, Language, Number, Stack},
+        DecimalFormat, DecimalPlaces,
     };
     use std::sync::Arc;
     use trace::TracableMut;
@@ -42,7 +43,8 @@ mod tests {
         stack.insert("x", Number::new(42.));
         let context = EvaluateNodeContext::new(
             stack,
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x").evaluate(&context).unwrap();
@@ -55,7 +57,8 @@ mod tests {
         stack.insert("x", Number::new(42.));
         let context = EvaluateNodeContext::new(
             stack,
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             Arc::new(HostApi::empty()),
         );
         let result =
@@ -81,7 +84,8 @@ mod tests {
 
         let context = EvaluateNodeContext::new(
             Stack::new(),
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             host_api.into(),
         );
 
@@ -107,7 +111,8 @@ mod tests {
 
         let context = EvaluateNodeContext::new(
             Stack::new(),
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             host_api.into(),
         );
 

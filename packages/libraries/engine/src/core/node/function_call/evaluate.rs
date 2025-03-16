@@ -28,7 +28,8 @@ impl EvaluateNode for FunctionCall {
 
                 let local_context = EvaluateNodeContext::new(
                     stack,
-                    context.options.clone(),
+                    context.decimal_places.clone(),
+                    context.decimal_format.clone(),
                     context.host_api.clone(),
                 );
 
@@ -72,9 +73,12 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use crate::core::{
-        EvaluateNodeOptions, Function, FunctionSignature, HostApi,
-        HostApiModule, Language, NodeType, Number, Power, Stack, Symbol,
+    use crate::{
+        core::{
+            Function, FunctionSignature, HostApi, HostApiModule, Language,
+            NodeType, Number, Power, Stack, Symbol,
+        },
+        DecimalFormat, DecimalPlaces,
     };
 
     use super::*;
@@ -116,7 +120,8 @@ mod tests {
     fn evaluate_host_function_call() {
         let context = EvaluateNodeContext::new(
             Stack::new(),
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -158,7 +163,8 @@ mod tests {
     fn evaluate_host_function_call_invalid_number_of_arguments() {
         let context = EvaluateNodeContext::new(
             Stack::new(),
-            EvaluateNodeOptions::default(),
+            DecimalPlaces::default(),
+            DecimalFormat::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {

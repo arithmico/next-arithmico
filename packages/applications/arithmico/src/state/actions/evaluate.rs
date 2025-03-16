@@ -1,4 +1,3 @@
-use engine::EvaluateNodeOptions;
 use engine::SessionError;
 use web_state::WebStateAction;
 
@@ -18,16 +17,17 @@ impl EvaluateAction {
 
 impl WebStateAction<State> for EvaluateAction {
     fn apply(&self, state: &mut State) {
-        let options = EvaluateNodeOptions::new(
-            (&state.settings.decimal_places).into(),
-            state
-                .settings
-                .override_decimal_format
-                .decimal_format()
-                .cloned()
-                .unwrap_or_else(|| (&state.settings.language).into()),
-        );
-        state.session.push(&self.input, &options);
+        let decimal_places = state.settings.decimal_places;
+        let decimal_format = state
+            .settings
+            .override_decimal_format
+            .decimal_format()
+            .cloned()
+            .unwrap_or_else(|| (&state.settings.language).into());
+
+        state
+            .session
+            .push(&self.input, decimal_places, decimal_format);
         state.current_output = state
             .session
             .last_entry()
