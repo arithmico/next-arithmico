@@ -1,9 +1,8 @@
-use crate::core::{DecimalFormat, Definition, Node, ParseNodeError};
+use crate::core::{Context, DecimalFormat, Definition, Node, ParseNodeError};
 use nom::{combinator::all_consuming, IResult, Parser};
 
 mod cache;
 mod literal;
-mod parse_node_options;
 mod relation;
 mod sub_expression;
 mod trace;
@@ -11,7 +10,6 @@ mod with_parser;
 
 pub use cache::*;
 pub use literal::*;
-pub use parse_node_options::*;
 pub use relation::*;
 pub use sub_expression::*;
 pub use trace::*;
@@ -23,11 +21,8 @@ pub trait ParseNode {
     fn parse(input: &str) -> ParseResult;
 }
 
-pub fn parse(
-    input: &str,
-    options: ParseNodeOptions,
-) -> Result<Node, ParseNodeError> {
-    let input = match options.decimal_format {
+pub fn parse(input: &str, context: &Context) -> Result<Node, ParseNodeError> {
+    let input = match context.decimal_format {
         DecimalFormat::Comma => input.replace(",", ".").replace(";", ","),
         DecimalFormat::Dot => input.to_string(),
     };
