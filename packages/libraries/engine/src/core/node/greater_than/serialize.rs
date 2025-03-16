@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     serialize_child, GreaterThan, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -44,9 +44,9 @@ impl SerializeNode for GreaterThan {
 #[cfg(test)]
 mod tests {
 
-    use crate::{And, Equals, Or, Symbol};
+    use crate::core::{And, Equals, Or, Symbol};
 
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

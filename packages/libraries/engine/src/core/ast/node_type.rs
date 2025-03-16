@@ -1,4 +1,4 @@
-use crate::Node;
+use crate::core::Node;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum NodeType {

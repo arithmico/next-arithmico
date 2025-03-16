@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use crate::FunctionSignature;
+use crate::core::FunctionSignature;
 use translate_core::Language;
 
 use super::{
-    TranslatedString,
     endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
+    TranslatedString,
 };
 
 #[derive(Debug, Clone, PartialEq)]

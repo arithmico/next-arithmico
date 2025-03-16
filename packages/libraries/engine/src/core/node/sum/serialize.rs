@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     serialize_child, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils, Sum,
 };
@@ -84,9 +84,9 @@ impl SerializeNode for Sum {
 #[cfg(test)]
 mod tests {
 
-    use crate::{Negate, Sum, Symbol};
+    use crate::core::{Negate, Sum, Symbol};
 
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

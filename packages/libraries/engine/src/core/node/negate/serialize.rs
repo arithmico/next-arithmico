@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     serialize_child, Negate, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -39,9 +39,10 @@ impl SerializeNode for Negate {
 #[cfg(test)]
 mod tests {
 
-    use crate::{And, Function, FunctionSignature, NodeType, Or, Sum, Symbol};
-
-    use crate::serialize_node;
+    use crate::core::{
+        serialize_node, And, Function, FunctionSignature, NodeType, Or, Sum,
+        Symbol,
+    };
 
     use super::*;
 

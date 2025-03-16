@@ -3,7 +3,7 @@ use nom::{
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{
+use crate::core::{
     parse_relation, with_parser, And, ParseNode, ParseResult, Sum, TraceUtils,
 };
 
@@ -34,7 +34,7 @@ fn parse_and_item(input: &str) -> ParseResult {
 mod tests {
     use trace::TracableMut;
 
-    use crate::{Boolean, Symbol};
+    use crate::core::{Boolean, Symbol};
 
     use super::*;
 

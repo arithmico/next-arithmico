@@ -1,4 +1,4 @@
-use crate::Node;
+use crate::core::Node;
 
 use super::{SerializeNodeError, SerializeNodeOptions};
 

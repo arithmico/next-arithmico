@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     get_decimal_separator, Negate, Node, Number, Power, Product, SerializeNode,
     SerializeNodeError, SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -74,9 +74,7 @@ impl SerializeNode for Number {
 #[cfg(test)]
 mod tests {
 
-    use crate::{DecimalFormat, DecimalPlaces};
-
-    use crate::serialize_node;
+    use crate::core::{serialize_node, DecimalFormat, DecimalPlaces};
 
     use super::*;
 

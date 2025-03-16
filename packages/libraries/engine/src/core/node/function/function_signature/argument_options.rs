@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::{Node, NodeType};
+use crate::core::{Node, NodeType};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ArgumentOptions {

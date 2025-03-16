@@ -1,4 +1,4 @@
-use crate::{EvaluateNodeContext, EvaluateNodeError, Node};
+use crate::core::{EvaluateNodeContext, EvaluateNodeError, Node};
 
 use super::EvaluateNode;
 

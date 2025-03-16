@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     HostFunction, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -24,7 +24,7 @@ impl SerializeNode for HostFunction {
 #[cfg(test)]
 mod tests {
 
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     serialize_child, And, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -49,7 +49,7 @@ impl SerializeNode for And {
 #[cfg(test)]
 mod tests {
 
-    use crate::{serialize_node, Or, Symbol};
+    use crate::core::{serialize_node, Or, Symbol};
 
     use super::*;
 

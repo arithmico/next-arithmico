@@ -1,6 +1,6 @@
 use trace::TracableMut;
 
-use crate::{
+use crate::core::{
     And, Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError,
     GetNodeType, Node,
 };
@@ -43,7 +43,7 @@ fn combine_and_elements(
 
 #[cfg(test)]
 mod tests {
-    use crate::NodeType;
+    use crate::core::NodeType;
 
     use super::*;
 

@@ -3,7 +3,7 @@ use nom::{
     combinator::cut, multi::many1, sequence::preceded, Parser,
 };
 
-use crate::{
+use crate::core::{
     with_parser, Division, ParseNode, ParseResult, Product, TraceUtils,
 };
 
@@ -36,11 +36,11 @@ fn parse_product_item(input: &str) -> ParseResult {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Node, Number, Sum, Symbol};
+    use crate::core::{Node, Number, Sum, Symbol};
     use nom::combinator::all_consuming;
     use trace::TracableMut;
 
-    use crate::ParseNodeError;
+    use crate::core::ParseNodeError;
 
     use super::*;
 

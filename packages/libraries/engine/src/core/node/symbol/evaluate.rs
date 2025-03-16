@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
     Symbol,
 };
@@ -23,7 +23,7 @@ impl EvaluateNode for Symbol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
+    use crate::core::{
         EvaluateNodeOptions, HostApi, HostApiModule, Language, Number, Stack,
     };
     use std::sync::Arc;

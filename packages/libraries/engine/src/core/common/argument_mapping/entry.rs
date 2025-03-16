@@ -1,4 +1,4 @@
-use crate::Node;
+use crate::core::Node;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]

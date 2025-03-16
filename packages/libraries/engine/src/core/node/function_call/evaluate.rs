@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     map_function_parameters, EvaluateNode, EvaluateNodeContext,
     EvaluateNodeError, FunctionCall, HostEndpoint, Node,
 };
@@ -72,7 +72,7 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use crate::{
+    use crate::core::{
         EvaluateNodeOptions, Function, FunctionSignature, HostApi,
         HostApiModule, Language, NodeType, Number, Power, Stack, Symbol,
     };

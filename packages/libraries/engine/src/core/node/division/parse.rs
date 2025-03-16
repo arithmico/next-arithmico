@@ -4,7 +4,7 @@ use nom::{
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::{with_parser, ParseNode, ParseResult, Power};
+use crate::core::{with_parser, ParseNode, ParseResult, Power};
 
 use super::Division;
 
@@ -44,7 +44,7 @@ pub fn parse_division_element(input: &str) -> ParseResult {
 #[cfg(test)]
 mod tests {
 
-    use crate::Number;
+    use crate::core::Number;
 
     use super::*;
 

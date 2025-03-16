@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     Node, SerializeNode, SerializeNodeError, SerializeNodeOptions,
     SerializeNodeUtils, Symbol,
 };
@@ -24,9 +24,9 @@ impl SerializeNode for Symbol {
 #[cfg(test)]
 mod tests {
 
-    use crate::Symbol;
+    use crate::core::Symbol;
 
-    use crate::serialize_node;
+    use crate::core::serialize_node;
 
     use super::*;
 

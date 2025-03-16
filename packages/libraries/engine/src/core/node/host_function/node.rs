@@ -1,6 +1,6 @@
 use trace::Trace;
 
-use crate::{impl_node_traits, Node};
+use crate::{core::Node, impl_node_traits};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct HostFunction {

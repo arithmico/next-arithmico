@@ -1,4 +1,4 @@
-use crate::{
+use crate::core::{
     get_argument_separator, Function, Node, SerializeNode, SerializeNodeError,
     SerializeNodeOptions, SerializeNodeUtils,
 };
@@ -33,9 +33,10 @@ impl SerializeNode for Function {
 #[cfg(test)]
 mod tests {
 
-    use crate::{Function, FunctionSignature, NodeType, Number, Sum, Symbol};
-
-    use crate::serialize_node;
+    use crate::core::{
+        serialize_node, Function, FunctionSignature, NodeType, Number, Sum,
+        Symbol,
+    };
 
     use super::*;
 
