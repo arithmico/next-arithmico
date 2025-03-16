@@ -4,7 +4,7 @@ use translate_core::TranslationTemplateProvider;
 
 thread_local! {
     static TRANSLATIONS: Rc<TranslationTemplateProvider> = Rc::new(
-        TranslationTemplateProvider::try_from_toml(include_str!("../../../translations.toml"))
+        TranslationTemplateProvider::try_from_toml(include_str!("../../translations.toml"))
         .unwrap_or(TranslationTemplateProvider::new())
     );
 }
