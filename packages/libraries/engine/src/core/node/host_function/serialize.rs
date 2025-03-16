@@ -1,12 +1,12 @@
 use crate::core::{
-    HostFunction, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    Context, HostFunction, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for HostFunction {
     fn prepare_serialization(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Err(SerializeNodeError::UnsupportedNode)
     }
@@ -15,7 +15,7 @@ impl SerializeNodeUtils for HostFunction {
 impl SerializeNode for HostFunction {
     fn serialize(
         &self,
-        _options: &SerializeNodeOptions,
+        _context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Err(SerializeNodeError::UnsupportedNode)
     }
@@ -31,10 +31,7 @@ mod tests {
     #[test]
     fn serialize_host_function() {
         assert_eq!(
-            serialize_node(
-                &HostFunction::new("f"),
-                &SerializeNodeOptions::default()
-            ),
+            serialize_node(&HostFunction::new("f"), &Context::default()),
             Err(SerializeNodeError::UnsupportedNode)
         );
     }

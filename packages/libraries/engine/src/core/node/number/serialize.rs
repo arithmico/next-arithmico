@@ -1,18 +1,18 @@
 use crate::core::{
-    get_decimal_separator, Negate, Node, Number, Power, Product, SerializeNode,
-    SerializeNodeError, SerializeNodeOptions, SerializeNodeUtils,
+    get_decimal_separator, Context, Negate, Node, Number, Power, Product,
+    SerializeNode, SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Number {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         if self.value == 0.0 {
             return Ok(Number::new(self.value));
         }
 
-        let decimal_places = i32::from(&options.decimal_places);
+        let decimal_places = i32::from(&context.decimal_places);
 
         let magnitude = self.value.abs().log10().round() as i64;
         let magnitude_abs = if magnitude < 0 { -magnitude } else { magnitude };
@@ -50,7 +50,7 @@ impl SerializeNodeUtils for Number {
 impl SerializeNode for Number {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         if self.value == 0.0 {
             return Ok("0".into());
@@ -59,14 +59,14 @@ impl SerializeNode for Number {
             return Err(SerializeNodeError::InvalidNode);
         }
 
-        let decimal_places = usize::from(&options.decimal_places);
+        let decimal_places = usize::from(&context.decimal_places);
         let serialized_value = format!("{:.1$}", self.value, decimal_places);
 
         Ok(String::from(
             serialized_value
                 .trim_end_matches("0")
                 .trim_end_matches(".")
-                .replace(".", &get_decimal_separator(options)),
+                .replace(".", &get_decimal_separator(context)),
         ))
     }
 }
@@ -74,15 +74,16 @@ impl SerializeNode for Number {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{serialize_node, DecimalFormat, DecimalPlaces};
+    use crate::core::{
+        serialize_node, DecimalFormat, DecimalPlaces, HostApi, Stack,
+    };
 
     use super::*;
 
     #[test]
     fn serialize_number_int() {
         assert_eq!(
-            serialize_node(&Number::new(1.), &SerializeNodeOptions::default())
-                .unwrap(),
+            serialize_node(&Number::new(1.), &Context::default()).unwrap(),
             "1"
         );
     }
@@ -90,7 +91,7 @@ mod tests {
     #[test]
     fn serialize_negative_number() {
         assert_eq!(
-            Number::new(-1.).serialize(&SerializeNodeOptions::default()),
+            Number::new(-1.).serialize(&Context::default()),
             Err(SerializeNodeError::InvalidNode)
         );
     }
@@ -98,11 +99,7 @@ mod tests {
     #[test]
     fn serialize_number_float_dot() {
         assert_eq!(
-            serialize_node(
-                &Number::new(1.23),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Number::new(1.23), &Context::default()).unwrap(),
             "1.23"
         );
     }
@@ -112,10 +109,12 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Number::new(1.23),
-                &SerializeNodeOptions {
-                    decimal_format: DecimalFormat::Comma,
-                    decimal_places: DecimalPlaces::from(5)
-                }
+                &Context::new(
+                    Stack::new(),
+                    DecimalPlaces::from(5),
+                    DecimalFormat::Comma,
+                    HostApi::empty().into()
+                )
             )
             .unwrap(),
             "1,23"
@@ -125,11 +124,8 @@ mod tests {
     #[test]
     fn serialize_number_scientific_notation() {
         assert_eq!(
-            serialize_node(
-                &Number::new(112345678.),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Number::new(112345678.), &Context::default())
+                .unwrap(),
             "1.12346 * 10 ^ 8"
         );
     }
@@ -137,11 +133,8 @@ mod tests {
     #[test]
     fn serialize_number_scientific_notation_negative() {
         assert_eq!(
-            serialize_node(
-                &Number::new(-112345678.),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Number::new(-112345678.), &Context::default())
+                .unwrap(),
             "-1.12346 * 10 ^ 8"
         );
     }

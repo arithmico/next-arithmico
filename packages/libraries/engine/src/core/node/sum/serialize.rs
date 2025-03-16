@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils, Sum,
+    serialize_child, Context, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils, Sum,
 };
 
 impl SerializeNodeUtils for Sum {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(options))
+            .map(|element| element.prepare_serialization(context))
             .collect();
 
         Ok(Sum::new(elements?))
@@ -35,7 +35,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for Sum {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         if self.elements.len() < 2 {
             return Err(SerializeNodeError::InvalidNode);
@@ -48,7 +48,7 @@ impl SerializeNode for Sum {
                 Node::Negate(negate) => Ok((
                     serialize_child(
                         &negate.value,
-                        options,
+                        context,
                         child_requires_parenthesis,
                     )?,
                     true,
@@ -56,7 +56,7 @@ impl SerializeNode for Sum {
                 _ => Ok((
                     serialize_child(
                         &element,
-                        options,
+                        context,
                         child_requires_parenthesis,
                     )?,
                     false,
@@ -95,7 +95,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Sum::new(vec![Symbol::new("a")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             ),
             Err(SerializeNodeError::InvalidNode)
         );
@@ -106,7 +106,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a + b"
@@ -121,7 +121,7 @@ mod tests {
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a + b + c + d"
@@ -137,7 +137,7 @@ mod tests {
                     Symbol::new("b"),
                     Negate::new(Symbol::new("c"))
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a + b - c"
@@ -153,7 +153,7 @@ mod tests {
                     Symbol::new("b"),
                     Symbol::new("c"),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-a + b + c"

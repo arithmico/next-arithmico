@@ -1,14 +1,14 @@
 use crate::core::{
-    serialize_child, Negate, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, Context, Negate, Node, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Negate {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
-        Ok(Negate::new(self.value.prepare_serialization(options)?))
+        Ok(Negate::new(self.value.prepare_serialization(context)?))
     }
 }
 
@@ -27,11 +27,11 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for Negate {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "-{}",
-            serialize_child(&self.value, options, child_requires_parenthesis)?
+            serialize_child(&self.value, context, child_requires_parenthesis)?
         ))
     }
 }
@@ -49,11 +49,8 @@ mod tests {
     #[test]
     fn serialize_negate_symbol() {
         assert_eq!(
-            serialize_node(
-                &Negate::new(Symbol::new("a")),
-                &SerializeNodeOptions::default()
-            )
-            .unwrap(),
+            serialize_node(&Negate::new(Symbol::new("a")), &Context::default())
+                .unwrap(),
             "-a"
         );
     }
@@ -63,7 +60,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Negate::new(Negate::new(Symbol::new("a"))),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-(-a)"
@@ -78,7 +75,7 @@ mod tests {
                     Symbol::new("a"),
                     Symbol::new("b"),
                 ])),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-(a + b)"
@@ -93,7 +90,7 @@ mod tests {
                     Symbol::new("a"),
                     Symbol::new("b"),
                 ])),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-(a & b)"
@@ -107,7 +104,7 @@ mod tests {
                 &Negate::new(Or::new(
                     vec![Symbol::new("a"), Symbol::new("b"),]
                 )),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-(a | b)"
@@ -125,7 +122,7 @@ mod tests {
                         .add_return_type(NodeType::Any),
                     Symbol::new("x")
                 )),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "-((x) -> x)"

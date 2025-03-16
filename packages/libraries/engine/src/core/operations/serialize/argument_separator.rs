@@ -1,9 +1,7 @@
-use crate::core::DecimalFormat;
+use crate::core::{Context, DecimalFormat};
 
-use super::SerializeNodeOptions;
-
-pub fn get_argument_separator(options: &SerializeNodeOptions) -> String {
-    match options.decimal_format {
+pub fn get_argument_separator(context: &Context) -> String {
+    match context.decimal_format {
         DecimalFormat::Comma => String::from("; "),
         DecimalFormat::Dot => String::from(", "),
     }

@@ -1,21 +1,21 @@
 use crate::core::{
-    get_argument_separator, FunctionCall, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeOptions, SerializeNodeUtils,
+    get_argument_separator, Context, FunctionCall, Node, SerializeNode,
+    SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for FunctionCall {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let arguments: Result<Vec<Node>, SerializeNodeError> = self
             .arguments
             .iter()
-            .map(|element| element.prepare_serialization(options))
+            .map(|element| element.prepare_serialization(context))
             .collect();
 
         Ok(FunctionCall::new(
-            self.target.prepare_serialization(options)?,
+            self.target.prepare_serialization(context)?,
             arguments?,
         ))
     }
@@ -24,23 +24,23 @@ impl SerializeNodeUtils for FunctionCall {
 impl SerializeNode for FunctionCall {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         let target = match self.target.as_ref() {
             Node::Symbol(symbol) => symbol.name.clone(),
-            _ => format!("({})", self.target.serialize(options)?),
+            _ => format!("({})", self.target.serialize(context)?),
         };
 
         let arguments: Result<Vec<String>, SerializeNodeError> = self
             .arguments
             .iter()
-            .map(|element| element.serialize(options))
+            .map(|element| element.serialize(context))
             .collect();
 
         Ok(format!(
             "{}({})",
             target,
-            arguments?.join(&get_argument_separator(options))
+            arguments?.join(&get_argument_separator(context))
         ))
     }
 }
@@ -59,7 +59,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &FunctionCall::new(Symbol::new("f"), vec![]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "f()"
@@ -71,7 +71,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "f(x)"
@@ -86,7 +86,7 @@ mod tests {
                     Symbol::new("f"),
                     vec![Symbol::new("x"), Symbol::new("y")]
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "f(x, y)"
@@ -109,7 +109,7 @@ mod tests {
                     ),
                     vec![Symbol::new("x"), Symbol::new("y")]
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "((x, y) -> x + y)(x, y)"

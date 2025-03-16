@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, Division, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, Context, Division, Node, SerializeNode,
+    SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Division {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Division::new(
-            self.dividend.prepare_serialization(options)?,
-            self.divisor.prepare_serialization(options)?,
+            self.dividend.prepare_serialization(context)?,
+            self.divisor.prepare_serialization(context)?,
         ))
     }
 }
@@ -42,18 +42,18 @@ fn divisor_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for Division {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} / {}",
             serialize_child(
                 &self.dividend,
-                options,
+                context,
                 dividend_requires_parenthesis
             )?,
             serialize_child(
                 &self.divisor,
-                options,
+                context,
                 divisor_requires_parenthesis
             )?
         ))
@@ -75,7 +75,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Division::new(Symbol::new("a"), Symbol::new("b")),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a / b"
@@ -90,7 +90,7 @@ mod tests {
                     Division::new(Symbol::new("a"), Symbol::new("b"),),
                     Symbol::new("c")
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a / b / c"
@@ -105,7 +105,7 @@ mod tests {
                     Symbol::new("a"),
                     Division::new(Symbol::new("b"), Symbol::new("c"),)
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a / (b / c)"
@@ -120,7 +120,7 @@ mod tests {
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a + b) / (c + d)"
@@ -135,7 +135,7 @@ mod tests {
                     Product::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Product::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a * b / (c * d)"
@@ -150,7 +150,7 @@ mod tests {
                     And::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a & b) / (c & d)"
@@ -165,7 +165,7 @@ mod tests {
                     Or::new(vec![Symbol::new("a"), Symbol::new("b"),]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d"),]),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a | b) / (c | d)"
@@ -192,7 +192,7 @@ mod tests {
                         Symbol::new("y")
                     ),
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "((x) -> x) / ((y) -> y)"

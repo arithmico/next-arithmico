@@ -1,16 +1,16 @@
 use crate::core::{
-    get_argument_separator, Function, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    get_argument_separator, Context, Function, Node, SerializeNode,
+    SerializeNodeError, SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Function {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Function::new(
             self.signature.clone(),
-            self.expression.prepare_serialization(options)?,
+            self.expression.prepare_serialization(context)?,
         ))
     }
 }
@@ -18,14 +18,14 @@ impl SerializeNodeUtils for Function {
 impl SerializeNode for Function {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "({}) -> {}",
             self.signature
                 .argument_names()
-                .join(&get_argument_separator(options)),
-            self.expression.serialize(options)?
+                .join(&get_argument_separator(context)),
+            self.expression.serialize(context)?
         ))
     }
 }
@@ -48,7 +48,7 @@ mod tests {
                     FunctionSignature::new().add_return_type(NodeType::Any),
                     Number::new(1.)
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "() -> 1"
@@ -66,7 +66,7 @@ mod tests {
                         .add_return_type(NodeType::Any),
                     Symbol::new("x")
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(x) -> x"
@@ -86,7 +86,7 @@ mod tests {
                         .add_return_type(NodeType::Any),
                     Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(x, y) -> x + y"
@@ -110,7 +110,7 @@ mod tests {
                         Sum::new(vec![Symbol::new("x"), Symbol::new("y"),])
                     )
                 ),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(x) -> (y) -> x + y"

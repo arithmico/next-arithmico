@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, Node, Product, SerializeNode, SerializeNodeError,
-    SerializeNodeOptions, SerializeNodeUtils,
+    serialize_child, Context, Node, Product, SerializeNode, SerializeNodeError,
+    SerializeNodeUtils,
 };
 
 impl SerializeNodeUtils for Product {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(options))
+            .map(|element| element.prepare_serialization(context))
             .collect();
 
         Ok(Product::new(elements?))
@@ -33,7 +33,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
 impl SerializeNode for Product {
     fn serialize(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<String, SerializeNodeError> {
         if self.elements.len() < 2 {
             return Err(SerializeNodeError::InvalidNode);
@@ -43,7 +43,7 @@ impl SerializeNode for Product {
             .elements
             .iter()
             .map(|element| {
-                serialize_child(element, options, child_requires_parenthesis)
+                serialize_child(element, context, child_requires_parenthesis)
             })
             .collect();
 
@@ -68,7 +68,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Product::new(vec![Symbol::new("a")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             ),
             Err(SerializeNodeError::InvalidNode)
         );
@@ -79,7 +79,7 @@ mod tests {
         assert_eq!(
             serialize_node(
                 &Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a * b"
@@ -94,7 +94,7 @@ mod tests {
                     Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a + b) * (c + d)"
@@ -109,7 +109,7 @@ mod tests {
                     Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Product::new(vec![Symbol::new("c"), Symbol::new("d")]),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a * b * c * d"
@@ -124,7 +124,7 @@ mod tests {
                     Negate::new(Symbol::new("a")),
                     Negate::new(Symbol::new("b")),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(-a) * (-b)"
@@ -139,7 +139,7 @@ mod tests {
                     Symbol::new("a"),
                     Division::new(Symbol::new("b"), Symbol::new("c"))
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "a * b / c"
@@ -154,7 +154,7 @@ mod tests {
                     And::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     And::new(vec![Symbol::new("c"), Symbol::new("d")])
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a & b) * (c & d)"
@@ -169,7 +169,7 @@ mod tests {
                     Or::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     Or::new(vec![Symbol::new("c"), Symbol::new("d")])
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "(a | b) * (c | d)"
@@ -196,7 +196,7 @@ mod tests {
                         Symbol::new("y")
                     ),
                 ]),
-                &SerializeNodeOptions::default()
+                &Context::default()
             )
             .unwrap(),
             "((x) -> x) * ((y) -> y)"

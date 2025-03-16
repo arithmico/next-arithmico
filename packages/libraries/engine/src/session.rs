@@ -1,6 +1,5 @@
 use crate::core::{
-    evaluate_node, parse, serialize_node, Context, HostApi, Node,
-    SerializeNodeOptions, Stack,
+    evaluate_node, parse, serialize_node, Context, HostApi, Node, Stack,
 };
 use crate::{api::load_host_api, Documentation};
 use crate::{DecimalFormat, DecimalPlaces};
@@ -63,11 +62,8 @@ impl Session {
                     );
                 }
 
-                serialize_node(
-                    &node,
-                    &SerializeNodeOptions::new(decimal_places, decimal_format),
-                )
-                .map_err(|error| SessionError::from(error))
+                serialize_node(&node, &context)
+                    .map_err(|error| SessionError::from(error))
             });
 
         self.entries.push(SessionEntry {

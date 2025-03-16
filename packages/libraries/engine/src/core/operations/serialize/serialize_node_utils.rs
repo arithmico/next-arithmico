@@ -1,10 +1,8 @@
-use crate::core::{Node, SerializeNodeError};
-
-use super::SerializeNodeOptions;
+use crate::core::{Context, Node, SerializeNodeError};
 
 pub trait SerializeNodeUtils {
     fn prepare_serialization(
         &self,
-        options: &SerializeNodeOptions,
+        context: &Context,
     ) -> Result<Node, SerializeNodeError>;
 }
