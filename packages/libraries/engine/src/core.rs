@@ -1,6 +1,7 @@
 mod context;
 mod error;
 mod evaluate;
+mod host_api;
 mod node;
 mod node_type;
 mod operations;
@@ -11,6 +12,7 @@ mod translation_provider;
 pub use context::*;
 pub use error::*;
 pub use evaluate::*;
+pub use host_api::*;
 pub use node::*;
 pub use node_type::*;
 pub use operations::*;

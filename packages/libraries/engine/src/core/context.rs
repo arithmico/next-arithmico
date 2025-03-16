@@ -4,13 +4,11 @@ use crate::core::{HostFunction, Node};
 
 mod decimal_format;
 mod decimal_places;
-mod host_api;
 
 pub use decimal_format::*;
 pub use decimal_places::*;
-pub use host_api::*;
 
-use super::Stack;
+use super::{HostApi, HostEndpoint, Stack};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Context {
