@@ -22,6 +22,7 @@ mod tensor;
 mod evaluate;
 mod parse;
 mod serialize;
+mod trace;
 
 pub use and::*;
 pub use boolean::*;
