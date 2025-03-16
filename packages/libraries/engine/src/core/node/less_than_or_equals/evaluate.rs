@@ -1,12 +1,12 @@
 use crate::core::{
-    Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError,
+    Boolean, EvaluateNode, Context, EvaluateNodeError,
     LessThanOrEquals, Node,
 };
 
 impl EvaluateNode for LessThanOrEquals {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn evaluate_less_than_or_equals_number_number_true() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = LessThanOrEquals::new(Number::new(1.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn evaluate_less_than_or_equals_number_number_true_equals() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = LessThanOrEquals::new(Number::new(2.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
@@ -46,7 +46,7 @@ mod tests {
 
     #[test]
     fn evaluate_less_than_or_equals_number_number_false() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = LessThanOrEquals::new(Number::new(2.), Number::new(1.))
             .evaluate(&context)
             .unwrap();

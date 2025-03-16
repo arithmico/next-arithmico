@@ -1,12 +1,12 @@
 use crate::core::{
-    EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
+    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
     Symbol,
 };
 
 impl EvaluateNode for Symbol {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
             return Err(EvaluateNodeError::unsupported_datatype(
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn evaluate_unknown_symbol() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Symbol::new("x").evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::unknown_symbol("x")));
     }
@@ -41,7 +41,7 @@ mod tests {
     fn evaluate_symbol_from_stack() {
         let mut stack = Stack::new();
         stack.insert("x", Number::new(42.));
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             stack,
             DecimalPlaces::default(),
             DecimalFormat::default(),
@@ -55,7 +55,7 @@ mod tests {
     fn evaluate_symbol_from_stack_with_trace() {
         let mut stack = Stack::new();
         stack.insert("x", Number::new(42.));
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             stack,
             DecimalPlaces::default(),
             DecimalFormat::default(),
@@ -82,7 +82,7 @@ mod tests {
             })
             .build();
 
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
             DecimalFormat::default(),
@@ -109,7 +109,7 @@ mod tests {
             })
             .build();
 
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
             DecimalFormat::default(),

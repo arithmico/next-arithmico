@@ -1,11 +1,11 @@
 use crate::core::{
-    Definition, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, Node,
+    Definition, EvaluateNode, Context, EvaluateNodeError, Node,
 };
 
 impl EvaluateNode for Definition {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_definition") {
             return Err(EvaluateNodeError::unsupported_operation());
@@ -24,7 +24,7 @@ mod tests {
 
     #[test]
     fn evaluate_definition() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Definition::new(
             "test",
             Sum::new(vec![Number::new(1.), Number::new(2.)]),

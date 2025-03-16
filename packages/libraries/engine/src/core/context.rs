@@ -13,14 +13,14 @@ pub use host_api::*;
 pub use stack::*;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct EvaluateNodeContext {
+pub struct Context {
     pub stack: Stack,
     pub decimal_places: DecimalPlaces,
     pub decimal_format: DecimalFormat,
     pub host_api: Arc<HostApi>,
 }
 
-impl Default for EvaluateNodeContext {
+impl Default for Context {
     fn default() -> Self {
         Self {
             stack: Stack::new(),
@@ -31,14 +31,14 @@ impl Default for EvaluateNodeContext {
     }
 }
 
-impl EvaluateNodeContext {
+impl Context {
     pub fn new(
         stack: Stack,
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,
         host_api: Arc<HostApi>,
-    ) -> EvaluateNodeContext {
-        EvaluateNodeContext {
+    ) -> Context {
+        Context {
             stack,
             decimal_format,
             decimal_places,

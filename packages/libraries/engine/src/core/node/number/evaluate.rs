@@ -1,12 +1,12 @@
 use crate::core::{
-    EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
+    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
     Number,
 };
 
 impl EvaluateNode for Number {
     fn evaluate(
         &self,
-        _context: &EvaluateNodeContext,
+        _context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_number") {
             return Err(EvaluateNodeError::unsupported_datatype(
@@ -25,14 +25,14 @@ mod tests {
 
     #[test]
     fn evaluate_number() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Number::new(1.2345).evaluate(&context).unwrap();
         assert_eq!(result, Number::new(1.2345));
     }
 
     #[test]
     fn evaluate_number_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Number::new(1.2345)
             .with_span(0, 5)
             .evaluate(&context)

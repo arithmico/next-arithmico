@@ -3,14 +3,14 @@ use std::collections::HashMap;
 use crate::core::{FunctionSignature, Node};
 use translate_core::Language;
 
-use crate::core::{ArgumentMapping, EvaluateNodeContext, EvaluateNodeError};
+use crate::core::{ArgumentMapping, Context, EvaluateNodeError};
 
 pub type FunctionExecutor = fn(
     arguments: &ArgumentMapping,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError>;
 
-pub type ConstantExecutor = fn(context: &EvaluateNodeContext) -> Node;
+pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 pub type TranslatedString = HashMap<Language, String>;
 

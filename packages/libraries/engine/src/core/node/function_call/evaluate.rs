@@ -1,13 +1,10 @@
 use crate::core::{
-    map_function_parameters, EvaluateNode, EvaluateNodeContext,
-    EvaluateNodeError, FunctionCall, HostEndpoint, Node,
+    map_function_parameters, Context, EvaluateNode, EvaluateNodeError,
+    FunctionCall, HostEndpoint, Node,
 };
 
 impl EvaluateNode for FunctionCall {
-    fn evaluate(
-        &self,
-        context: &EvaluateNodeContext,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let target = self.target.evaluate(context)?;
 
         match target {
@@ -26,7 +23,7 @@ impl EvaluateNode for FunctionCall {
                     stack.insert(&name, value);
                 }
 
-                let local_context = EvaluateNodeContext::new(
+                let local_context = Context::new(
                     stack,
                     context.decimal_places.clone(),
                     context.decimal_format.clone(),
@@ -85,7 +82,7 @@ mod tests {
 
     #[test]
     fn evaluate_function_call_with_invalid_number_of_arguments() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = FunctionCall::new(
             Function::new(
                 FunctionSignature::new()
@@ -101,7 +98,7 @@ mod tests {
 
     #[test]
     fn evaluate_function_call() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = FunctionCall::new(
             Function::new(
                 FunctionSignature::new()
@@ -118,7 +115,7 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call() {
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
             DecimalFormat::default(),
@@ -161,7 +158,7 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call_invalid_number_of_arguments() {
-        let context = EvaluateNodeContext::new(
+        let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
             DecimalFormat::default(),

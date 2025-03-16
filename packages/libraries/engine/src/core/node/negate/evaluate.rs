@@ -1,12 +1,12 @@
 use crate::core::{
-    Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, Negate,
+    Boolean, EvaluateNode, Context, EvaluateNodeError, Negate,
     Node, Number, Tensor,
 };
 
 impl EvaluateNode for Negate {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         let value = self.value.evaluate(context)?;
 
@@ -52,14 +52,14 @@ mod tests {
 
     #[test]
     fn evaluate_negate_number() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Negate::new(Number::new(42.)).evaluate(&context).unwrap();
         assert_eq!(result, Number::new(-42.));
     }
 
     #[test]
     fn evaluate_negate_number_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Negate::new(Number::new(42.).with_span(1, 2))
             .with_span(0, 2)
             .evaluate(&context)
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_boolean() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result =
             Negate::new(Boolean::new(true)).evaluate(&context).unwrap();
         assert_eq!(result, Boolean::new(false));
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_boolean_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Negate::new(Boolean::new(true).with_span(1, 1))
             .with_span(0, 1)
             .evaluate(&context)
@@ -87,7 +87,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_tensor() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Negate::new(Tensor::new(vec![
             Number::new(1.),
             Number::new(2.),
@@ -107,7 +107,7 @@ mod tests {
 
     #[test]
     fn evaluate_negate_tensor_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Negate::new(
             Tensor::new(vec![
                 Number::new(1.),

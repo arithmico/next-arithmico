@@ -1,11 +1,11 @@
 use trace::TracableMut;
 
-use crate::core::{EvaluateNode, EvaluateNodeContext, EvaluateNodeError, Node};
+use crate::core::{EvaluateNode, Context, EvaluateNodeError, Node};
 
 impl EvaluateNode for Node {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         match self {
             Node::Boolean(boolean) => boolean.evaluate(context),

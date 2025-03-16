@@ -1,7 +1,7 @@
 use std::iter::zip;
 
 use crate::core::{
-    convert_to_outer_index, EvaluateNode, EvaluateNodeContext,
+    convert_to_outer_index, EvaluateNode, Context,
     EvaluateNodeError, GetNodeType, Node, Number, Product, Sum, Tensor,
 };
 use trace::TracableMut;
@@ -9,7 +9,7 @@ use trace::TracableMut;
 impl EvaluateNode for Product {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
@@ -36,7 +36,7 @@ impl EvaluateNode for Product {
 fn multiply_product_elements(
     left: &Node,
     right: &Node,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
@@ -72,7 +72,7 @@ fn multiply_numbers(
 fn multiply_number_and_tensor(
     number: &Number,
     tensor: &Tensor,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     if !cfg!(feature = "operator_product_number_tensor") {
         return Err(EvaluateNodeError::unsupported_operation());
@@ -93,7 +93,7 @@ fn multiply_number_and_tensor(
 fn multiply_tensors(
     left: &Tensor,
     right: &Tensor,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     let left_rank = left.get_rank();
     let right_rank = right.get_rank();
@@ -108,7 +108,7 @@ fn multiply_tensors(
 fn multiply_vectors(
     left: &Tensor,
     right: &Tensor,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     debug_assert_eq!(left.get_rank(), 1);
     debug_assert_eq!(right.get_rank(), 1);
@@ -133,7 +133,7 @@ fn multiply_vectors(
 fn multiply_matrices(
     left: &Tensor,
     right: &Tensor,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     debug_assert_eq!(left.get_rank(), 2);
     debug_assert_eq!(right.get_rank(), 2);
@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_product() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![Number::new(1.)]).evaluate(&context);
         assert_eq!(
             result,
@@ -191,7 +191,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_number_2() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -200,7 +200,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_number_3() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -209,7 +209,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_vector_vector_2() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![
             Tensor::new(vec![
                 Number::new(1.),
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_vector() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![
             Number::new(2.),
             Tensor::new(vec![
@@ -252,7 +252,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_number_matrix() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Product::new(vec![
             Number::new(2.),
             Tensor::new(vec![
@@ -278,7 +278,7 @@ mod tests {
 
     #[test]
     fn evaluate_product_matrix_matrix() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         assert_eq!(
             Product::new(vec![
                 Tensor::new(vec![

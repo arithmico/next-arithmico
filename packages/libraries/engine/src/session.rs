@@ -1,5 +1,5 @@
 use crate::core::{
-    evaluate_node, parse, serialize_node, EvaluateNodeContext, HostApi, Node,
+    evaluate_node, parse, serialize_node, Context, HostApi, Node,
     ParseNodeOptions, SerializeNodeOptions, Stack,
 };
 use crate::{api::load_host_api, Documentation};
@@ -32,8 +32,8 @@ impl Session {
         &self,
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,
-    ) -> EvaluateNodeContext {
-        EvaluateNodeContext::new(
+    ) -> Context {
+        Context::new(
             self.stack.clone(),
             decimal_places,
             decimal_format,
