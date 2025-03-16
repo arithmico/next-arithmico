@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use crate::core::{
-    ArgumentMapping, Cardinality, EvaluateNodeContext, EvaluateNodeError,
+    ArgumentMapping, Cardinality, Context, EvaluateNodeError,
     FunctionSignature, GetNodeType, Node, Preprocess,
 };
 
@@ -10,7 +10,7 @@ use super::EvaluateNode;
 pub fn map_function_parameters(
     signature: &FunctionSignature,
     parameters: &Vec<Node>,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<ArgumentMapping, EvaluateNodeError> {
     let mut parameters = VecDeque::from(parameters.clone());
     let mut mapping = ArgumentMapping::new();

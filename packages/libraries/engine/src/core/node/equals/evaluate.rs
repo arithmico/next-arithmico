@@ -1,13 +1,13 @@
 use std::iter::zip;
 
 use crate::core::{
-    Boolean, Equals, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, Node,
+    Boolean, Equals, EvaluateNode, Context, EvaluateNodeError, Node,
 };
 
 impl EvaluateNode for Equals {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_boolean_boolean_true() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(Boolean::new(false), Boolean::new(false))
             .evaluate(&context)
             .unwrap();
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_boolean_boolean_false() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(Boolean::new(false), Boolean::new(true))
             .evaluate(&context)
             .unwrap();
@@ -87,7 +87,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_number_number_true() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(Number::new(3.), Number::new(3.))
             .evaluate(&context)
             .unwrap();
@@ -96,7 +96,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_number_number_false() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(Number::new(3.), Number::new(4.))
             .evaluate(&context)
             .unwrap();
@@ -105,7 +105,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_tensor_tensor_true() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
                 Number::new(1.),
@@ -125,7 +125,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_tensor_tensor_false() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
                 Number::new(1.),
@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_tensor_tensor_false_shape() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
                 Number::new(1.),
@@ -165,7 +165,7 @@ mod tests {
 
     #[test]
     fn evaluate_equals_tensor_tensor_false_incompatible_data_types() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
                 Number::new(1.),

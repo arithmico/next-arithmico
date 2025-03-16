@@ -1,14 +1,14 @@
 use trace::TracableMut;
 
 use crate::core::{
-    And, Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError,
+    And, Boolean, EvaluateNode, Context, EvaluateNodeError,
     GetNodeType, Node,
 };
 
 impl EvaluateNode for And {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
@@ -49,14 +49,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_and() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = And::new(vec![Boolean::new(true)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::And)));
     }
 
     #[test]
     fn evaluate_and_boolean_boolean_2() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = And::new(vec![Boolean::new(false), Boolean::new(true)])
             .evaluate(&context)
             .unwrap();
@@ -65,7 +65,7 @@ mod tests {
 
     #[test]
     fn evaluate_and_boolean_boolean_3() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = And::new(vec![
             Boolean::new(true),
             Boolean::new(true),
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn evaluate_and_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = And::new(vec![
             Boolean::new(false).with_span(0, 0),
             Boolean::new(true).with_span(2, 2),

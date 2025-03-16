@@ -1,7 +1,7 @@
 use std::iter::zip;
 
 use crate::core::{
-    EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType, Node,
+    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
     Number, Sum, Tensor,
 };
 use trace::TracableMut;
@@ -9,7 +9,7 @@ use trace::TracableMut;
 impl EvaluateNode for Sum {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
@@ -33,7 +33,7 @@ impl EvaluateNode for Sum {
 fn add_sum_elements(
     left: &Node,
     right: &Node,
-    context: &EvaluateNodeContext,
+    context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
@@ -90,14 +90,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_sum() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Sum::new(vec![Number::new(1.)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Sum)));
     }
 
     #[test]
     fn evaluate_sum_number_number_2() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Sum::new(vec![Number::new(1.), Number::new(2.)])
             .evaluate(&context)
             .unwrap();
@@ -106,7 +106,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_number_number_3() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result =
             Sum::new(vec![Number::new(1.), Number::new(2.), Number::new(3.)])
                 .evaluate(&context)
@@ -116,7 +116,7 @@ mod tests {
 
     #[test]
     fn evaluate_sum_empty_vectors() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Sum::new(vec![Tensor::new(vec![]), Tensor::new(vec![])])
             .evaluate(&context)
             .unwrap();

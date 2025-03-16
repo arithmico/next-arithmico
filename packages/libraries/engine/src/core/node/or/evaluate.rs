@@ -1,14 +1,14 @@
 use trace::TracableMut;
 
 use crate::core::{
-    Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GetNodeType,
+    Boolean, EvaluateNode, Context, EvaluateNodeError, GetNodeType,
     Node, Or,
 };
 
 impl EvaluateNode for Or {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
@@ -55,14 +55,14 @@ mod tests {
 
     #[test]
     fn evaluate_invalid_or() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Or::new(vec![Boolean::new(true)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Or)));
     }
 
     #[test]
     fn evaluate_or_boolean_boolean_2() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Or::new(vec![Boolean::new(false), Boolean::new(true)])
             .evaluate(&context)
             .unwrap();
@@ -71,7 +71,7 @@ mod tests {
 
     #[test]
     fn evaluate_or_boolean_boolean_3() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Or::new(vec![
             Boolean::new(false),
             Boolean::new(false),
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn evaluate_or_with_trace() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = Or::new(vec![
             Boolean::new(false).with_span(0, 0),
             Boolean::new(false).with_span(2, 2),

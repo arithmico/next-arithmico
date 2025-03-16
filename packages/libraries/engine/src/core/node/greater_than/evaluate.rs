@@ -1,12 +1,12 @@
 use crate::core::{
-    Boolean, EvaluateNode, EvaluateNodeContext, EvaluateNodeError, GreaterThan,
+    Boolean, EvaluateNode, Context, EvaluateNodeError, GreaterThan,
     Node,
 };
 
 impl EvaluateNode for GreaterThan {
     fn evaluate(
         &self,
-        context: &EvaluateNodeContext,
+        context: &Context,
     ) -> Result<Node, EvaluateNodeError> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn evaluate_greater_than_number_number_true() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = GreaterThan::new(Number::new(2.), Number::new(1.))
             .evaluate(&context)
             .unwrap();
@@ -37,7 +37,7 @@ mod tests {
 
     #[test]
     fn evaluate_greater_than_number_number_false() {
-        let context = EvaluateNodeContext::default();
+        let context = Context::default();
         let result = GreaterThan::new(Number::new(1.), Number::new(2.))
             .evaluate(&context)
             .unwrap();
