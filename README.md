@@ -11,12 +11,23 @@ By leveraging cutting-edge technologies and adhering to rigorous accessibility s
 
 ## Overview
 
-This repository utilizes Cargo's workspace feature to manage multiple packages within a single project. Each package serves a specific purpose in the Arithmico project:
+This repository is organized as a Cargo workspace, allowing for the coordinated development of multiple Rust packages within the broader Arithmico project. Each package plays a distinct role, contributing to various aspects of the application's functionality—from core computation to frontend components.
 
-- **arithmico**: The main application package.
-- **engine**: Package for parsing and evaluating mathematical expressions.
-- **headless_components**: Package containing accessible components for the Yew frontend framework.
-- **icons**: Package providing Yew components for various icons.
+Below is an overview of the packages contained in this workspace:
+
+| Package Name         | Path                         | README                                                   |
+|----------------------|------------------------------|----------------------------------------------------------|
+| arithmico            | /applications/arithmico      | (README)[packages/applications/arithmico/README.md]      |
+| cssbundler           | /applications/cssbundler     | (README)[packages/applications/cssbundler/README.md]     |
+| create_version       | /applications/create_version | (README)[packages/applications/create_version/README.md] |
+| editor               | /libraries/editor            | -                                                        |
+| editor_core          | /libraries/editor_core       | -                                                        |
+| engine               | /libraries/engine            | -                                                        |
+| trace                | /libraries/trace             | -                                                        |
+| translate            | /libraries/translate         | -                                                        |
+| translate_core       | /libraries/translate_core    | -                                                        |
+| ui                   | /libraries/ui                | -                                                        |
+| web_state            | /libraries/web_state         | -                                                        |
 
 ## Development Setup
 
@@ -26,7 +37,7 @@ To manage the packages within this repository, Cargo's workspace feature is used
 
 ### Formatting
 
-Code formatting is maintained using `rustfmt`, ensuring consistent and readable code throughout the repository.
+Code formatting is maintained using `rustfmt` and `leptosfmt`, ensuring consistent and readable code throughout the repository.
 
 ### Commit Convention
 
