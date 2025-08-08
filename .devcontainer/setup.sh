@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+sudo apt install -y pkg-config
+
 # install tailwind
 npx -y playwright install --with-deps
 
