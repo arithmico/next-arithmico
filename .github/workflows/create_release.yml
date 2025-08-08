@@ -57,7 +57,7 @@ jobs:
           npm run cdk -- deploy
 
   build-calculator:
-    name: Deploy Infrastructure
+    name: Build Calculator
     runs-on: ubuntu-24.04
     needs: create-release
     steps:
@@ -80,7 +80,7 @@ jobs:
           touch index.css 
           ~/.cargo/bin/trunk build --release
       - name: upload artifact
-        working-directory: /workspaces/next-arithmico/packages/applications/arithmico/dist
+        working-directory: packages/applications/arithmico/dist
         shell: bash
         env:
           VERSION_TAG: ${{ needs.create-release.outputs.version_tag }}
