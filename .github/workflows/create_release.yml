@@ -40,12 +40,12 @@ jobs:
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
       - name: test cdk
         working-directory: infrastructure
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
         run: |
           npm ci
           npm run cdk -- deploy
