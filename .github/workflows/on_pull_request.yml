@@ -12,7 +12,7 @@ jobs:
       - uses: cargo-bins/cargo-binstall@main
       - run: cargo test --all-features
         shell: bash
-  
+
   test-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
         node-version: 22
     - name: setup e2e tests
       working-directory: packages/applications/arithmico-e2e
-      run: | 
+      run: |
         npm ci
         npx playwright install --with-deps
     
@@ -40,8 +40,20 @@ jobs:
     
     - name: setup e2e tests
       working-directory: packages/applications/arithmico-e2e
-      run: | 
-        npx playwright test
+      run: npx playwright test
+
+  test-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: test cdk
+      working-directory: infrastructure
+      run: |
+        npm ci
+        npm run cdk -- synth -q
 
   formatting:
     name: Check Formatting
