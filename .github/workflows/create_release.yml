@@ -28,6 +28,21 @@ jobs:
           VERSION_TAG=$(create_version)
           git tag $VERSION_TAG
           git push origin $VERSION_TAG
-    
-
-
+  
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+      - name: test cdk
+        working-directory: infrastructure
+        run: |
+          npm ci
+          npm run cdk -- deploy
