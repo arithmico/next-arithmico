@@ -23,7 +23,7 @@ jobs:
       - name: Create and push tag
         shell: bash
         env: 
-            SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
+          SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
         run: |
           VERSION_TAG=$(create_version)
           git tag $VERSION_TAG
@@ -43,6 +43,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: test cdk
         working-directory: infrastructure
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ env.AWS_REGION }}
         run: |
           npm ci
           npm run cdk -- deploy
