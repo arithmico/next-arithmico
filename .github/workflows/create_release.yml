@@ -86,5 +86,5 @@ jobs:
           VERSION_TAG: ${{ needs.create-release.outputs.version_tag }}
           BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
         run: |
-          DEST_PATH="s3://$ARTIFACTS_BUCKET_NAME/calculator/$VERSION_TAG/main/web"
+          DEST_PATH="s3://$BUCKET_NAME/calculator/$VERSION_TAG/main/web"
           aws s3 sync . $DEST_PATH
