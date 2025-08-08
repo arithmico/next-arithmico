@@ -51,6 +51,9 @@ jobs:
         node-version: 22
     - name: test cdk
       working-directory: infrastructure
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ env.AWS_REGION }}
       run: |
         npm ci
         npm run cdk -- synth -q
