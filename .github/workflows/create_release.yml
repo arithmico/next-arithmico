@@ -12,6 +12,8 @@ jobs:
   create-release:
     name: Create Release
     runs-on: ubuntu-24.04
+    outputs:
+      version_tag: ${{ steps.create-tag.outputs.version_tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,6 +24,7 @@ jobs:
         shell: bash
         run: cargo install --path packages/applications/create_version
       - name: Create and push tag
+        id: create-tag
         shell: bash
         env: 
           SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
@@ -29,6 +32,7 @@ jobs:
           VERSION_TAG=$(create_version)
           git tag $VERSION_TAG
           git push origin $VERSION_TAG
+          echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
   deploy-infrastructure:
     name: Deploy Infrastructure
@@ -51,3 +55,33 @@ jobs:
         run: |
           npm ci
           npm run cdk -- deploy
+
+  build-calculator:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-24.04
+    needs: create-release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: build calculator
+        working-directory: packages/applications/arithmico
+        shell: bash
+        run: |
+          touch index.css 
+          ~/.cargo/bin/trunk build --release
+      - name: upload artifact
+        working-directory: /workspaces/next-arithmico/packages/applications/arithmico/dist
+        shell: bash
+        env:
+          VERSION_TAG: ${{ needs.create-release.outputs.version_tag }}
+          BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
+        run: |
+          DEST_PATH="s3://$ARTIFACTS_BUCKET_NAME/calculator/$VERSION_TAG/main/web"
+          aws s3 sync . $DEST_PATH
