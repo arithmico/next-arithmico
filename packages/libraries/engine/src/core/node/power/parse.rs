@@ -9,14 +9,14 @@ use crate::core::{with_parser, ParseNode, ParseResult, Tensor};
 use super::Power;
 
 impl ParseNode for Power {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Power::parse", |input| {
             alt((parse_power, parse_power_element)).parse(input)
         })(input)
     }
 }
 
-fn parse_power(input: &str) -> ParseResult {
+fn parse_power(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, rest)) =
         (parse_power_element, many1(parse_power_item)).parse(input)?;
 
@@ -29,7 +29,7 @@ fn parse_power(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_power_item(input: &str) -> ParseResult {
+fn parse_power_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, node) =
         preceded((space0, tag("^"), space0), parse_power_element)
             .parse(input)?;
@@ -37,7 +37,7 @@ fn parse_power_item(input: &str) -> ParseResult {
     Ok((remaining_input, node))
 }
 
-fn parse_power_element(input: &str) -> ParseResult {
+fn parse_power_element(input: &'_ str) -> ParseResult<'_> {
     Tensor::parse(input)
 }
 

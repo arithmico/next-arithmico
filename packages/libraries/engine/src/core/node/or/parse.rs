@@ -6,14 +6,14 @@ use nom::{
 use crate::core::{with_parser, And, Or, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Or {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Or::parse", |input| {
             alt((parse_or, And::parse)).parse(input)
         })(input)
     }
 }
 
-fn parse_or(input: &str) -> ParseResult {
+fn parse_or(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, mut rest)) =
         (And::parse, many1(parse_or_item)).parse(input)?;
 
@@ -24,7 +24,7 @@ fn parse_or(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_or_item(input: &str) -> ParseResult {
+fn parse_or_item(input: &'_ str) -> ParseResult<'_> {
     preceded((space0, tag("|"), space0), And::parse).parse(input)
 }
 

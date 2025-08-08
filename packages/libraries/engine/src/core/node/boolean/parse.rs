@@ -3,12 +3,12 @@ use nom::{branch::alt, bytes::complete::tag, Parser};
 use crate::core::{with_parser, Boolean, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Boolean {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Boolean::parse", |input| parse_boolean(input))(input)
     }
 }
 
-fn parse_boolean(input: &str) -> ParseResult {
+fn parse_boolean(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) =
         alt((tag("true"), tag("false"))).parse(input)?;
 

@@ -9,14 +9,14 @@ use crate::core::{with_parser, ParseNode, ParseResult, Power};
 use super::Division;
 
 impl ParseNode for Division {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Division::parse", |input| {
             alt((parse_division, parse_division_element)).parse(input)
         })(input)
     }
 }
 
-fn parse_division(input: &str) -> ParseResult {
+fn parse_division(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, rest)) =
         (parse_division_element, many1(parse_division_item)).parse(input)?;
 
@@ -29,7 +29,7 @@ fn parse_division(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_division_item(input: &str) -> ParseResult {
+fn parse_division_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, node) =
         preceded((space0, tag("/"), space0), parse_division_element)
             .parse(input)?;
@@ -37,7 +37,7 @@ fn parse_division_item(input: &str) -> ParseResult {
     Ok((remaining_input, node))
 }
 
-pub fn parse_division_element(input: &str) -> ParseResult {
+pub fn parse_division_element(input: &'_ str) -> ParseResult<'_> {
     Power::parse(input)
 }
 

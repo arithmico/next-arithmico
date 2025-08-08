@@ -8,14 +8,14 @@ use crate::core::{
 };
 
 impl ParseNode for And {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("And::parse", |input| {
             alt((parse_and, parse_relation)).parse(input)
         })(input)
     }
 }
 
-fn parse_and(input: &str) -> ParseResult {
+fn parse_and(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, mut rest)) =
         (Sum::parse, many1(parse_and_item)).parse(input)?;
 
@@ -26,7 +26,7 @@ fn parse_and(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_and_item(input: &str) -> ParseResult {
+fn parse_and_item(input: &'_ str) -> ParseResult<'_> {
     preceded((space0, tag("&"), space0), cut(parse_relation)).parse(input)
 }
 

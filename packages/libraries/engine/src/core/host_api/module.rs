@@ -8,10 +8,18 @@ use super::{
     TranslatedString,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct HostApiModule {
     name: TranslatedString,
     endpoints: HashMap<String, HostEndpoint>,
+}
+
+impl PartialEq for HostApiModule {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+            && self.endpoints.keys().collect::<Vec<_>>()
+                == other.endpoints.keys().collect::<Vec<_>>()
+    }
 }
 
 impl HostApiModule {

@@ -3,12 +3,12 @@ use nom::number::complete::double;
 use crate::core::{with_parser, Number, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Number {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Number::parse", |input| parse_number(input))(input)
     }
 }
 
-fn parse_number(input: &str) -> ParseResult {
+fn parse_number(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) = double(input)?;
 
     Ok((

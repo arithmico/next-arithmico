@@ -14,7 +14,7 @@ pub type ConstantExecutor = fn(context: &Context) -> Node;
 
 pub type TranslatedString = HashMap<Language, String>;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum HostEndpoint {
     Function {
         executor: FunctionExecutor,

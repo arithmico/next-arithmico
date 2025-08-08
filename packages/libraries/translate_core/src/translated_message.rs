@@ -4,11 +4,17 @@ use crate::{
     Language, Translatable, TranslationError, TranslationTemplateProvider,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct TranslatedMessage {
     template_id: String,
     keys: HashMap<String, String>,
     provider_resolver: fn() -> Rc<TranslationTemplateProvider>,
+}
+
+impl PartialEq for TranslatedMessage {
+    fn eq(&self, other: &Self) -> bool {
+        self.template_id == other.template_id && self.keys == other.keys
+    }
 }
 
 impl TranslatedMessage {

@@ -5,7 +5,7 @@ use crate::core::{
 };
 
 impl ParseNode for Node {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         alt((Function::parse, parse_sub_expression)).parse(input)
     }
 }

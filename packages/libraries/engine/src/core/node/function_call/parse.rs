@@ -14,14 +14,14 @@ use crate::core::{
 };
 
 impl ParseNode for FunctionCall {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("FunctionCall::parse", |input| {
             alt((parse_function_call, parse_literal)).parse(input)
         })(input)
     }
 }
 
-fn parse_function_call(input: &str) -> ParseResult {
+fn parse_function_call(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (target, arguments)) = (
         parse_function_call_target,
         delimited(
@@ -39,7 +39,7 @@ fn parse_function_call(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_function_call_target(input: &str) -> ParseResult {
+fn parse_function_call_target(input: &'_ str) -> ParseResult<'_> {
     alt((Symbol::parse, parse_sub_expression)).parse(input)
 }
 
@@ -54,7 +54,7 @@ fn parse_function_call_arguments(
     Ok((remaining_input, rest))
 }
 
-fn parse_function_call_arguments_item(input: &str) -> ParseResult {
+fn parse_function_call_arguments_item(input: &'_ str) -> ParseResult<'_> {
     preceded((space0, tag(","), space0), Node::parse).parse(input)
 }
 

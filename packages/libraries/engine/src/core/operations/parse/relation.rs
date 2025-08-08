@@ -10,13 +10,13 @@ use crate::core::{
     TraceUtils,
 };
 
-pub fn parse_relation(input: &str) -> ParseResult {
+pub fn parse_relation(input: &'_ str) -> ParseResult<'_> {
     with_parser("parse_relation", |input| {
         alt((parse_relation_chain, parse_relation_element)).parse(input)
     })(input)
 }
 
-fn parse_relation_chain(input: &str) -> ParseResult {
+fn parse_relation_chain(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, rest)) =
         (parse_relation_element, many1(parse_relation_chain_item))
             .parse(input)?;
@@ -66,7 +66,7 @@ fn parse_relation_operator(input: &str) -> IResult<&str, &str, ParseNodeError> {
     alt((tag("="), tag("<="), tag(">="), tag("<"), tag(">"))).parse(input)
 }
 
-fn parse_relation_element(input: &str) -> ParseResult {
+fn parse_relation_element(input: &'_ str) -> ParseResult<'_> {
     Sum::parse(input)
 }
 

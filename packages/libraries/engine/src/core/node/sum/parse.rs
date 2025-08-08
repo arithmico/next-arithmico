@@ -8,14 +8,14 @@ use crate::core::{
 };
 
 impl ParseNode for Sum {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Sum::parse", |input| {
             alt((parse_sum, Negate::parse, Product::parse)).parse(input)
         })(input)
     }
 }
 
-fn parse_sum(input: &str) -> ParseResult {
+fn parse_sum(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, mut rest)) = (
         Product::parse,
         many1(alt((parse_sum_item, preceded(space0, Negate::parse)))),
@@ -30,7 +30,7 @@ fn parse_sum(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_sum_item(input: &str) -> ParseResult {
+fn parse_sum_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, element) =
         preceded((space0, tag("+"), space0), cut(Product::parse))
             .parse(input)?;

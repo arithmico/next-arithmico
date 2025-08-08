@@ -11,14 +11,14 @@ use crate::core::{
 use super::Function;
 
 impl ParseNode for Function {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Function::parse", |input| {
             alt((parse_function, Or::parse)).parse(input)
         })(input)
     }
 }
 
-fn parse_function(input: &str) -> ParseResult {
+fn parse_function(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (arguments, expression)) = (
         delimited(
             (tag("("), space0),
