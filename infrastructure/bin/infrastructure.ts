@@ -1,6 +1,16 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { InfrastructureStack } from '../lib/infrastructure-stack';
+import { ArtifactsStack } from '../lib/artifacts-stack';
+import { getStringParameterOrThrow } from '../lib/utils';
+
+const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
+const region = getStringParameterOrThrow("AWS_REGION");
 
 const app = new cdk.App();
-new InfrastructureStack(app, 'InfrastructureStack', {});
+
+new ArtifactsStack(app, 'Artifacts', {
+    env: {
+        account,
+        region
+    }
+});
