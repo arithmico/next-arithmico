@@ -13,7 +13,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-24.04
     steps:
-      - name: 'Checkout code'
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -34,7 +34,7 @@ jobs:
     name: Deploy Infrastructure
     runs-on: ubuntu-24.04
     steps:
-      - name: 'Checkout code'
+      - name: Checkout code
         uses: actions/checkout@v4
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4.3.1
@@ -42,8 +42,9 @@ jobs:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
-      - name: test cdk
+      - name: CDK Deploy
         working-directory: infrastructure
+        shell: bash
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
