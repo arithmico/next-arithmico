@@ -11,12 +11,12 @@ use crate::core::{
 };
 
 impl ParseNode for Symbol {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Symbol::parse", |input| parse_symbol(input))(input)
     }
 }
 
-fn parse_symbol(input: &str) -> ParseResult {
+fn parse_symbol(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, name) = parse_raw_symbol(input)?;
     Ok((
         remaining_input,

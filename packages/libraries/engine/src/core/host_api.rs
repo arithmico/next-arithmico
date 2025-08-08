@@ -6,9 +6,16 @@ use std::collections::HashMap;
 pub use endpoint::*;
 pub use module::*;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct HostApi {
     endpoints: HashMap<String, HostEndpoint>,
+}
+
+impl PartialEq for HostApi {
+    fn eq(&self, other: &Self) -> bool {
+        self.endpoints.keys().collect::<Vec<_>>()
+            == other.endpoints.keys().collect::<Vec<_>>()
+    }
 }
 
 impl HostApi {

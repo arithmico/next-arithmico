@@ -8,14 +8,14 @@ use crate::core::{
 };
 
 impl ParseNode for Product {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Product::parse", |input| {
             alt((parse_product, Division::parse)).parse(input)
         })(input)
     }
 }
 
-pub fn parse_product(input: &str) -> ParseResult {
+pub fn parse_product(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (first, mut rest)) =
         (Division::parse, many1(parse_product_item)).parse(input)?;
 
@@ -27,7 +27,7 @@ pub fn parse_product(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_product_item(input: &str) -> ParseResult {
+fn parse_product_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, element) =
         preceded((space0, tag("*"), space0), cut(Division::parse))
             .parse(input)?;

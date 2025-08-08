@@ -18,7 +18,7 @@ pub use with_parser::*;
 pub type ParseResult<'a> = IResult<&'a str, Node, ParseNodeError>;
 
 pub trait ParseNode {
-    fn parse(input: &str) -> ParseResult;
+    fn parse(input: &'_ str) -> ParseResult<'_>;
 }
 
 pub fn parse(input: &str, context: &Context) -> Result<Node, ParseNodeError> {

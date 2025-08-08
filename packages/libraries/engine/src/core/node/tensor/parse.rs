@@ -8,7 +8,7 @@ use crate::core::{
 };
 
 impl ParseNode for Tensor {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Tensor::parse", |input| {
             alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))
                 .parse(input)
@@ -16,7 +16,7 @@ impl ParseNode for Tensor {
     }
 }
 
-fn parse_empty_tensor(input: &str) -> ParseResult {
+fn parse_empty_tensor(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, _) = (tag("["), space0, tag("]")).parse(input)?;
     Ok((
         remaining_input,
@@ -24,7 +24,7 @@ fn parse_empty_tensor(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_tensor(input: &str) -> ParseResult {
+fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, elements) = delimited(
         (tag("["), space0),
         cut(separated_list0((space0, tag(","), space0), Node::parse)),

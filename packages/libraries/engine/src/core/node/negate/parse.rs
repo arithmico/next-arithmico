@@ -8,12 +8,12 @@ use crate::core::{with_parser, ParseNode, ParseResult, Product, TraceUtils};
 use super::Negate;
 
 impl ParseNode for Negate {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Negate::parse", |input| parse_negate(input))(input)
     }
 }
 
-fn parse_negate(input: &str) -> ParseResult {
+fn parse_negate(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) =
         preceded((space0, tag("-"), space0), Product::parse).parse(input)?;
     Ok((

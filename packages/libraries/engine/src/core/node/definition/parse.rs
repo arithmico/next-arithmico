@@ -13,7 +13,7 @@ use crate::core::{
 };
 
 impl ParseNode for Definition {
-    fn parse(input: &str) -> ParseResult {
+    fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Definition::parse", |input| {
             alt((parse_define_function, parse_define_symbol, Node::parse))
                 .parse(input)
@@ -21,7 +21,7 @@ impl ParseNode for Definition {
     }
 }
 
-fn parse_define_symbol(input: &str) -> ParseResult {
+fn parse_define_symbol(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (symbol, expression)) = (
         terminated(parse_raw_symbol, (space0, tag(":="), space0)),
         Node::parse,
@@ -35,7 +35,7 @@ fn parse_define_symbol(input: &str) -> ParseResult {
     ))
 }
 
-fn parse_define_function(input: &str) -> ParseResult {
+fn parse_define_function(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, ((symbol, arguments), expression)) = (
         terminated(
             (
