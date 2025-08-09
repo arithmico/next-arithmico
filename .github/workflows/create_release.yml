@@ -59,6 +59,11 @@ jobs:
         run: |
           npm ci
           npm run cdk -- deploy --all --require-approval never
+      - name: Create Cloudfront Invalidation
+        shell: bash
+        run: |
+          DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name CalculatorProduction | jq -r '.Stacks | .[] | .Outputs | reduce .[] as $i ({}; .[$i.OutputKey] = $i.OutputValue) | .DistributionId')
+          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
 
   build-calculator:
     name: Build Calculator
