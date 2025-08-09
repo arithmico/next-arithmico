@@ -4,10 +4,11 @@ import { Construct } from 'constructs';
 export type StaticWebsiteStackProps = cdk.StackProps & {
     domainName: string,
     artifactPath: string,
+    originAccessIdentityId: string
 }
 
 export class StaticWebsiteStack extends cdk.Stack {
-    constructor(scope: Construct, id: string, { domainName, artifactPath, ...props }: StaticWebsiteStackProps) {
+    constructor(scope: Construct, id: string, { domainName, artifactPath, originAccessIdentityId, ...props }: StaticWebsiteStackProps) {
         super(scope, id, props);
 
         const zone = cdk.aws_route53.HostedZone.fromLookup(this, "HostedZone", {
@@ -15,8 +16,12 @@ export class StaticWebsiteStack extends cdk.Stack {
         });
 
         const bucket = cdk.aws_s3.Bucket.fromBucketName(this, "Bucket", "arithmico-application-artifacts");
-        const originAccessIdentity = new cdk.aws_cloudfront.OriginAccessIdentity(this, 'OriginAccessIdentity');
-        bucket.grantRead(originAccessIdentity);
+
+        const originAccessIdentity = cdk.aws_cloudfront.OriginAccessIdentity.fromOriginAccessIdentityId(
+            this,
+            "OriginAccessIdentityId",
+            originAccessIdentityId
+        );
 
         const certificate = new cdk.aws_certificatemanager.DnsValidatedCertificate(this, "Certificate", {
             domainName,
