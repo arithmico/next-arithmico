@@ -54,6 +54,7 @@ jobs:
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         AWS_REGION: ${{ vars.AWS_REGION }}
+        APP_VERSION: dev
       run: |
         npm ci
         npm run cdk -- synth -q
