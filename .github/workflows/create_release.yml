@@ -58,7 +58,7 @@ jobs:
           APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
         run: |
           npm ci
-          npm run cdk -- deploy
+          npm run cdk -- deploy --all
 
   build-calculator:
     name: Build Calculator
