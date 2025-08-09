@@ -10,7 +10,8 @@
         "cssbundler",
         "create_version",
         "web_state",
-        "infrastructure"
+        "infrastructure",
+        "ci"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
