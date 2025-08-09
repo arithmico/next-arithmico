@@ -59,7 +59,7 @@ jobs:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ vars.AWS_REGION }}
-    - name: test cdk
+    - name: CDK Synth
       working-directory: infrastructure
       env:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
