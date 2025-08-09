@@ -29,3 +29,7 @@ editor_core = { path = "../../libraries/editor_core" }
 translate = { path = "../../libraries/translate" }
 web_state = { path = "../../libraries/web_state" }
 toml = "0.8.20"
+chrono = "0.4.41"
+
+[build-dependencies]
+chrono = "0.4.41"
