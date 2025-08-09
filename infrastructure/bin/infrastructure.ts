@@ -23,6 +23,7 @@ const calculatorProductionStack = new StaticWebsiteStack(app, "CalculatorProduct
         region
     },
     artifactPath: `calculator/${version}/main/web`,
-    domainName: "next.arithmico.com"
+    domainName: "next.arithmico.com",
+    originAccessIdentityId: artifactsStack.getOriginAccessIdentityId()
 });
 calculatorProductionStack.addDependency(artifactsStack);
