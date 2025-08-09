@@ -37,6 +37,9 @@ jobs:
   deploy-infrastructure:
     name: Deploy Infrastructure
     runs-on: ubuntu-24.04
+    needs: 
+      - create-release
+      - build-calculator
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,6 +55,7 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
+          APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
         run: |
           npm ci
           npm run cdk -- deploy
