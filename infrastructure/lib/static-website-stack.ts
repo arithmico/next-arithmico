@@ -53,6 +53,10 @@ export class StaticWebsiteStack extends cdk.Stack {
             ]
         });
 
+        new cdk.CfnOutput(this, 'DistributionId', {
+            value: distribution.distributionId
+        });
+
         new cdk.aws_route53.ARecord(this, "AliasRecord", {
             zone,
             recordName: domainName,
