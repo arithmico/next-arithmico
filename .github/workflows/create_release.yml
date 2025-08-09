@@ -80,6 +80,8 @@ jobs:
       - name: build calculator
         working-directory: packages/applications/arithmico
         shell: bash
+        env:
+          APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
         run: |
           touch index.css 
           ~/.cargo/bin/trunk build --release

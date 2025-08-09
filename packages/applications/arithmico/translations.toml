@@ -114,6 +114,22 @@ German = "Suche"
 English = "About"
 German = "Über"
 
+[about.version.title]
+English = "Version Information"
+German = "Versionsinformationen"
+
+[about.version.version]
+English = "Version"
+German = "Version"
+
+[about.version.commit_hash]
+English = "Commit hash"
+German = "Commit-Hash"
+
+[about.version.source_date_epoch]
+English = "Build date"
+German = "Erstellungsdatum"
+
 [about.team]
 English = "Team"
 German = "Team"

@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use toml::{Table, Value, map::Map};
+use toml::{map::Map, Table, Value};
 use translate::FormattedMessage;
 
 pub struct TeamMember {
@@ -52,15 +52,15 @@ pub fn TeamMembers() -> impl IntoView {
                                 <p class="name">{member.name.clone()}</p>
 
                                 <dl>
-                                    <dd class="secondary">
+                                    <dd>
                                         <FormattedMessage id="about.team.member.role" />
                                     </dd>
-                                    <dt class="secondary">{member.role.clone()}</dt>
+                                    <dt>{member.role.clone()}</dt>
 
-                                    <dd class="secondary">
+                                    <dd>
                                         <FormattedMessage id="about.team.member.email" />
                                     </dd>
-                                    <dt class="secondary">
+                                    <dt>
                                         <a href=format!(
                                             "mailto:{}",
                                             member.email.clone(),

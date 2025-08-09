@@ -17,7 +17,6 @@
     column-gap: var(--spacing-2);
     row-gap: var(--spacing-1);
     font-size: var(--text-2xs);
-
 }
 
 .team-member > dl > dd {
