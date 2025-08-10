@@ -1,10 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    parse_relation, with_parser, And, ParseNode, ParseResult, Sum, TraceUtils,
+    expect_tag, parse_relation, with_parser, And, ParseNode, ParseResult, Sum,
+    TraceUtils,
 };
 
 impl ParseNode for And {
@@ -29,7 +30,7 @@ fn parse_and(input: &'_ str) -> ParseResult<'_> {
 fn parse_and_item(input: &'_ str) -> ParseResult<'_> {
     context(
         "and_item",
-        preceded((space0, tag("&"), space0), cut(parse_relation)),
+        preceded((space0, expect_tag("&"), space0), cut(parse_relation)),
     )
     .parse(input)
 }

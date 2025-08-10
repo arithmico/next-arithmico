@@ -1,9 +1,9 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, combinator::cut,
-    error::context, sequence::delimited, Parser,
+    character::complete::space0, combinator::cut, error::context,
+    sequence::delimited, Parser,
 };
 
-use crate::core::Node;
+use crate::core::{operations::parse::tag::expect_tag, Node};
 
 use super::{with_parser, ParseNode, ParseResult};
 
@@ -12,9 +12,9 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
         let mut cx = context(
             "sub_expression",
             delimited(
-                (tag("("), space0),
+                (expect_tag("("), space0),
                 cut(Node::parse),
-                cut(context("closing_parenthesis", (space0, tag(")")))),
+                cut(context("closing_parenthesis", (space0, expect_tag(")")))),
             ),
         );
         cx.parse(input)
@@ -24,8 +24,6 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
 #[cfg(test)]
 mod tests {
     use core::panic;
-
-    use nom::error::ErrorKind;
 
     use crate::core::{parse, ParseNodeError};
 
@@ -37,8 +35,9 @@ mod tests {
             && let Some(first) = context.first()
             && first.context == "closing_parenthesis"
             && first.input == ""
-            && let ParseNodeError::Leaf { kind, input } = *inner
-            && kind == ErrorKind::Tag
+            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+                *inner
+            && expectation == ")"
             && input == ""
         {
             return;

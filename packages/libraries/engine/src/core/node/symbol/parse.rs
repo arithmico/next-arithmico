@@ -1,6 +1,5 @@
 use nom::{
     branch::alt,
-    bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
     error::context,
     multi::many0,
@@ -8,7 +7,8 @@ use nom::{
 };
 
 use crate::core::{
-    with_parser, ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
+    expect_tag, with_parser, ParseNode, ParseNodeError, ParseResult, Symbol,
+    TraceUtils,
 };
 
 impl ParseNode for Symbol {
@@ -30,7 +30,7 @@ fn parse_symbol(input: &'_ str) -> ParseResult<'_> {
 
 pub fn parse_raw_symbol(input: &str) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (start, rest)) =
-        (alpha1, many0(alt((alphanumeric1, tag("_"))))).parse(input)?;
+        (alpha1, many0(alt((alphanumeric1, expect_tag("_"))))).parse(input)?;
 
     Ok((
         remaining_input,

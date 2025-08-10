@@ -1,10 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    with_parser, Division, ParseNode, ParseResult, Product, TraceUtils,
+    expect_tag, with_parser, Division, ParseNode, ParseResult, Product,
+    TraceUtils,
 };
 
 impl ParseNode for Product {
@@ -30,7 +31,7 @@ pub fn parse_product(input: &'_ str) -> ParseResult<'_> {
 
 fn parse_product_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, element) =
-        preceded((space0, tag("*"), space0), cut(Division::parse))
+        preceded((space0, expect_tag("*"), space0), cut(Division::parse))
             .parse(input)?;
     Ok((remaining_input, element))
 }

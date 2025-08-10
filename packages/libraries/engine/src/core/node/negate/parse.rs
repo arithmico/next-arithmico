@@ -1,9 +1,10 @@
 use nom::{
-    bytes::complete::tag, character::complete::space0, error::context,
-    sequence::preceded, Parser,
+    character::complete::space0, error::context, sequence::preceded, Parser,
 };
 
-use crate::core::{with_parser, ParseNode, ParseResult, Product, TraceUtils};
+use crate::core::{
+    expect_tag, with_parser, ParseNode, ParseResult, Product, TraceUtils,
+};
 
 use super::Negate;
 
@@ -17,7 +18,8 @@ impl ParseNode for Negate {
 
 fn parse_negate(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) =
-        preceded((space0, tag("-"), space0), Product::parse).parse(input)?;
+        preceded((space0, expect_tag("-"), space0), Product::parse)
+            .parse(input)?;
     Ok((
         remaining_input,
         Negate::new(value)

@@ -1,6 +1,5 @@
 use nom::{
     branch::alt,
-    bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
     error::context,
@@ -10,8 +9,8 @@ use nom::{
 };
 
 use crate::core::{
-    parse_literal, parse_sub_expression, with_parser, FunctionCall, Node,
-    ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
+    expect_tag, parse_literal, parse_sub_expression, with_parser, FunctionCall,
+    Node, ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
 };
 
 impl ParseNode for FunctionCall {
@@ -27,9 +26,9 @@ fn parse_function_call(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (target, arguments)) = (
         parse_function_call_target,
         delimited(
-            (space0, tag("("), space0),
+            (space0, expect_tag("("), space0),
             cut(opt(parse_function_call_arguments)),
-            cut((space0, tag(")"))),
+            cut((space0, expect_tag(")"))),
         ),
     )
         .parse(input)?;
@@ -57,7 +56,7 @@ fn parse_function_call_arguments(
 }
 
 fn parse_function_call_arguments_item(input: &'_ str) -> ParseResult<'_> {
-    preceded((space0, tag(","), space0), Node::parse).parse(input)
+    preceded((space0, expect_tag(","), space0), Node::parse).parse(input)
 }
 
 #[cfg(test)]
