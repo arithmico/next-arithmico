@@ -1,6 +1,6 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::preceded, Parser,
+    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
@@ -11,7 +11,8 @@ use super::Power;
 impl ParseNode for Power {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Power::parse", |input| {
-            alt((parse_power, parse_power_element)).parse(input)
+            alt((context("power", parse_power), parse_power_element))
+                .parse(input)
         })(input)
     }
 }

@@ -1,6 +1,6 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::preceded, Parser,
+    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
@@ -11,7 +11,11 @@ use super::Division;
 impl ParseNode for Division {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Division::parse", |input| {
-            alt((parse_division, parse_division_element)).parse(input)
+            alt((
+                context("parse_division", parse_division),
+                parse_division_element,
+            ))
+            .parse(input)
         })(input)
     }
 }

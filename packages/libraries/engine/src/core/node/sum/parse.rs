@@ -1,6 +1,6 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::preceded, Parser,
+    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
@@ -10,7 +10,8 @@ use crate::core::{
 impl ParseNode for Sum {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Sum::parse", |input| {
-            alt((parse_sum, Negate::parse, Product::parse)).parse(input)
+            alt((context("sum", parse_sum), Negate::parse, Product::parse))
+                .parse(input)
         })(input)
     }
 }

@@ -1,6 +1,6 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::preceded, Parser,
+    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
@@ -10,7 +10,8 @@ use crate::core::{
 impl ParseNode for Product {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Product::parse", |input| {
-            alt((parse_product, Division::parse)).parse(input)
+            alt((context("product", parse_product), Division::parse))
+                .parse(input)
         })(input)
     }
 }

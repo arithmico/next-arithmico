@@ -3,6 +3,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
+    error::context,
     multi::many0,
     sequence::{delimited, preceded},
     IResult, Parser,
@@ -16,7 +17,8 @@ use crate::core::{
 impl ParseNode for FunctionCall {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("FunctionCall::parse", |input| {
-            alt((parse_function_call, parse_literal)).parse(input)
+            alt((context("function_call", parse_function_call), parse_literal))
+                .parse(input)
         })(input)
     }
 }

@@ -3,6 +3,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
+    error::context,
     multi::many0,
     sequence::delimited,
     IResult, Parser,
@@ -18,7 +19,7 @@ use super::Function;
 impl ParseNode for Function {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Function::parse", |input| {
-            alt((parse_function, Or::parse)).parse(input)
+            alt((context("function", parse_function), Or::parse)).parse(input)
         })(input)
     }
 }

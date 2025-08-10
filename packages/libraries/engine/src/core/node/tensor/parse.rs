@@ -1,6 +1,7 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::separated_list0, sequence::delimited, Parser,
+    combinator::cut, error::context, multi::separated_list0,
+    sequence::delimited, Parser,
 };
 
 use crate::core::{
@@ -10,8 +11,11 @@ use crate::core::{
 impl ParseNode for Tensor {
     fn parse(input: &'_ str) -> ParseResult<'_> {
         with_parser("Tensor::parse", |input| {
-            alt((parse_empty_tensor, parse_tensor, FunctionCall::parse))
-                .parse(input)
+            alt((
+                context("tensor", alt((parse_empty_tensor, parse_tensor))),
+                FunctionCall::parse,
+            ))
+            .parse(input)
         })(input)
     }
 }
