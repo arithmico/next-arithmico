@@ -8,6 +8,10 @@ pub enum ParseNodeError {
         kind: ErrorKind,
         input: String,
     },
+    LeafWithExpectation {
+        input: String,
+        expectation: String,
+    },
     Node {
         children: Vec<ParseNodeError>,
     },
@@ -32,14 +36,21 @@ impl ErrorContext {
 }
 
 impl ParseNodeError {
-    fn new_leaf(input: &str, kind: ErrorKind) -> Self {
+    pub fn new_leaf(input: &str, kind: ErrorKind) -> Self {
         Self::Leaf {
             kind,
             input: input.to_string(),
         }
     }
 
-    fn new_node(children: Vec<ParseNodeError>) -> Self {
+    pub fn new_leaf_with_expectation(input: &str, expectation: &str) -> Self {
+        Self::LeafWithExpectation {
+            input: input.to_string(),
+            expectation: expectation.to_string(),
+        }
+    }
+
+    pub fn new_node(children: Vec<ParseNodeError>) -> Self {
         Self::Node { children }
     }
 }
@@ -59,7 +70,9 @@ impl ParseError<&str> for ParseNodeError {
 
     fn or(self, other: Self) -> Self {
         match self {
-            ParseNodeError::Leaf { .. } | ParseNodeError::Context { .. } => {
+            ParseNodeError::Leaf { .. }
+            | ParseNodeError::LeafWithExpectation { .. }
+            | ParseNodeError::Context { .. } => {
                 Self::new_node(vec![self, other])
             }
             ParseNodeError::Node { mut children } => {

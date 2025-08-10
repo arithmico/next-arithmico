@@ -1,10 +1,10 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{with_parser, ParseNode, ParseResult, Power};
+use crate::core::{expect_tag, with_parser, ParseNode, ParseResult, Power};
 
 use super::Division;
 
@@ -34,9 +34,11 @@ fn parse_division(input: &'_ str) -> ParseResult<'_> {
 }
 
 fn parse_division_item(input: &'_ str) -> ParseResult<'_> {
-    let (remaining_input, node) =
-        preceded((space0, tag("/"), space0), cut(parse_division_element))
-            .parse(input)?;
+    let (remaining_input, node) = preceded(
+        (space0, expect_tag("/"), space0),
+        cut(parse_division_element),
+    )
+    .parse(input)?;
 
     Ok((remaining_input, node))
 }

@@ -1,9 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    error::context, multi::many1, sequence::preceded, Parser,
+    branch::alt, character::complete::space0, error::context, multi::many1,
+    sequence::preceded, Parser,
 };
 
-use crate::core::{with_parser, And, Or, ParseNode, ParseResult, TraceUtils};
+use crate::core::{
+    expect_tag, with_parser, And, Or, ParseNode, ParseResult, TraceUtils,
+};
 
 impl ParseNode for Or {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -25,7 +27,7 @@ fn parse_or(input: &'_ str) -> ParseResult<'_> {
 }
 
 fn parse_or_item(input: &'_ str) -> ParseResult<'_> {
-    preceded((space0, tag("|"), space0), And::parse).parse(input)
+    preceded((space0, expect_tag("|"), space0), And::parse).parse(input)
 }
 
 #[cfg(test)]

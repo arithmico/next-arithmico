@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, error::context, multi::separated_list0,
-    sequence::delimited, Parser,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::separated_list0, sequence::delimited, Parser,
 };
 
 use crate::core::{
-    with_parser, FunctionCall, Node, ParseNode, ParseResult, Tensor, TraceUtils,
+    expect_tag, with_parser, FunctionCall, Node, ParseNode, ParseResult,
+    Tensor, TraceUtils,
 };
 
 impl ParseNode for Tensor {
@@ -21,7 +21,8 @@ impl ParseNode for Tensor {
 }
 
 fn parse_empty_tensor(input: &'_ str) -> ParseResult<'_> {
-    let (remaining_input, _) = (tag("["), space0, tag("]")).parse(input)?;
+    let (remaining_input, _) =
+        (expect_tag("["), space0, expect_tag("]")).parse(input)?;
     Ok((
         remaining_input,
         Tensor::new(vec![]).with_span_from_parser(input, remaining_input),
@@ -30,9 +31,12 @@ fn parse_empty_tensor(input: &'_ str) -> ParseResult<'_> {
 
 fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, elements) = delimited(
-        (tag("["), space0),
-        cut(separated_list0((space0, tag(","), space0), Node::parse)),
-        cut((space0, tag("]"))),
+        (expect_tag("["), space0),
+        cut(separated_list0(
+            (space0, expect_tag(","), space0),
+            Node::parse,
+        )),
+        cut((space0, expect_tag("]"))),
     )
     .parse(input)?;
 

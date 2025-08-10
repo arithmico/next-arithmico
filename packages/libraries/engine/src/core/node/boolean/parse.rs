@@ -1,6 +1,8 @@
-use nom::{branch::alt, bytes::complete::tag, error::context, Parser};
+use nom::{branch::alt, error::context, Parser};
 
-use crate::core::{with_parser, Boolean, ParseNode, ParseResult, TraceUtils};
+use crate::core::{
+    expect_tag, with_parser, Boolean, ParseNode, ParseResult, TraceUtils,
+};
 
 impl ParseNode for Boolean {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -10,7 +12,8 @@ impl ParseNode for Boolean {
 
 fn parse_boolean(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) =
-        context("boolean", alt((tag("true"), tag("false")))).parse(input)?;
+        context("boolean", alt((expect_tag("true"), expect_tag("false"))))
+            .parse(input)?;
 
     Ok((
         remaining_input,

@@ -1,10 +1,10 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, error::context, multi::many1, sequence::preceded, Parser,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{with_parser, ParseNode, ParseResult, Tensor};
+use crate::core::{expect_tag, with_parser, ParseNode, ParseResult, Tensor};
 
 use super::Power;
 
@@ -32,7 +32,7 @@ fn parse_power(input: &'_ str) -> ParseResult<'_> {
 
 fn parse_power_item(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, node) =
-        preceded((space0, tag("^"), space0), cut(parse_power_element))
+        preceded((space0, expect_tag("^"), space0), cut(parse_power_element))
             .parse(input)?;
 
     Ok((remaining_input, node))

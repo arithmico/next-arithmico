@@ -1,6 +1,5 @@
 use nom::{
     branch::alt,
-    bytes::complete::tag,
     character::complete::space0,
     combinator::{cut, opt},
     error::context,
@@ -10,8 +9,8 @@ use nom::{
 };
 
 use crate::core::{
-    parse_raw_symbol, with_parser, FunctionSignature, Node, NodeType, Or,
-    ParseNode, ParseNodeError, ParseResult, TraceUtils,
+    expect_tag, parse_raw_symbol, with_parser, FunctionSignature, Node,
+    NodeType, Or, ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
 
 use super::Function;
@@ -27,9 +26,9 @@ impl ParseNode for Function {
 fn parse_function(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (arguments, expression)) = (
         delimited(
-            (tag("("), space0),
+            (expect_tag("("), space0),
             opt(parse_function_arguments),
-            (space0, tag(")"), space0, tag("->"), space0),
+            (space0, expect_tag(")"), space0, expect_tag("->"), space0),
         ),
         cut(Node::parse),
     )
@@ -62,7 +61,7 @@ fn parse_function_argument_item(
     input: &str,
 ) -> IResult<&str, String, ParseNodeError> {
     let (remaining_input, (_, _, _, name)) =
-        (space0, tag(","), space0, parse_raw_symbol).parse(input)?;
+        (space0, expect_tag(","), space0, parse_raw_symbol).parse(input)?;
 
     Ok((remaining_input, name))
 }

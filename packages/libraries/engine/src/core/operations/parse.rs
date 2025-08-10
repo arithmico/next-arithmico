@@ -5,6 +5,7 @@ mod cache;
 mod literal;
 mod relation;
 mod sub_expression;
+mod tag;
 mod trace;
 mod with_parser;
 
@@ -12,6 +13,7 @@ pub use cache::*;
 pub use literal::*;
 pub use relation::*;
 pub use sub_expression::*;
+pub use tag::*;
 pub use trace::*;
 pub use with_parser::*;
 
