@@ -2,6 +2,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::space0,
+    combinator::cut,
     multi::separated_list0,
     sequence::{delimited, terminated},
     Parser,
@@ -24,7 +25,7 @@ impl ParseNode for Definition {
 fn parse_define_symbol(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, (symbol, expression)) = (
         terminated(parse_raw_symbol, (space0, tag(":="), space0)),
-        Node::parse,
+        cut(Node::parse),
     )
         .parse(input)?;
 
@@ -51,7 +52,7 @@ fn parse_define_function(input: &'_ str) -> ParseResult<'_> {
             ),
             (space0, tag(":="), space0),
         ),
-        Node::parse,
+        cut(Node::parse),
     )
         .parse(input)?;
 

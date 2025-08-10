@@ -1,6 +1,11 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::opt, multi::many0, sequence::delimited, IResult, Parser,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::space0,
+    combinator::{cut, opt},
+    multi::many0,
+    sequence::delimited,
+    IResult, Parser,
 };
 
 use crate::core::{
@@ -25,7 +30,7 @@ fn parse_function(input: &'_ str) -> ParseResult<'_> {
             opt(parse_function_arguments),
             (space0, tag(")"), space0, tag("->"), space0),
         ),
-        Node::parse,
+        cut(Node::parse),
     )
         .parse(input)?;
 
