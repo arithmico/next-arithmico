@@ -2,6 +2,7 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, alphanumeric1},
+    error::context,
     multi::many0,
     IResult, Parser,
 };
@@ -12,7 +13,10 @@ use crate::core::{
 
 impl ParseNode for Symbol {
     fn parse(input: &'_ str) -> ParseResult<'_> {
-        with_parser("Symbol::parse", |input| parse_symbol(input))(input)
+        with_parser("Symbol::parse", |input| {
+            context("symbol", parse_symbol).parse(input)
+        })
+        .parse(input)
     }
 }
 

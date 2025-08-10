@@ -1,10 +1,12 @@
-use nom::number::complete::double;
+use nom::{error::context, number::complete::double, Parser};
 
 use crate::core::{with_parser, Number, ParseNode, ParseResult, TraceUtils};
 
 impl ParseNode for Number {
     fn parse(input: &'_ str) -> ParseResult<'_> {
-        with_parser("Number::parse", |input| parse_number(input))(input)
+        with_parser("Number::parse", |input| {
+            context("number", parse_number).parse(input)
+        })(input)
     }
 }
 

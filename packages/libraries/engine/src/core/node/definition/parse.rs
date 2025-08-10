@@ -3,6 +3,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::space0,
     combinator::cut,
+    error::context,
     multi::separated_list0,
     sequence::{delimited, terminated},
     Parser,
@@ -23,11 +24,14 @@ impl ParseNode for Definition {
 }
 
 fn parse_define_symbol(input: &'_ str) -> ParseResult<'_> {
-    let (remaining_input, (symbol, expression)) = (
-        terminated(parse_raw_symbol, (space0, tag(":="), space0)),
-        cut(Node::parse),
+    let (remaining_input, (symbol, expression)) = context(
+        "define_symbol",
+        (
+            terminated(parse_raw_symbol, (space0, tag(":="), space0)),
+            cut(Node::parse),
+        ),
     )
-        .parse(input)?;
+    .parse(input)?;
 
     Ok((
         remaining_input,
@@ -37,24 +41,27 @@ fn parse_define_symbol(input: &'_ str) -> ParseResult<'_> {
 }
 
 fn parse_define_function(input: &'_ str) -> ParseResult<'_> {
-    let (remaining_input, ((symbol, arguments), expression)) = (
-        terminated(
-            (
-                terminated(parse_raw_symbol, space0),
-                delimited(
-                    (tag("("), space0),
-                    separated_list0(
-                        (space0, tag(","), space0),
-                        parse_raw_symbol,
+    let (remaining_input, ((symbol, arguments), expression)) = context(
+        "define_function",
+        (
+            terminated(
+                (
+                    terminated(parse_raw_symbol, space0),
+                    delimited(
+                        (tag("("), space0),
+                        separated_list0(
+                            (space0, tag(","), space0),
+                            parse_raw_symbol,
+                        ),
+                        (space0, tag(")")),
                     ),
-                    (space0, tag(")")),
                 ),
+                (space0, tag(":="), space0),
             ),
-            (space0, tag(":="), space0),
+            cut(Node::parse),
         ),
-        cut(Node::parse),
     )
-        .parse(input)?;
+    .parse(input)?;
 
     let mut signature = FunctionSignature::new();
     for name in arguments {

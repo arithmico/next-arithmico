@@ -1,6 +1,7 @@
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::space0,
-    combinator::cut, multi::many1, sequence::delimited, IResult, Parser,
+    combinator::cut, error::context, multi::many1, sequence::delimited,
+    IResult, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
@@ -12,7 +13,11 @@ use crate::core::{
 
 pub fn parse_relation(input: &'_ str) -> ParseResult<'_> {
     with_parser("parse_relation", |input| {
-        alt((parse_relation_chain, parse_relation_element)).parse(input)
+        alt((
+            context("relation", parse_relation_chain),
+            parse_relation_element,
+        ))
+        .parse(input)
     })(input)
 }
 
