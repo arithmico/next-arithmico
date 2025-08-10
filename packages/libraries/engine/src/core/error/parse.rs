@@ -11,7 +11,7 @@ pub enum ParseNodeError {
         children: Vec<ParseNodeError>,
     },
     Context {
-        context: String,
+        context: Vec<String>,
         inner: Box<ParseNodeError>,
     },
 }
@@ -28,12 +28,10 @@ impl ParseNodeError {
 
 impl<I> ParseError<I> for ParseNodeError {
     fn from_error_kind(_input: I, kind: nom::error::ErrorKind) -> Self {
-        //dbg!("error_kind", kind);
         Self::new_leaf(kind)
     }
 
     fn append(input: I, kind: ErrorKind, other: Self) -> Self {
-        //dbg!("append", kind, &other);
         if kind == ErrorKind::Alt {
             other
         } else {
@@ -42,7 +40,6 @@ impl<I> ParseError<I> for ParseNodeError {
     }
 
     fn or(self, other: Self) -> Self {
-        //dbg!("or", &other);
         match self {
             ParseNodeError::Leaf { .. } | ParseNodeError::Context { .. } => {
                 Self::new_node(vec![self, other])
@@ -57,10 +54,14 @@ impl<I> ParseError<I> for ParseNodeError {
 
 impl<I> ContextError<I> for ParseNodeError {
     fn add_context(_input: I, ctx: &'static str, other: Self) -> Self {
-        //dbg!("add context", ctx, &other);
-        Self::Context {
-            context: ctx.to_string(),
-            inner: Box::new(other),
+        if let Self::Context { mut context, inner } = other {
+            context.push(ctx.to_string());
+            Self::Context { context, inner }
+        } else {
+            Self::Context {
+                context: vec![ctx.to_string()],
+                inner: Box::new(other),
+            }
         }
     }
 }
