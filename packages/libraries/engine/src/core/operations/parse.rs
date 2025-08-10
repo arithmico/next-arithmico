@@ -1,8 +1,15 @@
-use crate::core::{Context, DecimalFormat, Definition, Node, ParseNodeError};
-use nom::{combinator::all_consuming, IResult, Parser};
+use crate::core::{
+    operations::parse::parenthesis_check::check_missing_open_parenthesis,
+    Context, DecimalFormat, Definition, Node, ParseNodeError,
+};
+use nom::{
+    combinator::{all_consuming, cut},
+    IResult, Parser,
+};
 
 mod cache;
 mod literal;
+mod parenthesis_check;
 mod relation;
 mod sub_expression;
 mod tag;
@@ -29,7 +36,9 @@ pub fn parse(input: &str, context: &Context) -> Result<Node, ParseNodeError> {
         DecimalFormat::Dot => input.to_string(),
     };
 
-    let result = all_consuming(Definition::parse)
+    check_missing_open_parenthesis(&input)?;
+
+    let result = all_consuming(cut(Definition::parse))
         .parse(&input)
         .map(|(_, node)| node)
         .map_err(|error| match error {

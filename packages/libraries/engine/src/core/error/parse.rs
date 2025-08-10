@@ -12,6 +12,10 @@ pub enum ParseNodeError {
         input: String,
         expectation: String,
     },
+    MissingOpeningParenthesis {
+        round: usize,
+        square: usize,
+    },
     Node {
         children: Vec<ParseNodeError>,
     },
@@ -70,12 +74,11 @@ impl ParseError<&str> for ParseNodeError {
 
     fn or(self, other: Self) -> Self {
         match self {
-            ParseNodeError::Leaf { .. }
-            | ParseNodeError::LeafWithExpectation { .. }
-            | ParseNodeError::Context { .. } => {
-                Self::new_node(vec![self, other])
-            }
-            ParseNodeError::Node { mut children } => {
+            Self::MissingOpeningParenthesis { .. }
+            | Self::Leaf { .. }
+            | Self::LeafWithExpectation { .. }
+            | Self::Context { .. } => Self::new_node(vec![self, other]),
+            Self::Node { mut children } => {
                 children.push(other);
                 Self::Node { children }
             }
