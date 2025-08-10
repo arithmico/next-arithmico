@@ -14,7 +14,7 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
             delimited(
                 (tag("("), space0),
                 cut(Node::parse),
-                context("closing_parenthesis", (space0, tag(")"))),
+                cut(context("closing_parenthesis", (space0, tag(")")))),
             ),
         );
         cx.parse(input)

@@ -9,10 +9,10 @@ use super::{
 pub fn parse_literal(input: &'_ str) -> ParseResult<'_> {
     with_parser("parse_literal", |input| {
         alt((
+            parse_sub_expression,
             Number::parse,
             Boolean::parse,
             Symbol::parse,
-            parse_sub_expression,
         ))
         .parse(input)
     })(input)
