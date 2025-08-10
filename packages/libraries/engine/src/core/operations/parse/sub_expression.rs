@@ -23,13 +23,27 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::parse;
+    use core::panic;
 
-    use super::*;
+    use nom::error::ErrorKind;
+
+    use crate::core::{parse, ParseNodeError};
 
     #[test]
     fn error_missing_closing_parenthesis() {
         let error = parse("1 + (a + b", &Default::default()).unwrap_err();
-        dbg!(error);
+
+        if let ParseNodeError::Context { context, inner } = error
+            && let Some(first) = context.first()
+            && first.context == "closing_parenthesis"
+            && first.input == ""
+            && let ParseNodeError::Leaf { kind, input } = *inner
+            && kind == ErrorKind::Tag
+            && input == ""
+        {
+            return;
+        } else {
+            panic!("invalid error");
+        }
     }
 }

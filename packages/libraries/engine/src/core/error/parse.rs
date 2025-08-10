@@ -6,19 +6,37 @@ use thiserror::Error;
 pub enum ParseNodeError {
     Leaf {
         kind: ErrorKind,
+        input: String,
     },
     Node {
         children: Vec<ParseNodeError>,
     },
     Context {
-        context: Vec<String>,
+        context: Vec<ErrorContext>,
         inner: Box<ParseNodeError>,
     },
 }
+#[derive(Debug, Clone)]
+pub struct ErrorContext {
+    pub context: String,
+    pub input: String,
+}
+
+impl ErrorContext {
+    pub fn new(context: &str, input: &str) -> Self {
+        Self {
+            context: context.to_string(),
+            input: input.to_string(),
+        }
+    }
+}
 
 impl ParseNodeError {
-    fn new_leaf(kind: ErrorKind) -> Self {
-        Self::Leaf { kind }
+    fn new_leaf(input: &str, kind: ErrorKind) -> Self {
+        Self::Leaf {
+            kind,
+            input: input.to_string(),
+        }
     }
 
     fn new_node(children: Vec<ParseNodeError>) -> Self {
@@ -26,12 +44,12 @@ impl ParseNodeError {
     }
 }
 
-impl<I> ParseError<I> for ParseNodeError {
-    fn from_error_kind(_input: I, kind: nom::error::ErrorKind) -> Self {
-        Self::new_leaf(kind)
+impl ParseError<&str> for ParseNodeError {
+    fn from_error_kind(input: &str, kind: nom::error::ErrorKind) -> Self {
+        Self::new_leaf(input, kind)
     }
 
-    fn append(input: I, kind: ErrorKind, other: Self) -> Self {
+    fn append(input: &str, kind: ErrorKind, other: Self) -> Self {
         if kind == ErrorKind::Alt {
             other
         } else {
@@ -52,14 +70,14 @@ impl<I> ParseError<I> for ParseNodeError {
     }
 }
 
-impl<I> ContextError<I> for ParseNodeError {
-    fn add_context(_input: I, ctx: &'static str, other: Self) -> Self {
+impl ContextError<&str> for ParseNodeError {
+    fn add_context(input: &str, ctx: &'static str, other: Self) -> Self {
         if let Self::Context { mut context, inner } = other {
-            context.push(ctx.to_string());
+            context.push(ErrorContext::new(ctx, input));
             Self::Context { context, inner }
         } else {
             Self::Context {
-                context: vec![ctx.to_string()],
+                context: vec![ErrorContext::new(ctx, input)],
                 inner: Box::new(other),
             }
         }
