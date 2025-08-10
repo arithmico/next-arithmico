@@ -48,7 +48,9 @@ fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
+    use crate::core::parse;
     use crate::core::Number;
+    use crate::core::ParseNodeError;
 
     use super::*;
     use trace::TracableMut;
@@ -127,5 +129,60 @@ mod tests {
                 .with_span(0, 18)
             )
         )
+    }
+
+    #[test]
+    fn error_missing_closing_parenthesis() {
+        let error = parse("[1, 2 + 4", &Default::default()).unwrap_err();
+
+        if let ParseNodeError::Context { context, inner } = error
+            && let Some(first) = context.first()
+            && first.context == "tensor"
+            && first.input == "[1, 2 + 4"
+            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+                *inner
+            && expectation == "]"
+            && input == ""
+        {
+            return;
+        } else {
+            panic!("invalid error");
+        }
+    }
+
+    #[test]
+    fn error_nested_missing_closing_parenthesis() {
+        let error = parse("[1, [2 + 4]", &Default::default()).unwrap_err();
+
+        if let ParseNodeError::Context { context, inner } = error
+            && let Some(first) = context.first()
+            && first.context == "tensor"
+            && first.input == "[1, [2 + 4]"
+            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+                *inner
+            && expectation == "]"
+            && input == ""
+        {
+            return;
+        } else {
+            panic!("invalid error");
+        }
+    }
+
+    #[test]
+    fn error_missing_opening_parenthesis() {
+        let error = parse("1, 2 + 4] + 3", &Default::default()).unwrap_err();
+
+        dbg!(&error);
+
+        if let ParseNodeError::MissingOpeningParenthesis { square, round } =
+            error
+            && round == 0
+            && square == 1
+        {
+            return;
+        } else {
+            panic!("invalid error");
+        }
     }
 }
