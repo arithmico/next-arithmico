@@ -29,7 +29,7 @@ fn parse_function_call(input: &'_ str) -> ParseResult<'_> {
         delimited(
             (space0, tag("("), space0),
             cut(opt(parse_function_call_arguments)),
-            (space0, tag(")")),
+            cut((space0, tag(")"))),
         ),
     )
         .parse(input)?;

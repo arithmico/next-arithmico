@@ -32,7 +32,7 @@ fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, elements) = delimited(
         (tag("["), space0),
         cut(separated_list0((space0, tag(","), space0), Node::parse)),
-        (space0, tag("]")),
+        cut((space0, tag("]"))),
     )
     .parse(input)?;
 
