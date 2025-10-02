@@ -51,6 +51,10 @@ impl FunctionSignature {
         self
     }
 
+    pub fn return_type(&self) -> &HashSet<NodeType> {
+        &self.return_type
+    }
+
     pub fn arguments(&self) -> &[Argument] {
         &self.arguments
     }

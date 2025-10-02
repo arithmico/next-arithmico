@@ -14,7 +14,7 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
                     .map(|item| {
                         view! {
                             <>
-                                <dt>{item.synopsis(&Language::English).cloned()}</dt>
+                                <dt>{item.typed_synopsis(&Language::English).cloned()}</dt>
                                 <dd>{item.description(&Language::English).cloned()}</dd>
                             </>
                         }
