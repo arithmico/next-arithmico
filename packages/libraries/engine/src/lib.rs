@@ -4,7 +4,7 @@ mod documentation;
 mod macros;
 mod session;
 
-pub use core::{DecimalFormat, DecimalPlaces, Language};
+pub use core::{DecimalFormat, DecimalPlaces, Language, serialize_node};
 pub use documentation::{
     Documentation, DocumentationItem, DocumentationModule,
 };

@@ -177,3 +177,7 @@ German = "Eingabe"
 [history.output]
 English = "Output"
 German = "Ausgabe"
+
+[definitions.title]
+English = "Definitions"
+German = "Definitionen"
