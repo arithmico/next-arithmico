@@ -9,6 +9,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      leptos:
+        patterns:
+          - "leptos*"
   
   - package-ecosystem: "docker"
     directory: "/.devcontainer"
