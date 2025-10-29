@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 console_error_panic_hook = "0.1.7"
 leptos = { workspace = true }
-leptos_router = { version = "0.7.1" }
+leptos_router = { version = "0.8.2" }
 engine = { path = "../../libraries/engine" }
 ui = { version = "0.1.0", path = "../../libraries/ui" }
 serde = { version = "1.0.228", features = ["derive"] }
