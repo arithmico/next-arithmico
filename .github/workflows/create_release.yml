@@ -36,6 +36,8 @@ jobs:
   
   deploy-infrastructure:
     name: Deploy Infrastructure
+    concurrency:
+      group: staging-environment
     runs-on: ubuntu-24.04
     needs: 
       - create-release
