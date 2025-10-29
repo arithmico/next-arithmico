@@ -44,7 +44,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -76,7 +76,7 @@ jobs:
       - shell: bash
         run: .github/workflows/setup.sh
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4.3.1
+        uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
