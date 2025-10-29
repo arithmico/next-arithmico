@@ -16,7 +16,7 @@ jobs:
       version_tag: ${{ steps.create-tag.outputs.version_tag }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -42,7 +42,7 @@ jobs:
       - build-calculator
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4.3.1
         with:
@@ -71,7 +71,7 @@ jobs:
     needs: create-release
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: cargo-bins/cargo-binstall@main
       - shell: bash
         run: .github/workflows/setup.sh
