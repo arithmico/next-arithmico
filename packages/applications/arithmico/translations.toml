@@ -47,7 +47,7 @@ English = "Settings"
 German = "Einstellungen"
 
 [settings.section.general]
-English = "Genral"
+English = "General"
 German = "Allgemein"
 
 [settings.section.calculator]
