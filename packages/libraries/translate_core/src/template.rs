@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{none_of, space0},
     combinator::all_consuming,
     multi::{many0, many1},
-    sequence::{delimited, tuple},
+    sequence::delimited,
+    IResult, Parser,
 };
 
 use crate::error::TranslationError;
@@ -67,16 +67,15 @@ impl TranslationTemmplateItem {
 }
 
 fn parse_template(input: &str) -> IResult<&str, Template> {
-    let (_, items) = all_consuming(many0(alt((
-        parse_template_text,
-        parse_template_key,
-    ))))(input)?;
+    let (_, items) =
+        all_consuming(many0(alt((parse_template_text, parse_template_key))))
+            .parse(input)?;
 
     Ok(("", Template::new_with_items(items)))
 }
 
 fn parse_template_text(input: &str) -> IResult<&str, TranslationTemmplateItem> {
-    let (remaining_input, text) = many1(none_of("{}"))(input)?;
+    let (remaining_input, text) = many1(none_of("{}")).parse(input)?;
 
     Ok((
         remaining_input,
@@ -86,10 +85,11 @@ fn parse_template_text(input: &str) -> IResult<&str, TranslationTemmplateItem> {
 
 fn parse_template_key(input: &str) -> IResult<&str, TranslationTemmplateItem> {
     let (remaining_input, text) = delimited(
-        tuple((tag("{"), space0)),
+        (tag("{"), space0),
         many1(none_of("{} ")),
-        tuple((space0, tag("}"))),
-    )(input)?;
+        (space0, tag("}")),
+    )
+    .parse(input)?;
 
     Ok((
         remaining_input,
