@@ -3,6 +3,7 @@ use crate::core::{
 };
 use crate::{api::load_host_api, Documentation};
 use crate::{DecimalFormat, DecimalPlaces};
+use std::collections::HashMap;
 use std::sync::Arc;
 
 pub use entry::SessionEntry;
@@ -82,5 +83,9 @@ impl Session {
 
     pub fn documentation(&self) -> Documentation {
         Documentation::from(&(*self.host_api))
+    }
+
+    pub fn stack_entries(&self) -> HashMap<String, Node> {
+        self.stack.entries()
     }
 }

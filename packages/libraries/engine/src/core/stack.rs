@@ -32,7 +32,7 @@ impl Stack {
     }
 
     pub fn lookup(&self, name: &str) -> Option<Node> {
-        for frame in &self.frames {
+        for frame in self.frames.iter().rev() {
             let node_option = frame.get(name);
             if let Some(node) = node_option {
                 return Some(node.clone());
