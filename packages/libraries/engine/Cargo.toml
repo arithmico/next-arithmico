@@ -8,7 +8,7 @@ thiserror = { workspace = true }
 trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
 serde = { version = "1.0.228", features = ["derive"] }
-nom = "8.0.0"
+nom = { workspace = true }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]
