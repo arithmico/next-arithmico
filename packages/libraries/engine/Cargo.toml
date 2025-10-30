@@ -7,7 +7,7 @@ edition = "2024"
 thiserror = { workspace = true }
 trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
-serde = { version = "1.0.228", features = ["derive"] }
+serde = { workspace = true }
 nom = { workspace = true }
 
 [features]
