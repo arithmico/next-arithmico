@@ -1,0 +1,32 @@
+.definitions-page {
+    .definitions-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-2);
+
+        li {
+            display: flex;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2);
+            border-style: solid;
+            border-width: 1px;
+            align-items: start;
+        }
+    }
+}
+
+.theme-dark
+.definitions-page
+.definitions-list
+li {
+    border-color: var(--color-neutral-700);
+    background-color: var(--color-neutral-900);
+}
+
+.theme-light
+.definitions-page
+.definitions-list
+li {
+    border-color: var(--color-neutral-300);
+    background-color: var(--color-neutral-100);
+}

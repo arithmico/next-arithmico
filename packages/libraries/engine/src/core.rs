@@ -2,7 +2,7 @@ mod context;
 mod error;
 mod evaluate;
 mod host_api;
-mod node;
+pub mod node;
 mod node_type;
 mod operations;
 mod serialize;
