@@ -14,6 +14,7 @@ pub fn AppRouter() -> impl IntoView {
                 <Route path=path!("/reference") view=ReferencePage />
                 <Route path=path!("/about") view=AboutPage />
                 <Route path=path!("/history") view=HistoryPage />
+                <Route path=path!("/definitions") view=DefinitionsPage />
             </Routes>
         </Router>
     }
