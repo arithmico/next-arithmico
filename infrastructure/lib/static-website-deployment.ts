@@ -54,7 +54,8 @@ export class StaticWebsiteDeployment extends Construct {
         });
 
         new cdk.CfnOutput(this, 'DistributionId', {
-            value: distribution.distributionId
+            value: distribution.distributionId,
+            key: "DistributionId"
         });
 
         new cdk.aws_route53.ARecord(this, "AliasRecord", {
