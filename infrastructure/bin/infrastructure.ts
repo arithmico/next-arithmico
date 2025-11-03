@@ -1,29 +1,45 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib';
 import { ArtifactsStack } from '../lib/artifacts-stack';
 import { getStringParameterOrThrow } from '../lib/utils';
-import { StaticWebsiteStack } from '../lib/static-website-stack';
+import { ApplicationsStack } from '../lib/applications';
+import { App, Stack } from 'aws-cdk-lib';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
 const version = getStringParameterOrThrow("APP_VERSION");
 
-const app = new cdk.App();
-
-const artifactsStack = new ArtifactsStack(app, 'Artifacts', {
-    env: {
-        account,
-        region
+function getDeploymentEnvironment(): string {
+    const refName = getStringParameterOrThrow("GITHUB_REF_NAME");
+    if (refName === "main") {
+        return refName;
+    } else if (refName.endsWith("/merge")) {
+        return refName.slice(0, "/merge".length).trim()
     }
-});
+    throw new Error(`Invalid value for GITHUB_REF_NAME: ${refName}`);
+}
 
-const calculatorProductionStack = new StaticWebsiteStack(app, "CalculatorProduction", {
+const environment = getDeploymentEnvironment();
+
+const app = new App();
+let artifacts: Stack | undefined;
+
+if (environment === "main") {
+    artifacts = new ArtifactsStack(app, 'Artifacts', {
+        env: {
+            account,
+            region
+        }
+    });
+}
+
+const applications = new ApplicationsStack(app, `applications-${environment}`, {
     env: {
         account,
         region
     },
-    artifactPath: `calculator/${version}/main/web`,
-    domainName: "next.arithmico.com",
-    originAccessIdentityId: artifactsStack.getOriginAccessIdentityId()
-});
-calculatorProductionStack.addDependency(artifactsStack);
+    artifact: version
+})
+
+if (artifacts) {
+    applications.addDependency(artifacts)
+}
