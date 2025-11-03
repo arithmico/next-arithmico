@@ -1,27 +1,30 @@
-import * as cdk from 'aws-cdk-lib';
+import { CfnOutput, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
+import { OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
+import { BlockPublicAccess, Bucket, BucketEncryption } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
-export class ArtifactsStack extends cdk.Stack {
-  private originAccessIdentityId: string;
+export class ArtifactsStack extends Stack {
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const bucket = new cdk.aws_s3.Bucket(this, "Bucket", {
+    const bucket = new Bucket(this, "Bucket", {
       bucketName: "arithmico-application-artifacts",
-      blockPublicAccess: cdk.aws_s3.BlockPublicAccess.BLOCK_ALL,
-      encryption: cdk.aws_s3.BucketEncryption.S3_MANAGED,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      encryption: BucketEncryption.S3_MANAGED,
       enforceSSL: true,
       versioned: true,
-      removalPolicy: cdk.RemovalPolicy.RETAIN
+      removalPolicy: RemovalPolicy.RETAIN
     });
 
-    const originAccessIdentity = new cdk.aws_cloudfront.OriginAccessIdentity(this, 'OriginAccessIdentity');
+    const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity');
     bucket.grantRead(originAccessIdentity);
-    this.originAccessIdentityId = originAccessIdentity.originAccessIdentityId;
+
+    new CfnOutput(this, "OriginAccessIdentityOutput", {
+      value: originAccessIdentity.originAccessIdentityId,
+      description: "Id of the OriginAccessIdentity for the artifacts bucket",
+      exportName: "ArtifactsOriginAccessIdentityId"
+    })
   }
 
-  public getOriginAccessIdentityId(): string {
-    return this.originAccessIdentityId;
-  }
 }

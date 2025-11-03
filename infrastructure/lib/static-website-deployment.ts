@@ -1,15 +1,15 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
-export type StaticWebsiteStackProps = cdk.StackProps & {
+export type StaticWebsiteStackProps = {
     domainName: string,
     artifactPath: string,
     originAccessIdentityId: string
 }
 
-export class StaticWebsiteStack extends cdk.Stack {
+export class StaticWebsiteDeployment extends Construct {
     constructor(scope: Construct, id: string, { domainName, artifactPath, originAccessIdentityId, ...props }: StaticWebsiteStackProps) {
-        super(scope, id, props);
+        super(scope, id);
 
         const zone = cdk.aws_route53.HostedZone.fromLookup(this, "HostedZone", {
             domainName: "arithmico.com"
