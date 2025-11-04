@@ -26,5 +26,8 @@ jobs:
       run:
         # use review-{pull-request-number} as artifact name
         ARTIFACT="review-${GITHUB_REF_NAME%/merge}";
-        DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT/main/web";
+        DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT";
+        echo $GITHUB_REF_NAME;
+        echo $DEST_PATH;
+        echo $ARTIFACT;
         aws s3 rm $DEST_PATH --recursive;
