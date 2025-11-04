@@ -23,11 +23,8 @@ jobs:
       shell: bash
       env:
         BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
+        PR_NUMBER: ${{ github.event.number }}
       run:
-        # use review-{pull-request-number} as artifact name
-        ARTIFACT="review-${GITHUB_REF_NAME%/merge}";
+        ARTIFACT="review-$PR_NUMBER";
         DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT";
-        echo $GITHUB_REF_NAME;
-        echo $DEST_PATH;
-        echo $ARTIFACT;
         aws s3 rm $DEST_PATH --recursive;
