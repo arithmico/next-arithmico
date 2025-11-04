@@ -35,7 +35,7 @@ jobs:
           git push origin $VERSION_TAG
           echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
-  deploy-infrastructure:
+  deploy-production-environment:
     name: Deploy Infrastructure
     concurrency:
       group: staging-environment
@@ -61,7 +61,8 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
-          APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
+          CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
+          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
         run: |
           npm ci
           npm run cdk -- deploy --all --require-approval never
