@@ -1,6 +1,7 @@
 name: "Check Pull Request"
 on:
   pull_request:
+    types: [opened, reopened, synchronize]
 
 permissions:
   id-token: write
@@ -45,6 +46,39 @@ jobs:
     - name: setup e2e tests
       working-directory: packages/applications/arithmico-e2e
       run: npx playwright test
+
+  build-review-artifact:
+    name: build review artifact
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: actions-rust-lang/setup-rust-toolchain@v1
+    - uses: cargo-bins/cargo-binstall@main
+    - shell: bash
+      run: .github/workflows/setup.sh
+    - name: build
+      working-directory: packages/applications/arithmico
+      shell: bash
+      run: |
+        touch index.css 
+        ~/.cargo/bin/trunk build --release
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+
+    - name: upload artifact
+      working-directory: packages/applications/arithmico/dist
+      shell: bash
+      env:
+        BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
+      run:
+        # use review-{pull-request-number} as artifact name
+        ARTIFACT="review-${GITHUB_REF_NAME%/merge}";
+        DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT/main/web";
+        aws s3 sync . $DEST_PATH --delete;
 
   test-infrastructure:
     runs-on: ubuntu-latest
