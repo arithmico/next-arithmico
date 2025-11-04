@@ -53,4 +53,4 @@ jobs:
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
       run: |
         npm ci
-        npm run cdk -- destroy --all --require-approval never
+        npm run cdk -- destroy --all --force
