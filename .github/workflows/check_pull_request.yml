@@ -74,9 +74,9 @@ jobs:
       shell: bash
       env:
         BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
+        PR_NUMBER: ${{ github.event.number }}
       run:
-        # use review-{pull-request-number} as artifact name
-        ARTIFACT="review-${GITHUB_REF_NAME%/merge}";
+        ARTIFACT="review-$PR_NUMBER";
         DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT/main/web";
         aws s3 sync . $DEST_PATH --delete;
 
