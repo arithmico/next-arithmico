@@ -6,6 +6,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 jobs:
   test:
@@ -129,3 +130,24 @@ jobs:
         run: cargo install leptosfmt
       - name: Format check
         run: leptosfmt --check .
+
+  comment-deployment-info:
+    name: Comment Deployment Info
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    needs: 
+      - deploy-review-environment
+    steps:
+      - uses: actions/github-script@v8
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const url = `https://review-${process.env.PR_NUMBER}.calculator.arithmico.com`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**Review deployment created**: Click [here](${url})`
+            });
