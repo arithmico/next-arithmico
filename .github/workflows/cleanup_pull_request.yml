@@ -28,3 +28,25 @@ jobs:
         ARTIFACT="review-$PR_NUMBER";
         DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT";
         aws s3 rm $DEST_PATH --recursive;
+  
+  undeploy-review-environment:
+    name: Undeploy Review Environment
+    runs-on: ubuntu-latest
+    steps:
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: CDK Destroy
+      working-directory: infrastructure
+      shell: bash
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
+        CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
+      run: |
+        npm ci
+        npm run cdk -- destroy --all --require-approval never

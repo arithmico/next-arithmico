@@ -6,28 +6,9 @@ import { App, Stack } from 'aws-cdk-lib';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
-const refName = getStringParameterOrThrow("GITHUB_REF_NAME");
 
-function getDeploymentEnvironment(): string {
-    if (refName === "main") {
-        return refName;
-    } else if (refName.endsWith("/merge")) {
-        return `review-${refName.slice(0, "/merge".length).trim()}`
-    }
-    throw new Error(`Invalid value for GITHUB_REF_NAME: ${refName}`);
-}
-
-function getArtifact(): string {
-    if (refName === "main") {
-        return getStringParameterOrThrow("APP_VERSION");
-    } else if (refName.endsWith("/merge")) {
-        return `review-${refName.slice(0, "/merge".length).trim()}`
-    }
-    throw new Error(`Invalid value for GITHUB_REF_NAME: ${refName}`);
-}
-
-const environment = getDeploymentEnvironment();
-const artifact = getArtifact();
+const environment = getStringParameterOrThrow("CDK_DEPLOY_ENVIRONMENT");
+const artifact = getStringParameterOrThrow("CDK_DEPLOY_ARTIFACT");
 
 const app = new App();
 let artifacts: Stack | undefined;
