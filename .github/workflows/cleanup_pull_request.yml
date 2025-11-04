@@ -1,0 +1,30 @@
+name: Cleanup Pull Request
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  remove-review-artifact:
+    name: Delete Review Artifact
+    runs-on: ubuntu-latest
+    steps:
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v5.1.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+
+    - name: Delete Artifact
+      shell: bash
+      env:
+        BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
+      run:
+        # use review-{pull-request-number} as artifact name
+        ARTIFACT="review-${GITHUB_REF_NAME%/merge}";
+        DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT/main/web";
+        aws s3 rm $DEST_PATH --recursive;
