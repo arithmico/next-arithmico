@@ -30,7 +30,7 @@ pub fn Definitions() -> impl IntoView {
                                     .signature
                                     .arguments()
                                     .iter()
-                                    .map(|argument| Symbol::new(&argument.name()))
+                                    .map(|argument| Symbol::new(&argument.get_name()))
                                     .collect(),
                             );
                             let value_node = *node.expression.clone();
