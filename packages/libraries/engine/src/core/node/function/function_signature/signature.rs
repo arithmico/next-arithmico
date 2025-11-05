@@ -36,7 +36,7 @@ impl FunctionSignature {
         if self
             .arguments
             .iter()
-            .find(|argument| argument.name() == name)
+            .find(|argument| argument.get_name() == name)
             .is_some()
         {
             panic!("duplicate parameter name");
@@ -51,6 +51,10 @@ impl FunctionSignature {
         self
     }
 
+    pub fn get_return_type(&self) -> &HashSet<NodeType> {
+        &self.return_type
+    }
+
     pub fn arguments(&self) -> &[Argument] {
         &self.arguments
     }
@@ -58,7 +62,7 @@ impl FunctionSignature {
     pub fn argument_names(&self) -> Vec<String> {
         self.arguments()
             .iter()
-            .map(|argument| argument.name())
+            .map(|argument| argument.get_name())
             .collect()
     }
 }

@@ -4,3 +4,4 @@ mod signature;
 
 pub use argument_options::*;
 pub use signature::*;
+pub use argument::*;

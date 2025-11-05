@@ -1,17 +1,10 @@
-
-
 .reference-section > h2 {
+    width: 100%;
     font-size: var(--text-xl);
     margin-bottom: var(--spacing-2);
 }
 
-.reference-section>dl {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
+.module-section {
+    width: 100%;
     padding-left: var(--spacing-4);
-}
-
-.reference-section > dl > dt,
-.reference-section > dl > dd {
-    padding: var(--spacing-2) 0;
 }

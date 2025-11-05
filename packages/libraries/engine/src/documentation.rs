@@ -1,30 +1,128 @@
 use std::collections::HashMap;
 
-use crate::core::{
-    serialize_node, Context, DecimalFormat, DecimalPlaces, FunctionCall,
-    HostApi, HostEndpoint, Language, Stack, Symbol, TranslatedString,
+use translate_core::TranslationError;
+
+use crate::{
+    core::{
+        serialize_node, Context, DecimalFormat, DecimalPlaces, FunctionCall,
+        HostApi, HostEndpoint, Language, NodeType, Stack, Symbol,
+        TranslatedString,
+    },
+    Argument, Cardinality,
 };
 
-#[derive(Clone, Debug)]
-pub struct DocumentationItem {
-    synopsis: TranslatedString,
+#[derive(Debug, Clone)]
+pub struct ParameterDocumentationItem {
+    name: String,
+    parameter_types: Vec<NodeType>,
+    requirement: Cardinality,
     description: TranslatedString,
 }
 
-impl DocumentationItem {
+impl ParameterDocumentationItem {
     pub fn new() -> Self {
         Self {
-            synopsis: HashMap::new(),
-            description: HashMap::new(),
+            name: String::new(),
+            parameter_types: Vec::new(),
+            requirement: Cardinality::Optional,
+            description: TranslatedString::new(),
         }
     }
 
-    pub fn synopsis(&self, language: &Language) -> Option<&String> {
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn get_parameter_types(&self) -> &[NodeType] {
+        &self.parameter_types
+    }
+
+    pub fn get_requirement(&self) -> &Cardinality {
+        &self.requirement
+    }
+
+    pub fn get_description(
+        &self,
+        language: &Language,
+    ) -> Result<String, TranslationError> {
+        self.description
+            .get(language)
+            .cloned()
+            .ok_or(TranslationError::MissingKey(language.to_string()))
+    }
+}
+
+impl From<&Argument> for ParameterDocumentationItem {
+    fn from(argument: &Argument) -> Self {
+        let mut item = ParameterDocumentationItem::new();
+        item.name = argument.get_name();
+        item.parameter_types = argument
+            .get_options()
+            .node_types()
+            .iter()
+            .cloned()
+            .collect();
+        item.requirement = argument.get_options().cardinality();
+        item.description = argument.get_description().try_into().unwrap();
+
+        item
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DocumentationItemType {
+    Function,
+    Constant,
+}
+
+#[derive(Clone, Debug)]
+pub struct DocumentationItem {
+    documentation_type: DocumentationItemType,
+    synopsis: TranslatedString,
+    description: TranslatedString,
+    parameters: Vec<ParameterDocumentationItem>,
+    return_types: Vec<NodeType>,
+}
+
+impl DocumentationItem {
+    pub fn new_function() -> Self {
+        Self {
+            documentation_type: DocumentationItemType::Function,
+            synopsis: HashMap::new(),
+            description: HashMap::new(),
+            parameters: Vec::new(),
+            return_types: Vec::new(),
+        }
+    }
+
+    pub fn new_constant() -> Self {
+        Self {
+            documentation_type: DocumentationItemType::Constant,
+            synopsis: HashMap::new(),
+            description: HashMap::new(),
+            parameters: Vec::new(),
+            return_types: Vec::new(),
+        }
+    }
+
+    pub fn get_documentation_type(&self) -> &DocumentationItemType {
+        &self.documentation_type
+    }
+
+    pub fn get_synopsis(&self, language: &Language) -> Option<&String> {
         self.synopsis.get(language)
     }
 
-    pub fn description(&self, language: &Language) -> Option<&String> {
+    pub fn get_description(&self, language: &Language) -> Option<&String> {
         self.description.get(language)
+    }
+
+    pub fn get_parameters(&self) -> &[ParameterDocumentationItem] {
+        &self.parameters
+    }
+
+    pub fn get_return_types(&self) -> &[NodeType] {
+        &self.return_types
     }
 
     pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
@@ -34,8 +132,15 @@ impl DocumentationItem {
                 description,
                 ..
             } => {
-                let mut item = DocumentationItem::new();
+                let mut item = DocumentationItem::new_function();
                 item.description = description.clone();
+                item.parameters = signature
+                    .arguments()
+                    .iter()
+                    .map(|argument| ParameterDocumentationItem::from(argument))
+                    .collect();
+                item.return_types =
+                    signature.get_return_type().iter().cloned().collect();
                 let synopsis_expression = FunctionCall::new(
                     Symbol::new(name),
                     signature
@@ -73,7 +178,7 @@ impl DocumentationItem {
                 item
             }
             HostEndpoint::Constant { description, .. } => {
-                let mut item = DocumentationItem::new();
+                let mut item = DocumentationItem::new_constant();
                 item.description = description.clone();
                 let synopsis_expression = Symbol::new(name);
                 item.synopsis.insert(

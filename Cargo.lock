@@ -102,7 +102,7 @@ dependencies = [
  "leptos_router",
  "serde",
  "serde_json",
- "toml 1.0.7+spec-1.1.0",
+ "toml",
  "trace",
  "translate",
  "ui",
@@ -331,8 +331,8 @@ dependencies = [
  "convert_case 0.6.0",
  "pathdiff",
  "serde_core",
- "toml 0.9.12+spec-1.1.0",
- "winnow 0.7.13",
+ "toml",
+ "winnow",
 ]
 
 [[package]]
@@ -536,6 +536,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.18",
  "trace",
+ "translate",
  "translate_core",
 ]
 
@@ -2013,7 +2014,7 @@ dependencies = [
  "indexmap",
  "serde_core",
  "serde_spanned",
- "toml_datetime 1.0.1+spec-1.1.0",
+ "toml_datetime",
  "toml_parser",
  "toml_writer",
  "winnow 1.0.0",
@@ -2043,7 +2044,7 @@ version = "1.0.10+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7df25b4befd31c4816df190124375d5a20c6b6921e2cad937316de3fccd63420"
 dependencies = [
- "winnow 1.0.0",
+ "winnow",
 ]
 
 [[package]]
@@ -2071,7 +2072,7 @@ dependencies = [
  "nom",
  "serde",
  "thiserror 2.0.18",
- "toml 1.0.7+spec-1.1.0",
+ "toml",
 ]
 
 [[package]]

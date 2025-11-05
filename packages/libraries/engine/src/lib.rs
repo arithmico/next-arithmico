@@ -9,6 +9,6 @@ pub use core::{
     Serialize, SerializeNodeError,
 };
 pub use documentation::{
-    Documentation, DocumentationItem, DocumentationModule,
+    Documentation, DocumentationItem, DocumentationItemType, DocumentationModule,
 };
 pub use session::*;
