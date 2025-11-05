@@ -2,25 +2,27 @@ use engine::DocumentationModule;
 use engine::Language;
 use leptos::prelude::*;
 
+use crate::pages::reference::reference_item::ReferenceItem;
+
 #[component]
 pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
     view! {
         <section class="reference-section">
-            <h2>{module.name(&Language::English).cloned()}</h2>
-            <dl>
+            <section class="module-section">
+                <h2>{module.name(&Language::English).cloned()}</h2>
                 {module
                     .items()
                     .iter()
                     .map(|item| {
                         view! {
-                            <>
-                                <dt>{item.synopsis(&Language::English).cloned()}</dt>
-                                <dd>{item.description(&Language::English).cloned()}</dd>
-                            </>
+                            <ReferenceItem
+                                item=item.clone()
+                                language=Language::English
+                            />
                         }
                     })
                     .collect_view()}
-            </dl>
+            </section>
         </section>
     }
 }

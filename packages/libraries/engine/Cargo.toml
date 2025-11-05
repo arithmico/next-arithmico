@@ -7,6 +7,7 @@ edition = "2024"
 thiserror = { workspace = true }
 trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
+translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 nom = { workspace = true }
 

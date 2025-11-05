@@ -118,6 +118,54 @@ German = "Referenz"
 English = "Search"
 German = "Suche"
 
+[reference.item.description]
+English = "Description"
+German = "Beschreibung"
+
+[reference.item.parameters]
+English = "Parameters"
+German = "Parameter"
+
+[reference.item.return_value]
+English = "Return Value"
+German = "Rückgabewert"
+
+[reference.item.parameter.name]
+English = "Name"
+German = "Name"
+
+[reference.item.parameter.type]
+English = "Type"
+German = "Typ"
+
+[reference.item.parameter.requirement]
+English = "Required"
+German = "Erfordernis"
+
+[reference.item.parameter.description]
+English = "Description"
+German = "Beschreibung"
+
+[engine.cardinality.required]
+English = "Required"
+German = "Erforderlich"
+
+[engine.cardinality.optional]
+English = "Optional"
+German = "Optional"
+
+[engine.cardinality.default]
+English = "Optional with default {default}"
+German = "Optional mit Standardwert {default}"
+
+[engine.cardinality.range]
+English = "{min} to {max} values"
+German = "{min} bis {max} Werte"
+
+[engine.cardinality.range.open]
+English = "At least {min} values"
+German = "Mindestens {min} Werte"
+
 [about.title]
 English = "About"
 German = "Über"
