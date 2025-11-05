@@ -2,6 +2,8 @@ use engine::DocumentationModule;
 use engine::Language;
 use leptos::prelude::*;
 
+use crate::pages::reference::reference_item_information::ReferenceItemInformation;
+
 #[component]
 pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
     view! {
@@ -15,7 +17,9 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
                         view! {
                             <>
                                 <dt>{item.synopsis(&Language::English).cloned()}</dt>
-                                <dd>{item.description(&Language::English).cloned()}</dd>
+                                <dd>
+                                    <ReferenceItemInformation item=item.clone() />
+                                </dd>
                             </>
                         }
                     })

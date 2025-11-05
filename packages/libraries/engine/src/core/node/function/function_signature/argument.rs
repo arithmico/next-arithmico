@@ -82,7 +82,7 @@ impl Argument {
         self
     }
 
-    pub fn description<T: ToString>(
+    pub fn set_description<T: ToString>(
         mut self,
         language: Language,
         description: T,
@@ -94,6 +94,10 @@ impl Argument {
 
     pub fn name(&self) -> String {
         self.name.clone()
+    }
+
+    pub fn description(&self) -> TranslationTemplate {
+        self.description.clone()
     }
 
     pub fn options(&self) -> &ArgumentOptions {

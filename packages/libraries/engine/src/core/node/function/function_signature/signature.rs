@@ -51,6 +51,14 @@ impl FunctionSignature {
         self
     }
 
+    pub fn get_return_type(&self) -> Option<&NodeType> {
+        if self.return_type.len() == 1 {
+            self.return_type.iter().next()
+        } else {
+            None
+        }
+    }
+
     pub fn arguments(&self) -> &[Argument] {
         &self.arguments
     }

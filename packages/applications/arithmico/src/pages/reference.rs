@@ -6,6 +6,7 @@ use web_state::WebState;
 
 mod reference_header;
 mod reference_section;
+mod reference_item_information;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {

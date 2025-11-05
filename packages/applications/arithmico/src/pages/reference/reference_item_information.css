@@ -1,0 +1,23 @@
+dl > dt {
+    font-size: var(--text-xl);
+    font-weight: 400;
+    margin-bottom: var(--spacing-2);
+}
+
+dl > dd {
+    padding-bottom: var(--spacing-3);
+    padding-left: var(--spacing-2);
+}
+
+dl > dd > ul {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    column-gap: var(--spacing-3);
+    row-gap: var(--spacing-2);
+    margin: 0;
+}
+
+dl > dd > ul > li {
+    margin: 0;
+    padding: 0;
+}
