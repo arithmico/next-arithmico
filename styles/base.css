@@ -1,6 +1,6 @@
 :root {
     font-size: 16pt;
-    font-family: roboto, sans-serif;
+    font-family: "Atkinson Hyperlegible Next", sans-serif;
 }
 
 /* Fix Safari issue related to <summary> / <details> arrow */

@@ -1,62 +1,48 @@
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_100.ttf);
-    font-style: normal;
-    font-weight: 100;
-}
-
-@font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_200.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-ExtraLight.ttf") format("truetype");
     font-style: normal;
     font-weight: 200;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_300.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-Light.ttf") format("truetype");
     font-style: normal;
     font-weight: 300;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_400.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-Regular.ttf") format("truetype");
     font-style: normal;
     font-weight: 400;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_500.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-Medium.ttf") format("truetype");
     font-style: normal;
     font-weight: 500;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_600.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-SemiBold.ttf") format("truetype");
     font-style: normal;
     font-weight: 600;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_700.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-Bold.ttf") format("truetype");
     font-style: normal;
     font-weight: 700;
 }
 
 @font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_800.ttf);
+    font-family: "Atkinson Hyperlegible Next";
+    src: url("/fonts/AtkinsonHyperlegibleNext-ExtraBold.ttf") format("truetype");
     font-style: normal;
     font-weight: 800;
-}
-
-@font-face {
-    font-family: roboto;
-    src: url(/fonts/roboto_900.ttf);
-    font-style: normal;
-    font-weight: 900;
 }
