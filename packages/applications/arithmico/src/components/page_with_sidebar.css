@@ -1,5 +1,6 @@
 .page-with-sidebar-container {
     padding: 0 var(--spacing-4);
+    overflow-y: auto;
 }
 
 @media (width > 80rem) {
