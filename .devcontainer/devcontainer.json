@@ -1,6 +1,6 @@
 {
     "name": "Rust Development Environment",
-    "dockerFile": "./Dockerfile",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu24.04",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -14,7 +14,12 @@
     "features": {
         "ghcr.io/devcontainers/features/node:1": {
             "version": "lts"
-        }
+        },
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/aws-cli:1": {},
+        "ghcr.io/devcontainers-extra/features/aws-cdk:2": {}
     },
     "forwardPorts": [8080],
     "mounts": [
