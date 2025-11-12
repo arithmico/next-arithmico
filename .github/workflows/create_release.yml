@@ -80,8 +80,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       - uses: cargo-bins/cargo-binstall@main
-      - shell: bash
-        run: .github/workflows/setup.sh
+      - name: Setup toolchain
+        shell: bash
+        run: |
+          rustup target add wasm32-unknown-unknown
+          cargo binstall -y --locked trunk
+          cargo install cssbundler --path packages/applications/cssbundler
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
