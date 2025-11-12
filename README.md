@@ -17,9 +17,9 @@ Below is an overview of the packages contained in this workspace:
 
 | Package Name         | Path                         | README                                                   |
 |----------------------|------------------------------|----------------------------------------------------------|
-| arithmico            | /applications/arithmico      | (README)[packages/applications/arithmico/README.md]      |
-| cssbundler           | /applications/cssbundler     | (README)[packages/applications/cssbundler/README.md]     |
-| create_version       | /applications/create_version | (README)[packages/applications/create_version/README.md] |
+| arithmico            | /applications/arithmico      | [README](./packages/applications/arithmico/README.md)      |
+| cssbundler           | /applications/cssbundler     | [README](./packages/applications/cssbundler/README.md)     |
+| create_version       | /applications/create_version | [README](./packages/applications/create_version/README.md) |
 | editor               | /libraries/editor            | -                                                        |
 | editor_core          | /libraries/editor_core       | -                                                        |
 | engine               | /libraries/engine            | -                                                        |
