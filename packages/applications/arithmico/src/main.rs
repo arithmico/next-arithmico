@@ -5,7 +5,6 @@ mod app;
 mod app_shell;
 mod components;
 mod pages;
-mod router;
 mod state;
 
 fn main() {
