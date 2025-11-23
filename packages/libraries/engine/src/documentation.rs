@@ -2,17 +2,17 @@ use std::collections::HashMap;
 
 use translate_core::{TranslationError, TranslationTemplate};
 
-use crate::core::{
+use crate::{Argument, core::{
     Context, DecimalFormat, DecimalPlaces, FunctionCall, HostApi, HostEndpoint, Language, NodeType, Stack, Symbol, TranslatedString, serialize_node
-};
+}};
 
 #[derive(Debug, Clone)]
-pub struct ParameterDocumentItem {
+pub struct ParameterDocumentationItem {
     name: String,
     description: TranslationTemplate,
 }
 
-impl ParameterDocumentItem {
+impl ParameterDocumentationItem {
     pub fn new() -> Self {
         Self {
             name: String::new(),
@@ -20,20 +20,22 @@ impl ParameterDocumentItem {
         }
     }
 
-    pub fn with(name: &String, description: &TranslationTemplate) -> Self {
-        let mut item = ParameterDocumentItem::new();
-        item.name = name.clone();
-        item.description = description.clone();
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn get_description(&self, language: &Language) -> Result<String, TranslationError> {
+        self.description.translate(language.clone())
+    }
+}
+
+impl From<&Argument> for ParameterDocumentationItem {
+    fn from(argument: &Argument) -> Self {
+        let mut item = ParameterDocumentationItem::new();
+        item.name = argument.get_name();
+        item.description = argument.get_description();
 
         item
-    }
-
-    pub fn name(&self) -> String {
-        self.name.clone()
-    }
-
-    pub fn description(&self, language: &Language) -> Result<String, TranslationError> {
-        self.description.translate(language.clone())
     }
 }
 
@@ -41,7 +43,7 @@ impl ParameterDocumentItem {
 pub struct DocumentationItem {
     synopsis: TranslatedString,
     description: TranslatedString,
-    parameters: Vec<ParameterDocumentItem>,
+    parameters: Vec<ParameterDocumentationItem>,
     return_type: NodeType,
 }
 
@@ -55,19 +57,19 @@ impl DocumentationItem {
         }
     }
 
-    pub fn synopsis(&self, language: &Language) -> Option<&String> {
+    pub fn get_synopsis(&self, language: &Language) -> Option<&String> {
         self.synopsis.get(language)
     }
 
-    pub fn description(&self, language: &Language) -> Option<&String> {
+    pub fn get_description(&self, language: &Language) -> Option<&String> {
         self.description.get(language)
     }
 
-    pub fn parameters(&self) -> &Vec<ParameterDocumentItem> {
+    pub fn get_parameters(&self) -> &[ParameterDocumentationItem] {
         &self.parameters
     }
 
-    pub fn return_type(&self) -> &NodeType {
+    pub fn get_return_type(&self) -> &NodeType {
         &self.return_type
     }
 
@@ -83,7 +85,7 @@ impl DocumentationItem {
                 item.parameters = signature
                     .arguments()
                     .iter()
-                    .map(|argument| ParameterDocumentItem::with(&argument.name(), &argument.description()))
+                    .map(|argument| ParameterDocumentationItem::from(argument))
                     .collect();
                 item.return_type = signature.get_return_type().unwrap().clone();
                 let synopsis_expression = FunctionCall::new(

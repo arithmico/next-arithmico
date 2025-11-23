@@ -82,7 +82,7 @@ impl Argument {
         self
     }
 
-    pub fn set_description<T: ToString>(
+    pub fn description<T: ToString>(
         mut self,
         language: Language,
         description: T,
@@ -92,20 +92,20 @@ impl Argument {
         self
     }
 
-    pub fn name(&self) -> String {
+    pub fn get_name(&self) -> String {
         self.name.clone()
     }
 
-    pub fn description(&self) -> TranslationTemplate {
+    pub fn get_description(&self) -> TranslationTemplate {
         self.description.clone()
     }
 
-    pub fn options(&self) -> &ArgumentOptions {
+    pub fn get_options(&self) -> &ArgumentOptions {
         &self.options
     }
 
     pub fn has_node_type(&self, node_type: NodeType) -> bool {
-        self.options().node_types().contains(&node_type)
-            || self.options().node_types().contains(&NodeType::Any)
+        self.get_options().node_types().contains(&node_type)
+            || self.get_options().node_types().contains(&NodeType::Any)
     }
 }

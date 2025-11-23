@@ -10,8 +10,8 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .argument("x", |argument| {
             argument
                 .evaluate()
-                .set_description(Language::English, "angle")
-                .set_description(Language::German, "Winkel")
+                .description(Language::English, "angle")
+                .description(Language::German, "Winkel")
                 .node_type(NodeType::Number)
         })
         .add_return_type(NodeType::Number);

@@ -2,7 +2,7 @@ use engine::DocumentationModule;
 use engine::Language;
 use leptos::prelude::*;
 
-use crate::pages::reference::reference_item_information::ReferenceItemInformation;
+use crate::pages::reference::reference_item::ReferenceItem;
 
 #[component]
 pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
@@ -15,12 +15,10 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
                     .iter()
                     .map(|item| {
                         view! {
-                            <>
-                                <dt>{item.synopsis(&Language::English).cloned()}</dt>
-                                <dd>
-                                    <ReferenceItemInformation item=item.clone() />
-                                </dd>
-                            </>
+                            <ReferenceItem
+                                item=item.clone()
+                                language=Language::English
+                            />
                         }
                     })
                     .collect_view()}

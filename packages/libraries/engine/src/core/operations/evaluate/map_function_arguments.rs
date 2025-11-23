@@ -16,8 +16,8 @@ pub fn map_function_parameters(
     let mut mapping = ArgumentMapping::new();
     'outer: for argument in signature.arguments() {
         let mut matched = 0;
-        let options = argument.options();
-        let name = argument.name();
+        let options = argument.get_options();
+        let name = argument.get_name();
         if parameters.is_empty() {
             let name = name.clone();
             match options.cardinality() {
