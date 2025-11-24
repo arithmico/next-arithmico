@@ -1,9 +1,8 @@
 use crate::core::{
-    serialize_child, Context, Division, Node, NormalizeNode, Serialize,
-    SerializeNodeError,
+    Context, Division, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Division {
+impl SerializeUtils for Division {
     fn normalize_node(
         &self,
         context: &Context,
@@ -13,29 +12,22 @@ impl NormalizeNode for Division {
             self.divisor.normalize_node(context)?,
         ))
     }
-}
 
-fn dividend_requires_parenthesis(node: &Node) -> bool {
-    match *node {
-        Node::Negate(_)
-        | Node::Sum(_)
-        | Node::Function(_)
-        | Node::And(_)
-        | Node::Or(_) => true,
-        _ => false,
-    }
-}
-
-fn divisor_requires_parenthesis(node: &Node) -> bool {
-    match *node {
-        Node::Negate(_)
-        | Node::Sum(_)
-        | Node::Division(_)
-        | Node::Product(_)
-        | Node::Function(_)
-        | Node::And(_)
-        | Node::Or(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        position: usize,
+    ) -> bool {
+        match child {
+            Node::Negate(_)
+            | Node::Sum(_)
+            | Node::Function(_)
+            | Node::And(_)
+            | Node::Or(_) => true,
+            Node::Product(_) => position > 0,
+            Node::Division(_) => position > 0,
+            _ => false,
+        }
     }
 }
 
@@ -46,16 +38,8 @@ impl Serialize for Division {
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} / {}",
-            serialize_child(
-                &self.dividend,
-                context,
-                dividend_requires_parenthesis
-            )?,
-            serialize_child(
-                &self.divisor,
-                context,
-                divisor_requires_parenthesis
-            )?
+            self.serialize_child(&self.dividend, 0, context)?,
+            self.serialize_child(&self.divisor, 1, context)?
         ))
     }
 }

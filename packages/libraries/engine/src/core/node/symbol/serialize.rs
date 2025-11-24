@@ -1,13 +1,21 @@
 use crate::core::{
-    Context, Node, NormalizeNode, Serialize, SerializeNodeError, Symbol,
+    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Symbol,
 };
 
-impl NormalizeNode for Symbol {
+impl SerializeUtils for Symbol {
     fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Symbol::new(&self.name))
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 

@@ -1,9 +1,9 @@
 use crate::core::{
-    serialize_child, Context, GreaterThanOrEquals, Node, NormalizeNode,
-    Serialize, SerializeNodeError,
+    Context, GreaterThanOrEquals, Node, Serialize, SerializeNodeError,
+    SerializeUtils,
 };
 
-impl NormalizeNode for GreaterThanOrEquals {
+impl SerializeUtils for GreaterThanOrEquals {
     fn normalize_node(
         &self,
         context: &Context,
@@ -13,18 +13,22 @@ impl NormalizeNode for GreaterThanOrEquals {
             self.right.normalize_node(context)?,
         ))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::And(_)
-        | Node::Or(_)
-        | Node::Equals(_)
-        | Node::GreaterThan(_)
-        | Node::GreaterThanOrEquals(_)
-        | Node::LessThan(_)
-        | Node::LessThanOrEquals(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::And(_)
+            | Node::Or(_)
+            | Node::Equals(_)
+            | Node::GreaterThan(_)
+            | Node::GreaterThanOrEquals(_)
+            | Node::LessThan(_)
+            | Node::LessThanOrEquals(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -35,8 +39,8 @@ impl Serialize for GreaterThanOrEquals {
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} >= {}",
-            serialize_child(&self.left, context, child_requires_parenthesis)?,
-            serialize_child(&self.right, context, child_requires_parenthesis)?,
+            self.serialize_child(&self.left, 0, context)?,
+            self.serialize_child(&self.right, 1, context)?,
         ))
     }
 }

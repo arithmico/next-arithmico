@@ -1,8 +1,8 @@
 use crate::core::{
-    Context, Node, NormalizeNode, Serialize, SerializeNodeError,
+    Context, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Node {
+impl SerializeUtils for Node {
     fn normalize_node(
         &self,
         context: &Context,
@@ -38,6 +38,70 @@ impl NormalizeNode for Node {
                 host_function.normalize_node(context)
             }
             Node::Definition(definition) => definition.normalize_node(context),
+        }
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        position: usize,
+    ) -> bool {
+        match self {
+            Node::Boolean(boolean) => {
+                boolean.child_requires_parenthesis(child, position)
+            }
+            Node::Sum(sum) => sum.child_requires_parenthesis(child, position),
+            Node::Negate(negate) => {
+                negate.child_requires_parenthesis(child, position)
+            }
+            Node::Product(product) => {
+                product.child_requires_parenthesis(child, position)
+            }
+            Node::Division(division) => {
+                division.child_requires_parenthesis(child, position)
+            }
+            Node::Power(power) => {
+                power.child_requires_parenthesis(child, position)
+            }
+            Node::Tensor(tensor) => {
+                tensor.child_requires_parenthesis(child, position)
+            }
+            Node::Number(number) => {
+                number.child_requires_parenthesis(child, position)
+            }
+            Node::Symbol(symbol) => {
+                symbol.child_requires_parenthesis(child, position)
+            }
+            Node::Function(function) => {
+                function.child_requires_parenthesis(child, position)
+            }
+            Node::FunctionCall(function_call) => {
+                function_call.child_requires_parenthesis(child, position)
+            }
+            Node::And(and) => and.child_requires_parenthesis(child, position),
+            Node::Or(or) => or.child_requires_parenthesis(child, position),
+            Node::Equals(equals) => {
+                equals.child_requires_parenthesis(child, position)
+            }
+            Node::LessThan(less_than) => {
+                less_than.child_requires_parenthesis(child, position)
+            }
+            Node::LessThanOrEquals(less_than_or_equals) => {
+                less_than_or_equals.child_requires_parenthesis(child, position)
+            }
+            Node::GreaterThan(greater_than) => {
+                greater_than.child_requires_parenthesis(child, position)
+            }
+            Node::GreaterThanOrEquals(greater_than_or_equals) => {
+                greater_than_or_equals
+                    .child_requires_parenthesis(child, position)
+            }
+            Node::HostFunction(host_function) => {
+                host_function.child_requires_parenthesis(child, position)
+            }
+            Node::Definition(definition) => {
+                definition.child_requires_parenthesis(child, position)
+            }
         }
     }
 }
