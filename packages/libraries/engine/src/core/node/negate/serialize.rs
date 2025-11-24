@@ -1,26 +1,29 @@
 use crate::core::{
-    serialize_child, Context, Negate, Node, NormalizeNode, Serialize,
-    SerializeNodeError,
+    Context, Negate, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Negate {
+impl SerializeUtils for Negate {
     fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Negate::new(self.value.normalize_node(context)?))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::Negate(_)
-        | Node::Sum(_)
-        | Node::Function(_)
-        | Node::Definition(_)
-        | Node::And(_)
-        | Node::Or(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::Negate(_)
+            | Node::Sum(_)
+            | Node::Function(_)
+            | Node::Definition(_)
+            | Node::And(_)
+            | Node::Or(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -31,7 +34,7 @@ impl Serialize for Negate {
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "-{}",
-            serialize_child(&self.value, context, child_requires_parenthesis)?
+            self.serialize_child(&self.value, 0, context)?
         ))
     }
 }

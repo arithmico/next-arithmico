@@ -1,9 +1,9 @@
 use crate::core::{
-    get_argument_separator, Context, FunctionCall, Node, NormalizeNode,
-    Serialize, SerializeNodeError,
+    get_argument_separator, Context, FunctionCall, Node, Serialize,
+    SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for FunctionCall {
+impl SerializeUtils for FunctionCall {
     fn normalize_node(
         &self,
         context: &Context,
@@ -18,6 +18,14 @@ impl NormalizeNode for FunctionCall {
             self.target.normalize_node(context)?,
             arguments?,
         ))
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 

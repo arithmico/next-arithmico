@@ -1,9 +1,8 @@
 use crate::core::{
-    serialize_child, And, Context, Node, NormalizeNode, Serialize,
-    SerializeNodeError,
+    And, Context, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for And {
+impl SerializeUtils for And {
     fn normalize_node(
         &self,
         context: &Context,
@@ -16,12 +15,16 @@ impl NormalizeNode for And {
 
         Ok(And::new(elements?))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::Or(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::Or(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -37,8 +40,9 @@ impl Serialize for And {
         let elements: Result<Vec<String>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| {
-                serialize_child(element, options, child_requires_parenthesis)
+            .enumerate()
+            .map(|(position, element)| {
+                self.serialize_child(element, position, options)
             })
             .collect();
 

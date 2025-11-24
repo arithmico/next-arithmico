@@ -1,9 +1,8 @@
 use crate::core::{
-    serialize_child, Context, Node, NormalizeNode, Product, Serialize,
-    SerializeNodeError,
+    Context, Node, Product, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Product {
+impl SerializeUtils for Product {
     fn normalize_node(
         &self,
         context: &Context,
@@ -16,17 +15,21 @@ impl NormalizeNode for Product {
 
         Ok(Product::new(elements?))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::Negate(_)
-        | Node::Sum(_)
-        | Node::Function(_)
-        | Node::Definition(_)
-        | Node::And(_)
-        | Node::Or(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::Negate(_)
+            | Node::Sum(_)
+            | Node::Function(_)
+            | Node::Definition(_)
+            | Node::And(_)
+            | Node::Or(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -42,8 +45,9 @@ impl Serialize for Product {
         let elements: Result<Vec<String>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| {
-                serialize_child(element, context, child_requires_parenthesis)
+            .enumerate()
+            .map(|(position, element)| {
+                self.serialize_child(element, position, context)
             })
             .collect();
 
