@@ -102,6 +102,7 @@ impl SerializeUtils for Node {
             Node::Definition(definition) => {
                 definition.child_requires_parenthesis(child, position)
             }
+            Node::Definition(definition) => definition.normalize_node(context),
         }
     }
 }

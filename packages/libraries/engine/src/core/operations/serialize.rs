@@ -6,7 +6,10 @@ pub use argument_separator::*;
 pub use decimal_separator::*;
 pub use serialize_node_utils::*;
 
-use crate::core::{Context, SerializeNodeError};
+use crate::{
+    core::{Context, SerializeNodeError},
+    Node,
+};
 
 pub trait Serialize {
     fn serialize(
