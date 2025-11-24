@@ -1,9 +1,8 @@
 use crate::core::{
-    serialize_child, Context, Node, NormalizeNode, Serialize,
-    SerializeNodeError, Sum,
+    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Sum,
 };
 
-impl NormalizeNode for Sum {
+impl SerializeUtils for Sum {
     fn normalize_node(
         &self,
         context: &Context,
@@ -16,19 +15,23 @@ impl NormalizeNode for Sum {
 
         Ok(Sum::new(elements?))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::Function(_)
-        | Node::And(_)
-        | Node::Or(_)
-        | Node::Equals(_)
-        | Node::LessThan(_)
-        | Node::LessThanOrEquals(_)
-        | Node::GreaterThan(_)
-        | Node::GreaterThanOrEquals(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::Function(_)
+            | Node::And(_)
+            | Node::Or(_)
+            | Node::Equals(_)
+            | Node::LessThan(_)
+            | Node::LessThanOrEquals(_)
+            | Node::GreaterThan(_)
+            | Node::GreaterThanOrEquals(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -44,21 +47,14 @@ impl Serialize for Sum {
         let elements: Result<Vec<(String, bool)>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| match element {
+            .enumerate()
+            .map(|(position, element)| match element {
                 Node::Negate(negate) => Ok((
-                    serialize_child(
-                        &negate.value,
-                        context,
-                        child_requires_parenthesis,
-                    )?,
+                    self.serialize_child(&negate.value, position, context)?,
                     true,
                 )),
                 _ => Ok((
-                    serialize_child(
-                        &element,
-                        context,
-                        child_requires_parenthesis,
-                    )?,
+                    self.serialize_child(&element, position, context)?,
                     false,
                 )),
             })

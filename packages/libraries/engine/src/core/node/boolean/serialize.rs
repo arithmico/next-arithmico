@@ -1,13 +1,21 @@
 use crate::core::{
-    Boolean, Context, Node, NormalizeNode, Serialize, SerializeNodeError,
+    Boolean, Context, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Boolean {
+impl SerializeUtils for Boolean {
     fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Boolean::new(self.value))
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 

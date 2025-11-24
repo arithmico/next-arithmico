@@ -1,9 +1,8 @@
 use crate::core::{
-    serialize_child, Context, Node, NormalizeNode, Power, Serialize,
-    SerializeNodeError,
+    Context, Node, Power, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Power {
+impl SerializeUtils for Power {
     fn normalize_node(
         &self,
         context: &Context,
@@ -13,21 +12,25 @@ impl NormalizeNode for Power {
             self.exponent.normalize_node(context)?,
         ))
     }
-}
 
-fn child_requires_parenthesis(node: &Node) -> bool {
-    match node {
-        Node::Negate(_)
-        | Node::Sum(_)
-        | Node::Product(_)
-        | Node::Division(_)
-        | Node::Power(_)
-        | Node::Function(_)
-        | Node::FunctionCall(_)
-        | Node::Definition(_)
-        | Node::And(_)
-        | Node::Or(_) => true,
-        _ => false,
+    fn child_requires_parenthesis(
+        &self,
+        child: &Node,
+        _position: usize,
+    ) -> bool {
+        match child {
+            Node::Negate(_)
+            | Node::Sum(_)
+            | Node::Product(_)
+            | Node::Division(_)
+            | Node::Power(_)
+            | Node::Function(_)
+            | Node::FunctionCall(_)
+            | Node::Definition(_)
+            | Node::And(_)
+            | Node::Or(_) => true,
+            _ => false,
+        }
     }
 }
 
@@ -38,12 +41,8 @@ impl Serialize for Power {
     ) -> Result<String, SerializeNodeError> {
         Ok(format!(
             "{} ^ {}",
-            serialize_child(&self.base, context, child_requires_parenthesis)?,
-            serialize_child(
-                &self.exponent,
-                context,
-                child_requires_parenthesis
-            )?,
+            self.serialize_child(&self.base, 0, context)?,
+            self.serialize_child(&self.exponent, 1, context,)?,
         ))
     }
 }
