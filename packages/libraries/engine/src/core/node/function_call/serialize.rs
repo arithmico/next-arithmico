@@ -1,27 +1,27 @@
 use crate::core::{
-    get_argument_separator, Context, FunctionCall, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeUtils,
+    get_argument_separator, Context, FunctionCall, Node, NormalizeNode,
+    Serialize, SerializeNodeError,
 };
 
-impl SerializeNodeUtils for FunctionCall {
-    fn prepare_serialization(
+impl NormalizeNode for FunctionCall {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let arguments: Result<Vec<Node>, SerializeNodeError> = self
             .arguments
             .iter()
-            .map(|element| element.prepare_serialization(context))
+            .map(|element| element.normalize_node(context))
             .collect();
 
         Ok(FunctionCall::new(
-            self.target.prepare_serialization(context)?,
+            self.target.normalize_node(context)?,
             arguments?,
         ))
     }
 }
 
-impl SerializeNode for FunctionCall {
+impl Serialize for FunctionCall {
     fn serialize(
         &self,
         context: &Context,

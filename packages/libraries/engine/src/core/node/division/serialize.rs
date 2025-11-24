@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, Context, Division, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeUtils,
+    serialize_child, Context, Division, Node, NormalizeNode, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Division {
-    fn prepare_serialization(
+impl NormalizeNode for Division {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Division::new(
-            self.dividend.prepare_serialization(context)?,
-            self.divisor.prepare_serialization(context)?,
+            self.dividend.normalize_node(context)?,
+            self.divisor.normalize_node(context)?,
         ))
     }
 }
@@ -39,7 +39,7 @@ fn divisor_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Division {
+impl Serialize for Division {
     fn serialize(
         &self,
         context: &Context,

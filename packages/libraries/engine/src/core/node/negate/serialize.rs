@@ -1,14 +1,14 @@
 use crate::core::{
-    serialize_child, Context, Negate, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    serialize_child, Context, Negate, Node, NormalizeNode, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Negate {
-    fn prepare_serialization(
+impl NormalizeNode for Negate {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
-        Ok(Negate::new(self.value.prepare_serialization(context)?))
+        Ok(Negate::new(self.value.normalize_node(context)?))
     }
 }
 
@@ -24,7 +24,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Negate {
+impl Serialize for Negate {
     fn serialize(
         &self,
         context: &Context,

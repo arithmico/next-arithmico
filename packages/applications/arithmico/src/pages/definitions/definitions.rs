@@ -1,5 +1,5 @@
 use engine::{
-    Context, DecimalFormat, FunctionCall, Node, SerializeNode,
+    Context, DecimalFormat, FunctionCall, Node, Serialize,
     SerializeNodeError, Symbol,
 };
 use leptos::prelude::*;

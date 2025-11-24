@@ -1,10 +1,9 @@
 use crate::core::{
-    Context, HostFunction, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    Context, HostFunction, Node, NormalizeNode, Serialize, SerializeNodeError,
 };
 
-impl SerializeNodeUtils for HostFunction {
-    fn prepare_serialization(
+impl NormalizeNode for HostFunction {
+    fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
@@ -12,7 +11,7 @@ impl SerializeNodeUtils for HostFunction {
     }
 }
 
-impl SerializeNode for HostFunction {
+impl Serialize for HostFunction {
     fn serialize(
         &self,
         _context: &Context,
