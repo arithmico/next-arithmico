@@ -1,7 +1,7 @@
 use crate::core::{Context, Node, SerializeNodeError};
 
-pub trait SerializeNodeUtils {
-    fn prepare_serialization(
+pub trait NormalizeNode {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError>;

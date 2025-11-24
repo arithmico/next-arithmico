@@ -1,6 +1,6 @@
 use crate::core::{Context, Node, SerializeNodeError};
 
-use super::SerializeNode;
+use super::Serialize;
 
 pub fn serialize_child(
     node: &Node,

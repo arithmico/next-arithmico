@@ -1,10 +1,9 @@
 use crate::core::{
-    Boolean, Context, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    Boolean, Context, Node, NormalizeNode, Serialize, SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Boolean {
-    fn prepare_serialization(
+impl NormalizeNode for Boolean {
+    fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
@@ -12,7 +11,7 @@ impl SerializeNodeUtils for Boolean {
     }
 }
 
-impl SerializeNode for Boolean {
+impl Serialize for Boolean {
     fn serialize(
         &self,
         _context: &Context,

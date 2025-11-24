@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, Context, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils, Sum,
+    serialize_child, Context, Node, NormalizeNode, Serialize,
+    SerializeNodeError, Sum,
 };
 
-impl SerializeNodeUtils for Sum {
-    fn prepare_serialization(
+impl NormalizeNode for Sum {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(context))
+            .map(|element| element.normalize_node(context))
             .collect();
 
         Ok(Sum::new(elements?))
@@ -32,7 +32,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Sum {
+impl Serialize for Sum {
     fn serialize(
         &self,
         context: &Context,

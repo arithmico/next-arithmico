@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, Context, Node, Or, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    serialize_child, Context, Node, NormalizeNode, Or, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Or {
-    fn prepare_serialization(
+impl NormalizeNode for Or {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(context))
+            .map(|element| element.normalize_node(context))
             .collect();
 
         Ok(Or::new(elements?))
@@ -24,7 +24,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Or {
+impl Serialize for Or {
     fn serialize(
         &self,
         context: &Context,

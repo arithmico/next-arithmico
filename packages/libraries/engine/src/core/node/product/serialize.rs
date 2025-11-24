@@ -1,17 +1,17 @@
 use crate::core::{
-    serialize_child, Context, Node, Product, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    serialize_child, Context, Node, NormalizeNode, Product, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Product {
-    fn prepare_serialization(
+impl NormalizeNode for Product {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(context))
+            .map(|element| element.normalize_node(context))
             .collect();
 
         Ok(Product::new(elements?))
@@ -30,7 +30,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Product {
+impl Serialize for Product {
     fn serialize(
         &self,
         context: &Context,
