@@ -16,7 +16,24 @@ impl SetThemeAction {
 
 impl WebStateAction<State> for SetThemeAction {
     fn apply(&self, state: &mut State) {
-        state.settings.theme = self.value.clone();
+        state.settings.theme = match self.value {
+            Theme::Default => {
+                if web_sys::window()
+                    .and_then(|window| {
+                        window.match_media("(prefers-color-scheme: dark)")
+                            .ok()
+                            .flatten()
+                    })
+                    .map(|mq| mq.matches())
+                    .unwrap_or(false)
+                {
+                    Theme::Dark
+                } else {
+                    Theme::Light
+                }
+            }
+            _ => self.value.clone(),
+        };
         state.settings.save();
     }
 }

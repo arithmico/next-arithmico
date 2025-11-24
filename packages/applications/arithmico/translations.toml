@@ -90,6 +90,10 @@ German = "Hell"
 English = "Dark"
 German = "Dunkel"
 
+[settings.theme.default]
+English = "Default"
+German = "Default"
+
 [settings.section.misc]
 English = "Miscellaneous"
 German = "Verschiedenes"

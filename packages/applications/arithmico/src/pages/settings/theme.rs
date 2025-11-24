@@ -36,6 +36,7 @@ pub fn ThemeSetting() -> impl IntoView {
             }
         })
         .label(|| view! { <FormattedMessage id="settings.theme" /> })
+        .option(Theme::Default, move || view! { <FormattedMessage id=Theme::Default /> })
         .option(Theme::Light, move || view! { <FormattedMessage id=Theme::Light /> })
         .option(Theme::Dark, move || view! { <FormattedMessage id=Theme::Dark /> });
 
