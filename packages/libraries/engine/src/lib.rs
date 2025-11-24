@@ -5,7 +5,7 @@ mod macros;
 mod session;
 
 pub use core::{
-    node::*, Context, DecimalFormat, DecimalPlaces, Language, SerializeNode,
+    node::*, Context, DecimalFormat, DecimalPlaces, Language, Serialize,
     SerializeNodeError,
 };
 pub use documentation::{

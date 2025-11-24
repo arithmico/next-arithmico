@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, Context, Node, Power, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils,
+    serialize_child, Context, Node, NormalizeNode, Power, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Power {
-    fn prepare_serialization(
+impl NormalizeNode for Power {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Power::new(
-            self.base.prepare_serialization(context)?,
-            self.exponent.prepare_serialization(context)?,
+            self.base.normalize_node(context)?,
+            self.exponent.normalize_node(context)?,
         ))
     }
 }
@@ -31,7 +31,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for Power {
+impl Serialize for Power {
     fn serialize(
         &self,
         context: &Context,

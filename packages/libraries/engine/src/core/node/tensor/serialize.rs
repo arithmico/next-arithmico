@@ -1,31 +1,31 @@
 use std::iter::zip;
 
 use crate::core::{
-    get_argument_separator, Context, Node, SerializeNode, SerializeNodeError,
-    SerializeNodeUtils, Tensor,
+    get_argument_separator, Context, Node, NormalizeNode, Serialize,
+    SerializeNodeError, Tensor,
 };
 
-impl SerializeNodeUtils for Tensor {
-    fn prepare_serialization(
+impl NormalizeNode for Tensor {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         let elements: Result<Vec<Node>, SerializeNodeError> = self
             .elements
             .iter()
-            .map(|element| element.prepare_serialization(context))
+            .map(|element| element.normalize_node(context))
             .collect();
 
         Ok(Tensor::new_with_shape(self.shape.clone(), elements?))
     }
 }
 
-impl SerializeNode for Tensor {
+impl Serialize for Tensor {
     fn serialize(
         &self,
         context: &Context,
     ) -> Result<String, SerializeNodeError> {
-        let serialized_elements: Result<Vec<_>, _> = self
+        let serialized_elements: Result<Vec<String>, _> = self
             .elements
             .iter()
             .map(|element| element.serialize(context))

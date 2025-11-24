@@ -1,5 +1,5 @@
 use crate::core::{
-    evaluate_node, parse, serialize_node, Context, HostApi, Node, Stack,
+    evaluate_node, parse, Context, HostApi, Node, NormalizeNode, Stack,
 };
 use crate::{api::load_host_api, Documentation};
 use crate::{DecimalFormat, DecimalPlaces};
@@ -28,7 +28,7 @@ impl Session {
         }
     }
 
-    fn create_context(
+    pub fn create_context(
         &self,
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,
@@ -41,31 +41,36 @@ impl Session {
         )
     }
 
+    fn evaluate_input(
+        &mut self,
+        input: &str,
+        decimal_places: DecimalPlaces,
+        decimal_format: DecimalFormat,
+    ) -> Result<Node, SessionError> {
+        let context = self.create_context(decimal_places, decimal_format);
+
+        let node = parse(input, &context)?;
+
+        let evaluatd_node =
+            evaluate_node(&node, &context)?.normalize_node(&context)?;
+
+        let output = if let Node::Definition(node) = &evaluatd_node {
+            self.stack.insert(&node.symbol, *node.expression.clone());
+            *node.expression.clone()
+        } else {
+            evaluatd_node
+        };
+
+        Ok(output)
+    }
+
     pub fn push(
         &mut self,
         input: &str,
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,
     ) {
-        let context = self.create_context(decimal_places, decimal_format);
-
-        let output: Result<String, SessionError> = parse(input, &context)
-            .map_err(|error| SessionError::from(error))
-            .and_then(|node| {
-                evaluate_node(&node, &context)
-                    .map_err(|error| SessionError::from(error))
-            })
-            .and_then(|node: Node| {
-                if let Node::Definition(definition) = &node {
-                    self.stack.insert(
-                        &definition.symbol,
-                        *definition.expression.clone(),
-                    );
-                }
-
-                serialize_node(&node, &context)
-                    .map_err(|error| SessionError::from(error))
-            });
+        let output = self.evaluate_input(input, decimal_places, decimal_format);
 
         self.entries.push(SessionEntry {
             input: input.to_string(),

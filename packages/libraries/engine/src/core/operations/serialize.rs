@@ -8,9 +8,12 @@ pub use decimal_separator::*;
 pub use parenthesis::*;
 pub use serialize_node_utils::*;
 
-use crate::core::{Context, SerializeNodeError};
+use crate::{
+    core::{Context, SerializeNodeError},
+    Node,
+};
 
-pub trait SerializeNode {
+pub trait Serialize {
     fn serialize(
         &self,
         context: &Context,

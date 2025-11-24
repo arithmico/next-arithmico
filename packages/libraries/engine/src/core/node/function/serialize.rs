@@ -1,21 +1,21 @@
 use crate::core::{
-    get_argument_separator, Context, Function, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeUtils,
+    get_argument_separator, Context, Function, Node, NormalizeNode, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Function {
-    fn prepare_serialization(
+impl NormalizeNode for Function {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(Function::new(
             self.signature.clone(),
-            self.expression.prepare_serialization(context)?,
+            self.expression.normalize_node(context)?,
         ))
     }
 }
 
-impl SerializeNode for Function {
+impl Serialize for Function {
     fn serialize(
         &self,
         context: &Context,

@@ -1,16 +1,16 @@
 use crate::core::{
-    serialize_child, Context, LessThanOrEquals, Node, SerializeNode,
-    SerializeNodeError, SerializeNodeUtils,
+    serialize_child, Context, LessThanOrEquals, Node, NormalizeNode, Serialize,
+    SerializeNodeError,
 };
 
-impl SerializeNodeUtils for LessThanOrEquals {
-    fn prepare_serialization(
+impl NormalizeNode for LessThanOrEquals {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Ok(LessThanOrEquals::new(
-            self.left.prepare_serialization(context)?,
-            self.right.prepare_serialization(context)?,
+            self.left.normalize_node(context)?,
+            self.right.normalize_node(context)?,
         ))
     }
 }
@@ -28,7 +28,7 @@ fn child_requires_parenthesis(node: &Node) -> bool {
     }
 }
 
-impl SerializeNode for LessThanOrEquals {
+impl Serialize for LessThanOrEquals {
     fn serialize(
         &self,
         context: &Context,
