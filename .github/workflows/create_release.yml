@@ -4,6 +4,9 @@ on:
     branches: 
       - main
 
+concurrency:
+  group: staging-environment
+
 permissions:
   contents: write
   id-token: write
@@ -37,8 +40,6 @@ jobs:
   
   deploy-production-environment:
     name: Deploy Infrastructure
-    concurrency:
-      group: staging-environment
     runs-on: ubuntu-24.04
     needs: 
       - create-release
