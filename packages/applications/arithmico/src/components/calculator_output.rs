@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-use engine::{Context, Node, Serialize, SessionError};
+use engine::{Context, Node, NodeConverter, Serialize, SessionError};
 
 use crate::components::CalculatorErrorOutput;
 
@@ -24,9 +24,8 @@ pub fn CalculatorOutput(
                 match value.get() {
                     Some(result) => {
                         match result {
-                            Ok(value) => {
-                                view! { <MathNode value=value context=context /> }
-                                    .into_any()
+                            Ok(node) => {
+                                NodeToStringConverter::new(context).convert_node(&node)
                             }
                             Err(error) => {
                                 view! { <CalculatorErrorOutput error=error /> }.into_any()
@@ -40,29 +39,18 @@ pub fn CalculatorOutput(
     }
 }
 
-#[component]
-fn MathNode(value: Node, context: Context) -> impl IntoView {
-    value.serialize(&context)
-    /*match value {
-        Node::Boolean(boolean) => todo!(),
-        Node::Sum(sum) => todo!(),
-        Node::Negate(negate) => todo!(),
-        Node::Product(product) => todo!(),
-        Node::Division(division) => todo!(),
-        Node::Power(power) => todo!(),
-        Node::Tensor(tensor) => todo!(),
-        Node::Number(number) => todo!(),
-        Node::Symbol(symbol) => todo!(),
-        Node::Function(function) => todo!(),
-        Node::FunctionCall(function_call) => todo!(),
-        Node::And(and) => todo!(),
-        Node::Or(or) => todo!(),
-        Node::Equals(equals) => todo!(),
-        Node::LessThan(less_than) => todo!(),
-        Node::LessThanOrEquals(less_than_or_equals) => todo!(),
-        Node::GreaterThan(greater_than) => todo!(),
-        Node::GreaterThanOrEquals(greater_than_or_equals) => todo!(),
-        Node::HostFunction(host_function) => todo!(),
-        Node::Definition(definition) => todo!(),
-    }*/
+struct NodeToStringConverter {
+    context: Context,
+}
+
+impl NodeToStringConverter {
+    pub fn new(context: Context) -> Self {
+        Self { context }
+    }
+}
+
+impl NodeConverter<AnyView> for NodeToStringConverter {
+    fn convert_node(&self, node: &Node) -> AnyView {
+        node.serialize(&self.context).into_any()
+    }
 }
