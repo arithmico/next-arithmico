@@ -1,52 +1,48 @@
 use crate::core::{
-    Context, Node, SerializeNode, SerializeNodeError, SerializeNodeUtils,
+    Context, Node, NormalizeNode, Serialize, SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Node {
-    fn prepare_serialization(
+impl NormalizeNode for Node {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         match self {
-            Node::Boolean(boolean) => boolean.prepare_serialization(context),
-            Node::Sum(sum) => sum.prepare_serialization(context),
-            Node::Negate(negate) => negate.prepare_serialization(context),
-            Node::Product(product) => product.prepare_serialization(context),
-            Node::Division(division) => division.prepare_serialization(context),
-            Node::Power(power) => power.prepare_serialization(context),
-            Node::Tensor(tensor) => tensor.prepare_serialization(context),
-            Node::Number(number) => number.prepare_serialization(context),
-            Node::Symbol(symbol) => symbol.prepare_serialization(context),
-            Node::Function(function) => function.prepare_serialization(context),
+            Node::Boolean(boolean) => boolean.normalize_node(context),
+            Node::Sum(sum) => sum.normalize_node(context),
+            Node::Negate(negate) => negate.normalize_node(context),
+            Node::Product(product) => product.normalize_node(context),
+            Node::Division(division) => division.normalize_node(context),
+            Node::Power(power) => power.normalize_node(context),
+            Node::Tensor(tensor) => tensor.normalize_node(context),
+            Node::Number(number) => number.normalize_node(context),
+            Node::Symbol(symbol) => symbol.normalize_node(context),
+            Node::Function(function) => function.normalize_node(context),
             Node::FunctionCall(function_call) => {
-                function_call.prepare_serialization(context)
+                function_call.normalize_node(context)
             }
-            Node::And(and) => and.prepare_serialization(context),
-            Node::Or(or) => or.prepare_serialization(context),
-            Node::Equals(equals) => equals.prepare_serialization(context),
-            Node::LessThan(less_than) => {
-                less_than.prepare_serialization(context)
-            }
+            Node::And(and) => and.normalize_node(context),
+            Node::Or(or) => or.normalize_node(context),
+            Node::Equals(equals) => equals.normalize_node(context),
+            Node::LessThan(less_than) => less_than.normalize_node(context),
             Node::LessThanOrEquals(less_than_or_equals) => {
-                less_than_or_equals.prepare_serialization(context)
+                less_than_or_equals.normalize_node(context)
             }
             Node::GreaterThan(greater_than) => {
-                greater_than.prepare_serialization(context)
+                greater_than.normalize_node(context)
             }
             Node::GreaterThanOrEquals(greater_than_or_equals) => {
-                greater_than_or_equals.prepare_serialization(context)
+                greater_than_or_equals.normalize_node(context)
             }
             Node::HostFunction(host_function) => {
-                host_function.prepare_serialization(context)
+                host_function.normalize_node(context)
             }
-            Node::Definition(definition) => {
-                definition.prepare_serialization(context)
-            }
+            Node::Definition(definition) => definition.normalize_node(context),
         }
     }
 }
 
-impl SerializeNode for Node {
+impl Serialize for Node {
     fn serialize(
         &self,
         context: &Context,

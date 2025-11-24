@@ -1,10 +1,10 @@
 use crate::core::{
-    get_decimal_separator, Context, Negate, Node, Number, Power, Product,
-    SerializeNode, SerializeNodeError, SerializeNodeUtils,
+    get_decimal_separator, Context, Negate, Node, NormalizeNode, Number, Power,
+    Product, Serialize, SerializeNodeError,
 };
 
-impl SerializeNodeUtils for Number {
-    fn prepare_serialization(
+impl NormalizeNode for Number {
+    fn normalize_node(
         &self,
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
@@ -47,7 +47,7 @@ impl SerializeNodeUtils for Number {
     }
 }
 
-impl SerializeNode for Number {
+impl Serialize for Number {
     fn serialize(
         &self,
         context: &Context,

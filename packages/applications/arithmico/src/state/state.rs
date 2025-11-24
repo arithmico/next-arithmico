@@ -2,7 +2,7 @@ use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{Session, SessionError};
+use engine::{Context, Node, Session, SessionError};
 use trace::Trace;
 use web_state::WebState;
 
@@ -12,7 +12,7 @@ use super::Settings;
 pub struct State {
     pub session: Session,
     pub settings: Settings,
-    pub current_output: Option<Result<String, SessionError>>,
+    pub current_output: Option<Result<Node, SessionError>>,
     pub current_error_trace: Option<Trace>,
     pub input_editor_state: EditorState,
 }
@@ -30,6 +30,18 @@ impl State {
             current_error_trace: None,
             input_editor_state: editor_state,
         }
+    }
+
+    pub fn create_engine_context(&self) -> Context {
+        let decimal_places = self.settings.decimal_places;
+        let decimal_format = self
+            .settings
+            .override_decimal_format
+            .decimal_format()
+            .cloned()
+            .unwrap_or_else(|| (&self.settings.language).into());
+
+        self.session.create_context(decimal_places, decimal_format)
     }
 }
 

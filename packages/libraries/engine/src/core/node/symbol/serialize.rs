@@ -1,10 +1,9 @@
 use crate::core::{
-    Context, Node, SerializeNode, SerializeNodeError, SerializeNodeUtils,
-    Symbol,
+    Context, Node, NormalizeNode, Serialize, SerializeNodeError, Symbol,
 };
 
-impl SerializeNodeUtils for Symbol {
-    fn prepare_serialization(
+impl NormalizeNode for Symbol {
+    fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
@@ -12,7 +11,7 @@ impl SerializeNodeUtils for Symbol {
     }
 }
 
-impl SerializeNode for Symbol {
+impl Serialize for Symbol {
     fn serialize(
         &self,
         _context: &Context,
