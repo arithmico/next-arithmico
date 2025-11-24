@@ -1,9 +1,9 @@
 use crate::core::{
-    get_decimal_separator, Context, Negate, Node, NormalizeNode, Number, Power,
-    Product, Serialize, SerializeNodeError,
+    get_decimal_separator, Context, Negate, Node, Number, Power, Product,
+    Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Number {
+impl SerializeUtils for Number {
     fn normalize_node(
         &self,
         context: &Context,
@@ -44,6 +44,14 @@ impl NormalizeNode for Number {
         } else {
             Ok(Negate::new(scientific_notation))
         }
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 

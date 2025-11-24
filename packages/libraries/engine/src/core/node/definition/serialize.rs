@@ -1,9 +1,9 @@
 use crate::core::{
-    get_argument_separator, Context, Definition, Node, NormalizeNode,
-    Serialize, SerializeNodeError,
+    get_argument_separator, Context, Definition, Node, Serialize,
+    SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for Definition {
+impl SerializeUtils for Definition {
     fn normalize_node(
         &self,
         context: &Context,
@@ -12,6 +12,10 @@ impl NormalizeNode for Definition {
             self.symbol.clone(),
             self.expression.normalize_node(context)?,
         ))
+    }
+
+    fn child_requires_parenthesis(&self, _: &Node, _poosition: usize) -> bool {
+        false
     }
 }
 

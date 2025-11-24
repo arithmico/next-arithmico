@@ -1,11 +1,11 @@
 use std::iter::zip;
 
 use crate::core::{
-    get_argument_separator, Context, Node, NormalizeNode, Serialize,
-    SerializeNodeError, Tensor,
+    get_argument_separator, Context, Node, Serialize, SerializeNodeError,
+    SerializeUtils, Tensor,
 };
 
-impl NormalizeNode for Tensor {
+impl SerializeUtils for Tensor {
     fn normalize_node(
         &self,
         context: &Context,
@@ -17,6 +17,14 @@ impl NormalizeNode for Tensor {
             .collect();
 
         Ok(Tensor::new_with_shape(self.shape.clone(), elements?))
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 

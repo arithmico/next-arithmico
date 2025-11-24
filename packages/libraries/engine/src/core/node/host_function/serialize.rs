@@ -1,13 +1,21 @@
 use crate::core::{
-    Context, HostFunction, Node, NormalizeNode, Serialize, SerializeNodeError,
+    Context, HostFunction, Node, Serialize, SerializeNodeError, SerializeUtils,
 };
 
-impl NormalizeNode for HostFunction {
+impl SerializeUtils for HostFunction {
     fn normalize_node(
         &self,
         _context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         Err(SerializeNodeError::UnsupportedNode)
+    }
+
+    fn child_requires_parenthesis(
+        &self,
+        _child: &Node,
+        _position: usize,
+    ) -> bool {
+        false
     }
 }
 
