@@ -32,7 +32,7 @@ pub fn CalculatorOutput(
                             }
                         }
                     }
-                    None => view! { <>" "</> }.into_any(),
+                    None => " ".into_any(),
                 }
             }}
         </output>
