@@ -8,7 +8,7 @@ use web_state::WebState;
 use crate::{
     components::*,
     pages::settings::{
-        language::LanguageSetting,
+        language::LanguageSetting, output_format::OutputFormatSetting,
         override_decimal_format::OverrideDecimalFormatSetting,
         theme::ThemeSetting,
     },
@@ -17,6 +17,7 @@ use crate::{
 
 mod decimal_places;
 mod language;
+mod output_format;
 mod override_decimal_format;
 mod settings_section;
 mod theme;
@@ -39,6 +40,7 @@ pub fn SettingsPage() -> impl IntoView {
             <SettingsSection title="settings.section.calculator">
                 <OverrideDecimalFormatSetting />
                 <DecimalPlacesSetting />
+                <OutputFormatSetting />
             </SettingsSection>
 
             <SettingsSection title="settings.section.misc">

@@ -90,6 +90,18 @@ German = "Hell"
 English = "Dark"
 German = "Dunkel"
 
+[settings.output_format]
+English = "Output format"
+German = "Ausgabeformat"
+
+[settings.output_format.text]
+English = "Text"
+German = "Text"
+
+[settings.output_format.mathml]
+English = "MathML"
+German = "MathML"
+
 [settings.section.misc]
 English = "Miscellaneous"
 German = "Verschiedenes"
