@@ -6,6 +6,9 @@ use override_decimal_format::OverrideDecimalFormat;
 use serde::{Deserialize, Serialize};
 use theme::Theme;
 
+use crate::state::output_format::OutputFormat;
+
+pub mod output_format;
 pub mod override_decimal_format;
 pub mod theme;
 
@@ -17,6 +20,7 @@ pub struct Settings {
     pub language: Language,
     pub override_decimal_format: OverrideDecimalFormat,
     pub theme: Theme,
+    pub output_format: OutputFormat,
 }
 
 impl Settings {
@@ -47,6 +51,7 @@ impl Default for Settings {
             language: Language::English,
             override_decimal_format: OverrideDecimalFormat::new(),
             theme: Theme::Light,
+            output_format: OutputFormat::Text,
         }
     }
 }
