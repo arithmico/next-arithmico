@@ -5,7 +5,7 @@ use translate::IntoTranslationId;
 pub enum Theme {
     Light,
     Dark,
-    Default,
+    System,
 }
 
 impl Theme {
@@ -23,7 +23,7 @@ impl IntoTranslationId for Theme {
         match self {
             Theme::Light => "settings.theme.light",
             Theme::Dark => "settings.theme.dark",
-            Theme::Default => "settings.theme.default",
+            Theme::System => "settings.theme.system",
         }
     }
 }

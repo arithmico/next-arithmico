@@ -90,9 +90,9 @@ German = "Hell"
 English = "Dark"
 German = "Dunkel"
 
-[settings.theme.default]
-English = "Default"
-German = "Default"
+[settings.theme.system]
+English = "System setting"
+German = "Systemeinstellung"
 
 [settings.section.misc]
 English = "Miscellaneous"
