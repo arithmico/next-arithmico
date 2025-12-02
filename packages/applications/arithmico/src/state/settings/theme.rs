@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use translate::IntoTranslationId;
 
+use crate::state::evaluate_theme;
+
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub enum Theme {
     Light,
@@ -13,7 +15,7 @@ impl Theme {
         match self {
             Theme::Light => "theme-light",
             Theme::Dark => "theme-dark",
-            _ => "",
+            Theme::System => evaluate_theme(),
         }
     }
 }

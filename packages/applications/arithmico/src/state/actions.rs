@@ -17,5 +17,5 @@ pub use reset_settings::ResetSettingsAction;
 pub use set_decimal_places::SetDecimalPlacesAction;
 pub use set_language::SetLanguageAction;
 pub use set_override_decimal_format::SetOverrideDecimalFormatAction;
-pub use set_theme::SetThemeAction;
+pub use set_theme::{SetThemeAction, evaluate_theme};
 pub use update_input_editor::UpdateInputEditorAction;

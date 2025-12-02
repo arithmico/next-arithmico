@@ -4,6 +4,24 @@ use web_sys::MediaQueryListEvent;
 
 use crate::state::{theme::Theme, State};
 
+pub fn evaluate_theme<'a>() -> &'a str {
+    let is_dark = web_sys::window()
+        .and_then(|window| {
+            window
+                .match_media("(prefers-color-scheme: dark)")
+                .ok()
+                .flatten()
+        })
+        .map(|media_query| media_query.matches())
+        .unwrap_or(false);
+
+    if is_dark {
+        "theme-dark"
+    } else {
+        "theme-light"
+    }
+}
+
 pub struct SetThemeAction {
     value: Theme,
 }
@@ -24,17 +42,12 @@ impl WebStateAction<State> for SetThemeAction {
                 let media_query = window
                     .match_media("(prefers-color-scheme: dark)")
                     .unwrap()
-                    .expect("match_media failed");
+                    .expect("match_media should exist");
                 let element =
                     window.document().unwrap().document_element().unwrap();
-                if media_query.matches() {
-                    element.set_class_name("theme-dark");
-                } else {
-                    element.set_class_name("theme-light");
-                }
+                element.set_class_name(evaluate_theme());
 
                 let window_cloned = window.clone();
-                let media_query_cloned = media_query.clone();
                 let closure = Closure::wrap(Box::new(
                     move |_event: MediaQueryListEvent| {
                         let element = window_cloned
@@ -42,11 +55,7 @@ impl WebStateAction<State> for SetThemeAction {
                             .unwrap()
                             .document_element()
                             .expect("html element should exist");
-                        if media_query_cloned.matches() {
-                            element.set_class_name("theme-dark");
-                        } else {
-                            element.set_class_name("theme-light");
-                        }
+                        element.set_class_name(evaluate_theme());
                     },
                 )
                     as Box<dyn FnMut(_)>);
@@ -56,8 +65,7 @@ impl WebStateAction<State> for SetThemeAction {
                         "change",
                         closure.as_ref().unchecked_ref(),
                     )
-                    .expect("could not register listener");
-
+                    .expect("could register listener");
                 closure.forget();
 
                 Theme::System
