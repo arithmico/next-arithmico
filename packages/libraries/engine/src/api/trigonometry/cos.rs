@@ -17,7 +17,7 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .add_return_type(NodeType::Number);
 
     builder
-        .description(Language::English, "Calculate the consine of x.")
+        .description(Language::English, "Calculate the cosine of x.")
         .description(Language::German, "Berechnet den Cosinus von x.")
         .function(signature)
         .executor(|arguments, _context| {
