@@ -81,11 +81,19 @@ operator_less_than_or_equals_number_number = ["datatype_boolean", "datatype_numb
 operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
 
 # api modules
-api_modules = ["api_module_trigonometry"]
+api_modules = [
+    "api_module_trigonometry",
+    "api_module_miscellaneous"
+]
+
 api_module_trigonometry = [
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
     "api_endpoint_trigonometry_cos"
+]
+
+api_module_miscellaneous = [
+    "api_endpoint_miscellaneous_echo"
 ]
 
 # trigonometry
@@ -93,3 +101,7 @@ api_module_loader_trigonometry = []
 api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_cos = ["api_module_loader_trigonometry"]
+
+# miscellaneous
+api_module_loader_miscellaneous = []
+api_endpoint_miscellaneous_echo = ["api_module_loader_miscellaneous"]
