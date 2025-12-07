@@ -51,12 +51,8 @@ impl FunctionSignature {
         self
     }
 
-    pub fn get_return_type(&self) -> Option<&NodeType> {
-        if self.return_type.len() == 1 {
-            self.return_type.iter().next()
-        } else {
-            None
-        }
+    pub fn get_return_type(&self) -> &HashSet<NodeType> {
+        &self.return_type
     }
 
     pub fn arguments(&self) -> &[Argument] {

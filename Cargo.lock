@@ -539,6 +539,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.17",
  "trace",
+ "translate",
  "translate_core",
 ]
 

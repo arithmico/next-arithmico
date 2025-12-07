@@ -1,22 +1,31 @@
 use std::collections::HashMap;
 
-use translate_core::{TranslationError, TranslationTemplate};
+use translate_core::TranslationError;
 
-use crate::{Argument, core::{
-    Context, DecimalFormat, DecimalPlaces, FunctionCall, HostApi, HostEndpoint, Language, NodeType, Stack, Symbol, TranslatedString, serialize_node
-}};
+use crate::{
+    core::{
+        serialize_node, Context, DecimalFormat, DecimalPlaces, FunctionCall,
+        HostApi, HostEndpoint, Language, NodeType, Stack, Symbol,
+        TranslatedString,
+    },
+    Argument, Cardinality,
+};
 
 #[derive(Debug, Clone)]
 pub struct ParameterDocumentationItem {
     name: String,
-    description: TranslationTemplate,
+    parameter_types: Vec<NodeType>,
+    usage: Cardinality,
+    description: TranslatedString,
 }
 
 impl ParameterDocumentationItem {
     pub fn new() -> Self {
         Self {
             name: String::new(),
-            description: TranslationTemplate::new(),
+            parameter_types: Vec::new(),
+            usage: Cardinality::Optional,
+            description: TranslatedString::new(),
         }
     }
 
@@ -24,8 +33,22 @@ impl ParameterDocumentationItem {
         &self.name
     }
 
-    pub fn get_description(&self, language: &Language) -> Result<String, TranslationError> {
-        self.description.translate(language.clone())
+    pub fn get_parameter_types(&self) -> &[NodeType] {
+        &self.parameter_types
+    }
+
+    pub fn get_usage(&self) -> &Cardinality {
+        &self.usage
+    }
+
+    pub fn get_description(
+        &self,
+        language: &Language,
+    ) -> Result<String, TranslationError> {
+        self.description
+            .get(language)
+            .cloned()
+            .ok_or(TranslationError::MissingKey(language.to_string()))
     }
 }
 
@@ -33,7 +56,14 @@ impl From<&Argument> for ParameterDocumentationItem {
     fn from(argument: &Argument) -> Self {
         let mut item = ParameterDocumentationItem::new();
         item.name = argument.get_name();
-        item.description = argument.get_description();
+        item.parameter_types = argument
+            .get_options()
+            .node_types()
+            .iter()
+            .cloned()
+            .collect();
+        item.usage = argument.get_options().cardinality();
+        item.description = argument.get_description().try_into().unwrap();
 
         item
     }
@@ -44,7 +74,7 @@ pub struct DocumentationItem {
     synopsis: TranslatedString,
     description: TranslatedString,
     parameters: Vec<ParameterDocumentationItem>,
-    return_type: NodeType,
+    return_types: Vec<NodeType>,
 }
 
 impl DocumentationItem {
@@ -53,7 +83,7 @@ impl DocumentationItem {
             synopsis: HashMap::new(),
             description: HashMap::new(),
             parameters: Vec::new(),
-            return_type: NodeType::Any,
+            return_types: Vec::new(),
         }
     }
 
@@ -69,8 +99,8 @@ impl DocumentationItem {
         &self.parameters
     }
 
-    pub fn get_return_type(&self) -> &NodeType {
-        &self.return_type
+    pub fn get_return_types(&self) -> &[NodeType] {
+        &self.return_types
     }
 
     pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
@@ -87,7 +117,8 @@ impl DocumentationItem {
                     .iter()
                     .map(|argument| ParameterDocumentationItem::from(argument))
                     .collect();
-                item.return_type = signature.get_return_type().unwrap().clone();
+                item.return_types =
+                    signature.get_return_type().iter().cloned().collect();
                 let synopsis_expression = FunctionCall::new(
                     Symbol::new(name),
                     signature

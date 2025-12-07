@@ -28,7 +28,7 @@ impl Session {
         }
     }
 
-    fn create_context(
+    pub fn create_context(
         &self,
         decimal_places: DecimalPlaces,
         decimal_format: DecimalFormat,

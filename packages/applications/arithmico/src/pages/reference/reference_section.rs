@@ -9,7 +9,7 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
     view! {
         <section class="reference-section">
             <h2>{module.name(&Language::English).cloned()}</h2>
-            <dl>
+            <section class="module-section">
                 {module
                     .items()
                     .iter()
@@ -22,7 +22,7 @@ pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
                         }
                     })
                     .collect_view()}
-            </dl>
+            </section>
         </section>
     }
 }

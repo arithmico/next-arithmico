@@ -5,13 +5,13 @@
     margin-bottom: var(--spacing-2);
 }
 
-.reference-section>dl {
+.module-section {
     display: grid;
     grid-template-columns: 1fr 3fr;
     padding-left: var(--spacing-4);
 }
 
-.reference-section > dl > dt,
-.reference-section > dl > dd {
+.module-section > dt,
+.module-section > dd {
     padding: var(--spacing-2) 0;
 }
