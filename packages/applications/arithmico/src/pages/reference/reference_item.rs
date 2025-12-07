@@ -20,7 +20,7 @@ pub fn ReferenceItem(
             .cloned()
             .unwrap_or_default();
 
-        state.session.create_context(decimal_places, decimal_format)
+            state.session.create_context(decimal_places, decimal_format)
     });
 
     view! {
