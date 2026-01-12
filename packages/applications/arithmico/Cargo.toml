@@ -31,7 +31,7 @@ trace = { path = "../../libraries/trace" }
 editor_core = { path = "../../libraries/editor_core" }
 translate = { path = "../../libraries/translate" }
 web_state = { path = "../../libraries/web_state" }
-toml = "0.9.10"
+toml = "0.9.11"
 chrono = "0.4.42"
 wasm-bindgen = "0.2.106"
 
