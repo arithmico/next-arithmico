@@ -1,6 +1,6 @@
 use engine::{DocumentationItem, Language};
 use leptos::prelude::*;
-use translate::FormattedMessage;
+use translate::{FormattedMessage};
 use web_state::WebState;
 
 use crate::state::State;
@@ -18,7 +18,7 @@ pub fn ReferenceItem(
             .override_decimal_format
             .decimal_format()
             .cloned()
-            .unwrap();
+            .unwrap_or_default();
 
         state.session.create_context(decimal_places, decimal_format)
     });
@@ -29,17 +29,17 @@ pub fn ReferenceItem(
             <h3>
                 <FormattedMessage id="reference.item.description" />
             </h3>
-            <p>{item.get_description(&language).cloned().unwrap()}</p>
+            <p>{item.get_description(&language).cloned().unwrap_or_default()}</p>
             <h3>
                 <FormattedMessage id="reference.item.parameters" />
             </h3>
             <table>
                 <thead>
                     <tr>
-                        <th>{"Name"}</th>
-                        <th>{"Type"}</th>
-                        <th>{"Usage"}</th>
-                        <th>{"Description"}</th>
+                        <th>{"Name".to_string()}</th>
+                        <th>{"Type".to_string()}</th>
+                        <th>{"Usage".to_string()}</th>
+                        <th>{"Description".to_string()}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,11 +59,9 @@ pub fn ReferenceItem(
                                             .join(", ")}
                                     </td>
                                     <td>
-                                        {param
-                                            .get_usage()
-                                            .to_translated_string(&context.get())
-                                            .unwrap()
-                                            .to_string()}
+                                        {param.get_usage()
+                                            .translate_with_context(&language, &context.get())
+                                            .clone()}
                                     </td>
                                     <td>{param.get_description(&language).clone()}</td>
                                 </tr>

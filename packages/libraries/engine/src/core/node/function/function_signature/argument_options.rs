@@ -1,10 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::{collections::{HashMap, HashSet}};
 
-use translate::use_translate;
+use translate::{Language, Translatable, use_translate};
 
 use crate::{
-    core::{Context, Node, NodeType},
-    SerializeNode,
+    Context, SerializeNode, core::{Node, NodeType}
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -64,23 +63,15 @@ pub enum Cardinality {
 }
 
 impl Cardinality {
-    pub fn to_translated_string(
-        &self,
-        context: &Context,
-    ) -> Result<String, &'static str> {
-        let translate = use_translate();
-
+    fn to_translation_string_with_keys(&self) -> (&'static str, Option<HashMap<String, String>>) {
         match self {
-            Cardinality::Required => translate("engine.cardinality.required", None),
-            Cardinality::Optional => translate("engine.cardinality.optional", None),
+            Cardinality::Required => ("engine.cardinality.required", None),
+            Cardinality::Optional => ("engine.cardinality.optional", None),
             Cardinality::OptionalWithDefault { default } => {
                 let mut keys = HashMap::new();
-                keys.insert(
-                    "default".to_string(),
-                    default.serialize(context).unwrap(),
-                );
+                keys.insert("default".to_string(), format!("{default:?}"));
 
-                translate("engine.cardinality.default", Some(keys))
+                ("engine.cardinality.default", Some(keys))
             }
             Cardinality::Multiple { min, max } => {
                 let mut keys = HashMap::new();
@@ -89,11 +80,70 @@ impl Cardinality {
                 match max {
                     Some(max) => {
                         keys.insert("max".to_string(), max.to_string());
-                        translate("engine.cardinality.range", Some(keys))
+                        ("engine.cardinality.range", Some(keys))
                     }
-                    None => translate("engine.cardinality.range.open", Some(keys)),
+                    None => ("engine.cardinality.range.open", Some(keys)),
                 }
             }
         }
+    }
+
+    fn translation_key_and_args_with_context(
+        &self,
+        context: &Context,
+    ) -> (&'static str, Option<HashMap<String, String>>) {
+        match self {
+            Cardinality::Required => ("engine.cardinality.required", None),
+            Cardinality::Optional => ("engine.cardinality.optional", None),
+            Cardinality::OptionalWithDefault { default } => {
+                let mut keys = HashMap::new();
+
+                let default_str = default
+                    .serialize(context)
+                    .unwrap_or_else(|_| format!("{default:?}"));
+
+                keys.insert("default".to_string(), default_str);
+
+                ("engine.cardinality.default", Some(keys))
+            }
+
+            Cardinality::Multiple { min, max } => {
+                let mut keys = HashMap::new();
+                keys.insert("min".to_string(), min.to_string());
+
+                match max {
+                    Some(max) => {
+                        keys.insert("max".to_string(), max.to_string());
+                        ("engine.cardinality.range", Some(keys))
+                    }
+                    None => ("engine.cardinality.range.open", Some(keys)),
+                }
+            }
+        }
+    }
+
+    pub fn translate_with_context(
+        &self,
+        _language: &Language,
+        context: &Context,
+    ) -> Result<String, translate::TranslationError> {
+        let translate = use_translate();
+        let (id, args) = self.translation_key_and_args_with_context(context);
+
+        translate(id, args)
+            .map_err(|err| translate::TranslationError::MissingKey(err.to_string()))
+    }
+}
+
+impl Translatable for Cardinality {
+    fn translate(
+        &self,
+        _language: Language,
+    ) -> Result<String, translate::TranslationError> {
+        let translate = use_translate();
+        let (id, keys) = self.to_translation_string_with_keys();
+
+        translate(id, keys)
+        .map_err(|e| translate::TranslationError::MissingKey(e.to_string()))
     }
 }
