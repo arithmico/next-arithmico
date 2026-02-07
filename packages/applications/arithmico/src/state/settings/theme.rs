@@ -22,16 +22,6 @@ impl Theme {
             }
         }
     }
-
-    /*
-    pub fn get_class(&self) -> &str {
-        match self {
-            Theme::Light => "theme-light",
-            Theme::Dark => "theme-dark",
-            Theme::System => evaluate_theme(),
-        }
-    }
-     */
 }
 
 impl IntoTranslationId for Theme {
