@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 use translate::IntoTranslationId;
 
-use crate::state::evaluate_theme;
-
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub enum Theme {
     Light,
@@ -11,6 +9,21 @@ pub enum Theme {
 }
 
 impl Theme {
+    pub fn resolve_html_class(&self, prefers_dark: bool) -> &str {
+        match self {
+            Theme::Light => "theme-light",
+            Theme::Dark => "theme-dark",
+            Theme::System => {
+                if prefers_dark {
+                    "theme-dark"
+                } else {
+                    "theme-light"
+                }
+            }
+        }
+    }
+
+    /*
     pub fn get_class(&self) -> &str {
         match self {
             Theme::Light => "theme-light",
@@ -18,6 +31,7 @@ impl Theme {
             Theme::System => evaluate_theme(),
         }
     }
+     */
 }
 
 impl IntoTranslationId for Theme {
