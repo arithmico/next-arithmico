@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.101"
+anyhow = "1.0.102"
 git2 = "0.20.4"
 semver = "1.0.27"
