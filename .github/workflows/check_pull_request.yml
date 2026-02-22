@@ -36,11 +36,10 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: 22
-    - name: Setup Playwright
-      working-directory: packages/applications/arithmico-e2e
-      run: |
-        npm ci
-        npx playwright install --with-deps
+    - name: Install NPM Dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
     
     - name: Prebuild App
       working-directory: packages/applications/arithmico
@@ -48,7 +47,7 @@ jobs:
       run: |
         touch index.css 
         ~/.cargo/bin/trunk build
-    
+     
     - name: Run E2E Tests
       working-directory: packages/applications/arithmico-e2e
       run: npx playwright test
@@ -109,6 +108,8 @@ jobs:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ vars.AWS_REGION }}
+    - name: Install NPM Dependencies
+      run: npm ci
     - name: CDK Deploy
       working-directory: infrastructure
       env:
@@ -116,9 +117,7 @@ jobs:
         AWS_REGION: ${{ vars.AWS_REGION }}
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
-      run: |
-        npm ci
-        npm run cdk -- deploy --all --require-approval never
+      run: npm run cdk -- deploy --all --require-approval never
     - name: Create Cloudfront Invalidation
       shell: bash
       env:

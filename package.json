@@ -1,0 +1,7 @@
+{
+    "name": "@arithmico/workspace",
+    "workspaces": [
+        "packages/applications/arithmico-e2e",
+        "infrastructure"
+    ]
+}
