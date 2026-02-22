@@ -56,6 +56,8 @@ jobs:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Install NPM Dependencies
+        run: npm ci
       - name: CDK Deploy
         working-directory: infrastructure
         shell: bash
@@ -64,9 +66,7 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
           CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
           CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
-        run: |
-          npm ci
-          npm run cdk -- deploy --all --require-approval never
+        run: npm run cdk -- deploy --all --require-approval never
       - name: Create Cloudfront Invalidation
         shell: bash
         run: |
