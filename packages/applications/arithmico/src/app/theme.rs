@@ -1,5 +1,9 @@
 use leptos::prelude::*;
 use web_state::WebState;
+use web_sys::{
+    wasm_bindgen::{closure::Closure, JsCast},
+    MediaQueryListEvent,
+};
 
 use crate::state::State;
 
@@ -7,9 +11,34 @@ use crate::state::State;
 pub fn ThemeProvider(children: Children) -> impl IntoView {
     let state = State::expect_state();
 
-    view! {
-        <div class=move || {
-            state.select(|state| state.settings.theme.get_class().to_string())
-        }>{children()}</div>
-    }
+    let (prefers_dark, set_prefers_dark) = signal(false);
+
+    Effect::new(move || {
+        if let Some(media_query_list) = window()
+            .match_media("(prefers-color-scheme: dark)")
+            .ok()
+            .flatten()
+        {
+            set_prefers_dark.set(media_query_list.matches());
+
+            let event_handler =
+                Closure::wrap(Box::new(move |event: MediaQueryListEvent| {
+                    set_prefers_dark.set(event.matches());
+                }) as Box<dyn FnMut(_)>);
+
+            let _ = media_query_list
+                .add_event_listener_with_callback(
+                    "change",
+                    event_handler.as_ref().unchecked_ref(),
+                );
+
+            event_handler.forget();
+        }
+    });
+
+    view! { <div class=move || {
+        let theme = state.select(|state| state.settings.theme).get();
+
+        theme.get_class(*prefers_dark.read()).to_string()
+    }>{children()}</div> }
 }

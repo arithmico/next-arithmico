@@ -46,7 +46,7 @@ impl Default for Settings {
             decimal_places: DecimalPlaces::from(5),
             language: Language::English,
             override_decimal_format: OverrideDecimalFormat::new(),
-            theme: Theme::Light,
+            theme: Theme::System,
         }
     }
 }
