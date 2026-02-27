@@ -20,7 +20,7 @@ updates:
       interval: "daily"
   
   - package-ecosystem: "npm"
-    directory: "/packages/applications/arithmico-e2e"
+    directory: "/"
     schedule:
       interval: "daily"
 
