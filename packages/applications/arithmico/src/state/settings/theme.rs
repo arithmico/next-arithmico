@@ -5,13 +5,21 @@ use translate::IntoTranslationId;
 pub enum Theme {
     Light,
     Dark,
+    System,
 }
 
 impl Theme {
-    pub fn get_class(&self) -> &str {
+    pub fn get_class(&self, prefers_dark: bool) -> &str {
         match self {
             Theme::Light => "theme-light",
             Theme::Dark => "theme-dark",
+            Theme::System => {
+                if prefers_dark {
+                    "theme-dark"
+                } else {
+                    "theme-light"
+                }
+            }
         }
     }
 }
@@ -21,6 +29,7 @@ impl IntoTranslationId for Theme {
         match self {
             Theme::Light => "settings.theme.light",
             Theme::Dark => "settings.theme.dark",
+            Theme::System => "settings.theme.system",
         }
     }
 }

@@ -20,7 +20,9 @@ web-sys = { version = "0.3.72", features = [
     "Selection",
     "Range",
     "Node",
-    "NodeList"
+    "NodeList",
+    "MediaQueryList",
+    "MediaQueryListEvent"
 ] }
 js-sys = "0.3.72"
 editor = { path = "../../libraries/editor" }
