@@ -36,9 +36,10 @@ pub fn ThemeProvider(children: Children) -> impl IntoView {
         }
     });
 
-    view! { <div class=move || {
-        let theme = state.select(|state| state.settings.theme).get();
-
-        theme.get_class(*prefers_dark.read()).to_string()
-    }>{children()}</div> }
+    view! {
+        <div class=move || {
+            let theme = state.select(|state| state.settings.theme).get();
+            theme.get_class(*prefers_dark.read()).to_string()
+        }>{children()}</div>
+    }
 }
