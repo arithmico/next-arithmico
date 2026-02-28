@@ -1,9 +1,10 @@
-use std::{collections::{HashMap, HashSet}};
+use std::collections::{HashMap, HashSet};
 
-use translate::{Language, Translatable, use_translate};
+use translate::use_translate;
 
 use crate::{
-    Context, SerializeNode, core::{Node, NodeType}
+    core::{Node, NodeType},
+    Context, Serialize,
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -62,37 +63,13 @@ pub enum Cardinality {
     Multiple { min: usize, max: Option<usize> },
 }
 
-impl Cardinality {
-    fn to_translation_string_with_keys(&self) -> (&'static str, Option<HashMap<String, String>>) {
-        match self {
-            Cardinality::Required => ("engine.cardinality.required", None),
-            Cardinality::Optional => ("engine.cardinality.optional", None),
-            Cardinality::OptionalWithDefault { default } => {
-                let mut keys = HashMap::new();
-                keys.insert("default".to_string(), format!("{default:?}"));
-
-                ("engine.cardinality.default", Some(keys))
-            }
-            Cardinality::Multiple { min, max } => {
-                let mut keys = HashMap::new();
-                keys.insert("min".to_string(), min.to_string());
-
-                match max {
-                    Some(max) => {
-                        keys.insert("max".to_string(), max.to_string());
-                        ("engine.cardinality.range", Some(keys))
-                    }
-                    None => ("engine.cardinality.range.open", Some(keys)),
-                }
-            }
-        }
-    }
-
-    fn translation_key_and_args_with_context(
+impl Serialize for Cardinality {
+    fn serialize(
         &self,
         context: &Context,
-    ) -> (&'static str, Option<HashMap<String, String>>) {
-        match self {
+    ) -> Result<String, crate::SerializeNodeError> {
+        let translate = use_translate();
+        let (id, keys) = match self {
             Cardinality::Required => ("engine.cardinality.required", None),
             Cardinality::Optional => ("engine.cardinality.optional", None),
             Cardinality::OptionalWithDefault { default } => {
@@ -106,7 +83,6 @@ impl Cardinality {
 
                 ("engine.cardinality.default", Some(keys))
             }
-
             Cardinality::Multiple { min, max } => {
                 let mut keys = HashMap::new();
                 keys.insert("min".to_string(), min.to_string());
@@ -119,31 +95,8 @@ impl Cardinality {
                     None => ("engine.cardinality.range.open", Some(keys)),
                 }
             }
-        }
-    }
+        };
 
-    pub fn translate_with_context(
-        &self,
-        _language: &Language,
-        context: &Context,
-    ) -> Result<String, translate::TranslationError> {
-        let translate = use_translate();
-        let (id, args) = self.translation_key_and_args_with_context(context);
-
-        translate(id, args)
-            .map_err(|err| translate::TranslationError::MissingKey(err.to_string()))
-    }
-}
-
-impl Translatable for Cardinality {
-    fn translate(
-        &self,
-        _language: Language,
-    ) -> Result<String, translate::TranslationError> {
-        let translate = use_translate();
-        let (id, keys) = self.to_translation_string_with_keys();
-
-        translate(id, keys)
-        .map_err(|e| translate::TranslationError::MissingKey(e.to_string()))
+        translate(id, keys).map_err(|_| crate::SerializeNodeError::InvalidNode)
     }
 }

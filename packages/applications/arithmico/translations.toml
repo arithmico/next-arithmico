@@ -122,6 +122,42 @@ German = "Parameter"
 English = "Return Value"
 German = "Rückgabewert"
 
+[reference.item.parameter.name]
+English = "Name"
+German = "Name"
+
+[reference.item.parameter.type]
+English = "Type"
+German = "Typ"
+
+[reference.item.parameter.requirement]
+English = "Requirement"
+German = "Anforderung"
+
+[reference.item.parameter.description]
+English = "Description"
+German = "Beschreibung"
+
+[engine.cardinality.required]
+English = "Required"
+German = "Erforderlich"
+
+[engine.cardinality.optional]
+English = "Optional"
+German = "Optional"
+
+[engine.cardinality.default]
+English = "Default with {default}"
+German = "Standardwert mit {default}"
+
+[engine.cardinality.range]
+English = "{min} to {max} values"
+German = "{min} bis {max} Werte"
+
+[engine.cardinality.range.open]
+English = "At least {min} values"
+German = "Mindestens {min} Werte"
+
 [about.title]
 English = "About"
 German = "Über"

@@ -15,7 +15,7 @@ use crate::{
 pub struct ParameterDocumentationItem {
     name: String,
     parameter_types: Vec<NodeType>,
-    usage: Cardinality,
+    requirement: Cardinality,
     description: TranslatedString,
 }
 
@@ -24,7 +24,7 @@ impl ParameterDocumentationItem {
         Self {
             name: String::new(),
             parameter_types: Vec::new(),
-            usage: Cardinality::Optional,
+            requirement: Cardinality::Optional,
             description: TranslatedString::new(),
         }
     }
@@ -37,8 +37,8 @@ impl ParameterDocumentationItem {
         &self.parameter_types
     }
 
-    pub fn get_usage(&self) -> &Cardinality {
-        &self.usage
+    pub fn get_requirement(&self) -> &Cardinality {
+        &self.requirement
     }
 
     pub fn get_description(
@@ -62,15 +62,22 @@ impl From<&Argument> for ParameterDocumentationItem {
             .iter()
             .cloned()
             .collect();
-        item.usage = argument.get_options().cardinality();
+        item.requirement = argument.get_options().cardinality();
         item.description = argument.get_description().try_into().unwrap();
 
         item
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DocumentationItemType {
+    Function,
+    Constant,
+}
+
 #[derive(Clone, Debug)]
 pub struct DocumentationItem {
+    documentation_type: DocumentationItemType,
     synopsis: TranslatedString,
     description: TranslatedString,
     parameters: Vec<ParameterDocumentationItem>,
@@ -78,13 +85,28 @@ pub struct DocumentationItem {
 }
 
 impl DocumentationItem {
-    pub fn new() -> Self {
+    pub fn new_function() -> Self {
         Self {
+            documentation_type: DocumentationItemType::Function,
             synopsis: HashMap::new(),
             description: HashMap::new(),
             parameters: Vec::new(),
             return_types: Vec::new(),
         }
+    }
+
+    pub fn new_constant() -> Self {
+        Self {
+            documentation_type: DocumentationItemType::Constant,
+            synopsis: HashMap::new(),
+            description: HashMap::new(),
+            parameters: Vec::new(),
+            return_types: Vec::new(),
+        }
+    }
+
+    pub fn get_documentation_type(&self) -> &DocumentationItemType {
+        &self.documentation_type
     }
 
     pub fn get_synopsis(&self, language: &Language) -> Option<&String> {
@@ -110,7 +132,7 @@ impl DocumentationItem {
                 description,
                 ..
             } => {
-                let mut item = DocumentationItem::new();
+                let mut item = DocumentationItem::new_function();
                 item.description = description.clone();
                 item.parameters = signature
                     .arguments()
@@ -156,7 +178,7 @@ impl DocumentationItem {
                 item
             }
             HostEndpoint::Constant { description, .. } => {
-                let mut item = DocumentationItem::new();
+                let mut item = DocumentationItem::new_constant();
                 item.description = description.clone();
                 let synopsis_expression = Symbol::new(name);
                 item.synopsis.insert(
