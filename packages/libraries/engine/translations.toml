@@ -93,23 +93,3 @@ German = "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Fu
 [engine.evaluate.error.too_many_parameters.error_kind]
 English = "Too many parameters"
 German = "Zu viele Parameter"
-
-[engine.cardinality.required]
-English = "Required"
-German = "Erforderlich"
-
-[engine.cardinality.optional]
-English = "Optional"
-German = "Optional"
-
-[engine.cardinality.default]
-English = "Default with \"{default}\""
-German = "Standardwert mit \"{default}\""
-
-[engine.cardinality.range]
-English = "\"{min}\" to \"{max}\" values"
-German = "\"{min}\" bis \"{max}\" Werte"
-
-[engine.cardinality.range.open]
-English = "At least \"{min}\" values"
-German = "Mindestens \"{min}\" Werte"
