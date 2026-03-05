@@ -58,6 +58,10 @@ German = "Rechner"
 English = "Language"
 German = "Sprache"
 
+[settings.language.system]
+English = "System"
+German = "Systemeinstellung"
+
 [settings.language.german]
 English = "German"
 German = "Deutsch"
@@ -91,7 +95,7 @@ English = "Dark"
 German = "Dunkel"
 
 [settings.theme.system]
-English = "System setting"
+English = "System"
 German = "Systemeinstellung"
 
 [settings.section.misc]

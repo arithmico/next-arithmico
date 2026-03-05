@@ -1,14 +1,13 @@
-use engine::Language;
 use web_state::WebStateAction;
 
-use crate::state::State;
+use crate::state::{language::LanguageValue, State};
 
 pub struct SetLanguageAction {
-    value: Language,
+    value: LanguageValue,
 }
 
 impl SetLanguageAction {
-    pub fn new(value: impl Into<Language>) -> Self {
+    pub fn new(value: impl Into<LanguageValue>) -> Self {
         Self {
             value: value.into(),
         }

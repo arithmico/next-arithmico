@@ -22,7 +22,8 @@ web-sys = { version = "0.3.72", features = [
     "Node",
     "NodeList",
     "MediaQueryList",
-    "MediaQueryListEvent"
+    "MediaQueryListEvent",
+    "Navigator"
 ] }
 js-sys = "0.3.72"
 editor = { path = "../../libraries/editor" }

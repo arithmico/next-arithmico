@@ -39,7 +39,7 @@ impl State {
             .override_decimal_format
             .decimal_format()
             .cloned()
-            .unwrap_or_else(|| (&self.settings.language).into());
+            .unwrap_or_else(|| (&self.settings.get_language()).into());
 
         self.session.create_context(decimal_places, decimal_format)
     }
