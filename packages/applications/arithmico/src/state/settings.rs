@@ -2,10 +2,14 @@ use std::fmt::Debug;
 
 use engine::{DecimalPlaces, Language};
 use gloo_storage::{LocalStorage, Storage};
+use leptos::prelude::window;
 use override_decimal_format::OverrideDecimalFormat;
 use serde::{Deserialize, Serialize};
 use theme::Theme;
 
+use crate::state::language::LanguageValue;
+
+pub mod language;
 pub mod override_decimal_format;
 pub mod theme;
 
@@ -14,7 +18,7 @@ const SETTINGS_STORAGE_KEY: &str = "settings";
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
     pub decimal_places: DecimalPlaces,
-    pub language: Language,
+    pub language: LanguageValue,
     pub override_decimal_format: OverrideDecimalFormat,
     pub theme: Theme,
 }
@@ -38,13 +42,25 @@ impl Settings {
         )
         .expect("localstorage");
     }
+
+    pub fn get_language(&self) -> Language {
+        if let LanguageValue::Language(language) = &self.language {
+            *language
+        } else {
+            match window().navigator().language() {
+                Some(lang) if lang == "en" => Language::English,
+                Some(lang) if lang == "de" => Language::German,
+                _ => Language::English,
+            }
+        }
+    }
 }
 
 impl Default for Settings {
     fn default() -> Self {
         Self {
             decimal_places: DecimalPlaces::from(5),
-            language: Language::English,
+            language: LanguageValue::System,
             override_decimal_format: OverrideDecimalFormat::new(),
             theme: Theme::System,
         }

@@ -23,7 +23,7 @@ impl WebStateAction<State> for EvaluateAction {
             .override_decimal_format
             .decimal_format()
             .cloned()
-            .unwrap_or_else(|| (&state.settings.language).into());
+            .unwrap_or_else(|| (&state.settings.get_language()).into());
 
         state
             .session

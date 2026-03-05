@@ -2,21 +2,20 @@ use engine::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
-    form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
+    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
     icon::menu_icon::MenuIcon,
 };
 use web_state::WebState;
 
-use crate::state::{SetLanguageAction, State};
+use crate::state::{language::LanguageValue, SetLanguageAction, State};
 
 #[component]
 pub fn LanguageSetting() -> impl IntoView {
     let state = State::expect_state();
     let language = state.select(|state| state.settings.language);
-    let on_change: Callback<Language> =
-        Callback::new(move |language: Language| {
-            state.dispatch(&SetLanguageAction::new(language));
-        });
+    let on_change = Callback::new(move |language: LanguageValue| {
+        state.dispatch(&SetLanguageAction::new(language));
+    });
 
     let listbox_definition = ListboxDefinition::new()
     .button(move || {
@@ -25,11 +24,15 @@ pub fn LanguageSetting() -> impl IntoView {
         view! {
             <>
                 {move || match language.get() {
-                    Language::German => {
+                    LanguageValue::System => {
+                        view! { <FormattedMessage id="settings.language.system" /> }
+                            .into_any()
+                    }
+                    LanguageValue::Language(Language::German) => {
                         view! { <FormattedMessage id="settings.language.german" /> }
                             .into_any()
                     }
-                    Language::English => {
+                    LanguageValue::Language(Language::English) => {
                         view! {
                             <FormattedMessage id="settings.language.english" />
                         }
@@ -48,8 +51,9 @@ pub fn LanguageSetting() -> impl IntoView {
     .label(|| {
         view! { <FormattedMessage id="settings.language" /> }
     })
-    .option(Language::English, || view! { <FormattedMessage id="settings.language.english" /> })
-    .option(Language::German, || view! { <FormattedMessage id="settings.language.german" /> });
+    .option(LanguageValue::System, || view! { <FormattedMessage id="settings.language.system" /> })
+    .option(LanguageValue::Language(Language::English), || view! { <FormattedMessage id="settings.language.english" /> })
+    .option(LanguageValue::Language(Language::German), || view! { <FormattedMessage id="settings.language.german" /> });
 
     view! {
         <Listbox
