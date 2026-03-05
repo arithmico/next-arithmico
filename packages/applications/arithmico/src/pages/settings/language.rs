@@ -23,22 +23,24 @@ pub fn LanguageSetting() -> impl IntoView {
 
         view! {
             <>
-                {move || match language.get() {
-                    LanguageValue::System => {
-                        view! { <FormattedMessage id="settings.language.system" /> }
-                            .into_any()
-                    }
-                    LanguageValue::Language(Language::German) => {
-                        view! { <FormattedMessage id="settings.language.german" /> }
-                            .into_any()
-                    }
-                    LanguageValue::Language(Language::English) => {
-                        view! {
-                            <FormattedMessage id="settings.language.english" />
+                <span data-testid="language-setting-value">
+                    {move || match language.get() {
+                        LanguageValue::System => {
+                            view! { <FormattedMessage id="settings.language.system" /> }
+                                .into_any()
                         }
-                            .into_any()
-                    }
-                }}
+                        LanguageValue::Language(Language::German) => {
+                            view! { <FormattedMessage id="settings.language.german" /> }
+                                .into_any()
+                        }
+                        LanguageValue::Language(Language::English) => {
+                            view! {
+                                <FormattedMessage id="settings.language.english" />
+                            }
+                                .into_any()
+                        }
+                    }}
+                </span>
                 <MenuIcon class=Signal::derive(move || {
                     format!(
                         "icon-hover {}",
