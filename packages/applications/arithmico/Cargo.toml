@@ -31,7 +31,7 @@ trace = { path = "../../libraries/trace" }
 editor_core = { path = "../../libraries/editor_core" }
 translate = { path = "../../libraries/translate" }
 web_state = { path = "../../libraries/web_state" }
-toml = "1.0.4"
+toml = "1.0.6"
 chrono = "0.4.44"
 
 [build-dependencies]
