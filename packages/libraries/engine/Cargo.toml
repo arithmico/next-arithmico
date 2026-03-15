@@ -9,6 +9,7 @@ trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
 serde = { workspace = true }
 nom = { workspace = true }
+engine_derive = { path = "../engine_derive" }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]

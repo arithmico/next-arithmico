@@ -1,9 +1,9 @@
-mod argument_mapping;
+mod arguments_binding;
 mod evaluate;
 mod for_each;
 mod node;
 mod parse;
 mod serialize;
 
-pub use argument_mapping::*;
+pub use arguments_binding::*;
 pub use node::FunctionCall;

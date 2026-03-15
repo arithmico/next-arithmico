@@ -1,14 +1,12 @@
 use std::collections::HashMap;
 
-use crate::core::FunctionSignature;
+use crate::{
+    Context, FromArgumentsBinding, Node, core::{EvaluateNodeError, FunctionSignature}
+};
 use translate_core::Language;
 
-use super::{
-    endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
-    TranslatedString,
-};
+use super::{endpoint::HostEndpoint, TranslatedString};
 
-#[derive(Debug, Clone)]
 pub struct HostApiModule {
     name: TranslatedString,
     endpoints: HashMap<String, HostEndpoint>,
@@ -27,8 +25,8 @@ impl HostApiModule {
         HostApiModuleBuilderIdStage {}
     }
 
-    pub fn get_endpoints(&self) -> &HashMap<String, HostEndpoint> {
-        &self.endpoints
+    pub fn into_endpoints(self) -> HashMap<String, HostEndpoint> {
+        self.endpoints
     }
 }
 
@@ -153,12 +151,15 @@ impl EndpointBuilderAdditionalDescriptionsStage {
         }
     }
 
-    pub fn constant(self, executor: ConstantExecutor) -> HostEndpoint {
+    pub fn constant<F>(self, executor: F) -> HostEndpoint
+    where
+        F: Fn(&Context) -> Node + Send + Sync + 'static,
+    {
         HostEndpoint::Constant {
             module_id: self.module_id,
             module_name: self.module_name,
             description: self.description,
-            executor,
+            executor: Box::new(executor),
         }
     }
 }
@@ -171,9 +172,21 @@ pub struct FunctionEndpointBuilderArgumentsPhase {
 }
 
 impl FunctionEndpointBuilderArgumentsPhase {
-    pub fn executor(self, executor: FunctionExecutor) -> HostEndpoint {
+    pub fn executor<A, F, R>(self, executor: F) -> HostEndpoint
+    where
+        A: FromArgumentsBinding + 'static,
+        F: Fn(A, &Context) -> Result<R, EvaluateNodeError>
+            + Send
+            + Sync
+            + 'static,
+        R: Into<Node> + 'static,
+    {
         HostEndpoint::Function {
-            executor,
+            executor: Box::new(move |arguments, context| {
+                let typed = A::from_arguments_binding(arguments)?;
+                let result = executor(typed, context)?;
+                Ok(result.into())
+            }),
             signature: self.signature,
             description: self.description,
             module_name: self.module_name,

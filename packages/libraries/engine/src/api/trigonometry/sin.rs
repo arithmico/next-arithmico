@@ -1,9 +1,16 @@
 use std::f64::consts::PI;
 
+use engine_derive::FromArgumentsBinding;
+
 use crate::core::{
-    EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
-    Language, Node, NodeType, Number,
+    EndpointBuilder, FunctionSignature, HostEndpoint, Language, NodeType,
+    Number,
 };
+
+#[derive(FromArgumentsBinding)]
+pub struct SinArgs {
+    value: Number,
+}
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
@@ -20,20 +27,13 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .description(Language::English, "Calculate the sine of x.")
         .description(Language::German, "Berechnet den Sinus von x.")
         .function(signature)
-        .executor(|arguments, _context| {
-            let argument = arguments.get_parameter_value("x")?;
+        .executor(|SinArgs { value }, _context| {
+            let value = value.value;
 
-            match argument {
-                Node::Number(Number { value, .. }) => {
-                    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
-                        return Ok(Number::new(0.0));
-                    }
-                    Ok(Number::new(value.sin()))
-                }
-                node => Err(EvaluateNodeError::runtime_error(
-                    "invalid argument type",
-                )
-                .with_tracable(node)),
+            if value.rem_euclid(PI).abs() < value * f64::EPSILON {
+                return Ok(Number::new(0.0));
             }
+
+            Ok(Number::new(value.sin()))
         })
 }
