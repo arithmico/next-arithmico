@@ -9,6 +9,6 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.58.1",
-    "@types/node": "^22.19.13"
+    "@types/node": "^22.19.15"
   }
 }
