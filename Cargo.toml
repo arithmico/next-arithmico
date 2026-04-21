@@ -11,5 +11,5 @@ members = [
 thiserror = "2.0.18"
 nom = "8.0.0"
 serde = { version = "1.0.228", features = ["derive"] }
-leptos = { version = "0.8.17", features = ["csr"] }
+leptos = { version = "0.8.19", features = ["csr"] }
 leptos_dom = { version = "0.8.7" }
