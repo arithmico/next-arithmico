@@ -1,5 +1,11 @@
-use crate::{Node, core::EvaluateNodeError};
+use crate::{core::EvaluateNodeError, Node};
 
 pub trait NodeCast: Sized {
-    fn try_from_node(node: &Node) -> Result<Self, EvaluateNodeError>;
+    fn downcast(node: &Node) -> Result<&Self, EvaluateNodeError>;
+}
+
+impl Node {
+    pub fn downcast<T: NodeCast>(&self) -> Result<&T, EvaluateNodeError> {
+        T::downcast(self)
+    }
 }

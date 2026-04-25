@@ -70,14 +70,14 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use engine_derive::FromArgumentsBinding;
+    use engine_derive::FromArgumentMapping;
 
     use crate::{
         core::{
             Function, FunctionSignature, HostApi, HostApiModule, Language,
             NodeType, Number, Power, Stack, Symbol,
         },
-        Boolean, DecimalFormat, DecimalPlaces,
+        function_executor_wrapper, Boolean, DecimalFormat, DecimalPlaces,
     };
 
     use super::*;
@@ -117,9 +117,16 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call() {
-        #[derive(FromArgumentsBinding)]
-        struct TestArgs {
-            x: Number,
+        #[derive(FromArgumentMapping)]
+        struct TestArgs<'a> {
+            x: &'a Number,
+        }
+
+        fn test_executor(
+            TestArgs { x }: TestArgs,
+            context: &Context,
+        ) -> Result<Node, EvaluateNodeError> {
+            Power::new(Number::new(x.value), Number::new(2.)).evaluate(context)
         }
 
         let context = Context::new(
@@ -143,13 +150,10 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(|TestArgs { x }, context| {
-                                        Power::new(
-                                            Number::new(x.value),
-                                            Number::new(2.),
-                                        )
-                                        .evaluate(context)
-                                    })
+                                    .executor(function_executor_wrapper!(
+                                        TestArgs,
+                                        test_executor
+                                    ))
                             })
                             .build()
                     })
@@ -164,9 +168,16 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call_invalid_number_of_arguments() {
-        #[derive(FromArgumentsBinding)]
-        struct TestArgs {
-            x: Number,
+        #[derive(FromArgumentMapping)]
+        struct TestArgs<'a> {
+            x: &'a Number,
+        }
+
+        fn test_executor(
+            TestArgs { x }: TestArgs,
+            context: &Context,
+        ) -> Result<Node, EvaluateNodeError> {
+            Power::new(Number::new(x.value), Number::new(2.)).evaluate(context)
         }
 
         let context = Context::new(
@@ -190,13 +201,10 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(|TestArgs { x }, context| {
-                                        Power::new(
-                                            Number::new(x.value),
-                                            Number::new(2.),
-                                        )
-                                        .evaluate(context)
-                                    })
+                                    .executor(function_executor_wrapper!(
+                                        TestArgs,
+                                        test_executor
+                                    ))
                             })
                             .build()
                     })
@@ -210,11 +218,24 @@ mod tests {
 
     #[test]
     fn evaluate_host_function_call_with_advanced_arguments() {
-        #[derive(FromArgumentsBinding)]
-        struct TestArgs {
-            a: Number,
-            b: Option<Boolean>,
-            c: Vec<Number>,
+        #[derive(FromArgumentMapping)]
+        struct TestArgs<'a> {
+            a: &'a Number,
+            b: Option<&'a Boolean>,
+            c: Vec<&'a Number>,
+        }
+
+        fn test_executor(
+            TestArgs { a, b, c }: TestArgs,
+            context: &Context,
+        ) -> Result<Node, EvaluateNodeError> {
+            let result = if let Some(_) = b {
+                Number::new(a.value)
+            } else {
+                Number::new(c.iter().map(|n| n.value).sum())
+            };
+
+            result.evaluate(context)
         }
 
         let context = Context::new(
@@ -248,21 +269,10 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(
-                                        |TestArgs { a, b, c }, context| {
-                                            let result = if let Some(_) = b {
-                                                Number::new(a.value)
-                                            } else {
-                                                Number::new(
-                                                    c.iter()
-                                                        .map(|n| n.value)
-                                                        .sum(),
-                                                )
-                                            };
-
-                                            result.evaluate(context)
-                                        },
-                                    )
+                                    .executor(function_executor_wrapper!(
+                                        TestArgs,
+                                        test_executor
+                                    ))
                             })
                             .build()
                     })

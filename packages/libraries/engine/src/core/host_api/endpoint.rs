@@ -5,17 +5,15 @@ use std::{
 };
 
 use crate::{
-    ArgumentsBinding, Context, Node, core::{EvaluateNodeError, FunctionSignature}
+    core::{EvaluateNodeError, FunctionSignature},
+    ArgumentMapping, Context, Node,
 };
 use translate_core::Language;
 
-pub type FunctionExecutor = Box<
-    dyn Fn(&ArgumentsBinding, &Context) -> Result<Node, EvaluateNodeError>
-        + Send
-        + Sync,
->;
+pub type FunctionExecutor =
+    fn(&ArgumentMapping, &Context) -> Result<Node, EvaluateNodeError>;
 
-pub type ConstantExecutor = Box<dyn Fn(&Context) -> Node + Send + Sync>;
+pub type ConstantExecutor = fn(&Context) -> Node;
 
 pub type TranslatedString = HashMap<Language, String>;
 

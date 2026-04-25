@@ -1,15 +1,31 @@
 use std::f64::consts::PI;
 
-use engine_derive::FromArgumentsBinding;
+use engine_derive::FromArgumentMapping;
 
-use crate::core::{
-    EndpointBuilder, FunctionSignature, HostEndpoint, Language, NodeType,
-    Number,
+use crate::{
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType, Number,
+    },
+    function_executor_wrapper, Context, Node,
 };
 
-#[derive(FromArgumentsBinding)]
-pub struct SinArgs {
-    value: Number,
+#[derive(FromArgumentMapping)]
+struct SinArgs<'a> {
+    x: &'a Number,
+}
+
+fn sin_executor(
+    SinArgs { x }: SinArgs,
+    _context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    let value = x.value;
+
+    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
+        return Ok(Number::new(0.0));
+    }
+
+    Ok(Number::new(value.sin()))
 }
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
@@ -27,13 +43,5 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .description(Language::English, "Calculate the sine of x.")
         .description(Language::German, "Berechnet den Sinus von x.")
         .function(signature)
-        .executor(|SinArgs { value }, _context| {
-            let value = value.value;
-
-            if value.rem_euclid(PI).abs() < value * f64::EPSILON {
-                return Ok(Number::new(0.0));
-            }
-
-            Ok(Number::new(value.sin()))
-        })
+        .executor(function_executor_wrapper!(SinArgs, sin_executor))
 }

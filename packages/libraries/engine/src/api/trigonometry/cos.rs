@@ -1,15 +1,34 @@
 use std::f64::consts::PI;
 
-use engine_derive::FromArgumentsBinding;
+use engine_derive::FromArgumentMapping;
 
-use crate::core::{
-    EndpointBuilder, FunctionSignature, HostEndpoint, Language, NodeType,
-    Number,
+use crate::{
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType,
+    },
+    function_executor_wrapper, Context, Node, Number,
 };
 
-#[derive(FromArgumentsBinding)]
-struct CosArgs {
-    value: Number,
+#[derive(FromArgumentMapping)]
+struct CosArgs<'a> {
+    x: &'a Number,
+}
+
+fn cos_executor(
+    CosArgs { x }: CosArgs,
+    _context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    let value = x.value;
+
+    let modulus_pi = value.rem_euclid(PI).abs();
+    if modulus_pi < value * f64::EPSILON {
+        return Ok(Number::new(1.));
+    } else if modulus_pi.rem_euclid(PI / 2.).abs() < value * f64::EPSILON {
+        return Ok(Number::new(0.));
+    }
+
+    Ok(Number::new(value.cos()))
 }
 
 pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
@@ -27,18 +46,5 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .description(Language::English, "Calculate the consine of x.")
         .description(Language::German, "Berechnet den Cosinus von x.")
         .function(signature)
-        .executor(|CosArgs { value }, _context| {
-            let value = value.value;
-
-            let modulus_pi = value.rem_euclid(PI).abs();
-            if modulus_pi < value * f64::EPSILON {
-                return Ok(Number::new(1.));
-            } else if modulus_pi.rem_euclid(PI / 2.).abs()
-                < value * f64::EPSILON
-            {
-                return Ok(Number::new(0.));
-            }
-
-            Ok(Number::new(value.cos()))
-        })
+        .executor(function_executor_wrapper!(CosArgs, cos_executor))
 }

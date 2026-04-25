@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{ArgumentsBinding, core::{
+use crate::{ArgumentMapping, core::{
     Cardinality, Context, EvaluateNodeError,
     FunctionSignature, GetNodeType, Node, Preprocess,
 }};
@@ -11,9 +11,9 @@ pub fn map_function_parameters(
     signature: &FunctionSignature,
     parameters: &Vec<Node>,
     context: &Context,
-) -> Result<ArgumentsBinding, EvaluateNodeError> {
+) -> Result<ArgumentMapping, EvaluateNodeError> {
     let mut parameters = VecDeque::from(parameters.clone());
-    let mut mapping = ArgumentsBinding::new();
+    let mut mapping = ArgumentMapping::new();
     'outer: for argument in signature.arguments() {
         let mut matched = 0;
         let options = argument.get_options();

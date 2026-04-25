@@ -2,14 +2,14 @@ use std::collections::HashMap;
 
 use crate::core::{EvaluateNodeError, Node, NodeCast};
 
-use super::entry::ArgumentBindingEntry;
+use super::entry::ArgumentMappingEntry;
 
 #[derive(Debug, Clone)]
-pub struct ArgumentsBinding {
-    map: HashMap<String, ArgumentBindingEntry>,
+pub struct ArgumentMapping {
+    map: HashMap<String, ArgumentMappingEntry>,
 }
 
-impl ArgumentsBinding {
+impl ArgumentMapping {
     pub fn new() -> Self {
         Self {
             map: HashMap::new(),
@@ -18,7 +18,7 @@ impl ArgumentsBinding {
 
     pub fn insert_value<T: ToString>(&mut self, name: T, node: Node) {
         self.map
-            .insert(name.to_string(), ArgumentBindingEntry::Value(node));
+            .insert(name.to_string(), ArgumentMappingEntry::Value(node));
     }
 
     pub fn insert_value_list<T: ToString>(
@@ -27,12 +27,12 @@ impl ArgumentsBinding {
         nodes: Vec<Node>,
     ) {
         self.map
-            .insert(name.to_string(), ArgumentBindingEntry::ValueList(nodes));
+            .insert(name.to_string(), ArgumentMappingEntry::ValueList(nodes));
     }
 
     pub fn insert_none<T: ToString>(&mut self, name: T) {
         self.map
-            .insert(name.to_string(), ArgumentBindingEntry::None);
+            .insert(name.to_string(), ArgumentMappingEntry::None);
     }
 
     pub fn parameter_names(&self) -> Vec<String> {
@@ -42,7 +42,7 @@ impl ArgumentsBinding {
     fn get_parameter_entry(
         &self,
         name: &str,
-    ) -> Result<&ArgumentBindingEntry, EvaluateNodeError> {
+    ) -> Result<&ArgumentMappingEntry, EvaluateNodeError> {
         self.map
             .get(name)
             .ok_or(EvaluateNodeError::runtime_error("argument not found"))
@@ -50,25 +50,25 @@ impl ArgumentsBinding {
 
     pub fn get_node(&self, name: &str) -> Result<Node, EvaluateNodeError> {
         match self.get_parameter_entry(name)? {
-            ArgumentBindingEntry::Value(node) => Ok(node.clone()),
+            ArgumentMappingEntry::Value(node) => Ok(node.clone()),
             _ => {
                 Err(EvaluateNodeError::runtime_error("invalid parameter class"))
             }
         }
     }
 
-    pub fn required<T>(&self, name: &str) -> Result<T, EvaluateNodeError>
+    pub fn required<T>(&self, name: &str) -> Result<&T, EvaluateNodeError>
     where
         T: NodeCast,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentBindingEntry::Value(node) => T::try_from_node(node),
-            ArgumentBindingEntry::None => {
+            ArgumentMappingEntry::Value(node) => T::downcast(node),
+            ArgumentMappingEntry::None => {
                 Err(EvaluateNodeError::missing_parameter(
                     "required argument missing",
                 ))
             }
-            ArgumentBindingEntry::ValueList(nodes) => {
+            ArgumentMappingEntry::ValueList(nodes) => {
                 Err(EvaluateNodeError::too_many_parameters(nodes.len()))
             }
         }
@@ -77,34 +77,32 @@ impl ArgumentsBinding {
     pub fn optional<T>(
         &self,
         name: &str,
-    ) -> Result<Option<T>, EvaluateNodeError>
+    ) -> Result<Option<&T>, EvaluateNodeError>
     where
         T: NodeCast,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentBindingEntry::Value(node) => {
-                Ok(Some(T::try_from_node(node)?))
-            }
-            ArgumentBindingEntry::None => Ok(None),
-            ArgumentBindingEntry::ValueList(nodes) => {
+            ArgumentMappingEntry::Value(node) => Ok(Some(T::downcast(node)?)),
+            ArgumentMappingEntry::None => Ok(None),
+            ArgumentMappingEntry::ValueList(nodes) => {
                 Err(EvaluateNodeError::too_many_parameters(nodes.len()))
             }
         }
     }
 
-    pub fn multiple<T>(&self, name: &str) -> Result<Vec<T>, EvaluateNodeError>
+    pub fn multiple<T>(&self, name: &str) -> Result<Vec<&T>, EvaluateNodeError>
     where
         T: NodeCast,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentBindingEntry::ValueList(nodes) => {
-                nodes.iter().map(T::try_from_node).collect()
+            ArgumentMappingEntry::ValueList(nodes) => {
+                nodes.iter().map(T::downcast).collect()
             }
-            ArgumentBindingEntry::Value(node) => {
+            ArgumentMappingEntry::Value(node) => {
                 Err(EvaluateNodeError::runtime_error("argument is not a list")
                     .with_tracable(node))
             }
-            ArgumentBindingEntry::None => {
+            ArgumentMappingEntry::None => {
                 Err(EvaluateNodeError::runtime_error("argument list missing"))
             }
         }

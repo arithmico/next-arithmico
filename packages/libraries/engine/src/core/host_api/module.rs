@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
-use crate::{
-    Context, FromArgumentsBinding, Node, core::{EvaluateNodeError, FunctionSignature}
-};
+use crate::core::{ConstantExecutor, FunctionExecutor, FunctionSignature};
+
 use translate_core::Language;
 
 use super::{endpoint::HostEndpoint, TranslatedString};
@@ -151,15 +150,12 @@ impl EndpointBuilderAdditionalDescriptionsStage {
         }
     }
 
-    pub fn constant<F>(self, executor: F) -> HostEndpoint
-    where
-        F: Fn(&Context) -> Node + Send + Sync + 'static,
-    {
+    pub fn constant(self, executor: ConstantExecutor) -> HostEndpoint {
         HostEndpoint::Constant {
             module_id: self.module_id,
             module_name: self.module_name,
             description: self.description,
-            executor: Box::new(executor),
+            executor,
         }
     }
 }
@@ -172,21 +168,9 @@ pub struct FunctionEndpointBuilderArgumentsPhase {
 }
 
 impl FunctionEndpointBuilderArgumentsPhase {
-    pub fn executor<A, F, R>(self, executor: F) -> HostEndpoint
-    where
-        A: FromArgumentsBinding + 'static,
-        F: Fn(A, &Context) -> Result<R, EvaluateNodeError>
-            + Send
-            + Sync
-            + 'static,
-        R: Into<Node> + 'static,
-    {
+    pub fn executor(self, executor: FunctionExecutor) -> HostEndpoint {
         HostEndpoint::Function {
-            executor: Box::new(move |arguments, context| {
-                let typed = A::from_arguments_binding(arguments)?;
-                let result = executor(typed, context)?;
-                Ok(result.into())
-            }),
+            executor,
             signature: self.signature,
             description: self.description,
             module_name: self.module_name,

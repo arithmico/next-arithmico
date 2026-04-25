@@ -1,13 +1,9 @@
 use crate::core::{
-    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
-    Symbol,
+    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Symbol,
 };
 
 impl EvaluateNode for Symbol {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_symbol") {
             return Err(EvaluateNodeError::unsupported_datatype(
                 self.node_type(),
