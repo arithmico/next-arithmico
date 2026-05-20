@@ -4,7 +4,7 @@ members = [
     "packages/applications/arithmico", 
     "packages/applications/create_version", 
     "packages/applications/cssbundler",
-    "packages/libraries/*"
+    "packages/libraries/*",
 ]
 
 [workspace.dependencies]

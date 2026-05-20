@@ -1,9 +1,32 @@
 use std::f64::consts::PI;
 
-use crate::core::{
-    EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
-    Language, Node, NodeType, Number,
+use engine_derive::FromArgumentMapping;
+
+use crate::{
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType, Number,
+    },
+    function_executor_wrapper, Context, Node,
 };
+
+#[derive(FromArgumentMapping)]
+struct SinArgs<'a> {
+    x: &'a Number,
+}
+
+fn sin_executor(
+    SinArgs { x }: SinArgs,
+    _context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    let value = x.value;
+
+    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
+        return Ok(Number::new(0.0));
+    }
+
+    Ok(Number::new(value.sin()))
+}
 
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
@@ -20,20 +43,5 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .description(Language::English, "Calculate the sine of x.")
         .description(Language::German, "Berechnet den Sinus von x.")
         .function(signature)
-        .executor(|arguments, _context| {
-            let argument = arguments.get_parameter_value("x")?;
-
-            match argument {
-                Node::Number(Number { value, .. }) => {
-                    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
-                        return Ok(Number::new(0.0));
-                    }
-                    Ok(Number::new(value.sin()))
-                }
-                node => Err(EvaluateNodeError::runtime_error(
-                    "invalid argument type",
-                )
-                .with_tracable(node)),
-            }
-        })
+        .executor(function_executor_wrapper!(SinArgs, sin_executor))
 }

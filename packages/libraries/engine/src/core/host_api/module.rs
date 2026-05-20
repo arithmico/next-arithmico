@@ -1,14 +1,11 @@
 use std::collections::HashMap;
 
-use crate::core::FunctionSignature;
+use crate::core::{ConstantExecutor, FunctionExecutor, FunctionSignature};
+
 use translate_core::Language;
 
-use super::{
-    endpoint::{ConstantExecutor, FunctionExecutor, HostEndpoint},
-    TranslatedString,
-};
+use super::{endpoint::HostEndpoint, TranslatedString};
 
-#[derive(Debug, Clone)]
 pub struct HostApiModule {
     name: TranslatedString,
     endpoints: HashMap<String, HostEndpoint>,
@@ -27,8 +24,8 @@ impl HostApiModule {
         HostApiModuleBuilderIdStage {}
     }
 
-    pub fn get_endpoints(&self) -> &HashMap<String, HostEndpoint> {
-        &self.endpoints
+    pub fn into_endpoints(self) -> HashMap<String, HostEndpoint> {
+        self.endpoints
     }
 }
 

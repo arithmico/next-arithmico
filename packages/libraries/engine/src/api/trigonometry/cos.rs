@@ -1,9 +1,35 @@
 use std::f64::consts::PI;
 
-use crate::core::{
-    EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
-    Language, Node, NodeType, Number,
+use engine_derive::FromArgumentMapping;
+
+use crate::{
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType,
+    },
+    function_executor_wrapper, Context, Node, Number,
 };
+
+#[derive(FromArgumentMapping)]
+struct CosArgs<'a> {
+    x: &'a Number,
+}
+
+fn cos_executor(
+    CosArgs { x }: CosArgs,
+    _context: &Context,
+) -> Result<Node, EvaluateNodeError> {
+    let value = x.value;
+
+    let modulus_pi = value.rem_euclid(PI).abs();
+    if modulus_pi < value * f64::EPSILON {
+        return Ok(Number::new(1.));
+    } else if modulus_pi.rem_euclid(PI / 2.).abs() < value * f64::EPSILON {
+        return Ok(Number::new(0.));
+    }
+
+    Ok(Number::new(value.cos()))
+}
 
 pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
@@ -20,25 +46,5 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .description(Language::English, "Calculate the consine of x.")
         .description(Language::German, "Berechnet den Cosinus von x.")
         .function(signature)
-        .executor(|arguments, _context| {
-            let argument = arguments.get_parameter_value("x")?;
-
-            match argument {
-                Node::Number(Number { value, .. }) => {
-                    let modulus_pi = value.rem_euclid(PI).abs();
-                    if modulus_pi < value * f64::EPSILON {
-                        return Ok(Number::new(1.));
-                    } else if modulus_pi.rem_euclid(PI / 2.).abs()
-                        < value * f64::EPSILON
-                    {
-                        return Ok(Number::new(0.));
-                    }
-
-                    Ok(Number::new(value.cos()))
-                }
-                _ => Err(EvaluateNodeError::runtime_error(
-                    "invalid argument type",
-                )),
-            }
-        })
+        .executor(function_executor_wrapper!(CosArgs, cos_executor))
 }

@@ -1,9 +1,9 @@
 use std::collections::VecDeque;
 
-use crate::core::{
-    ArgumentMapping, Cardinality, Context, EvaluateNodeError,
+use crate::{ArgumentMapping, core::{
+    Cardinality, Context, EvaluateNodeError,
     FunctionSignature, GetNodeType, Node, Preprocess,
-};
+}};
 
 use super::EvaluateNode;
 
@@ -81,19 +81,41 @@ pub fn map_function_parameters(
                     }
                 }
                 Cardinality::Multiple { min, max } => {
-                    if matched > max.unwrap_or(matched) {
-                        return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
-                    }
-                    if argument.has_node_type(node.node_type()) {
-                        mapping.insert_value(name, node);
-                        parameters.pop_front();
-                    } else {
-                        if matched >= min {
-                            continue 'outer;
+                    let mut values = Vec::new();
+
+                    while let Some(node) = parameters.front().cloned() {
+                        let node = match options.preprocess() {
+                            Preprocess::None => node,
+                            Preprocess::Evaluate => node.evaluate(context)?,
+                        };
+
+                        if matched > max.unwrap_or(matched) {
+                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
                         }
-                        return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
+                        if !argument.has_node_type(node.node_type()) {
+                            if matched >= min {
+                                continue 'outer;
+                            }
+                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
+                        } else {
+                            if matched >= max.unwrap_or(usize::MAX) {
+                                return Err(
+                EvaluateNodeError::invalid_repeatable_parameter_count(
+                    name.clone(),
+                    min,
+                    max,
+                    matched,
+                )
+                .with_tracable(node),
+            );
+                            }
+                            values.push(node);
+                            parameters.pop_front();
+                        }
+                        matched += 1;
                     }
-                    matched += 1;
+                    mapping.insert_value_list(name.clone(), values);
+                    continue 'outer;
                 }
             }
         }

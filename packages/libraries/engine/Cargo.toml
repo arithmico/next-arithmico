@@ -10,6 +10,7 @@ translate_core = { version = "0.1.0", path = "../translate_core" }
 translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 nom = { workspace = true }
+engine_derive = { path = "../engine_derive" }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]

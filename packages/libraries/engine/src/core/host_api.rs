@@ -6,7 +6,7 @@ use std::collections::HashMap;
 pub use endpoint::*;
 pub use module::*;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct HostApi {
     endpoints: HashMap<String, HostEndpoint>,
 }
@@ -58,11 +58,11 @@ impl HostApiBuilder {
     ) -> HostApiBuilder {
         if feature_flag {
             let module = module_loader();
-            for (name, endpoint) in module.get_endpoints().iter() {
-                if self.endpoints.contains_key(name) {
+            for (name, endpoint) in module.into_endpoints() {
+                if self.endpoints.contains_key(&name) {
                     panic!("endpoint \"{}\" already exists", name);
                 }
-                self.endpoints.insert(name.clone(), endpoint.clone());
+                self.endpoints.insert(name, endpoint);
             }
         }
         self
