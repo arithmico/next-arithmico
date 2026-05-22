@@ -1,7 +1,7 @@
 use nom::error::{ContextError, ErrorKind, ParseError};
 use thiserror::Error;
 
-#[derive(Error, Debug, Clone)]
+#[derive(Error, Debug, Clone, PartialEq)]
 #[error("ParserError")]
 pub enum ParseNodeError {
     Leaf {
@@ -24,7 +24,7 @@ pub enum ParseNodeError {
         inner: Box<ParseNodeError>,
     },
 }
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ErrorContext {
     pub context: String,
     pub input: String,
@@ -57,6 +57,71 @@ impl ParseNodeError {
     pub fn new_node(children: Vec<ParseNodeError>) -> Self {
         Self::Node { children }
     }
+
+    /// Determines how much input was left when the error occurred.
+    /// A smaller length means the parser progressed further into the string.
+    pub fn remaining_input_len(&self) -> usize {
+        match self {
+            Self::Leaf { input, .. } => input.len(),
+            Self::LeafWithExpectation { input, .. } => input.len(),
+            Self::Context { inner, .. } => inner.remaining_input_len(),
+            Self::Node { children } => children
+                .iter()
+                .map(|c| c.remaining_input_len())
+                .min()
+                .unwrap_or(usize::MAX),
+            Self::MissingOpeningParenthesis { .. } => usize::MAX,
+        }
+    }
+
+    /// Gets a reference to the innermost error (ignoring Contexts)
+    pub fn base_error(&self) -> &Self {
+        // TODO: implement this without recursion
+        match self {
+            Self::Context { inner, .. } => inner.base_error(),
+            _ => self,
+        }
+    }
+
+    /// Flattens nested Nodes and pushes Contexts down to the leaves.
+    /// `Context(A, Node(B, C))` becomes `[Context(A, B), Context(A, C)]`.
+    pub fn flatten(self) -> Vec<Self> {
+        match self {
+            Self::Node { children } => {
+                let mut res = Vec::new();
+                for child in children {
+                    res.extend(child.flatten());
+                }
+                res
+            }
+            Self::Context { context, inner } => {
+                let inner_flat = inner.flatten();
+                inner_flat
+                    .into_iter()
+                    .map(|child| match child {
+                        // If the child is also a context, merge them
+                        Self::Context {
+                            context: mut child_ctx,
+                            inner: child_inner,
+                        } => {
+                            let mut new_ctx = context.clone();
+                            new_ctx.append(&mut child_ctx);
+                            Self::Context {
+                                context: new_ctx,
+                                inner: child_inner,
+                            }
+                        }
+                        // Otherwise wrap the leaf in the context
+                        _ => Self::Context {
+                            context: context.clone(),
+                            inner: Box::new(child),
+                        },
+                    })
+                    .collect()
+            }
+            _ => vec![self],
+        }
+    }
 }
 
 impl ParseError<&str> for ParseNodeError {
@@ -64,23 +129,42 @@ impl ParseError<&str> for ParseNodeError {
         Self::new_leaf(input, kind)
     }
 
-    fn append(input: &str, kind: ErrorKind, other: Self) -> Self {
-        if kind == ErrorKind::Alt {
-            other
-        } else {
-            Self::new_node(vec![other, Self::from_error_kind(input, kind)])
-        }
+    fn append(_input: &str, _kind: ErrorKind, other: Self) -> Self {
+        other
     }
 
     fn or(self, other: Self) -> Self {
-        match self {
-            Self::MissingOpeningParenthesis { .. }
-            | Self::Leaf { .. }
-            | Self::LeafWithExpectation { .. }
-            | Self::Context { .. } => Self::new_node(vec![self, other]),
-            Self::Node { mut children } => {
-                children.push(other);
-                Self::Node { children }
+        let self_len = self.remaining_input_len();
+        let other_len = other.remaining_input_len();
+
+        if self_len < other_len {
+            return self;
+        } else if other_len < self_len {
+            return other;
+        }
+
+        if self == other {
+            return self;
+        }
+
+        let mut self_leaves = self.flatten();
+        let other_leaves = other.flatten();
+
+        // deduplicate strictly by the actual base expectation
+        for leaf in other_leaves {
+            if !self_leaves
+                .iter()
+                .any(|existing| existing.base_error() == leaf.base_error())
+            {
+                self_leaves.push(leaf);
+            }
+        }
+
+        if self_leaves.len() == 1 {
+            self_leaves.pop().unwrap()
+        } else {
+            Self::Node {
+                children: self_leaves,
             }
         }
     }
