@@ -7,15 +7,23 @@ use translate_core::Language;
 use super::{endpoint::HostEndpoint, TranslatedString};
 
 pub struct HostApiModule {
-    name: TranslatedString,
-    endpoints: HashMap<String, HostEndpoint>,
+    module_name: TranslatedString,
+    endpoints: Vec<HostEndpoint>,
 }
 
 impl PartialEq for HostApiModule {
     fn eq(&self, other: &Self) -> bool {
-        self.name == other.name
-            && self.endpoints.keys().collect::<Vec<_>>()
-                == other.endpoints.keys().collect::<Vec<_>>()
+        self.module_name == other.module_name
+            && self
+                .endpoints
+                .iter()
+                .map(HostEndpoint::get_name)
+                .collect::<Vec<_>>()
+                == other
+                    .endpoints
+                    .iter()
+                    .map(HostEndpoint::get_name)
+                    .collect::<Vec<_>>()
     }
 }
 
@@ -24,7 +32,7 @@ impl HostApiModule {
         HostApiModuleBuilderIdStage {}
     }
 
-    pub fn into_endpoints(self) -> HashMap<String, HostEndpoint> {
+    pub fn into_endpoints(self) -> Vec<HostEndpoint> {
         self.endpoints
     }
 }
@@ -33,12 +41,14 @@ pub struct HostApiModuleBuilderIdStage {}
 
 impl HostApiModuleBuilderIdStage {
     pub fn id(self, id: &str) -> HostApiModuleBuilderNameStage {
-        HostApiModuleBuilderNameStage { id: id.to_string() }
+        HostApiModuleBuilderNameStage {
+            module_id: id.to_string(),
+        }
     }
 }
 
 pub struct HostApiModuleBuilderNameStage {
-    id: String,
+    module_id: String,
 }
 
 impl HostApiModuleBuilderNameStage {
@@ -51,17 +61,17 @@ impl HostApiModuleBuilderNameStage {
         module_name.insert(language, name.to_string());
 
         HostApiModuleBuilderEndpointsStage {
-            id: self.id,
-            name: module_name,
-            endpoints: HashMap::new(),
+            module_id: self.module_id,
+            module_name,
+            endpoints: Vec::new(),
         }
     }
 }
 
 pub struct HostApiModuleBuilderEndpointsStage {
-    id: String,
-    name: TranslatedString,
-    endpoints: HashMap<String, HostEndpoint>,
+    module_id: String,
+    module_name: TranslatedString,
+    endpoints: Vec<HostEndpoint>,
 }
 
 impl HostApiModuleBuilderEndpointsStage {
@@ -70,32 +80,62 @@ impl HostApiModuleBuilderEndpointsStage {
         language: Language,
         name: &str,
     ) -> HostApiModuleBuilderEndpointsStage {
-        self.name.insert(language, name.to_string());
+        self.module_name.insert(language, name.to_string());
         self
     }
 
     pub fn endpoint(
         mut self,
-        feature_flag: bool,
-        name: &str,
-        endpoint: fn(builder: EndpointBuilder) -> HostEndpoint,
+        loader: fn(builder: EndpointBuilder) -> HostEndpoint,
     ) -> HostApiModuleBuilderEndpointsStage {
-        if feature_flag {
-            self.endpoints.insert(
-                String::from(name),
-                endpoint(EndpointBuilder {
-                    module_id: self.id.clone(),
-                    module_name: self.name.clone(),
-                    description: HashMap::new(),
-                }),
-            );
+        let endpoint = loader(EndpointBuilder {
+            module_id: self.module_id.clone(),
+            module_name: self.module_name.clone(),
+        });
+
+        let name = endpoint.get_name();
+
+        if self.is_endpoint_in_module(&endpoint) {
+            panic!("duplicate endpoint name: {}", name);
         }
+        self.endpoints.push(endpoint);
+
         self
+    }
+
+    pub fn endpoints(
+        mut self,
+        endpoint_list: &[fn(builder: EndpointBuilder) -> HostEndpoint],
+    ) -> HostApiModuleBuilderEndpointsStage {
+        for loader in endpoint_list {
+            let endpoint = loader(EndpointBuilder {
+                module_id: self.module_id.clone(),
+                module_name: self.module_name.clone(),
+            });
+
+            let name = endpoint.get_name().to_string();
+
+            if self.is_endpoint_in_module(&endpoint) {
+                panic!("duplicate endpoint name: {}", name);
+            }
+
+            self.endpoints.push(endpoint);
+        }
+
+        self
+    }
+
+    fn is_endpoint_in_module(&self, endpoint: &HostEndpoint) -> bool {
+        let name = endpoint.get_name();
+
+        self.endpoints
+            .iter()
+            .any(|host_endpoint| host_endpoint.get_name() == name)
     }
 
     pub fn build(self) -> HostApiModule {
         HostApiModule {
-            name: self.name,
+            module_name: self.module_name,
             endpoints: self.endpoints,
         }
     }
@@ -104,10 +144,27 @@ impl HostApiModuleBuilderEndpointsStage {
 pub struct EndpointBuilder {
     module_id: String,
     module_name: TranslatedString,
-    description: TranslatedString,
 }
 
 impl EndpointBuilder {
+    pub fn name(self, name: &str) -> EndpointBuilderNameStage {
+        EndpointBuilderNameStage {
+            module_id: self.module_id,
+            module_name: self.module_name,
+            endpoint_name: name.to_string(),
+            description: HashMap::new(),
+        }
+    }
+}
+
+pub struct EndpointBuilderNameStage {
+    module_id: String,
+    module_name: TranslatedString,
+    endpoint_name: String,
+    description: TranslatedString,
+}
+
+impl EndpointBuilderNameStage {
     pub fn description(
         mut self,
         language: Language,
@@ -117,6 +174,7 @@ impl EndpointBuilder {
         EndpointBuilderAdditionalDescriptionsStage {
             module_id: self.module_id,
             module_name: self.module_name,
+            endpoint_name: self.endpoint_name,
             description: self.description,
         }
     }
@@ -125,6 +183,7 @@ impl EndpointBuilder {
 pub struct EndpointBuilderAdditionalDescriptionsStage {
     module_id: String,
     module_name: TranslatedString,
+    endpoint_name: String,
     description: TranslatedString,
 }
 
@@ -144,8 +203,9 @@ impl EndpointBuilderAdditionalDescriptionsStage {
     ) -> FunctionEndpointBuilderArgumentsPhase {
         FunctionEndpointBuilderArgumentsPhase {
             module_id: self.module_id,
-            description: self.description,
             module_name: self.module_name,
+            endpoint_name: self.endpoint_name,
+            description: self.description,
             signature,
         }
     }
@@ -154,6 +214,7 @@ impl EndpointBuilderAdditionalDescriptionsStage {
         HostEndpoint::Constant {
             module_id: self.module_id,
             module_name: self.module_name,
+            endpoint_name: self.endpoint_name,
             description: self.description,
             executor,
         }
@@ -163,6 +224,7 @@ impl EndpointBuilderAdditionalDescriptionsStage {
 pub struct FunctionEndpointBuilderArgumentsPhase {
     module_id: String,
     module_name: TranslatedString,
+    endpoint_name: String,
     description: TranslatedString,
     signature: FunctionSignature,
 }
@@ -175,6 +237,7 @@ impl FunctionEndpointBuilderArgumentsPhase {
             description: self.description,
             module_name: self.module_name,
             module_id: self.module_id,
+            endpoint_name: self.endpoint_name,
         }
     }
 }

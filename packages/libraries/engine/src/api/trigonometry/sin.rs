@@ -28,6 +28,7 @@ fn sin_executor(
     Ok(Number::new(value.sin()))
 }
 
+#[cfg(feature = "api_endpoint_trigonometry_sin")]
 pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
         .argument("x", |argument| {
@@ -40,6 +41,7 @@ pub fn load_sin_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .add_return_type(NodeType::Number);
 
     builder
+        .name("sin")
         .description(Language::English, "Calculate the sine of x.")
         .description(Language::German, "Berechnet den Sinus von x.")
         .function(signature)

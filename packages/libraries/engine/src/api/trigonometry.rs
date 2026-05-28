@@ -12,20 +12,13 @@ pub fn load_trigonometry_module() -> HostApiModule {
         .id("trigonometry")
         .name(Language::English, "Trigonometry")
         .name(Language::German, "Trigonometrie")
-        .endpoint(
-            cfg!(feature = "api_endpoint_trigonometry_pi"),
-            "pi",
+        .endpoints(&[
+            #[cfg(feature = "api_endpoint_trigonometry_pi")]
             load_pi_endpoint,
-        )
-        .endpoint(
-            cfg!(feature = "api_endpoint_trigonometry_sin"),
-            "sin",
+            #[cfg(feature = "api_endpoint_trigonometry_sin")]
             load_sin_endpoint,
-        )
-        .endpoint(
-            cfg!(feature = "api_endpoint_trigonometry_cos"),
-            "cos",
+            #[cfg(feature = "api_endpoint_trigonometry_cos")]
             load_cos_endpoint,
-        )
+        ])
         .build()
 }

@@ -139,8 +139,9 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(true, "f", |builder| {
+                            .endpoint(|builder| {
                                 builder
+                                    .name("f")
                                     .description(Language::English, "test")
                                     .function(
                                         FunctionSignature::new()
@@ -190,8 +191,9 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(true, "f", |builder| {
+                            .endpoint(|builder| {
                                 builder
+                                    .name("f")
                                     .description(Language::English, "test")
                                     .function(
                                         FunctionSignature::new()
@@ -248,8 +250,9 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(true, "f", |builder| {
+                            .endpoint(|builder| {
                                 builder
+                                    .name("f")
                                     .description(Language::English, "test")
                                     .function(
                                         FunctionSignature::new()
