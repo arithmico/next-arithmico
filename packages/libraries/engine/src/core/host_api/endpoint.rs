@@ -71,7 +71,7 @@ impl Debug for HostEndpoint {
 }
 
 impl HostEndpoint {
-    pub fn get_name(&self) -> &str {
+    pub fn get_endpoint_name(&self) -> &str {
         match self {
             HostEndpoint::Function { endpoint_name, .. } => endpoint_name,
             HostEndpoint::Constant { endpoint_name, .. } => endpoint_name,

@@ -71,7 +71,7 @@ mod tests {
                     .name(Language::English, "test")
                     .endpoint(|builder| {
                         builder                                
-                        .name("f")
+                        .name("test")
                             .description(Language::English, "test")
                             .constant(|_context| Number::new(42.0).into())
                     })
@@ -99,7 +99,7 @@ mod tests {
                     .name(Language::English, "test")
                     .endpoint(|builder| {
                         builder
-                        .name("f")
+                        .name("test")
                             .description(Language::English, "test")
                             .constant(|_context| Number::new(42.0).into())
                     })
