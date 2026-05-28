@@ -17,12 +17,12 @@ impl PartialEq for HostApiModule {
             && self
                 .endpoints
                 .iter()
-                .map(HostEndpoint::get_name)
+                .map(HostEndpoint::get_endpoint_name)
                 .collect::<Vec<_>>()
                 == other
                     .endpoints
                     .iter()
-                    .map(HostEndpoint::get_name)
+                    .map(HostEndpoint::get_endpoint_name)
                     .collect::<Vec<_>>()
     }
 }
@@ -93,11 +93,8 @@ impl HostApiModuleBuilderEndpointsStage {
             module_name: self.module_name.clone(),
         });
 
-        let name = endpoint.get_name();
-
-        if self.is_endpoint_in_module(&endpoint) {
-            panic!("duplicate endpoint name: {}", name);
-        }
+        let name = endpoint.get_endpoint_name();
+        self.assert_endpoint_name_is_unique(name);
         self.endpoints.push(endpoint);
 
         self
@@ -108,29 +105,20 @@ impl HostApiModuleBuilderEndpointsStage {
         endpoint_list: &[fn(builder: EndpointBuilder) -> HostEndpoint],
     ) -> HostApiModuleBuilderEndpointsStage {
         for loader in endpoint_list {
-            let endpoint = loader(EndpointBuilder {
-                module_id: self.module_id.clone(),
-                module_name: self.module_name.clone(),
-            });
-
-            let name = endpoint.get_name().to_string();
-
-            if self.is_endpoint_in_module(&endpoint) {
-                panic!("duplicate endpoint name: {}", name);
-            }
-
-            self.endpoints.push(endpoint);
+            self = self.endpoint(*loader);
         }
 
         self
     }
 
-    fn is_endpoint_in_module(&self, endpoint: &HostEndpoint) -> bool {
-        let name = endpoint.get_name();
-
-        self.endpoints
+    fn assert_endpoint_name_is_unique(&self, name: &str) -> () {
+        if self
+            .endpoints
             .iter()
-            .any(|host_endpoint| host_endpoint.get_name() == name)
+            .any(|host_endpoint| host_endpoint.get_endpoint_name() == name)
+        {
+            panic!("duplicate endpoint name: {}", name);
+        }
     }
 
     pub fn build(self) -> HostApiModule {
