@@ -58,7 +58,8 @@ impl HostApiBuilder {
     ) -> HostApiBuilder {
         if feature_flag {
             let module = module_loader();
-            for (name, endpoint) in module.into_endpoints() {
+            for endpoint in module.into_endpoints() {
+                let name = endpoint.get_name().to_string();
                 if self.endpoints.contains_key(&name) {
                     panic!("endpoint \"{}\" already exists", name);
                 }

@@ -31,6 +31,7 @@ fn cos_executor(
     Ok(Number::new(value.cos()))
 }
 
+#[cfg(feature = "api_endpoint_trigonometry_cos")]
 pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
         .argument("x", |argument| {
@@ -43,6 +44,7 @@ pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
         .add_return_type(NodeType::Number);
 
     builder
+        .name("cos")
         .description(Language::English, "Calculate the consine of x.")
         .description(Language::German, "Berechnet den Cosinus von x.")
         .function(signature)
