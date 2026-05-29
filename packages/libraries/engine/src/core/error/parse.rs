@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use nom::error::{ContextError, ErrorKind, ParseError};
 use thiserror::Error;
 
@@ -122,6 +124,40 @@ impl ParseNodeError {
             _ => vec![self],
         }
     }
+
+    fn expectations(&self) -> Vec<String> {
+        let mut expectations = Vec::new();
+        let mut queue = VecDeque::<&ParseNodeError>::new();
+        queue.push_back(self);
+        while let Some(error) = queue.pop_front() {
+            match error {
+                ParseNodeError::LeafWithExpectation { expectation, .. } => {
+                    expectations.push(expectation.clone());
+                }
+                ParseNodeError::Node { children } => {
+                    children.iter().for_each(|item| queue.push_back(item));
+                }
+                ParseNodeError::Context { inner, .. } => {
+                    queue.push_back(inner);
+                }
+                _ => (),
+            }
+        }
+        expectations
+    }
+
+    pub fn summary(&self) -> ParseNodeErrorSummary {
+        if let Self::MissingParenthesis { round, square } = self {
+            return ParseNodeErrorSummary::MissingParenthesis {
+                round: *round,
+                square: *square,
+            };
+        };
+
+        let expectations = self.expectations();
+
+        ParseNodeErrorSummary::Expectation { expectations }
+    }
 }
 
 impl ParseError<&str> for ParseNodeError {
@@ -134,6 +170,10 @@ impl ParseError<&str> for ParseNodeError {
     }
 
     fn or(self, other: Self) -> Self {
+        // ignore other erros from missing parenthesis errors
+        if let Self::MissingParenthesis { .. } = self {
+            return self;
+        }
         let self_len = self.remaining_input_len();
         let other_len = other.remaining_input_len();
 
@@ -172,6 +212,10 @@ impl ParseError<&str> for ParseNodeError {
 
 impl ContextError<&str> for ParseNodeError {
     fn add_context(input: &str, ctx: &'static str, other: Self) -> Self {
+        // ignore context on missing parenthesis errors
+        if let Self::MissingParenthesis { .. } = other {
+            return other;
+        }
         if let Self::Context { mut context, inner } = other {
             context.push(ErrorContext::new(ctx, input));
             Self::Context { context, inner }
@@ -182,4 +226,10 @@ impl ContextError<&str> for ParseNodeError {
             }
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ParseNodeErrorSummary {
+    MissingParenthesis { round: i64, square: i64 },
+    Expectation { expectations: Vec<String> },
 }
