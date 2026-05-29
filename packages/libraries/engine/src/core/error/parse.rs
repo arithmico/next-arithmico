@@ -12,9 +12,9 @@ pub enum ParseNodeError {
         input: String,
         expectation: String,
     },
-    MissingOpeningParenthesis {
-        round: usize,
-        square: usize,
+    MissingParenthesis {
+        round: i64,
+        square: i64,
     },
     Node {
         children: Vec<ParseNodeError>,
@@ -70,7 +70,7 @@ impl ParseNodeError {
                 .map(|c| c.remaining_input_len())
                 .min()
                 .unwrap_or(usize::MAX),
-            Self::MissingOpeningParenthesis { .. } => usize::MAX,
+            Self::MissingParenthesis { .. } => usize::MAX,
         }
     }
 

@@ -27,9 +27,9 @@ pub fn check_missing_open_parenthesis(
     let delta_2 = c_2_1 - c_2_2;
 
     if delta_1 < 0 || delta_2 < 0 {
-        Err(ParseNodeError::MissingOpeningParenthesis {
-            round: delta_1.abs() as usize,
-            square: delta_2.abs() as usize,
+        Err(ParseNodeError::MissingParenthesis {
+            round: delta_1.abs(),
+            square: delta_2.abs(),
         })
     } else {
         Ok(())

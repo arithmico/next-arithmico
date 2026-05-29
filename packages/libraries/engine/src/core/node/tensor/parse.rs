@@ -175,7 +175,7 @@ mod tests {
 
         dbg!(&error);
 
-        if let ParseNodeError::MissingOpeningParenthesis { square, round } =
+        if let ParseNodeError::MissingParenthesis { square, round } =
             error
             && round == 0
             && square == 1

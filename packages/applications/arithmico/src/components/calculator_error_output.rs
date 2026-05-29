@@ -7,8 +7,20 @@ pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
     view! {
         <>
             {match error {
-                SessionError::ParseNodeError(_) => {
-                    view! { <>SyntaxError</> }.into_any()
+                SessionError::ParseNodeError(error) => {
+                    view! {
+                        <>
+                            <p>{format!("SyntaxError: {}", "")}</p>
+                            <p>
+                                {format!("{:#?}", &error)
+                                    .chars()
+                                    .filter(|c| *c == '\n')
+                                    .count()}
+                            </p>
+                            <p>{format!("{:#?}", &error)}</p>
+                        </>
+                    }
+                        .into_any()
                 }
                 SessionError::SerializeNodeError(_) => {
                     view! { <>SerializationError</> }.into_any()
