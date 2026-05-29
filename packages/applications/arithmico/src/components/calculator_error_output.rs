@@ -17,7 +17,7 @@ pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
                                     .filter(|c| *c == '\n')
                                     .count()}
                             </p>
-                            <p>{format!("{:#?}", &error)}</p>
+                            <p>{format!("{:#?}", &error.summary())}</p>
                         </>
                     }
                         .into_any()

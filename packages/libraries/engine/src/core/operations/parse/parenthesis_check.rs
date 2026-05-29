@@ -26,10 +26,10 @@ pub fn check_missing_open_parenthesis(
     let c_2_2 = counts.get(&']').map(|v| v.len()).unwrap_or(0) as i64;
     let delta_2 = c_2_1 - c_2_2;
 
-    if delta_1 < 0 || delta_2 < 0 {
+    if delta_1 != 0 || delta_2 != 0 {
         Err(ParseNodeError::MissingParenthesis {
-            round: delta_1.abs(),
-            square: delta_2.abs(),
+            round: delta_1,
+            square: delta_2,
         })
     } else {
         Ok(())
