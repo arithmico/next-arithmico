@@ -69,12 +69,12 @@ mod tests {
                 HostApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
-                    .endpoint(|builder| {
-                        builder                                
-                        .name("test")
+                    .endpoints(&[|builder| {
+                        builder
+                            .name("test")
                             .description(Language::English, "test")
                             .constant(|_context| Number::new(42.0).into())
-                    })
+                    }])
                     .build()
             })
             .build();
@@ -97,12 +97,12 @@ mod tests {
                 HostApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
-                    .endpoint(|builder| {
+                    .endpoints(&[|builder| {
                         builder
-                        .name("test")
+                            .name("test")
                             .description(Language::English, "test")
                             .constant(|_context| Number::new(42.0).into())
-                    })
+                    }])
                     .build()
             })
             .build();
