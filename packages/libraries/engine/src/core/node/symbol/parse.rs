@@ -7,8 +7,8 @@ use nom::{
 };
 
 use crate::core::{
-    expect_tag, with_parser, ParseNode, ParseNodeError, ParseResult, Symbol,
-    TraceUtils,
+    expect_tag, map_parse_error::MapErrorUtils, with_parser, ParseNode,
+    ParseNodeError, ParseResult, Symbol, TraceUtils,
 };
 
 impl ParseNode for Symbol {
@@ -21,7 +21,11 @@ impl ParseNode for Symbol {
 }
 
 fn parse_symbol(input: &'_ str) -> ParseResult<'_> {
-    let (remaining_input, name) = parse_raw_symbol(input)?;
+    let (remaining_input, name) = parse_raw_symbol(input)
+        .map_parse_node_error(|_| ParseNodeError::LeafWithExpectation {
+            input: input.to_string(),
+            expectation: String::from("symbol"),
+        })?;
     Ok((
         remaining_input,
         Symbol::new(&name).with_span_from_parser(input, remaining_input),
