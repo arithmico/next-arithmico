@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::core::{ConstantExecutor, FunctionExecutor, FunctionSignature};
 
@@ -18,12 +18,12 @@ impl PartialEq for HostApiModule {
                 .endpoints
                 .iter()
                 .map(HostEndpoint::get_endpoint_name)
-                .collect::<Vec<_>>()
+                .collect::<HashSet<_>>()
                 == other
                     .endpoints
                     .iter()
                     .map(HostEndpoint::get_endpoint_name)
-                    .collect::<Vec<_>>()
+                    .collect::<HashSet<_>>()
     }
 }
 
@@ -84,28 +84,19 @@ impl HostApiModuleBuilderEndpointsStage {
         self
     }
 
-    pub fn endpoint(
-        mut self,
-        loader: fn(builder: EndpointBuilder) -> HostEndpoint,
-    ) -> HostApiModuleBuilderEndpointsStage {
-        let endpoint = loader(EndpointBuilder {
-            module_id: self.module_id.clone(),
-            module_name: self.module_name.clone(),
-        });
-
-        let name = endpoint.get_endpoint_name();
-        self.assert_endpoint_name_is_unique(name);
-        self.endpoints.push(endpoint);
-
-        self
-    }
-
     pub fn endpoints(
         mut self,
         endpoint_list: &[fn(builder: EndpointBuilder) -> HostEndpoint],
     ) -> HostApiModuleBuilderEndpointsStage {
         for loader in endpoint_list {
-            self = self.endpoint(*loader);
+            let endpoint = loader(EndpointBuilder {
+                module_id: self.module_id.clone(),
+                module_name: self.module_name.clone(),
+            });
+
+            let name = endpoint.get_endpoint_name();
+            self.assert_endpoint_name_is_unique(name);
+            self.endpoints.push(endpoint);
         }
 
         self
