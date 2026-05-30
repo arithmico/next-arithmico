@@ -3,6 +3,8 @@ use std::collections::VecDeque;
 use nom::error::{ContextError, ErrorKind, ParseError};
 use thiserror::Error;
 
+pub mod map_parse_error;
+
 #[derive(Error, Debug, Clone, PartialEq)]
 #[error("ParserError")]
 pub enum ParseNodeError {

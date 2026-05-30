@@ -1,7 +1,8 @@
 use nom::{branch::alt, error::context, Parser};
 
 use crate::core::{
-    expect_tag, with_parser, Boolean, ParseNode, ParseResult, TraceUtils,
+    expect_tag, map_parse_error::MapErrorUtils, with_parser, Boolean,
+    ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Boolean {
@@ -13,7 +14,11 @@ impl ParseNode for Boolean {
 fn parse_boolean(input: &'_ str) -> ParseResult<'_> {
     let (remaining_input, value) =
         context("boolean", alt((expect_tag("true"), expect_tag("false"))))
-            .parse(input)?;
+            .parse(input)
+            .map_parse_node_error(|_| ParseNodeError::LeafWithExpectation {
+                input: input.to_string(),
+                expectation: String::from("boolean"),
+            })?;
 
     Ok((
         remaining_input,
