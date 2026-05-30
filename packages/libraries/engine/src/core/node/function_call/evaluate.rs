@@ -139,7 +139,7 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(|builder| {
+                            .endpoints(&[|builder| {
                                 builder
                                     .name("f")
                                     .description(Language::English, "test")
@@ -155,7 +155,7 @@ mod tests {
                                         TestArgs,
                                         test_executor
                                     ))
-                            })
+                            }])
                             .build()
                     })
                     .build(),
@@ -191,7 +191,7 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(|builder| {
+                            .endpoints(&[|builder| {
                                 builder
                                     .name("f")
                                     .description(Language::English, "test")
@@ -207,7 +207,7 @@ mod tests {
                                         TestArgs,
                                         test_executor
                                     ))
-                            })
+                            }])
                             .build()
                     })
                     .build(),
@@ -250,7 +250,7 @@ mod tests {
                         HostApiModule::builder()
                             .id("test")
                             .name(Language::English, "test")
-                            .endpoint(|builder| {
+                            .endpoints(&[|builder| {
                                 builder
                                     .name("f")
                                     .description(Language::English, "test")
@@ -276,7 +276,7 @@ mod tests {
                                         TestArgs,
                                         test_executor
                                     ))
-                            })
+                            }])
                             .build()
                     })
                     .build(),
