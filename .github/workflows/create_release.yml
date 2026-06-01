@@ -51,7 +51,7 @@ jobs:
         with:
           node-version: 24
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@6.1.3
+        uses: aws-actions/configure-aws-credentials@6.2
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -88,7 +88,7 @@ jobs:
           cargo binstall -y --locked trunk
           cargo install cssbundler --path packages/applications/cssbundler
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@6.1.3
+        uses: aws-actions/configure-aws-credentials@6.2
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
