@@ -140,7 +140,7 @@ use crate::core::parse;
             && let Some(first) = context.first()
             && first.context == "tensor"
             && first.input == "[1, 2 + 4"
-            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+            && let ParseNodeError::LeafWithExpectation { expectation, input, .. } =
                 *inner
             && expectation == Expectation::Token("]".to_string())
             && input == ""
@@ -159,7 +159,7 @@ use crate::core::parse;
             && let Some(first) = context.first()
             && first.context == "tensor"
             && first.input == "[1, [2 + 4]"
-            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+            && let ParseNodeError::LeafWithExpectation { expectation, input, .. } =
                 *inner
             && expectation == Expectation::Token("]".to_string())
             && input == ""

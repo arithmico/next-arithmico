@@ -17,6 +17,7 @@ pub enum ParseNodeError {
     LeafWithExpectation {
         input: String,
         expectation: Expectation,
+        actual: Option<char>,
     },
     MissingParenthesis {
         round: i64,
@@ -56,10 +57,12 @@ impl ParseNodeError {
     pub fn new_leaf_with_expectation(
         input: &str,
         expectation: Expectation,
+        actual: Option<char>,
     ) -> Self {
         Self::LeafWithExpectation {
             input: input.to_string(),
             expectation,
+            actual,
         }
     }
 
@@ -153,6 +156,27 @@ impl ParseNodeError {
         expectations
     }
 
+    fn actual(&self) -> Option<char> {
+        let mut first_actual = None;
+        let mut queue = VecDeque::<&ParseNodeError>::new();
+        queue.push_back(self);
+        while let Some(error) = queue.pop_front() && first_actual.is_none() {
+            match error {
+                ParseNodeError::LeafWithExpectation { actual, .. } => {
+                    first_actual = *actual;
+                }
+                ParseNodeError::Node { children } => {
+                    children.iter().for_each(|item| queue.push_back(item));
+                }
+                ParseNodeError::Context { inner, .. } => {
+                    queue.push_back(inner);
+                }
+                _ => (),
+            }
+        }
+        first_actual
+    }
+
     pub fn summary(&self) -> ParseNodeErrorSummary {
         if let Self::MissingParenthesis { round, square } = self {
             return ParseNodeErrorSummary::MissingParenthesis {
@@ -165,14 +189,22 @@ impl ParseNodeError {
         expectations
             .sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
 
-        ParseNodeErrorSummary::Expectations { expectations }
+        let actual = self.actual();
+
+        ParseNodeErrorSummary::Expectations { expectations, actual }
     }
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ParseNodeErrorSummary {
-    MissingParenthesis { round: i64, square: i64 },
-    Expectations { expectations: Vec<Expectation> },
+    MissingParenthesis {
+        round: i64,
+        square: i64,
+    },
+    Expectations {
+        expectations: Vec<Expectation>,
+        actual: Option<char>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]

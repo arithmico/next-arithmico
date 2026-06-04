@@ -18,6 +18,7 @@ fn parse_boolean(input: &'_ str) -> ParseResult<'_> {
             .map_parse_node_error(|_| ParseNodeError::LeafWithExpectation {
                 input: input.to_string(),
                 expectation: Expectation::Boolean,
+                actual: input.chars().next(),
             })?;
 
     Ok((

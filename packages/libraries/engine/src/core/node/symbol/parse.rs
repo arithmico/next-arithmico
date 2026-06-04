@@ -25,6 +25,7 @@ fn parse_symbol(input: &'_ str) -> ParseResult<'_> {
         .map_parse_node_error(|_| ParseNodeError::LeafWithExpectation {
             input: input.to_string(),
             expectation: Expectation::Symbol,
+            actual: input.chars().next(),
         })?;
     Ok((
         remaining_input,
