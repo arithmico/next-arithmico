@@ -1,8 +1,8 @@
 use nom::{error::context, number::complete::double, Parser};
 
 use crate::core::{
-    map_parse_error::MapErrorUtils, with_parser, Number, ParseNode,
-    ParseNodeError, ParseResult, TraceUtils,
+    map_parse_error::MapErrorUtils, with_parser, Expectation, Number,
+    ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Number {
@@ -18,7 +18,7 @@ fn parse_number(input: &'_ str) -> ParseResult<'_> {
         double(input).map_parse_node_error(|_| {
             ParseNodeError::LeafWithExpectation {
                 input: input.to_string(),
-                expectation: String::from("number"),
+                expectation: Expectation::Number,
             }
         })?;
 

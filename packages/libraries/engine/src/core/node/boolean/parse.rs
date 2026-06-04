@@ -2,7 +2,7 @@ use nom::{branch::alt, error::context, Parser};
 
 use crate::core::{
     expect_tag, map_parse_error::MapErrorUtils, with_parser, Boolean,
-    ParseNode, ParseNodeError, ParseResult, TraceUtils,
+    Expectation, ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Boolean {
@@ -17,7 +17,7 @@ fn parse_boolean(input: &'_ str) -> ParseResult<'_> {
             .parse(input)
             .map_parse_node_error(|_| ParseNodeError::LeafWithExpectation {
                 input: input.to_string(),
-                expectation: String::from("boolean"),
+                expectation: Expectation::Boolean,
             })?;
 
     Ok((

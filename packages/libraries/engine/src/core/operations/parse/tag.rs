@@ -1,6 +1,6 @@
 use nom::{Compare, CompareResult, IResult, Input};
 
-use crate::core::ParseNodeError;
+use crate::core::{Expectation, ParseNodeError};
 
 pub fn expect_tag(
     tag: &'static str,
@@ -10,7 +10,8 @@ pub fn expect_tag(
     move |input: &str| match input.compare(tag) {
         CompareResult::Ok => Ok(input.take_split(tag_len)),
         _ => Err(nom::Err::Error(ParseNodeError::new_leaf_with_expectation(
-            input, tag,
+            input,
+            Expectation::Token(tag.to_string()),
         ))),
     }
 }

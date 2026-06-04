@@ -48,7 +48,8 @@ fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::parse;
+    use crate::core::Expectation;
+use crate::core::parse;
     use crate::core::Number;
     use crate::core::ParseNodeError;
 
@@ -141,7 +142,7 @@ mod tests {
             && first.input == "[1, 2 + 4"
             && let ParseNodeError::LeafWithExpectation { expectation, input } =
                 *inner
-            && expectation == "]"
+            && expectation == Expectation::Token("]".to_string())
             && input == ""
         {
             return;
@@ -160,7 +161,7 @@ mod tests {
             && first.input == "[1, [2 + 4]"
             && let ParseNodeError::LeafWithExpectation { expectation, input } =
                 *inner
-            && expectation == "]"
+            && expectation == Expectation::Token("]".to_string())
             && input == ""
         {
             return;
