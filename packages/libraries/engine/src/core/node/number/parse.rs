@@ -19,6 +19,7 @@ fn parse_number(input: &'_ str) -> ParseResult<'_> {
             ParseNodeError::LeafWithExpectation {
                 input: input.to_string(),
                 expectation: Expectation::Number,
+                actual: input.chars().next(),
             }
         })?;
 

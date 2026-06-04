@@ -12,6 +12,7 @@ pub fn expect_tag(
         _ => Err(nom::Err::Error(ParseNodeError::new_leaf_with_expectation(
             input,
             Expectation::Token(tag.to_string()),
+            input.chars().next(),
         ))),
     }
 }

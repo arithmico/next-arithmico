@@ -35,7 +35,7 @@ mod tests {
             && let Some(first) = context.first()
             && first.context == "closing_parenthesis"
             && first.input == ""
-            && let ParseNodeError::LeafWithExpectation { expectation, input } =
+            && let ParseNodeError::LeafWithExpectation { expectation, input , .. } =
                 *inner
             && expectation == Expectation::Token(")".to_string())
             && input == ""
