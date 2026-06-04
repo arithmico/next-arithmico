@@ -1,4 +1,4 @@
-use std::collections::VecDeque;
+use std::{cmp::Ordering, collections::VecDeque};
 
 use nom::error::ErrorKind;
 use thiserror::Error;
@@ -16,7 +16,7 @@ pub enum ParseNodeError {
     },
     LeafWithExpectation {
         input: String,
-        expectation: String,
+        expectation: Expectation,
     },
     MissingParenthesis {
         round: i64,
@@ -53,10 +53,13 @@ impl ParseNodeError {
         }
     }
 
-    pub fn new_leaf_with_expectation(input: &str, expectation: &str) -> Self {
+    pub fn new_leaf_with_expectation(
+        input: &str,
+        expectation: Expectation,
+    ) -> Self {
         Self::LeafWithExpectation {
             input: input.to_string(),
-            expectation: expectation.to_string(),
+            expectation,
         }
     }
 
@@ -129,7 +132,7 @@ impl ParseNodeError {
         }
     }
 
-    fn expectations(&self) -> Vec<String> {
+    fn expectations(&self) -> Vec<Expectation> {
         let mut expectations = Vec::new();
         let mut queue = VecDeque::<&ParseNodeError>::new();
         queue.push_back(self);
@@ -158,14 +161,24 @@ impl ParseNodeError {
             };
         };
 
-        let expectations = self.expectations();
+        let mut expectations = self.expectations();
+        expectations
+            .sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
 
-        ParseNodeErrorSummary::Expectation { expectations }
+        ParseNodeErrorSummary::Expectations { expectations }
     }
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ParseNodeErrorSummary {
     MissingParenthesis { round: i64, square: i64 },
-    Expectation { expectations: Vec<String> },
+    Expectations { expectations: Vec<Expectation> },
+}
+
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub enum Expectation {
+    Number,
+    Symbol,
+    Boolean,
+    Token(String),
 }

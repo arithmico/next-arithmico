@@ -25,7 +25,7 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use core::panic;
 
-    use crate::core::{parse, ParseNodeError};
+    use crate::core::{Expectation, ParseNodeError, parse};
 
     #[test]
     fn error_missing_closing_parenthesis() {
@@ -37,7 +37,7 @@ mod tests {
             && first.input == ""
             && let ParseNodeError::LeafWithExpectation { expectation, input } =
                 *inner
-            && expectation == ")"
+            && expectation == Expectation::Token(")".to_string())
             && input == ""
         {
             return;
