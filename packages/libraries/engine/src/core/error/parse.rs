@@ -177,6 +177,27 @@ impl ParseNodeError {
         first_actual
     }
 
+    fn position(&self) -> usize {
+        let mut position = 0;
+        let mut queue = VecDeque::<&ParseNodeError>::new();
+        queue.push_back(self);
+        while let Some(error) = queue.pop_front() {
+            match error {
+                ParseNodeError::LeafWithExpectation { input, .. } => {
+                    position = input.len().max(position);
+                }
+                ParseNodeError::Node { children } => {
+                    children.iter().for_each(|item| queue.push_back(item));
+                }
+                ParseNodeError::Context { inner, .. } => {
+                    queue.push_back(inner);
+                }
+                _ => (),
+            }
+        }
+        position
+    }
+
     pub fn summary(&self) -> ParseNodeErrorSummary {
         if let Self::MissingParenthesis { round, square } = self {
             return ParseNodeErrorSummary::MissingParenthesis {
@@ -190,8 +211,9 @@ impl ParseNodeError {
             .sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
 
         let actual = self.actual();
+        let position = self.position();
 
-        ParseNodeErrorSummary::Expectations { expectations, actual }
+        ParseNodeErrorSummary::Expectations { expectations, actual, position }
     }
 }
 
@@ -204,6 +226,7 @@ pub enum ParseNodeErrorSummary {
     Expectations {
         expectations: Vec<Expectation>,
         actual: Option<char>,
+        position: usize
     },
 }
 
