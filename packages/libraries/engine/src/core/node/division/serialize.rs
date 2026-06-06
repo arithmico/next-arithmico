@@ -48,8 +48,8 @@ impl Serialize for Division {
 mod tests {
 
     use crate::core::{
-        serialize_node, And, Function, FunctionSignature, NodeType, Or,
-        Product, Sum, Symbol,
+        And, Function, FunctionSignature, NodeType, Or, Product, Sum, Symbol,
+        serialize_node,
     };
 
     use super::*;

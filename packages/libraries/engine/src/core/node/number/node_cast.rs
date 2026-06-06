@@ -1,5 +1,7 @@
-use crate::{Node, Number, core::{EvaluateNodeError, NodeCast}};
-
+use crate::{
+    Node, Number,
+    core::{EvaluateNodeError, NodeCast},
+};
 
 impl NodeCast for Number {
     fn downcast(node: &Node) -> Result<&Self, EvaluateNodeError> {

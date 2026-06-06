@@ -1,13 +1,9 @@
 use crate::core::{
-    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
-    Number,
+    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Number,
 };
 
 impl EvaluateNode for Number {
-    fn evaluate(
-        &self,
-        _context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_number") {
             return Err(EvaluateNodeError::unsupported_datatype(
                 self.node_type(),

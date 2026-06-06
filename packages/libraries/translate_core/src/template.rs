@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
 use nom::{
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{none_of, space0},
     combinator::all_consuming,
     multi::{many0, many1},
     sequence::delimited,
-    IResult, Parser,
 };
 
 use crate::error::TranslationError;

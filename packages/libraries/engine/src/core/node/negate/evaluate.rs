@@ -1,13 +1,10 @@
 use crate::core::{
-    Boolean, EvaluateNode, Context, EvaluateNodeError, Negate,
-    Node, Number, Tensor,
+    Boolean, Context, EvaluateNode, EvaluateNodeError, Negate, Node, Number,
+    Tensor,
 };
 
 impl EvaluateNode for Negate {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let value = self.value.evaluate(context)?;
 
         match value {

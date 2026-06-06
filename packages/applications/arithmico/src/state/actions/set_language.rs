@@ -1,6 +1,6 @@
 use web_state::WebStateAction;
 
-use crate::state::{language::LanguageValue, State};
+use crate::state::{State, language::LanguageValue};
 
 pub struct SetLanguageAction {
     value: LanguageValue,

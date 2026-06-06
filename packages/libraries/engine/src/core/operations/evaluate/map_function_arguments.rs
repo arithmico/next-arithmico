@@ -1,9 +1,12 @@
 use std::collections::VecDeque;
 
-use crate::{ArgumentMapping, core::{
-    Cardinality, Context, EvaluateNodeError,
-    FunctionSignature, GetNodeType, Node, Preprocess,
-}};
+use crate::{
+    ArgumentMapping,
+    core::{
+        Cardinality, Context, EvaluateNodeError, FunctionSignature,
+        GetNodeType, Node, Preprocess,
+    },
+};
 
 use super::EvaluateNode;
 

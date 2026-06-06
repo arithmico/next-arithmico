@@ -51,8 +51,8 @@ impl Serialize for Power {
 mod tests {
 
     use crate::core::{
-        serialize_node, And, Division, Function, FunctionCall,
-        FunctionSignature, Negate, NodeType, Number, Or, Product, Sum, Symbol,
+        And, Division, Function, FunctionCall, FunctionSignature, Negate,
+        NodeType, Number, Or, Product, Sum, Symbol, serialize_node,
     };
 
     use super::*;

@@ -1,8 +1,8 @@
 use leptos::prelude::*;
 use web_state::WebState;
 use web_sys::{
-    wasm_bindgen::{closure::Closure, JsCast},
     MediaQueryListEvent,
+    wasm_bindgen::{JsCast, closure::Closure},
 };
 
 use crate::state::State;

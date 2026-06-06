@@ -1,13 +1,9 @@
 use crate::core::{
-    Boolean, EvaluateNode, Context, EvaluateNodeError, GetNodeType,
-    Node,
+    Boolean, Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node,
 };
 
 impl EvaluateNode for Boolean {
-    fn evaluate(
-        &self,
-        _context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_boolean") {
             return Err(EvaluateNodeError::unsupported_datatype(
                 self.node_type(),

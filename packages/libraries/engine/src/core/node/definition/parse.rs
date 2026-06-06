@@ -1,16 +1,16 @@
 use nom::{
+    Parser,
     branch::alt,
     character::complete::space0,
     combinator::cut,
     error::context,
     multi::separated_list0,
     sequence::{delimited, terminated},
-    Parser,
 };
 
 use crate::core::{
-    expect_tag, parse_raw_symbol, with_parser, Definition, Function,
-    FunctionSignature, Node, NodeType, ParseNode, ParseResult, TraceUtils,
+    Definition, Function, FunctionSignature, Node, NodeType, ParseNode,
+    ParseResult, TraceUtils, expect_tag, parse_raw_symbol, with_parser,
 };
 
 impl ParseNode for Definition {

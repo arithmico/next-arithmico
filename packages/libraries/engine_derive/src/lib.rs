@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{spanned::Spanned, Data, DeriveInput, Type};
+use syn::{Data, DeriveInput, Type, spanned::Spanned};
 
 #[proc_macro_derive(FromArgumentMapping)]
 pub fn from_argument_mapping_derive(input: TokenStream) -> TokenStream {

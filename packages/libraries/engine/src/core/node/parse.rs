@@ -1,7 +1,7 @@
-use nom::{branch::alt, Parser};
+use nom::{Parser, branch::alt};
 
 use crate::core::{
-    parse_sub_expression, Function, Node, ParseNode, ParseResult,
+    Function, Node, ParseNode, ParseResult, parse_sub_expression,
 };
 
 impl ParseNode for Node {

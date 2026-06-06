@@ -1,8 +1,8 @@
-use nom::{branch::alt, error::context, Parser};
+use nom::{Parser, branch::alt, error::context};
 
 use crate::core::{
-    expect_tag, map_parse_error::MapErrorUtils, with_parser, Boolean,
-    Expectation, ParseNode, ParseNodeError, ParseResult, TraceUtils,
+    Boolean, Expectation, ParseNode, ParseNodeError, ParseResult, TraceUtils,
+    expect_tag, map_parse_error::MapErrorUtils, with_parser,
 };
 
 impl ParseNode for Boolean {

@@ -160,7 +160,9 @@ impl ParseNodeError {
         let mut first_actual = None;
         let mut queue = VecDeque::<&ParseNodeError>::new();
         queue.push_back(self);
-        while let Some(error) = queue.pop_front() && first_actual.is_none() {
+        while let Some(error) = queue.pop_front()
+            && first_actual.is_none()
+        {
             match error {
                 ParseNodeError::LeafWithExpectation { actual, .. } => {
                     first_actual = *actual;
@@ -213,7 +215,11 @@ impl ParseNodeError {
         let actual = self.actual();
         let position = self.position();
 
-        ParseNodeErrorSummary::Expectations { expectations, actual, position }
+        ParseNodeErrorSummary::Expectations {
+            expectations,
+            actual,
+            position,
+        }
     }
 }
 
@@ -226,7 +232,7 @@ pub enum ParseNodeErrorSummary {
     Expectations {
         expectations: Vec<Expectation>,
         actual: Option<char>,
-        position: usize
+        position: usize,
     },
 }
 

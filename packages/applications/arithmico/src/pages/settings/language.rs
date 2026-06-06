@@ -2,12 +2,12 @@ use engine::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
-    form::listbox::{use_listbox_is_open, Listbox, ListboxDefinition},
+    form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
 use web_state::WebState;
 
-use crate::state::{language::LanguageValue, SetLanguageAction, State};
+use crate::state::{SetLanguageAction, State, language::LanguageValue};
 
 #[component]
 pub fn LanguageSetting() -> impl IntoView {

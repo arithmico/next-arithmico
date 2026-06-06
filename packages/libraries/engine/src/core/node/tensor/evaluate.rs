@@ -1,13 +1,9 @@
 use crate::core::{
-    EvaluateNode, Context, EvaluateNodeError, GetNodeType, Node,
-    Tensor,
+    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Tensor,
 };
 
 impl EvaluateNode for Tensor {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_tensor") {
             return Err(EvaluateNodeError::unsupported_datatype(
                 self.node_type(),
@@ -69,11 +65,13 @@ mod tests {
     #[test]
     fn evaluate_tensor_with_sum_with_trace() {
         let context = Context::default();
-        let result = Tensor::new(vec![Sum::new(vec![
-            Number::new(1.).with_span(1, 1),
-            Number::new(2.).with_span(3, 3),
+        let result = Tensor::new(vec![
+            Sum::new(vec![
+                Number::new(1.).with_span(1, 1),
+                Number::new(2.).with_span(3, 3),
+            ])
+            .with_span(1, 3),
         ])
-        .with_span(1, 3)])
         .with_span(0, 4)
         .evaluate(&context)
         .unwrap();

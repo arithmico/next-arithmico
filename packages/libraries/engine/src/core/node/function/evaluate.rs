@@ -1,13 +1,9 @@
 use crate::core::{
-    EvaluateNode, Context, EvaluateNodeError, Function,
-    GetNodeType, Node,
+    Context, EvaluateNode, EvaluateNodeError, Function, GetNodeType, Node,
 };
 
 impl EvaluateNode for Function {
-    fn evaluate(
-        &self,
-        _context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "datatype_function") {
             return Err(EvaluateNodeError::unsupported_datatype(
                 self.node_type(),

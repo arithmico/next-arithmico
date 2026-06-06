@@ -1,5 +1,5 @@
 use engine::Language;
-use js_sys::wasm_bindgen::{prelude::Closure, JsCast};
+use js_sys::wasm_bindgen::{JsCast, prelude::Closure};
 use leptos::{logging::warn, prelude::*};
 use translate::{TranslateProvider as Provider, TranslationTemplateProvider};
 use web_state::WebState;

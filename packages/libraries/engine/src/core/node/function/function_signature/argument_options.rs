@@ -3,8 +3,8 @@ use std::collections::{HashMap, HashSet};
 use translate::use_translate;
 
 use crate::{
-    core::{Node, NodeType},
     Context, Serialize,
+    core::{Node, NodeType},
 };
 
 #[derive(Debug, Clone, PartialEq)]

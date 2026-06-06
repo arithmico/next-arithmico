@@ -1,14 +1,14 @@
 use nom::{
+    IResult, Parser,
     branch::alt,
     character::complete::{alpha1, alphanumeric1},
     error::context,
     multi::many0,
-    IResult, Parser,
 };
 
 use crate::core::{
-    expect_tag, map_parse_error::MapErrorUtils, with_parser, Expectation,
-    ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
+    Expectation, ParseNode, ParseNodeError, ParseResult, Symbol, TraceUtils,
+    expect_tag, map_parse_error::MapErrorUtils, with_parser,
 };
 
 impl ParseNode for Symbol {

@@ -1,10 +1,10 @@
 use nom::{
-    branch::alt, character::complete::space0, error::context, multi::many1,
-    sequence::preceded, Parser,
+    Parser, branch::alt, character::complete::space0, error::context,
+    multi::many1, sequence::preceded,
 };
 
 use crate::core::{
-    expect_tag, with_parser, And, Or, ParseNode, ParseResult, TraceUtils,
+    And, Or, ParseNode, ParseResult, TraceUtils, expect_tag, with_parser,
 };
 
 impl ParseNode for Or {
