@@ -1,6 +1,6 @@
 use crate::{
-    core::{Context, Node, SerializeNodeError},
     Serialize,
+    core::{Context, Node, SerializeNodeError},
 };
 
 pub trait SerializeUtils {
@@ -10,7 +10,7 @@ pub trait SerializeUtils {
     ) -> Result<Node, SerializeNodeError>;
 
     fn child_requires_parenthesis(&self, child: &Node, position: usize)
-        -> bool;
+    -> bool;
 
     fn serialize_child(
         &self,

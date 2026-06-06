@@ -48,8 +48,8 @@ impl Serialize for Equals {
 mod tests {
 
     use crate::core::{
-        serialize_node, And, GreaterThan, GreaterThanOrEquals, LessThan,
-        LessThanOrEquals, Or, Symbol,
+        And, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, Or,
+        Symbol, serialize_node,
     };
 
     use super::*;

@@ -1,10 +1,10 @@
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::preceded,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{expect_tag, with_parser, ParseNode, ParseResult, Tensor};
+use crate::core::{ParseNode, ParseResult, Tensor, expect_tag, with_parser};
 
 use super::Power;
 

@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::separated_list0, sequence::delimited, Parser,
+    Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::separated_list0, sequence::delimited,
 };
 
 use crate::core::{
-    expect_tag, with_parser, FunctionCall, Node, ParseNode, ParseResult,
-    Tensor, TraceUtils,
+    FunctionCall, Node, ParseNode, ParseResult, Tensor, TraceUtils, expect_tag,
+    with_parser,
 };
 
 impl ParseNode for Tensor {
@@ -48,12 +48,11 @@ fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::Expectation;
-use crate::core::parse;
+    use super::*;
     use crate::core::Number;
     use crate::core::ParseNodeError;
-
-    use super::*;
+    use crate::core::parse;
+    use std::assert_matches;
     use trace::TracableMut;
     use trace::Trace;
 
@@ -136,38 +135,20 @@ use crate::core::parse;
     fn error_missing_closing_parenthesis() {
         let error = parse("[1, 2 + 4", &Default::default()).unwrap_err();
 
-        if let ParseNodeError::Context { context, inner } = error
-            && let Some(first) = context.first()
-            && first.context == "tensor"
-            && first.input == "[1, 2 + 4"
-            && let ParseNodeError::LeafWithExpectation { expectation, input, .. } =
-                *inner
-            && expectation == Expectation::Token("]".to_string())
-            && input == ""
-        {
-            return;
-        } else {
-            panic!("invalid error");
-        }
+        assert_matches!(
+            error,
+            ParseNodeError::MissingParenthesis { round, square } if round == 0 && square == 1
+        );
     }
 
     #[test]
     fn error_nested_missing_closing_parenthesis() {
         let error = parse("[1, [2 + 4]", &Default::default()).unwrap_err();
 
-        if let ParseNodeError::Context { context, inner } = error
-            && let Some(first) = context.first()
-            && first.context == "tensor"
-            && first.input == "[1, [2 + 4]"
-            && let ParseNodeError::LeafWithExpectation { expectation, input, .. } =
-                *inner
-            && expectation == Expectation::Token("]".to_string())
-            && input == ""
-        {
-            return;
-        } else {
-            panic!("invalid error");
-        }
+        assert_matches!(
+            error,
+            ParseNodeError::MissingParenthesis { round, square } if round == 0 && square == 1
+        );
     }
 
     #[test]
@@ -176,10 +157,9 @@ use crate::core::parse;
 
         dbg!(&error);
 
-        if let ParseNodeError::MissingParenthesis { square, round } =
-            error
+        if let ParseNodeError::MissingParenthesis { square, round } = error
             && round == 0
-            && square == 1
+            && square == -1
         {
             return;
         } else {

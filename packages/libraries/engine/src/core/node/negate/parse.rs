@@ -1,9 +1,9 @@
 use nom::{
-    character::complete::space0, error::context, sequence::preceded, Parser,
+    Parser, character::complete::space0, error::context, sequence::preceded,
 };
 
 use crate::core::{
-    expect_tag, with_parser, ParseNode, ParseResult, Product, TraceUtils,
+    ParseNode, ParseResult, Product, TraceUtils, expect_tag, with_parser,
 };
 
 use super::Negate;

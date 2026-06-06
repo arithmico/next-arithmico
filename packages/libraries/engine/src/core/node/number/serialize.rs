@@ -1,6 +1,6 @@
 use crate::core::{
-    get_decimal_separator, Context, Negate, Node, Number, Power, Product,
-    Serialize, SerializeNodeError, SerializeUtils,
+    Context, Negate, Node, Number, Power, Product, Serialize,
+    SerializeNodeError, SerializeUtils, get_decimal_separator,
 };
 
 impl SerializeUtils for Number {
@@ -83,7 +83,7 @@ impl Serialize for Number {
 mod tests {
 
     use crate::core::{
-        serialize_node, DecimalFormat, DecimalPlaces, HostApi, Stack,
+        DecimalFormat, DecimalPlaces, HostApi, Stack, serialize_node,
     };
 
     use super::*;

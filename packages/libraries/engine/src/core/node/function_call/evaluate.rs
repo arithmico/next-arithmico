@@ -1,6 +1,6 @@
 use crate::core::{
-    map_function_parameters, Context, EvaluateNode, EvaluateNodeError,
-    FunctionCall, HostEndpoint, Node,
+    Context, EvaluateNode, EvaluateNodeError, FunctionCall, HostEndpoint, Node,
+    map_function_parameters,
 };
 
 impl EvaluateNode for FunctionCall {
@@ -73,11 +73,12 @@ mod tests {
     use engine_derive::FromArgumentMapping;
 
     use crate::{
+        Boolean, DecimalFormat, DecimalPlaces,
         core::{
             Function, FunctionSignature, HostApi, HostApiModule, Language,
             NodeType, Number, Power, Stack, Symbol,
         },
-        function_executor_wrapper, Boolean, DecimalFormat, DecimalPlaces,
+        function_executor_wrapper,
     };
 
     use super::*;

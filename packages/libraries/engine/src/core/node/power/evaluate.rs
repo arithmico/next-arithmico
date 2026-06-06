@@ -1,12 +1,9 @@
 use crate::core::{
-    EvaluateNode, Context, EvaluateNodeError, Node, Number, Power,
+    Context, EvaluateNode, EvaluateNodeError, Node, Number, Power,
 };
 
 impl EvaluateNode for Power {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let base = self.base.evaluate(context)?;
         let exponent = self.exponent.evaluate(context)?;
 

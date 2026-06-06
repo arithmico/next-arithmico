@@ -1,15 +1,11 @@
 use trace::TracableMut;
 
 use crate::core::{
-    And, Boolean, EvaluateNode, Context, EvaluateNodeError,
-    GetNodeType, Node,
+    And, Boolean, Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node,
 };
 
 impl EvaluateNode for And {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }

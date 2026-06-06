@@ -1,8 +1,8 @@
 use crate::core::{
-    evaluate_node, parse, Context, HostApi, Node, SerializeUtils, Stack,
+    Context, HostApi, Node, SerializeUtils, Stack, evaluate_node, parse,
 };
-use crate::{api::load_host_api, Documentation};
 use crate::{DecimalFormat, DecimalPlaces};
+use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
 

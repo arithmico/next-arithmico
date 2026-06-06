@@ -1,14 +1,11 @@
 use std::iter::zip;
 
 use crate::core::{
-    Boolean, Equals, EvaluateNode, Context, EvaluateNodeError, Node,
+    Boolean, Context, Equals, EvaluateNode, EvaluateNodeError, Node,
 };
 
 impl EvaluateNode for Equals {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
 

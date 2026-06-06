@@ -1,4 +1,4 @@
-use crate::{core::EvaluateNodeError, ArgumentMapping};
+use crate::{ArgumentMapping, core::EvaluateNodeError};
 
 pub trait FromArgumentMapping {
     type Mapped<'a>;

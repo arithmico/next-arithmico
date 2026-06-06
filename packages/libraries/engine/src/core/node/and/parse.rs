@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::preceded,
 };
 
 use crate::core::{
-    expect_tag, parse_relation, with_parser, And, ParseNode, ParseResult, Sum,
-    TraceUtils,
+    And, ParseNode, ParseResult, Sum, TraceUtils, expect_tag, parse_relation,
+    with_parser,
 };
 
 impl ParseNode for And {

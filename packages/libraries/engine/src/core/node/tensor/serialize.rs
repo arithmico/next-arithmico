@@ -1,8 +1,8 @@
 use std::iter::zip;
 
 use crate::core::{
-    get_argument_separator, Context, Node, Serialize, SerializeNodeError,
-    SerializeUtils, Tensor,
+    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Tensor,
+    get_argument_separator,
 };
 
 impl SerializeUtils for Tensor {

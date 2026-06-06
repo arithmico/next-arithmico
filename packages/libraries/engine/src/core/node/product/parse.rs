@@ -1,11 +1,11 @@
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::preceded,
 };
 
 use crate::core::{
-    expect_tag, with_parser, Division, ParseNode, ParseResult, Product,
-    TraceUtils,
+    Division, ParseNode, ParseResult, Product, TraceUtils, expect_tag,
+    with_parser,
 };
 
 impl ParseNode for Product {

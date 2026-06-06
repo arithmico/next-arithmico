@@ -1,13 +1,9 @@
 use crate::core::{
-    Boolean, EvaluateNode, Context, EvaluateNodeError,
-    LessThanOrEquals, Node,
+    Boolean, Context, EvaluateNode, EvaluateNodeError, LessThanOrEquals, Node,
 };
 
 impl EvaluateNode for LessThanOrEquals {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
 

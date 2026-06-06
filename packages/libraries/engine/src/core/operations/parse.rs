@@ -1,10 +1,10 @@
 use crate::core::{
-    operations::parse::parenthesis_check::check_missing_open_parenthesis,
     Context, DecimalFormat, Definition, Node, ParseNodeError,
+    operations::parse::parenthesis_check::check_missing_open_parenthesis,
 };
 use nom::{
-    combinator::{all_consuming, cut},
     IResult, Parser,
+    combinator::{all_consuming, cut},
 };
 
 mod cache;

@@ -1,16 +1,13 @@
 use std::iter::zip;
 
 use crate::core::{
-    convert_to_outer_index, EvaluateNode, Context,
-    EvaluateNodeError, GetNodeType, Node, Number, Product, Sum, Tensor,
+    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Number,
+    Product, Sum, Tensor, convert_to_outer_index,
 };
 use trace::TracableMut;
 
 impl EvaluateNode for Product {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if self.elements.len() < 2 {
             return Err(EvaluateNodeError::invalid_node(self.node_type()));
         }

@@ -1,13 +1,13 @@
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::delimited, IResult, Parser,
+    IResult, Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::delimited,
 };
 use trace::{IntoTrace, TracableMut};
 
 use crate::core::{
-    expect_tag, with_parser, And, Equals, GreaterThan, GreaterThanOrEquals,
-    LessThan, LessThanOrEquals, Node, ParseNode, ParseNodeError, ParseResult,
-    Sum, TraceUtils,
+    And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
+    Node, ParseNode, ParseNodeError, ParseResult, Sum, TraceUtils, expect_tag,
+    with_parser,
 };
 
 pub fn parse_relation(input: &'_ str) -> ParseResult<'_> {

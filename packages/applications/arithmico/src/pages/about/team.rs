@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use toml::{map::Map, Table, Value};
+use toml::{Table, Value, map::Map};
 use translate::FormattedMessage;
 
 pub struct TeamMember {

@@ -1,4 +1,4 @@
-use super::{with_cache, with_input_len, ParseResult};
+use super::{ParseResult, with_cache, with_input_len};
 
 pub fn with_parser<'a>(
     parser_id: &'static str,

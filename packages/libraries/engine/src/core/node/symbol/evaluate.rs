@@ -20,8 +20,8 @@ impl EvaluateNode for Symbol {
 mod tests {
     use super::*;
     use crate::{
-        core::{HostApi, HostApiModule, Language, Number, Stack},
         DecimalFormat, DecimalPlaces,
+        core::{HostApi, HostApiModule, Language, Number, Stack},
     };
     use std::sync::Arc;
     use trace::TracableMut;

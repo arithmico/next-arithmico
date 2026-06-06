@@ -1,12 +1,7 @@
-use crate::core::{
-    Definition, EvaluateNode, Context, EvaluateNodeError, Node,
-};
+use crate::core::{Context, Definition, EvaluateNode, EvaluateNodeError, Node};
 
 impl EvaluateNode for Definition {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         if !cfg!(feature = "operator_definition") {
             return Err(EvaluateNodeError::unsupported_operation());
         }

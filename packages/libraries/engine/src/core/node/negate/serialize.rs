@@ -43,8 +43,8 @@ impl Serialize for Negate {
 mod tests {
 
     use crate::core::{
-        serialize_node, And, Function, FunctionSignature, NodeType, Or, Sum,
-        Symbol,
+        And, Function, FunctionSignature, NodeType, Or, Sum, Symbol,
+        serialize_node,
     };
 
     use super::*;

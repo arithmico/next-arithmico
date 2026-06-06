@@ -1,13 +1,9 @@
 use crate::core::{
-    Division, EvaluateNode, Context, EvaluateNodeError, Node,
-    Number, Tensor,
+    Context, Division, EvaluateNode, EvaluateNodeError, Node, Number, Tensor,
 };
 
 impl EvaluateNode for Division {
-    fn evaluate(
-        &self,
-        context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
         let dividend = self.dividend.evaluate(context)?;
         let divisor = self.divisor.evaluate(context)?;
 

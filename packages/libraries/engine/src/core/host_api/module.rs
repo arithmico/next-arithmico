@@ -4,7 +4,7 @@ use crate::core::{ConstantExecutor, FunctionExecutor, FunctionSignature};
 
 use translate_core::Language;
 
-use super::{endpoint::HostEndpoint, TranslatedString};
+use super::{TranslatedString, endpoint::HostEndpoint};
 
 pub struct HostApiModule {
     name: TranslatedString,

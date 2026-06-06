@@ -53,7 +53,7 @@ impl Serialize for And {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{serialize_node, Or, Symbol};
+    use crate::core::{Or, Symbol, serialize_node};
 
     use super::*;
 
