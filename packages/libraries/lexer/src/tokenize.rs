@@ -772,4 +772,18 @@ mod tests {
             })
         );
     }
+
+    #[test]
+    fn unexpected_character() {
+        assert_eq!(
+            tokenize(" \n \t? \r", Default::default()),
+            Err(Error::UnexpectedCharacter {
+                character: '?',
+                position: Position {
+                    byte_index: 4,
+                    char_index: 4
+                }
+            })
+        );
+    }
 }
