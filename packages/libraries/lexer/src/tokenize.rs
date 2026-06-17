@@ -162,9 +162,74 @@ pub fn tokenize<'a>(
             }
             // number
             '0'..='9' => {
-                todo!()
+                // catch invalid leading zeros e. g. "01"
+                let head_digits_span =
+                    cursor.match_many_of_and_advance(&['0'..='9']);
+
+                match head_digits_span {
+                    Some(_) if char == '0' => {
+                        return Err(Error::InvalidLeadingZero { position });
+                    }
+                    head_digits_span => {
+                        let head_digits_span = head_digits_span
+                            .unwrap_or(Span::new(position, position));
+
+                        let head_digits =
+                            Span::new(position, head_digits_span.to)
+                                .extract_substr(input);
+                        if let Some(decimal_separator_span) = cursor
+                            .match_and_advance(match language {
+                                Language::German => ",",
+                                Language::English => ".",
+                            })
+                        {
+                            match cursor.match_many_of_and_advance(&['0'..='9'])
+                            {
+                                Some(trailing_digits_span) => {
+                                    let span = Span::new(
+                                        position,
+                                        trailing_digits_span.to,
+                                    );
+                                    let trailing_digits = trailing_digits_span
+                                        .extract_substr(input);
+                                    let value: f64 = format!(
+                                        "{}.{}",
+                                        head_digits, trailing_digits
+                                    )
+                                    .parse()
+                                    .expect("Float");
+
+                                    tokens.push(Token {
+                                        span,
+                                        content: TokenContent::Number(value),
+                                    });
+                                }
+                                None => {
+                                    return Err(Error::MissingDecimalPlaces {
+                                        position: decimal_separator_span.to,
+                                    })
+                                }
+                            }
+                        } else {
+                            let span = Span::new(position, head_digits_span.to);
+                            let value: f64 = head_digits
+                                .parse()
+                                .expect("Multi digit integer");
+
+                            tokens.push(Token {
+                                span,
+                                content: TokenContent::Number(value),
+                            });
+                        }
+                    }
+                }
             }
-            _ => return Err(Error::UnexpectedCharacter(char)),
+            _ => {
+                return Err(Error::UnexpectedCharacter {
+                    character: char,
+                    position,
+                })
+            }
         }
     }
 
@@ -599,6 +664,112 @@ mod tests {
                 ),
                 content: TokenContent::Identifier("xyz")
             }]
+        );
+    }
+
+    #[test]
+    fn number_single_digit_integer() {
+        assert_eq!(
+            tokenize(" \n \t1 \r", Default::default()).unwrap(),
+            vec![Token {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+                content: TokenContent::Number(1.0)
+            }]
+        );
+    }
+
+    #[test]
+    fn number_multi_digit_integer() {
+        assert_eq!(
+            tokenize(" \n \t12 \r", Default::default()).unwrap(),
+            vec![Token {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 5,
+                        char_index: 5
+                    }
+                ),
+                content: TokenContent::Number(12.0)
+            }]
+        );
+    }
+
+    #[test]
+    fn number_float_leading_zero() {
+        assert_eq!(
+            tokenize(" \n \t0.1 \r", Default::default()).unwrap(),
+            vec![Token {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 6,
+                        char_index: 6
+                    }
+                ),
+                content: TokenContent::Number(0.1)
+            }]
+        );
+    }
+
+    #[test]
+    fn number_float_leading_non_zero() {
+        assert_eq!(
+            tokenize(" \n \t1.12 \r", Default::default()).unwrap(),
+            vec![Token {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 7,
+                        char_index: 7
+                    }
+                ),
+                content: TokenContent::Number(1.12)
+            }]
+        );
+    }
+
+    #[test]
+    fn number_invalid_leading_zero() {
+        assert_eq!(
+            tokenize(" \n \t01.1 \r", Default::default()),
+            Err(Error::InvalidLeadingZero {
+                position: Position {
+                    byte_index: 4,
+                    char_index: 4
+                }
+            })
+        );
+    }
+
+    #[test]
+    fn number_missing_decimal_places() {
+        assert_eq!(
+            tokenize(" \n \t1. \r", Default::default()),
+            Err(Error::MissingDecimalPlaces {
+                position: Position {
+                    byte_index: 5,
+                    char_index: 5
+                }
+            })
         );
     }
 }
