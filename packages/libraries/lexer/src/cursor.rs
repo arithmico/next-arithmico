@@ -1,43 +1,111 @@
-use std::{iter::Enumerate, str::Chars};
+use std::{iter::Enumerate, ops::RangeInclusive, str::CharIndices};
 
 use itertools::{peek_nth, PeekNth};
 
+use crate::{Position, Span};
+
 pub struct LexerCursor<'a> {
-    iter: PeekNth<Enumerate<Chars<'a>>>,
+    iter: PeekNth<Enumerate<CharIndices<'a>>>,
 }
 
 impl<'a> Iterator for LexerCursor<'a> {
-    type Item = (usize, char);
+    type Item = (Position, char);
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.iter.next()
+        let (char_index, (byte_index, char)) = self.iter.next()?;
+
+        Some((
+            Position {
+                byte_index,
+                char_index,
+            },
+            char,
+        ))
     }
 }
 
 impl<'a> LexerCursor<'a> {
     pub fn from(input: &'a str) -> Self {
         Self {
-            iter: peek_nth(input.chars().enumerate()),
+            iter: peek_nth(input.char_indices().enumerate()),
         }
     }
 
-    pub fn matches(&mut self, sequence: &str) -> bool {
-        sequence.chars().enumerate().all(|(index, s_char)| {
-            matches!(
-                self.iter.peek_nth(index),
-                Some((_, char)) if s_char == *char
-            )
-        })
+    fn peek_nth(&mut self, index: usize) -> Option<(Position, char)> {
+        let (char_index, (byte_index, char)) =
+            self.iter.peek_nth(index).copied()?;
+        Some((
+            Position {
+                byte_index,
+                char_index,
+            },
+            char,
+        ))
     }
 
-    pub fn match_and_advance(&mut self, sequence: &str) -> bool {
-        if self.matches(sequence) {
+    pub fn matches(&mut self, sequence: &str) -> Option<Span> {
+        let (from, _) = self.peek_nth(0)?;
+        let mut to = from;
+        if sequence.chars().enumerate().all(|(index, s_char)| {
+            match self.peek_nth(index) {
+                Some((pos, char)) => {
+                    to = pos;
+                    char == s_char
+                }
+                None => false,
+            }
+        }) {
+            Some(Span::new(from, to))
+        } else {
+            None
+        }
+    }
+
+    pub fn match_one_of(
+        &mut self,
+        ranges: &[RangeInclusive<char>],
+    ) -> Option<Position> {
+        if let Some((position, front_char)) = self.peek_nth(0) {
+            if ranges.iter().any(|range| range.contains(&front_char)) {
+                return Some(position);
+            }
+        }
+        None
+    }
+
+    pub fn match_one_of_and_advance(
+        &mut self,
+        ranges: &[RangeInclusive<char>],
+    ) -> Option<Position> {
+        let position = self.match_one_of(ranges);
+        if position.is_some() {
+            self.iter.next();
+        }
+        position
+    }
+
+    pub fn match_many_of_and_advance(
+        &mut self,
+        ranges: &[RangeInclusive<char>],
+    ) -> Option<Span> {
+        let from = self.match_one_of_and_advance(ranges)?;
+        let mut to = from;
+
+        while let Some(position) = self.match_one_of_and_advance(ranges) {
+            to = position;
+        }
+
+        Some(Span::new(from, to))
+    }
+
+    pub fn match_and_advance(&mut self, sequence: &str) -> Option<Span> {
+        if let Some(span) = self.matches(sequence) {
             sequence.chars().for_each(|_| {
                 self.next();
             });
-            true
+            Some(span)
         } else {
-            false
+            None
         }
     }
 }
@@ -50,9 +118,36 @@ mod tests {
     fn iterator_next() {
         let mut cursor = LexerCursor::from("abc");
 
-        assert_eq!(cursor.next(), Some((0, 'a')));
-        assert_eq!(cursor.next(), Some((1, 'b')));
-        assert_eq!(cursor.next(), Some((2, 'c')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'a'
+            ))
+        );
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 1,
+                    char_index: 1
+                },
+                'b'
+            ))
+        );
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 2,
+                    char_index: 2
+                },
+                'c'
+            ))
+        );
         assert_eq!(cursor.next(), None);
     }
 
@@ -61,11 +156,29 @@ mod tests {
         let mut cursor = LexerCursor::from("fn main() {}");
 
         // Should match successfully
-        assert!(cursor.matches("fn "));
+        assert!(cursor.matches("fn ").is_some());
 
         // `matches` should NOT advance the iterator
-        assert_eq!(cursor.next(), Some((0, 'f')));
-        assert_eq!(cursor.next(), Some((1, 'n')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'f'
+            ))
+        );
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 1,
+                    char_index: 1
+                },
+                'n'
+            ))
+        );
     }
 
     #[test]
@@ -73,13 +186,22 @@ mod tests {
         let mut cursor = LexerCursor::from("let x = 10;");
 
         // Fails because the sequence doesn't match
-        assert!(!cursor.matches("const"));
+        assert!(!cursor.matches("const").is_some());
 
         // Fails because the requested sequence is longer than the remaining input
-        assert!(!cursor.matches("let x = 10; "));
+        assert!(!cursor.matches("let x = 10; ").is_some());
 
         // Ensure iterator didn't advance on failure
-        assert_eq!(cursor.next(), Some((0, 'l')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'l'
+            ))
+        );
     }
 
     #[test]
@@ -87,11 +209,29 @@ mod tests {
         let mut cursor = LexerCursor::from("return true;");
 
         // Should match and consume "return "
-        assert!(cursor.match_and_advance("return "));
+        assert!(cursor.match_and_advance("return ").is_some());
 
         // The next character should be 't' at index 7
-        assert_eq!(cursor.next(), Some((7, 't')));
-        assert_eq!(cursor.next(), Some((8, 'r')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 7,
+                    char_index: 7
+                },
+                't'
+            ))
+        );
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 8,
+                    char_index: 8
+                },
+                'r'
+            ))
+        );
     }
 
     #[test]
@@ -99,10 +239,19 @@ mod tests {
         let mut cursor = LexerCursor::from("if (x > 5)");
 
         // Fails to match
-        assert!(!cursor.match_and_advance("while"));
+        assert!(!cursor.match_and_advance("while").is_some());
 
         // Iterator should remain entirely untouched
-        assert_eq!(cursor.next(), Some((0, 'i')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'i'
+            ))
+        );
     }
 
     #[test]
@@ -110,9 +259,18 @@ mod tests {
         let mut cursor = LexerCursor::from("function");
 
         // Matches the first 4 characters but fails on the 5th
-        assert!(!cursor.match_and_advance("func_"));
+        assert!(!cursor.match_and_advance("func_").is_some());
 
         // The iterator must NOT be partially advanced
-        assert_eq!(cursor.next(), Some((0, 'f')));
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'f'
+            ))
+        );
     }
 }
