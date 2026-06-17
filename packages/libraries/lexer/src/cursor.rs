@@ -273,4 +273,155 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn match_one_of_success() {
+        let mut cursor = LexerCursor::from("hello");
+        let ranges = ['a'..='z'];
+
+        // Should successfully match the 'h'
+        assert_eq!(
+            cursor.match_one_of(&ranges),
+            Some(Position {
+                byte_index: 0,
+                char_index: 0
+            })
+        );
+
+        // `match_one_of` should NOT advance the iterator
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'h'
+            ))
+        );
+    }
+
+    #[test]
+    fn match_one_of_failure() {
+        let mut cursor = LexerCursor::from("123");
+        let ranges = ['a'..='z'];
+
+        // Fails because '1' is not in the range 'a'..='z'
+        assert_eq!(cursor.match_one_of(&ranges), None);
+
+        // Ensure iterator didn't advance
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                '1'
+            ))
+        );
+    }
+
+    #[test]
+    fn match_one_of_and_advance_success() {
+        let mut cursor = LexerCursor::from("123");
+        let ranges = ['0'..='9'];
+
+        // Should match and consume '1'
+        assert_eq!(
+            cursor.match_one_of_and_advance(&ranges),
+            Some(Position {
+                byte_index: 0,
+                char_index: 0
+            })
+        );
+
+        // The next character should be '2' at index 1
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 1,
+                    char_index: 1
+                },
+                '2'
+            ))
+        );
+    }
+
+    #[test]
+    fn match_one_of_and_advance_failure() {
+        let mut cursor = LexerCursor::from("abc");
+        let ranges = ['0'..='9'];
+
+        // Fails to match
+        assert_eq!(cursor.match_one_of_and_advance(&ranges), None);
+
+        // Iterator should remain entirely untouched
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'a'
+            ))
+        );
+    }
+
+    #[test]
+    fn match_many_of_and_advance_success() {
+        let mut cursor = LexerCursor::from("123abc456");
+        let ranges = ['0'..='9'];
+
+        // Should match and consume "123"
+        let span = cursor.match_many_of_and_advance(&ranges);
+        assert_eq!(
+            span,
+            Some(Span::new(
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                Position {
+                    byte_index: 2,
+                    char_index: 2
+                }
+            ))
+        );
+
+        // The next character should be 'a' at index 3
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 3,
+                    char_index: 3
+                },
+                'a'
+            ))
+        );
+    }
+
+    #[test]
+    fn match_many_of_and_advance_failure() {
+        let mut cursor = LexerCursor::from("abc123");
+        let ranges = ['0'..='9'];
+
+        // Fails because the first character 'a' does not match
+        assert_eq!(cursor.match_many_of_and_advance(&ranges), None);
+
+        // Iterator should remain entirely untouched
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                'a'
+            ))
+        );
+    }
 }
