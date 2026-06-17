@@ -424,4 +424,33 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn match_one_of_multibyte_char() {
+        // '🚀' is a 4-byte character
+        let mut cursor = LexerCursor::from("🚀a");
+
+        // Advance past the multi-byte character
+        assert_eq!(
+            cursor.next(),
+            Some((
+                Position {
+                    byte_index: 0,
+                    char_index: 0
+                },
+                '🚀'
+            ))
+        );
+
+        let ranges = ['a'..='z'];
+
+        // The next character 'a' has a char_index of 1, but a byte_index of 4
+        assert_eq!(
+            cursor.match_one_of(&ranges),
+            Some(Position {
+                byte_index: 4,
+                char_index: 1
+            })
+        );
+    }
 }
