@@ -142,7 +142,7 @@ impl DocumentationItem {
                 item.return_types =
                     signature.get_return_type().iter().cloned().collect();
                 let synopsis_expression = FunctionCall::new(
-                    Symbol::new(name),
+                    Symbol::new(metadata.endpoint_name()),
                     signature
                         .argument_names()
                         .iter()
