@@ -27,7 +27,7 @@ impl EndpointMetadata {
         module_id: String,
         module_name: TranslatedString,
         description: TranslatedString,
-    ) -> EndpointMetadata {
+    ) -> Self {
         EndpointMetadata {
             endpoint_name,
             module_id,
@@ -36,7 +36,7 @@ impl EndpointMetadata {
         }
     }
 
-    pub fn getendpoint_name(&self) -> &str {
+    pub fn endpoint_name(&self) -> &str {
         &self.endpoint_name
     }
 
