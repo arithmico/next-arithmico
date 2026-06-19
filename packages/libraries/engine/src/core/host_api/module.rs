@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::core::{ConstantExecutor, FunctionExecutor, FunctionSignature};
+use crate::core::{
+    ConstantExecutor, EndpointMetadata, FunctionExecutor, FunctionSignature,
+};
 
 use translate_core::Language;
 
@@ -17,12 +19,12 @@ impl PartialEq for HostApiModule {
             && self
                 .endpoints
                 .iter()
-                .map(HostEndpoint::get_endpoint_name)
+                .map(HostEndpoint::endpoint_name)
                 .collect::<HashSet<_>>()
                 == other
                     .endpoints
                     .iter()
-                    .map(HostEndpoint::get_endpoint_name)
+                    .map(HostEndpoint::endpoint_name)
                     .collect::<HashSet<_>>()
     }
 }
@@ -94,7 +96,7 @@ impl HostApiModuleBuilderEndpointsStage {
                 module_name: self.module_name.clone(),
             });
 
-            let name = endpoint.get_endpoint_name();
+            let name = endpoint.endpoint_name();
             self.assert_endpoint_name_is_unique(name);
             self.endpoints.push(endpoint);
         }
@@ -106,7 +108,7 @@ impl HostApiModuleBuilderEndpointsStage {
         if self
             .endpoints
             .iter()
-            .any(|host_endpoint| host_endpoint.get_endpoint_name() == name)
+            .any(|host_endpoint| host_endpoint.endpoint_name() == name)
         {
             panic!("duplicate endpoint name: {}", name);
         }
@@ -191,10 +193,12 @@ impl EndpointBuilderAdditionalDescriptionsStage {
 
     pub fn constant(self, executor: ConstantExecutor) -> HostEndpoint {
         HostEndpoint::Constant {
-            module_id: self.module_id,
-            module_name: self.module_name,
-            endpoint_name: self.endpoint_name,
-            description: self.description,
+            metadata: EndpointMetadata::new(
+                self.endpoint_name,
+                self.module_id,
+                self.module_name,
+                self.description,
+            ),
             executor,
         }
     }
@@ -211,12 +215,14 @@ pub struct FunctionEndpointBuilderArgumentsPhase {
 impl FunctionEndpointBuilderArgumentsPhase {
     pub fn executor(self, executor: FunctionExecutor) -> HostEndpoint {
         HostEndpoint::Function {
-            executor,
+            metadata: EndpointMetadata::new(
+                self.endpoint_name,
+                self.module_id,
+                self.module_name,
+                self.description,
+            ),
             signature: self.signature,
-            description: self.description,
-            module_name: self.module_name,
-            module_id: self.module_id,
-            endpoint_name: self.endpoint_name,
+            executor,
         }
     }
 }
