@@ -128,12 +128,12 @@ impl DocumentationItem {
     pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
         match endpoint {
             HostEndpoint::Function {
+                metadata,
                 signature,
-                description,
                 ..
             } => {
                 let mut item = DocumentationItem::new_function();
-                item.description = description.clone();
+                item.description = metadata.description().clone();
                 item.parameters = signature
                     .arguments()
                     .iter()
@@ -177,9 +177,9 @@ impl DocumentationItem {
                 );
                 item
             }
-            HostEndpoint::Constant { description, .. } => {
+            HostEndpoint::Constant { metadata, .. } => {
                 let mut item = DocumentationItem::new_constant();
-                item.description = description.clone();
+                item.description = metadata.description().clone();
                 let synopsis_expression = Symbol::new(name);
                 item.synopsis.insert(
                     Language::English,
@@ -243,14 +243,14 @@ impl From<&HostApi> for Documentation {
     fn from(api: &HostApi) -> Self {
         let mut modules: HashMap<String, DocumentationModule> = HashMap::new();
         for (name, endpoint) in api.endpoints() {
-            let module_id = endpoint.get_module_id();
+            let module_id = endpoint.module_id();
             let module = match modules.get_mut(module_id) {
                 Some(module) => module,
                 None => {
                     modules.insert(
                         module_id.to_string(),
                         DocumentationModule {
-                            name: endpoint.get_module_name().clone(),
+                            name: endpoint.module_name().clone(),
                             items: vec![],
                         },
                     );
