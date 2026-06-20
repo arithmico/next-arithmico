@@ -1,6 +1,8 @@
-use crate::{Language, TranslationError};
+use language::Language;
+
+use crate::TranslationError;
 
 pub trait Translatable {
     fn translate(&self, language: Language)
-    -> Result<String, TranslationError>;
+        -> Result<String, TranslationError>;
 }

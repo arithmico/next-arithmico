@@ -1,8 +1,8 @@
 use std::{collections::HashMap, rc::Rc};
 
-use crate::{
-    Language, Translatable, TranslationError, TranslationTemplateProvider,
-};
+use language::Language;
+
+use crate::{Translatable, TranslationError, TranslationTemplateProvider};
 
 #[derive(Debug, Clone)]
 pub struct TranslatedMessage {

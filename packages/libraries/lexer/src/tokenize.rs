@@ -1,17 +1,6 @@
+use language::Language;
+
 use crate::{cursor::LexerCursor, Error, Span, Token, TokenContent};
-
-// TODO: define language once for the whole workspace
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Language {
-    German,
-    English,
-}
-
-impl Default for Language {
-    fn default() -> Self {
-        Self::English
-    }
-}
 
 pub fn tokenize<'a>(
     input: &'a str,

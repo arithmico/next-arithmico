@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
+use language::Language;
 use toml::{Table, Value};
 
-use crate::{Language, TranslationTemplate};
+use crate::TranslationTemplate;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TranslationTemplateProvider {

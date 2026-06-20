@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{Language, Translatable, TranslationError, TranslationTemplate};
+use language::Language;
+
+use crate::{Translatable, TranslationError, TranslationTemplate};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct StandaloneTranslatedMessage {
