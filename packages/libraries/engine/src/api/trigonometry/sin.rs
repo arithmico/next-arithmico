@@ -4,8 +4,12 @@ use engine_derive::FromArgumentMapping;
 use node::{FunctionSignature, Node, NodeType, Number};
 
 use crate::{
-    core::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language},
-    function_executor_wrapper, Context,
+    api::global_utils::F64Extension,
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType, Number,
+    },
+    function_executor_wrapper, Context, Node,
 };
 
 #[derive(FromArgumentMapping)]
@@ -19,7 +23,7 @@ fn sin_executor(
 ) -> Result<Node, EvaluateNodeError> {
     let value = x.value;
 
-    if value.rem_euclid(PI).abs() < value * f64::EPSILON {
+    if value.is_close_to_multiple_of(PI) {
         return Ok(Number::new(0.0));
     }
 
