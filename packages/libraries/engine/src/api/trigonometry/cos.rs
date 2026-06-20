@@ -4,8 +4,12 @@ use engine_derive::FromArgumentMapping;
 use node::{FunctionSignature, Node, NodeType, Number};
 
 use crate::{
-    core::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language},
-    function_executor_wrapper, Context,
+    api::global_utils::F64Extension,
+    core::{
+        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
+        Language, NodeType,
+    },
+    function_executor_wrapper, Context, Node, Number,
 };
 
 #[derive(FromArgumentMapping)]
@@ -19,11 +23,12 @@ fn cos_executor(
 ) -> Result<Node, EvaluateNodeError> {
     let value = x.value;
 
-    let modulus_pi = value.rem_euclid(PI).abs();
-    if modulus_pi < value * f64::EPSILON {
+    if value.is_close_to_multiple_of(2.0 * PI) {
         return Ok(Number::new(1.));
-    } else if modulus_pi.rem_euclid(PI / 2.).abs() < value * f64::EPSILON {
+    } else if value.is_close_to_shifted_multiple_of(PI, PI / 2.0) {
         return Ok(Number::new(0.));
+    } else if value.is_close_to_shifted_multiple_of(2.0 * PI, PI) {
+        return Ok(Number::new(-1.));
     }
 
     Ok(Number::new(value.cos()))
