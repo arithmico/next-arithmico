@@ -140,7 +140,7 @@ fn list_commits(
         if commit_id == version_tag.oid {
             break;
         }
-        if let Some(commit_message) = commit.message() {
+        if let Ok(commit_message) = commit.message() {
             commit_messages.push(commit_message.to_string());
         }
     }
