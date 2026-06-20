@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use node::{FunctionSignature, Node};
+use node::{FunctionSignature, Node, NodeType};
+
 use translate_core::Language;
 
 use crate::{core::EvaluateNodeError, ArgumentMapping, Context};
@@ -61,6 +62,7 @@ pub enum HostEndpoint {
     },
     Constant {
         metadata: EndpointMetadata,
+        node_type: NodeType,
         executor: ConstantExecutor,
     },
 }

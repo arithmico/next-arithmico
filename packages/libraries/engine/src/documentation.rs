@@ -122,7 +122,7 @@ impl DocumentationItem {
         &self.return_types
     }
 
-    pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
+    pub fn from_endpoint(endpoint: &HostEndpoint) -> Self {
         match endpoint {
             HostEndpoint::Function {
                 metadata,
@@ -174,10 +174,15 @@ impl DocumentationItem {
                 );
                 item
             }
-            HostEndpoint::Constant { metadata, .. } => {
+            HostEndpoint::Constant {
+                metadata,
+                node_type,
+                ..
+            } => {
                 let mut item = DocumentationItem::new_constant();
                 item.description = metadata.description().clone();
-                let synopsis_expression = Symbol::new(name);
+                item.return_types = vec![node_type.clone()];
+                let synopsis_expression = Symbol::new(metadata.endpoint_name());
                 item.synopsis.insert(
                     Language::English,
                     serialize_node(
@@ -204,6 +209,7 @@ impl DocumentationItem {
                     )
                     .expect("serialized"),
                 );
+
                 item
             }
         }
@@ -239,7 +245,7 @@ impl Documentation {
 impl From<&HostApi> for Documentation {
     fn from(api: &HostApi) -> Self {
         let mut modules: HashMap<String, DocumentationModule> = HashMap::new();
-        for (name, endpoint) in api.endpoints() {
+        for endpoint in api.endpoints().values() {
             let module_id = endpoint.module_id();
             let module = match modules.get_mut(module_id) {
                 Some(module) => module,
@@ -255,7 +261,7 @@ impl From<&HostApi> for Documentation {
                 }
             };
 
-            let item = DocumentationItem::from_endpoint(name, endpoint);
+            let item = DocumentationItem::from_endpoint(endpoint);
             module.items.push(item);
         }
 

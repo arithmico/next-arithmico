@@ -1,10 +1,12 @@
 mod endpoint;
 mod module;
+mod endpoint_builder;
 
 use std::collections::HashMap;
 
 pub use endpoint::*;
 pub use module::*;
+pub use endpoint_builder::*;
 
 #[derive(Debug)]
 pub struct HostApi {

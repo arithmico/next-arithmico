@@ -1,9 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use node::FunctionSignature;
 use translate_core::Language;
 
-use crate::core::{ConstantExecutor, EndpointMetadata, FunctionExecutor};
+use crate::core::EndpointBuilder;
 
 use super::{endpoint::HostEndpoint, TranslatedString};
 
@@ -90,10 +89,10 @@ impl HostApiModuleBuilderEndpointsStage {
         endpoint_list: &[fn(builder: EndpointBuilder) -> HostEndpoint],
     ) -> HostApiModuleBuilderEndpointsStage {
         for loader in endpoint_list {
-            let endpoint = loader(EndpointBuilder {
-                module_id: self.module_id.clone(),
-                module_name: self.module_name.clone(),
-            });
+            let endpoint = loader(EndpointBuilder::new(
+                self.module_id.clone(),
+                self.module_name.clone(),
+            ));
 
             let name = endpoint.endpoint_name();
             self.assert_endpoint_name_is_unique(name);
@@ -117,111 +116,6 @@ impl HostApiModuleBuilderEndpointsStage {
         HostApiModule {
             module_name: self.module_name,
             endpoints: self.endpoints,
-        }
-    }
-}
-
-pub struct EndpointBuilder {
-    module_id: String,
-    module_name: TranslatedString,
-}
-
-impl EndpointBuilder {
-    pub fn name(self, name: &str) -> EndpointBuilderNameStage {
-        EndpointBuilderNameStage {
-            module_id: self.module_id,
-            module_name: self.module_name,
-            endpoint_name: name.to_string(),
-            description: HashMap::new(),
-        }
-    }
-}
-
-pub struct EndpointBuilderNameStage {
-    module_id: String,
-    module_name: TranslatedString,
-    endpoint_name: String,
-    description: TranslatedString,
-}
-
-impl EndpointBuilderNameStage {
-    pub fn description(
-        mut self,
-        language: Language,
-        description: &str,
-    ) -> EndpointBuilderAdditionalDescriptionsStage {
-        self.description.insert(language, String::from(description));
-        EndpointBuilderAdditionalDescriptionsStage {
-            module_id: self.module_id,
-            module_name: self.module_name,
-            endpoint_name: self.endpoint_name,
-            description: self.description,
-        }
-    }
-}
-
-pub struct EndpointBuilderAdditionalDescriptionsStage {
-    module_id: String,
-    module_name: TranslatedString,
-    endpoint_name: String,
-    description: TranslatedString,
-}
-
-impl EndpointBuilderAdditionalDescriptionsStage {
-    pub fn description(
-        mut self,
-        language: Language,
-        description: &str,
-    ) -> Self {
-        self.description.insert(language, String::from(description));
-        self
-    }
-
-    pub fn function(
-        self,
-        signature: FunctionSignature,
-    ) -> FunctionEndpointBuilderArgumentsPhase {
-        FunctionEndpointBuilderArgumentsPhase {
-            module_id: self.module_id,
-            module_name: self.module_name,
-            endpoint_name: self.endpoint_name,
-            description: self.description,
-            signature,
-        }
-    }
-
-    pub fn constant(self, executor: ConstantExecutor) -> HostEndpoint {
-        HostEndpoint::Constant {
-            metadata: EndpointMetadata::new(
-                self.endpoint_name,
-                self.module_id,
-                self.module_name,
-                self.description,
-            ),
-            executor,
-        }
-    }
-}
-
-pub struct FunctionEndpointBuilderArgumentsPhase {
-    module_id: String,
-    module_name: TranslatedString,
-    endpoint_name: String,
-    description: TranslatedString,
-    signature: FunctionSignature,
-}
-
-impl FunctionEndpointBuilderArgumentsPhase {
-    pub fn executor(self, executor: FunctionExecutor) -> HostEndpoint {
-        HostEndpoint::Function {
-            metadata: EndpointMetadata::new(
-                self.endpoint_name,
-                self.module_id,
-                self.module_name,
-                self.description,
-            ),
-            signature: self.signature,
-            executor,
         }
     }
 }

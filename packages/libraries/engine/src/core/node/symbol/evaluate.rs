@@ -19,14 +19,13 @@ impl EvaluateNode for Symbol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use node::Number;
+    use node::{NodeType, Number};
+    use crate::{
+        DecimalFormat, DecimalPlaces,
+        core::{HostApi, HostApiModule, Language, Stack},
+    };
     use std::sync::Arc;
     use trace::TracableMut;
-
-    use crate::{
-        core::{HostApi, HostApiModule, Language, Stack},
-        DecimalFormat, DecimalPlaces,
-    };
 
     #[test]
     fn evaluate_unknown_symbol() {
@@ -75,6 +74,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
+                            .node_type(NodeType::Number)
                             .constant(|_context| Number::new(42.0).into())
                     }])
                     .build()
@@ -103,6 +103,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
+                            .node_type(NodeType::Number)
                             .constant(|_context| Number::new(42.0).into())
                     }])
                     .build()

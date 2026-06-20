@@ -98,6 +98,17 @@ pub fn ReferenceItem(
                                 .cloned()
                                 .unwrap_or_default()}
                         </p>
+                        <h4>
+                            <FormattedMessage id="reference.item.return_value" />
+                        </h4>
+                        <p>
+                            {item
+                                .get_return_types()
+                                .iter()
+                                .map(|node| node.to_string())
+                                .collect::<Vec<String>>()
+                                .join(", ")}
+                        </p>
                     }
                         .into_any()
                 }
