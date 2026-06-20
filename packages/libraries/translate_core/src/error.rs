@@ -1,6 +1,5 @@
+use language::Language;
 use thiserror::Error;
-
-use crate::Language;
 
 #[derive(Clone, Debug, Error)]
 pub enum TranslationError {

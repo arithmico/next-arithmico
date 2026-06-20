@@ -1264,6 +1264,7 @@ name = "lexer"
 version = "0.1.0"
 dependencies = [
  "itertools",
+ "language",
  "thiserror 2.0.18",
 ]
 
@@ -2091,6 +2092,7 @@ dependencies = [
 name = "translate_core"
 version = "0.1.0"
 dependencies = [
+ "language",
  "nom",
  "serde",
  "thiserror 2.0.18",

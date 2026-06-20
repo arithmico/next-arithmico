@@ -8,6 +8,12 @@ pub enum Language {
     English,
 }
 
+impl Default for Language {
+    fn default() -> Self {
+        Self::English
+    }
+}
+
 impl FromStr for Language {
     type Err = &'static str;
 
