@@ -2,7 +2,7 @@ use std::iter::zip;
 
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
@@ -179,7 +179,7 @@ pub fn dimension_offsets(shape: &Vec<usize>) -> Vec<usize> {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::Number;
+    use crate::Number;
 
     use super::*;
 

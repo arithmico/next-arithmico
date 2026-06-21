@@ -11,6 +11,7 @@ translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 nom = { workspace = true }
 engine_derive = { path = "../engine_derive" }
+node = { version = "0.1.0", path = "../node" }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]

@@ -1,4 +1,6 @@
-use crate::core::{Context, Definition, EvaluateNode, EvaluateNodeError, Node};
+use node::{Definition, Node};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Definition {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -13,7 +15,7 @@ impl EvaluateNode for Definition {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{Number, Sum};
+    use node::{Number, Sum};
 
     use super::*;
 

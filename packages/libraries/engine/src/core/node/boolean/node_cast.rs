@@ -1,7 +1,6 @@
-use crate::{
-    Boolean, Node,
-    core::{EvaluateNodeError, NodeCast},
-};
+use node::{Boolean, Node};
+
+use crate::core::{EvaluateNodeError, NodeCast};
 
 impl NodeCast for Boolean {
     fn downcast(node: &Node) -> Result<&Self, EvaluateNodeError> {

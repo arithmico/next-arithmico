@@ -1,10 +1,11 @@
+use node::{FunctionCall, Node, Tensor};
 use nom::{
     Parser, branch::alt, character::complete::space0, combinator::cut,
     error::context, multi::separated_list0, sequence::delimited,
 };
 
 use crate::core::{
-    FunctionCall, Node, ParseNode, ParseResult, Tensor, TraceUtils, expect_tag,
+    ParseNode, ParseResult, TraceUtils, expect_tag,
     with_parser,
 };
 
@@ -49,12 +50,12 @@ fn parse_tensor(input: &'_ str) -> ParseResult<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::Number;
-    use crate::core::ParseNodeError;
-    use crate::core::parse;
+    use node::Number;
     use std::assert_matches;
     use trace::TracableMut;
     use trace::Trace;
+
+    use crate::core::{ParseNodeError, parse};
 
     #[test]
     fn parse_empty_tensor() {

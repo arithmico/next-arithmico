@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Number,
-};
+use node::{GetNodeType, Node, Number};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Number {
     fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {

@@ -1,12 +1,11 @@
+use node::{Negate, Product};
 use nom::{
-    Parser, character::complete::space0, error::context, sequence::preceded,
+    character::complete::space0, error::context, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    ParseNode, ParseResult, Product, TraceUtils, expect_tag, with_parser,
+    expect_tag, with_parser, ParseNode, ParseResult, TraceUtils,
 };
-
-use super::Negate;
 
 impl ParseNode for Negate {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -31,7 +30,7 @@ fn parse_negate(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use trace::TracableMut;
 
-    use crate::core::Number;
+    use node::Number;
 
     use super::*;
 

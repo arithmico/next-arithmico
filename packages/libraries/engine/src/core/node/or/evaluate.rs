@@ -1,8 +1,7 @@
+use node::{Boolean, GetNodeType, Node, Or};
 use trace::TracableMut;
 
-use crate::core::{
-    Boolean, Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Or,
-};
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Or {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -45,7 +44,7 @@ fn combine_or_elements(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::NodeType;
+    use node::NodeType;
 
     use super::*;
 

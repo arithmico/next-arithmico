@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::core::{HostFunction, Node};
+use node::{HostFunction, Node};
 
 mod decimal_format;
 mod decimal_places;

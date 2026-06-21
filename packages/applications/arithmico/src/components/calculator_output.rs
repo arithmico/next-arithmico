@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 
-use engine::{Context, Node, NodeConverter, Serialize, SessionError};
+use engine::{Context, NodeConverter, Serialize, SessionError};
+use node::Node;
 
 use crate::components::CalculatorErrorOutput;
 

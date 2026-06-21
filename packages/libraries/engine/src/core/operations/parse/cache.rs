@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::HashMap};
 
-use crate::core::Node;
+use node::Node;
 
 use super::{ParseNodeError, ParseResult};
 

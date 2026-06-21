@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
-use crate::{
-    ArgumentMapping, Context, Node,
-    core::{EvaluateNodeError, FunctionSignature},
-};
+use node::{FunctionSignature, Node};
 use translate_core::Language;
+
+use crate::{core::EvaluateNodeError, ArgumentMapping, Context};
 
 pub type FunctionExecutor =
     fn(&ArgumentMapping, &Context) -> Result<Node, EvaluateNodeError>;

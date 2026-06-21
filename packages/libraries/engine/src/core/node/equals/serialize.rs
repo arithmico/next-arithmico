@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Equals, Node, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Equals, Node};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Equals {
     fn normalize_node(
@@ -46,11 +46,12 @@ impl Serialize for Equals {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::core::{
+    use node::{
         And, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, Or,
-        Symbol, serialize_node,
+        Symbol,
     };
+
+    use crate::core::serialize_node;
 
     use super::*;
 

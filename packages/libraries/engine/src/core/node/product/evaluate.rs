@@ -1,9 +1,10 @@
 use std::iter::zip;
 
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Number,
-    Product, Sum, Tensor, convert_to_outer_index,
+use node::{
+    convert_to_outer_index, GetNodeType, Node, Number, Product, Sum, Tensor,
 };
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 use trace::TracableMut;
 
 impl EvaluateNode for Product {
@@ -172,7 +173,7 @@ fn multiply_matrices(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{NodeType, Tensor};
+    use node::{NodeType, Tensor};
 
     use super::*;
 

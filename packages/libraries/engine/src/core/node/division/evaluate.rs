@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Division, EvaluateNode, EvaluateNodeError, Node, Number, Tensor,
-};
+use node::{Division, Node, Number, Tensor};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Division {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {

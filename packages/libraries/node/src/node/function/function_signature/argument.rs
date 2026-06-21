@@ -1,6 +1,6 @@
 use translate_core::{Language, TranslationTemplate};
 
-use crate::core::{Node, NodeType};
+use crate::{Node, NodeType};
 
 use super::argument_options::{ArgumentOptions, Cardinality, Preprocess};
 

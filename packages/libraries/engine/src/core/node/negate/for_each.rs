@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Negate, Node};
 
-use super::Negate;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Negate {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

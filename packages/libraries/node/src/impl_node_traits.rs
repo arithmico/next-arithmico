@@ -1,9 +1,9 @@
 #[macro_export]
 macro_rules! impl_node_traits {
     ($node:ident) => {
-        impl crate::core::GetNodeType for $node {
-            fn node_type(&self) -> crate::core::NodeType {
-                crate::core::NodeType::$node
+        impl crate::GetNodeType for $node {
+            fn node_type(&self) -> crate::NodeType {
+                crate::NodeType::$node
             }
         }
 

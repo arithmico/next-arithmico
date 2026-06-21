@@ -1,16 +1,17 @@
+use node::{Definition, Function, FunctionSignature, Node, NodeType};
 use nom::{
-    Parser,
     branch::alt,
     character::complete::space0,
     combinator::cut,
     error::context,
     multi::separated_list0,
     sequence::{delimited, terminated},
+    Parser,
 };
 
 use crate::core::{
-    Definition, Function, FunctionSignature, Node, NodeType, ParseNode,
-    ParseResult, TraceUtils, expect_tag, parse_raw_symbol, with_parser,
+    expect_tag, parse_raw_symbol, with_parser, ParseNode, ParseResult,
+    TraceUtils,
 };
 
 impl ParseNode for Definition {
@@ -84,7 +85,7 @@ fn parse_define_function(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use trace::TracableMut;
 
-    use crate::core::{Number, Power, Symbol};
+    use node::{Number, Power, Symbol};
 
     use super::*;
 

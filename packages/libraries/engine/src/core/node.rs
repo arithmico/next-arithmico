@@ -23,7 +23,6 @@ mod evaluate;
 mod for_each;
 mod parse;
 mod serialize;
-mod trace;
 
 pub use and::*;
 pub use boolean::*;
@@ -45,27 +44,3 @@ pub use product::*;
 pub use sum::*;
 pub use symbol::*;
 pub use tensor::*;
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum Node {
-    Boolean(Boolean),
-    Sum(Sum),
-    Negate(Negate),
-    Product(Product),
-    Division(Division),
-    Power(Power),
-    Tensor(Tensor),
-    Number(Number),
-    Symbol(Symbol),
-    Function(Function),
-    FunctionCall(FunctionCall),
-    And(And),
-    Or(Or),
-    Equals(Equals),
-    LessThan(LessThan),
-    LessThanOrEquals(LessThanOrEquals),
-    GreaterThan(GreaterThan),
-    GreaterThanOrEquals(GreaterThanOrEquals),
-    HostFunction(HostFunction),
-    Definition(Definition),
-}

@@ -1,12 +1,11 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::core::{
-    ConstantExecutor, EndpointMetadata, FunctionExecutor, FunctionSignature,
-};
-
+use node::FunctionSignature;
 use translate_core::Language;
 
-use super::{TranslatedString, endpoint::HostEndpoint};
+use crate::core::{ConstantExecutor, EndpointMetadata, FunctionExecutor};
+
+use super::{endpoint::HostEndpoint, TranslatedString};
 
 pub struct HostApiModule {
     module_name: TranslatedString,

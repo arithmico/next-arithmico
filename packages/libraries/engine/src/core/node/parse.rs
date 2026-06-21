@@ -1,8 +1,7 @@
-use nom::{Parser, branch::alt};
+use node::{Function, Node};
+use nom::{branch::alt, Parser};
 
-use crate::core::{
-    Function, Node, ParseNode, ParseResult, parse_sub_expression,
-};
+use crate::core::{parse_sub_expression, ParseNode, ParseResult};
 
 impl ParseNode for Node {
     fn parse(input: &'_ str) -> ParseResult<'_> {

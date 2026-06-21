@@ -100,6 +100,7 @@ dependencies = [
  "js-sys",
  "leptos",
  "leptos_router",
+ "node",
  "serde",
  "serde_json",
  "toml",
@@ -533,6 +534,7 @@ name = "engine"
 version = "0.1.0"
 dependencies = [
  "engine_derive",
+ "node",
  "nom",
  "serde",
  "thiserror 2.0.18",
@@ -1341,6 +1343,14 @@ name = "next_tuple"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "60993920e071b0c9b66f14e2b32740a4e27ffc82854dcd72035887f336a09a28"
+
+[[package]]
+name = "node"
+version = "0.1.0"
+dependencies = [
+ "trace",
+ "translate_core",
+]
 
 [[package]]
 name = "nom"

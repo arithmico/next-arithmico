@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Tensor,
-};
+use node::{GetNodeType, Node, Tensor};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Tensor {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -23,7 +23,7 @@ impl EvaluateNode for Tensor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::{Number, Sum};
+    use node::{Number, Sum};
     use trace::TracableMut;
 
     #[test]
@@ -65,13 +65,11 @@ mod tests {
     #[test]
     fn evaluate_tensor_with_sum_with_trace() {
         let context = Context::default();
-        let result = Tensor::new(vec![
-            Sum::new(vec![
-                Number::new(1.).with_span(1, 1),
-                Number::new(2.).with_span(3, 3),
-            ])
-            .with_span(1, 3),
+        let result = Tensor::new(vec![Sum::new(vec![
+            Number::new(1.).with_span(1, 1),
+            Number::new(2.).with_span(3, 3),
         ])
+        .with_span(1, 3)])
         .with_span(0, 4)
         .evaluate(&context)
         .unwrap();

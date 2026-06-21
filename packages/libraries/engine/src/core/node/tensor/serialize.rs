@@ -1,8 +1,10 @@
 use std::iter::zip;
 
+use node::{Node, Tensor};
+
 use crate::core::{
-    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Tensor,
-    get_argument_separator,
+    get_argument_separator, Context, Serialize, SerializeNodeError,
+    SerializeUtils,
 };
 
 impl SerializeUtils for Tensor {
@@ -88,8 +90,7 @@ impl Serialize for Tensor {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::core::{Number, Symbol};
+    use node::{Number, Symbol};
 
     use crate::core::serialize_node;
 

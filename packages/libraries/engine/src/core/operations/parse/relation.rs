@@ -1,13 +1,15 @@
+use node::{
+    And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
+    Node, Sum,
+};
 use nom::{
-    IResult, Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::delimited,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::delimited, IResult, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
 use crate::core::{
-    And, Equals, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals,
-    Node, ParseNode, ParseNodeError, ParseResult, Sum, TraceUtils, expect_tag,
-    with_parser,
+    expect_tag, with_parser, ParseNode, ParseNodeError, ParseResult, TraceUtils,
 };
 
 pub fn parse_relation(input: &'_ str) -> ParseResult<'_> {
@@ -83,7 +85,7 @@ fn parse_relation_element(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::Symbol;
+    use node::Symbol;
 
     use super::*;
 

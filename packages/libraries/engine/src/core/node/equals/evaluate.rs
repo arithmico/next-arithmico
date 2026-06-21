@@ -1,8 +1,8 @@
 use std::iter::zip;
 
-use crate::core::{
-    Boolean, Context, Equals, EvaluateNode, EvaluateNodeError, Node,
-};
+use node::{Boolean, Equals, Node};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Equals {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -60,7 +60,7 @@ impl EvaluateNode for Equals {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{Number, Tensor};
+    use node::{Number, Tensor};
 
     use super::*;
 

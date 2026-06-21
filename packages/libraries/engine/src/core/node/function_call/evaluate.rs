@@ -1,6 +1,8 @@
+use node::{FunctionCall, Node};
+
 use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, FunctionCall, HostEndpoint, Node,
-    map_function_parameters,
+    map_function_parameters, Context, EvaluateNode, EvaluateNodeError,
+    HostEndpoint,
 };
 
 impl EvaluateNode for FunctionCall {
@@ -71,14 +73,13 @@ mod tests {
     use std::sync::Arc;
 
     use engine_derive::FromArgumentMapping;
+    use node::{
+        Boolean, Function, FunctionSignature, NodeType, Number, Power, Symbol,
+    };
 
     use crate::{
-        Boolean, DecimalFormat, DecimalPlaces,
-        core::{
-            Function, FunctionSignature, HostApi, HostApiModule, Language,
-            NodeType, Number, Power, Stack, Symbol,
-        },
-        function_executor_wrapper,
+        core::{HostApi, HostApiModule, Language, Stack},
+        function_executor_wrapper, DecimalFormat, DecimalPlaces,
     };
 
     use super::*;

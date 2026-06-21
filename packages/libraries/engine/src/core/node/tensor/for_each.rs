@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Node, Tensor};
 
-use super::Tensor;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Tensor {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

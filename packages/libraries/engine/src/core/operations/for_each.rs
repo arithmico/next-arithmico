@@ -1,4 +1,4 @@
-use crate::core::Node;
+use node::Node;
 
 pub trait ForEachChild {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F);

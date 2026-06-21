@@ -1,20 +1,20 @@
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct Product {
+pub struct Sum {
     pub elements: Vec<Node>,
     pub trace: Trace,
 }
 
-impl Product {
+impl Sum {
     pub fn new(elements: Vec<Node>) -> Node {
-        Node::Product(Self {
+        Node::Sum(Self {
             elements,
             trace: Trace::new(),
         })
     }
 }
 
-impl_node_traits!(Product);
+impl_node_traits!(Sum);

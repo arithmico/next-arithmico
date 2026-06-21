@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Symbol,
-};
+use node::{GetNodeType, Node, Symbol};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Symbol {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -19,12 +19,14 @@ impl EvaluateNode for Symbol {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        DecimalFormat, DecimalPlaces,
-        core::{HostApi, HostApiModule, Language, Number, Stack},
-    };
+    use node::Number;
     use std::sync::Arc;
     use trace::TracableMut;
+
+    use crate::{
+        core::{HostApi, HostApiModule, Language, Stack},
+        DecimalFormat, DecimalPlaces,
+    };
 
     #[test]
     fn evaluate_unknown_symbol() {

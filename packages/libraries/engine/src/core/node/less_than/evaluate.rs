@@ -1,6 +1,6 @@
-use crate::core::{
-    Boolean, Context, EvaluateNode, EvaluateNodeError, LessThan, Node,
-};
+use node::{Boolean, LessThan, Node};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for LessThan {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -18,7 +18,7 @@ impl EvaluateNode for LessThan {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::Number;
+    use node::Number;
 
     use super::*;
 

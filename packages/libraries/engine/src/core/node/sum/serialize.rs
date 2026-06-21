@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Sum,
-};
+use node::{Node, Sum};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Sum {
     fn normalize_node(
@@ -79,8 +79,7 @@ impl Serialize for Sum {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::core::{Negate, Sum, Symbol};
+    use node::{Negate, Sum, Symbol};
 
     use crate::core::serialize_node;
 

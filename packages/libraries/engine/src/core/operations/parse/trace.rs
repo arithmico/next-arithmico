@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use trace::{Span, TracableMut};
 
-use crate::core::Node;
+use node::Node;
 
 use super::ParseResult;
 

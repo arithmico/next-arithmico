@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Division, Node, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Division, Node};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Division {
     fn normalize_node(
@@ -47,10 +47,11 @@ impl Serialize for Division {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{
+    use node::{
         And, Function, FunctionSignature, NodeType, Or, Product, Sum, Symbol,
-        serialize_node,
     };
+
+    use crate::core::serialize_node;
 
     use super::*;
 

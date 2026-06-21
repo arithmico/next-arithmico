@@ -1,6 +1,6 @@
-use crate::core::{
-    Boolean, Context, Node, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Boolean, Node};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Boolean {
     fn normalize_node(

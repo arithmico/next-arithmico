@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{GreaterThan, Node};
 
-use super::GreaterThan;
+use crate::core::ForEachChild;
 
 impl ForEachChild for GreaterThan {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

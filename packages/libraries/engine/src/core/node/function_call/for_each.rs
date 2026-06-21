@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{FunctionCall, Node};
 
-use super::FunctionCall;
+use crate::core::ForEachChild;
 
 impl ForEachChild for FunctionCall {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

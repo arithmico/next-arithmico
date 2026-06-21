@@ -1,8 +1,7 @@
+use node::{And, Boolean, GetNodeType, Node};
 use trace::TracableMut;
 
-use crate::core::{
-    And, Boolean, Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node,
-};
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for And {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -39,7 +38,7 @@ fn combine_and_elements(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::NodeType;
+    use node::NodeType;
 
     use super::*;
 

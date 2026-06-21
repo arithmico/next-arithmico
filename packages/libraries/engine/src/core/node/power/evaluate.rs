@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, Node, Number, Power,
-};
+use node::{Node, Number, Power};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Power {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {

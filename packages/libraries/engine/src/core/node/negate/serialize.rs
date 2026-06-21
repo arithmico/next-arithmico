@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Negate, Node, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Negate, Node};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Negate {
     fn normalize_node(
@@ -41,11 +41,9 @@ impl Serialize for Negate {
 
 #[cfg(test)]
 mod tests {
+    use node::{And, Function, FunctionSignature, NodeType, Or, Sum, Symbol};
 
-    use crate::core::{
-        And, Function, FunctionSignature, NodeType, Or, Sum, Symbol,
-        serialize_node,
-    };
+    use crate::core::serialize_node;
 
     use super::*;
 
