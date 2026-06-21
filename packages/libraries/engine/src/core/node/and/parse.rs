@@ -1,11 +1,11 @@
+use node::{And, Sum};
 use nom::{
-    Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    And, ParseNode, ParseResult, Sum, TraceUtils, expect_tag, parse_relation,
-    with_parser,
+    expect_tag, parse_relation, with_parser, ParseNode, ParseResult, TraceUtils,
 };
 
 impl ParseNode for And {
@@ -39,7 +39,7 @@ fn parse_and_item(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use trace::TracableMut;
 
-    use crate::core::{Boolean, Symbol};
+    use node::{Boolean, Symbol};
 
     use super::*;
 

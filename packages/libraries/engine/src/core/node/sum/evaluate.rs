@@ -1,9 +1,7 @@
+use node::{GetNodeType, Node, Number, Sum, Tensor};
 use std::iter::zip;
 
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, GetNodeType, Node, Number, Sum,
-    Tensor,
-};
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 use trace::TracableMut;
 
 impl EvaluateNode for Sum {
@@ -81,7 +79,7 @@ fn add_sum_elements(
 
 #[cfg(test)]
 mod tests {
-    use crate::core::NodeType;
+    use node::NodeType;
 
     use super::*;
 

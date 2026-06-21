@@ -1,6 +1,7 @@
+use node::Node;
 use trace::TracableMut;
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError, Node};
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Node {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {

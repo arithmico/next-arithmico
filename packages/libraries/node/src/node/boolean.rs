@@ -1,6 +1,6 @@
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Boolean {

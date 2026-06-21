@@ -1,4 +1,4 @@
-use crate::Node;
+use node::Node;
 
 use super::error::SessionError;
 

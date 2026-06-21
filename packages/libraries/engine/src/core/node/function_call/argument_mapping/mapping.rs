@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-use crate::core::{EvaluateNodeError, Node, NodeCast};
+use node::Node;
+
+use crate::core::{EvaluateNodeError, NodeCast};
 
 use super::entry::ArgumentMappingEntry;
 

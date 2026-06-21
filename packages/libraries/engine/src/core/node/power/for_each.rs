@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Node, Power};
 
-use super::Power;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Power {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

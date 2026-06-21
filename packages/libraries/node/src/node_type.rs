@@ -1,4 +1,4 @@
-use crate::core::Node;
+use crate::Node;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum NodeType {
@@ -25,32 +25,30 @@ pub enum NodeType {
     Definition,
 }
 
-impl ToString for NodeType {
-    fn to_string(&self) -> String {
+impl std::fmt::Display for NodeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            NodeType::Any => String::from("Any"),
-            NodeType::Boolean => String::from("Boolean"),
-            NodeType::Sum => String::from("Sum"),
-            NodeType::Negate => String::from("Negate"),
-            NodeType::Product => String::from("Product"),
-            NodeType::Division => String::from("Division"),
-            NodeType::Power => String::from("Power"),
-            NodeType::Tensor => String::from("Tensor"),
-            NodeType::Number => String::from("Number"),
-            NodeType::Symbol => String::from("Symbol"),
-            NodeType::Function => String::from("Function"),
-            NodeType::FunctionCall => String::from("FunctionCall"),
-            NodeType::And => String::from("And"),
-            NodeType::Or => String::from("Or"),
-            NodeType::Equals => String::from("Equals"),
-            NodeType::LessThan => String::from("LessThan"),
-            NodeType::LessThanOrEquals => String::from("LessThanOrEquals"),
-            NodeType::GreaterThan => String::from("GreaterThan"),
-            NodeType::GreaterThanOrEquals => {
-                String::from("GreaterThanOrEquals")
-            }
-            NodeType::HostFunction => String::from("HostFunction"),
-            NodeType::Definition => String::from("Definition"),
+            NodeType::Any => f.write_str("Any"),
+            NodeType::Boolean => f.write_str("Boolean"),
+            NodeType::Sum => f.write_str("Sum"),
+            NodeType::Negate => f.write_str("Negate"),
+            NodeType::Product => f.write_str("Product"),
+            NodeType::Division => f.write_str("Division"),
+            NodeType::Power => f.write_str("Power"),
+            NodeType::Tensor => f.write_str("Tensor"),
+            NodeType::Number => f.write_str("Number"),
+            NodeType::Symbol => f.write_str("Symbol"),
+            NodeType::Function => f.write_str("Function"),
+            NodeType::FunctionCall => f.write_str("FunctionCall"),
+            NodeType::And => f.write_str("And"),
+            NodeType::Or => f.write_str("Or"),
+            NodeType::Equals => f.write_str("Equals"),
+            NodeType::LessThan => f.write_str("LessThan"),
+            NodeType::LessThanOrEquals => f.write_str("LessThanOrEquals"),
+            NodeType::GreaterThan => f.write_str("GreaterThan"),
+            NodeType::GreaterThanOrEquals => f.write_str("GreaterThanOrEquals"),
+            NodeType::HostFunction => f.write_str("HostFunction"),
+            NodeType::Definition => f.write_str("Definition"),
         }
     }
 }

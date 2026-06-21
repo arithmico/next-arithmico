@@ -1,17 +1,17 @@
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct GreaterThan {
+pub struct GreaterThanOrEquals {
     pub left: Box<Node>,
     pub right: Box<Node>,
     pub trace: Trace,
 }
 
-impl GreaterThan {
+impl GreaterThanOrEquals {
     pub fn new(left: Node, right: Node) -> Node {
-        Node::GreaterThan(GreaterThan {
+        Node::GreaterThanOrEquals(GreaterThanOrEquals {
             left: left.into(),
             right: right.into(),
             trace: Trace::new(),
@@ -19,4 +19,4 @@ impl GreaterThan {
     }
 }
 
-impl_node_traits!(GreaterThan);
+impl_node_traits!(GreaterThanOrEquals);

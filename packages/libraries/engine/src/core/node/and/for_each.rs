@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{And, Node};
 
-use super::And;
+use crate::core::ForEachChild;
 
 impl ForEachChild for And {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

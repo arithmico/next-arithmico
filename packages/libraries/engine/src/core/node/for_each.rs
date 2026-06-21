@@ -1,6 +1,9 @@
-use crate::core::{ForEachChild, Node};
+use node::Node;
 
-impl Node {
+use crate::core::ForEachChild;
+
+// TODO: investigate
+/*impl Node {
     pub fn for_each_node<F: Fn(&Node) + Copy>(&self, f: F) {
         self.for_each_child(f);
         f(self);
@@ -10,7 +13,7 @@ impl Node {
         self.for_each_child_mut(f);
         f(self);
     }
-}
+}*/
 
 impl ForEachChild for Node {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

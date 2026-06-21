@@ -1,8 +1,9 @@
-use nom::{Parser, error::context, number::complete::double};
+use node::Number;
+use nom::{error::context, number::complete::double, Parser};
 
 use crate::core::{
-    Expectation, Number, ParseNode, ParseNodeError, ParseResult, TraceUtils,
-    map_parse_error::MapErrorUtils, with_parser,
+    map_parse_error::MapErrorUtils, with_parser, Expectation, ParseNode,
+    ParseNodeError, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Number {

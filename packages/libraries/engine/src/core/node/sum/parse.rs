@@ -1,11 +1,11 @@
+use node::{Negate, Product, Sum};
 use nom::{
-    Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    Negate, ParseNode, ParseResult, Product, Sum, TraceUtils, expect_tag,
-    with_parser,
+    expect_tag, with_parser, ParseNode, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Sum {
@@ -41,10 +41,11 @@ fn parse_sum_item(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
+    use node::{Node, Number};
     use nom::combinator::all_consuming;
     use trace::TracableMut;
 
-    use crate::core::{Node, Number, ParseNodeError};
+    use crate::core::ParseNodeError;
 
     use super::*;
 

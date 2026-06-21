@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Node, Sum};
 
-use super::Sum;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Sum {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

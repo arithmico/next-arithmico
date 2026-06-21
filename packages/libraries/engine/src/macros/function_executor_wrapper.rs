@@ -4,7 +4,7 @@ macro_rules! function_executor_wrapper {
         fn wrapper(
             arguments: &$crate::ArgumentMapping,
             context: &$crate::Context,
-        ) -> Result<$crate::Node, $crate::core::EvaluateNodeError> {
+        ) -> Result<node::Node, $crate::core::EvaluateNodeError> {
             let typed =
                 <$args as $crate::FromArgumentMapping>::from_argument_mapping(
                     arguments,

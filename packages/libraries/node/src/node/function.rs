@@ -1,8 +1,10 @@
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
-use super::function_signature::FunctionSignature;
+mod function_signature;
+
+pub use function_signature::*;
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Function {

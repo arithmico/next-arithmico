@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Node, Serialize, SerializeNodeError, SerializeUtils, Symbol,
-};
+use node::{Node, Symbol};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Symbol {
     fn normalize_node(
@@ -30,9 +30,6 @@ impl Serialize for Symbol {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::core::Symbol;
-
     use crate::core::serialize_node;
 
     use super::*;

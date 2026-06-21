@@ -1,4 +1,4 @@
-use crate::core::Node;
+use node::Node;
 
 use super::{Context, Serialize, SerializeNodeError, SerializeUtils};
 

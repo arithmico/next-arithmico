@@ -1,4 +1,6 @@
-use crate::core::{Context, EvaluateNodeError, Node};
+use node::Node;
+
+use crate::core::{Context, EvaluateNodeError};
 
 mod map_function_arguments;
 

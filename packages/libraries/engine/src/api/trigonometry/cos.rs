@@ -1,14 +1,11 @@
 use std::f64::consts::PI;
 
 use engine_derive::FromArgumentMapping;
+use node::{FunctionSignature, Node, NodeType, Number};
 
 use crate::{
-    Context, Node, Number,
-    core::{
-        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
-        Language, NodeType,
-    },
-    function_executor_wrapper,
+    core::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language},
+    function_executor_wrapper, Context,
 };
 
 #[derive(FromArgumentMapping)]
@@ -36,6 +33,8 @@ fn cos_executor(
 pub fn load_cos_endpoint(builder: EndpointBuilder) -> HostEndpoint {
     let signature = FunctionSignature::new()
         .argument("x", |argument| {
+            use node::NodeType;
+
             argument
                 .evaluate()
                 .description(Language::English, "angle")

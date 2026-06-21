@@ -1,17 +1,17 @@
 use trace::Trace;
 
-use crate::{core::Node, impl_node_traits};
+use crate::{impl_node_traits, Node};
 
 #[derive(PartialEq, Debug, Clone)]
-pub struct Equals {
+pub struct LessThan {
     pub left: Box<Node>,
     pub right: Box<Node>,
     pub trace: Trace,
 }
 
-impl Equals {
+impl LessThan {
     pub fn new(left: Node, right: Node) -> Node {
-        Node::Equals(Equals {
+        Node::LessThan(LessThan {
             left: left.into(),
             right: right.into(),
             trace: Trace::new(),
@@ -19,4 +19,4 @@ impl Equals {
     }
 }
 
-impl_node_traits!(Equals);
+impl_node_traits!(LessThan);

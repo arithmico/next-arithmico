@@ -1,16 +1,17 @@
+use node::{FunctionCall, Node, Symbol};
 use nom::{
-    IResult, Parser,
     branch::alt,
     character::complete::space0,
     combinator::{cut, opt},
     error::context,
     multi::many0,
     sequence::{delimited, preceded},
+    IResult, Parser,
 };
 
 use crate::core::{
-    FunctionCall, Node, ParseNode, ParseNodeError, ParseResult, Symbol,
-    TraceUtils, expect_tag, parse_literal, parse_sub_expression, with_parser,
+    expect_tag, parse_literal, parse_sub_expression, with_parser, ParseNode,
+    ParseNodeError, ParseResult, TraceUtils,
 };
 
 impl ParseNode for FunctionCall {
@@ -121,19 +122,15 @@ mod tests {
                 "",
                 FunctionCall::new(
                     Symbol::new("f").with_span(0, 0),
-                    vec![
-                        FunctionCall::new(
-                            Symbol::new("f").with_span(2, 2),
-                            vec![
-                                FunctionCall::new(
-                                    Symbol::new("f").with_span(4, 4),
-                                    vec![Symbol::new("x").with_span(6, 6)]
-                                )
-                                .with_span(4, 7)
-                            ]
+                    vec![FunctionCall::new(
+                        Symbol::new("f").with_span(2, 2),
+                        vec![FunctionCall::new(
+                            Symbol::new("f").with_span(4, 4),
+                            vec![Symbol::new("x").with_span(6, 6)]
                         )
-                        .with_span(2, 8)
-                    ]
+                        .with_span(4, 7)]
+                    )
+                    .with_span(2, 8)]
                 )
                 .with_span(0, 9)
             )

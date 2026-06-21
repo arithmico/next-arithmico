@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{HostFunction, Node};
 
-use super::HostFunction;
+use crate::core::ForEachChild;
 
 impl ForEachChild for HostFunction {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, _f: F) {}

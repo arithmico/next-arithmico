@@ -1,12 +1,11 @@
+use node::{Power, Tensor};
 use nom::{
-    Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{ParseNode, ParseResult, Tensor, expect_tag, with_parser};
-
-use super::Power;
+use crate::core::{expect_tag, with_parser, ParseNode, ParseResult};
 
 impl ParseNode for Power {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -45,7 +44,7 @@ fn parse_power_element(input: &'_ str) -> ParseResult<'_> {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{Number, Symbol};
+    use node::{Number, Symbol};
 
     use super::*;
 

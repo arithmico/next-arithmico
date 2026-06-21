@@ -1,11 +1,10 @@
 use std::collections::VecDeque;
 
+use node::{Cardinality, FunctionSignature, GetNodeType, Node, Preprocess};
+
 use crate::{
+    core::{Context, EvaluateNodeError},
     ArgumentMapping,
-    core::{
-        Cardinality, Context, EvaluateNodeError, FunctionSignature,
-        GetNodeType, Node, Preprocess,
-    },
 };
 
 use super::EvaluateNode;

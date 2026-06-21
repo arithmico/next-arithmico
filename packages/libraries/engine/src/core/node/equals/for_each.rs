@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Equals, Node};
 
-use super::Equals;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Equals {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

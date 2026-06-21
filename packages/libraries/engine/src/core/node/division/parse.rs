@@ -1,12 +1,11 @@
+use node::{Division, Power};
 use nom::{
-    Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{ParseNode, ParseResult, Power, expect_tag, with_parser};
-
-use super::Division;
+use crate::core::{expect_tag, with_parser, ParseNode, ParseResult};
 
 impl ParseNode for Division {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -50,7 +49,7 @@ pub fn parse_division_element(input: &'_ str) -> ParseResult<'_> {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::Number;
+    use node::Number;
 
     use super::*;
 

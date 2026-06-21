@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Node, Product, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Node, Product};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Product {
     fn normalize_node(
@@ -58,7 +58,7 @@ impl Serialize for Product {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{
+    use node::{
         And, Division, Function, FunctionSignature, Negate, NodeType, Or,
         Product, Sum, Symbol,
     };

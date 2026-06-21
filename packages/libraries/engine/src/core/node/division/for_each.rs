@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{Division, Node};
 
-use super::Division;
+use crate::core::ForEachChild;
 
 impl ForEachChild for Division {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

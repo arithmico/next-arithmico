@@ -1,6 +1,6 @@
-use crate::core::{ForEachChild, Node};
+use node::{LessThanOrEquals, Node};
 
-use super::LessThanOrEquals;
+use crate::core::ForEachChild;
 
 impl ForEachChild for LessThanOrEquals {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {

@@ -1,7 +1,6 @@
-use crate::{
-    Node, Symbol,
-    core::{EvaluateNodeError, NodeCast},
-};
+use node::{Node, Symbol};
+
+use crate::core::{EvaluateNodeError, NodeCast};
 
 impl NodeCast for Symbol {
     fn downcast(node: &Node) -> Result<&Self, EvaluateNodeError> {

@@ -1,9 +1,11 @@
 use std::f64::consts::PI;
 
-use crate::core::{EndpointBuilder, HostEndpoint, Language, Number};
+use crate::core::{EndpointBuilder, HostEndpoint, Language};
 
 #[cfg(feature = "api_endpoint_trigonometry_pi")]
 pub fn load_pi_endpoint(builder: EndpointBuilder) -> HostEndpoint {
+    use node::Number;
+
     builder
         .name("pi")
         .description(Language::English, "The constant π is generally defined as the ratio of the circumference of a circle to its diameter.")

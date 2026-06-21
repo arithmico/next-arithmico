@@ -1,10 +1,11 @@
+use node::{And, Or};
 use nom::{
-    Parser, branch::alt, character::complete::space0, error::context,
-    multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, error::context, multi::many1,
+    sequence::preceded, Parser,
 };
 
 use crate::core::{
-    And, Or, ParseNode, ParseResult, TraceUtils, expect_tag, with_parser,
+    expect_tag, with_parser, ParseNode, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Or {
@@ -34,7 +35,7 @@ fn parse_or_item(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use trace::TracableMut;
 
-    use crate::core::{Boolean, Symbol};
+    use node::{Boolean, Symbol};
 
     use super::*;
 

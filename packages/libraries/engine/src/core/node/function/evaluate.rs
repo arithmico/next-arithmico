@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, Function, GetNodeType, Node,
-};
+use node::{Function, GetNodeType, Node};
+
+use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
 impl EvaluateNode for Function {
     fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -16,7 +16,7 @@ impl EvaluateNode for Function {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{FunctionSignature, NodeType, Symbol};
+    use node::{FunctionSignature, NodeType, Symbol};
 
     use super::*;
 

@@ -1,11 +1,11 @@
+use node::{Division, Product};
 use nom::{
-    Parser, branch::alt, character::complete::space0, combinator::cut,
-    error::context, multi::many1, sequence::preceded,
+    branch::alt, character::complete::space0, combinator::cut, error::context,
+    multi::many1, sequence::preceded, Parser,
 };
 
 use crate::core::{
-    Division, ParseNode, ParseResult, Product, TraceUtils, expect_tag,
-    with_parser,
+    expect_tag, with_parser, ParseNode, ParseResult, TraceUtils,
 };
 
 impl ParseNode for Product {
@@ -38,7 +38,7 @@ fn parse_product_item(input: &'_ str) -> ParseResult<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::core::{Node, Number, Sum, Symbol};
+    use node::{Node, Number, Sum, Symbol};
     use nom::combinator::all_consuming;
     use trace::TracableMut;
 

@@ -1,19 +1,18 @@
+use node::{Function, FunctionSignature, Node, NodeType, Or};
 use nom::{
-    IResult, Parser,
     branch::alt,
     character::complete::space0,
     combinator::{cut, opt},
     error::context,
     multi::many0,
     sequence::delimited,
+    IResult, Parser,
 };
 
 use crate::core::{
-    FunctionSignature, Node, NodeType, Or, ParseNode, ParseNodeError,
-    ParseResult, TraceUtils, expect_tag, parse_raw_symbol, with_parser,
+    expect_tag, parse_raw_symbol, with_parser, ParseNode, ParseNodeError,
+    ParseResult, TraceUtils,
 };
-
-use super::Function;
 
 impl ParseNode for Function {
     fn parse(input: &'_ str) -> ParseResult<'_> {
@@ -70,7 +69,7 @@ fn parse_function_argument_item(
 mod tests {
     use trace::TracableMut;
 
-    use crate::core::{Number, Sum, Symbol};
+    use node::{Number, Sum, Symbol};
 
     use super::*;
 

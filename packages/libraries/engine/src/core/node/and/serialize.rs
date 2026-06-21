@@ -1,6 +1,6 @@
-use crate::core::{
-    And, Context, Node, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{And, Node};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for And {
     fn normalize_node(
@@ -53,7 +53,9 @@ impl Serialize for And {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{Or, Symbol, serialize_node};
+    use node::{Or, Symbol};
+
+    use crate::core::serialize_node;
 
     use super::*;
 

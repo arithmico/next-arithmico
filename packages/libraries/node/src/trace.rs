@@ -1,6 +1,6 @@
 use trace::Trace;
 
-use crate::core::Node;
+use crate::Node;
 
 impl AsMut<Trace> for Node {
     fn as_mut(&mut self) -> &mut Trace {

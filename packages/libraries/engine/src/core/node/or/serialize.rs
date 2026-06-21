@@ -1,6 +1,6 @@
-use crate::core::{
-    Context, Node, Or, Serialize, SerializeNodeError, SerializeUtils,
-};
+use node::{Node, Or};
+
+use crate::core::{Context, Serialize, SerializeNodeError, SerializeUtils};
 
 impl SerializeUtils for Or {
     fn normalize_node(
@@ -52,7 +52,7 @@ impl Serialize for Or {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::Symbol;
+    use node::Symbol;
 
     use crate::core::serialize_node;
 
