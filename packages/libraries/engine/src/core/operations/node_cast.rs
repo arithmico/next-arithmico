@@ -6,6 +6,7 @@ pub trait NodeCast: Sized {
     fn downcast(node: &Node) -> Result<&Self, EvaluateNodeError>;
 }
 
+#[allow(dead_code)]
 pub trait DowncastNode {
     fn downcast<T: NodeCast>(&self) -> Result<&T, EvaluateNodeError>;
 }
