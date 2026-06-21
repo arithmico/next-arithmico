@@ -12,7 +12,8 @@
         "web_state",
         "infrastructure",
         "ci",
-        "lexer"
+        "lexer",
+        "node"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
