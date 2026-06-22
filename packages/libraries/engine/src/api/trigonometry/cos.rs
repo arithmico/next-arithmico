@@ -2,9 +2,9 @@ use std::f64::consts::PI;
 
 use engine_derive::FromArgumentMapping;
 use node::{FunctionSignature, Node, NodeType, Number};
+use float_utils::F64Extension;
 
 use crate::{
-    api::global_utils::F64Extension,
     core::{
         EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
         Language, NodeType,

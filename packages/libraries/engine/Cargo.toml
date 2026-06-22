@@ -12,6 +12,7 @@ serde = { workspace = true }
 nom = { workspace = true }
 engine_derive = { path = "../engine_derive" }
 node = { version = "0.1.0", path = "../node" }
+float_utils = { path = "../float_utils" }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]
