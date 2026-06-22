@@ -1,15 +1,12 @@
 use std::f64::consts::PI;
 
 use engine_derive::FromArgumentMapping;
-use node::{FunctionSignature, Node, NodeType, Number};
 use float_utils::F64Extension;
+use node::{FunctionSignature, Node, NodeType, Number};
 
 use crate::{
-    core::{
-        EndpointBuilder, EvaluateNodeError, FunctionSignature, HostEndpoint,
-        Language, NodeType,
-    },
-    function_executor_wrapper, Context, Node, Number,
+    core::{EndpointBuilder, EvaluateNodeError, HostEndpoint, Language},
+    function_executor_wrapper, Context,
 };
 
 #[derive(FromArgumentMapping)]
