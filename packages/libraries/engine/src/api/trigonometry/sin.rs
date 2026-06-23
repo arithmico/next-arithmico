@@ -1,6 +1,6 @@
 use std::f64::consts::PI;
 
-use engine_derive::{FromArgumentMapping, FunctionArguments};
+use engine_derive::FunctionArguments;
 use float_utils::F64Extension;
 use node::Number;
 
@@ -9,7 +9,7 @@ use crate::{
     Context,
 };
 
-#[derive(FromArgumentMapping, FunctionArguments)]
+#[derive(FunctionArguments)]
 #[name("sin")]
 #[description(Language::German, "Berechnet den Sinus von x.")]
 #[description(Language::English, "Calculate the sine of x.")]
