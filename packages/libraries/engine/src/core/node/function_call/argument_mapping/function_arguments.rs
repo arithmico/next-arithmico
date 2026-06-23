@@ -12,5 +12,7 @@ pub trait FunctionArguments<'a>: Sized {
 
     fn signature() -> FunctionSignature;
 
-    fn description() -> TranslatedString;
+    fn function_description() -> TranslatedString;
+
+    fn function_name() -> &'static str;
 }

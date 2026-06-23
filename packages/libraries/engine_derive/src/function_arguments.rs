@@ -50,6 +50,24 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         .into();
     };
 
+    let Some(function_name) = ast.attrs.iter().find_map(|attribute| {
+        if attribute.path().is_ident("name") {
+            Some(attribute.parse_args::<LitStr>())
+        } else {
+            None
+        }
+    }) else {
+        return quote_spanned! {
+            ast.span() => compile_error!("missing function name attribute")
+        }
+        .into();
+    };
+
+    let function_name = match function_name {
+        Ok(v) => v,
+        Err(err) => return err.to_compile_error().into(),
+    };
+
     let struct_descriptions = ast
         .attrs
         .iter()
@@ -237,12 +255,16 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 #(#signature_arguments)*
             }
 
-            fn description() -> crate::core::TranslatedString {
+            fn function_description() -> crate::core::TranslatedString {
                 let mut description = HashMap::new();
                 #(
                     #struct_descriptions
                 )*
                 description
+            }
+
+            fn function_name() -> &'static str {
+                #function_name
             }
         }
     };

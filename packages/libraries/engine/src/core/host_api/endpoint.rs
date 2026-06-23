@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 
-use node::{
-    FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType, Number,
-};
+use node::{FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType};
 use translate_core::Language;
 
 use crate::{
@@ -125,16 +123,19 @@ pub trait FunctionEndpoint {
     type Output: GetStaticNodeType + IntoNode;
     type Arguments<'a>: FunctionArguments<'a>;
 
-    fn name() -> &'static str;
-
     fn executor<'a>(
         args: Self::Arguments<'a>,
         context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError>;
 
     #[doc(hidden)]
+    fn name() -> &'static str {
+        Self::Arguments::function_name()
+    }
+
+    #[doc(hidden)]
     fn description() -> TranslatedString {
-        Self::Arguments::description()
+        Self::Arguments::function_description()
     }
 
     #[doc(hidden)]
