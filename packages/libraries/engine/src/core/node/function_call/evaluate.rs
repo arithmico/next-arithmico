@@ -117,6 +117,7 @@ mod tests {
         assert_eq!(result, Number::new_node(2.));
     }
 
+    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call() {
         #[derive(FromArgumentMapping)]
@@ -128,7 +129,8 @@ mod tests {
             TestArgs { x }: TestArgs,
             context: &Context,
         ) -> Result<Node, EvaluateNodeError> {
-            Power::new(Number::new_node(x.value), Number::new_node(2.)).evaluate(context)
+            Power::new(Number::new_node(x.value), Number::new_node(2.))
+                .evaluate(context)
         }
 
         let context = Context::new(
@@ -163,12 +165,14 @@ mod tests {
                     .build(),
             ),
         );
-        let result = FunctionCall::new(Symbol::new("f"), vec![Number::new_node(2.)])
-            .evaluate(&context)
-            .unwrap();
+        let result =
+            FunctionCall::new(Symbol::new("f"), vec![Number::new_node(2.)])
+                .evaluate(&context)
+                .unwrap();
         assert_eq!(result, Number::new_node(4.));
     }
 
+    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call_invalid_number_of_arguments() {
         #[derive(FromArgumentMapping)]
@@ -180,7 +184,8 @@ mod tests {
             TestArgs { x }: TestArgs,
             context: &Context,
         ) -> Result<Node, EvaluateNodeError> {
-            Power::new(Number::new_node(x.value), Number::new_node(2.)).evaluate(context)
+            Power::new(Number::new_node(x.value), Number::new_node(2.))
+                .evaluate(context)
         }
 
         let context = Context::new(
@@ -220,6 +225,7 @@ mod tests {
         assert_eq!(result, Err(EvaluateNodeError::missing_parameter("x")));
     }
 
+    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call_with_advanced_arguments() {
         #[derive(FromArgumentMapping)]
