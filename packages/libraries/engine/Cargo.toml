@@ -92,7 +92,8 @@ api_module_trigonometry = [
     "api_endpoint_trigonometry_cos",
     "api_endpoint_trigonometry_tan",
     "api_endpoint_trigonometry_asin",
-    "api_endpoint_trigonometry_acos"
+    "api_endpoint_trigonometry_acos",
+    "api_endpoint_trigonometry_atan"
 ]
 
 # trigonometry
@@ -103,3 +104,4 @@ api_endpoint_trigonometry_cos = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_tan = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_asin = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_acos = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_atan = ["api_module_loader_trigonometry"]
