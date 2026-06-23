@@ -26,6 +26,7 @@ impl FunctionEndpoint for SinEndpoint {
 
     type Arguments<'a> = SinArgs<'a>;
 
+    // TODO: unit tests
     fn executor<'a>(
         SinArgs { x }: Self::Arguments<'a>,
         _context: &Context,

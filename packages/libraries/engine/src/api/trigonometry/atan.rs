@@ -23,6 +23,7 @@ impl FunctionEndpoint for AtanEndpoint {
 
     type Arguments<'a> = AtanArgs<'a>;
 
+    // TODO: unit tests
     // TODO: handle special values
     fn executor<'a>(
         AtanArgs { x }: Self::Arguments<'a>,

@@ -26,6 +26,7 @@ impl FunctionEndpoint for CosEndpoint {
 
     type Arguments<'a> = CosArgs<'a>;
 
+    // TODO: unit tests
     fn executor<'a>(
         CosArgs { x }: Self::Arguments<'a>,
         _context: &Context,
