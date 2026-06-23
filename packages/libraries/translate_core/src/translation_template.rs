@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use language::Language;
 
-use crate::{template::Template, TranslationError};
+use crate::{TranslationError, template::Template};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TranslationTemplate {
