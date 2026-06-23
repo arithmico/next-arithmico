@@ -1,4 +1,5 @@
 use std::{collections::HashMap, f64::consts::PI};
+use translate_core::Language;
 
 use engine_derive::FunctionArguments;
 use float_utils::F64Extension;
@@ -9,7 +10,11 @@ use crate::core::FunctionEndpoint;
 // TODO: add descriptions with attribute macros
 
 #[derive(FunctionArguments)]
+#[description(Language::German, "Tangens")]
+#[description(Language::English, "tangent")]
 pub struct TanArgs<'a> {
+    #[description(Language::German, "Winkel")]
+    #[description(Language::Enlish, "Angle")]
     x: &'a Number,
 }
 
@@ -21,10 +26,6 @@ impl FunctionEndpoint for TanEndpoint {
 
     fn name() -> &'static str {
         "tan"
-    }
-
-    fn description() -> crate::core::TranslatedString {
-        HashMap::new()
     }
 
     fn executor<'a>(
