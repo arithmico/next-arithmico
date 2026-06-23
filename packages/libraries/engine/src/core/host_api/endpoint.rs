@@ -127,12 +127,15 @@ pub trait FunctionEndpoint {
 
     fn name() -> &'static str;
 
-    fn description() -> TranslatedString;
-
     fn executor<'a>(
         args: Self::Arguments<'a>,
         context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError>;
+
+    #[doc(hidden)]
+    fn description() -> TranslatedString {
+        Self::Arguments::description()
+    }
 
     #[doc(hidden)]
     fn call(

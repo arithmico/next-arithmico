@@ -1,6 +1,10 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{spanned::Spanned, Data, DeriveInput, Ident, Type};
+use syn::{
+    parse::{Parse, ParseStream},
+    spanned::Spanned,
+    Data, DeriveInput, Ident, LitStr, Path, Token, Type,
+};
 
 struct ArgumentField {
     ident: Ident,
@@ -15,6 +19,24 @@ enum ArgumentCardinality {
     Required,
 }
 
+struct DescriptionAttribute {
+    language: Path,
+    description: LitStr,
+}
+
+impl Parse for DescriptionAttribute {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let language: Path = input.parse()?;
+        let _comma: Token![,] = input.parse()?;
+        let description: LitStr = input.parse()?;
+
+        Ok(Self {
+            language,
+            description,
+        })
+    }
+}
+
 pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
     let struct_name = &ast.ident;
 
@@ -26,6 +48,34 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         }
         .into();
     };
+
+    let struct_descriptions = ast
+        .attrs
+        .iter()
+        .filter_map(|attribute| {
+            if attribute.path().is_ident("description") {
+                Some(attribute.parse_args::<DescriptionAttribute>())
+            } else {
+                None
+            }
+        })
+        .collect::<Result<Vec<_>, _>>();
+
+    let struct_attributes = match struct_descriptions {
+        Ok(vec) => vec,
+        Err(e) => return e.to_compile_error().into(),
+    };
+
+    let struct_descriptions = struct_attributes
+        .into_iter()
+        .map(|attribute| {
+            let language = &attribute.language;
+            let description = &attribute.description;
+            quote! {
+                description.insert(#language, #description.to_string());
+            }
+        })
+        .collect::<Vec<_>>();
 
     let fields = data_struct
         .fields
@@ -154,6 +204,14 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             fn signature() -> node::FunctionSignature {
                 node::FunctionSignature::new()
                 #(#signature_arguments)*
+            }
+
+            fn description() -> crate::core::TranslatedString {
+                let mut description = HashMap::new();
+                #(
+                    #struct_descriptions
+                )*
+                description
             }
         }
     };

@@ -1,6 +1,9 @@
 use node::FunctionSignature;
 
-use crate::{core::EvaluateNodeError, ArgumentMapping};
+use crate::{
+    core::{EvaluateNodeError, TranslatedString},
+    ArgumentMapping,
+};
 
 pub trait FunctionArguments<'a>: Sized {
     fn from_mapping(
@@ -8,4 +11,6 @@ pub trait FunctionArguments<'a>: Sized {
     ) -> Result<Self, EvaluateNodeError>;
 
     fn signature() -> FunctionSignature;
+
+    fn description() -> TranslatedString;
 }
