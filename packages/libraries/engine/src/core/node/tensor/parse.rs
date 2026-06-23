@@ -80,7 +80,7 @@ mod tests {
             (
                 "",
                 Node::Tensor(Tensor {
-                    elements: vec![Number::new(1.).with_span(1, 1)],
+                    elements: vec![Number::new_node(1.).with_span(1, 1)],
                     shape: vec![1],
                     trace: Trace::new()
                 })
@@ -97,9 +97,9 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![
-                        Number::new(1.).with_span(2, 2),
-                        Number::new(2.).with_span(6, 6),
-                        Number::new(3.).with_span(10, 10)
+                        Number::new_node(1.).with_span(2, 2),
+                        Number::new_node(2.).with_span(6, 6),
+                        Number::new_node(3.).with_span(10, 10)
                     ],
                     shape: vec![3, 1],
                     trace: Trace::new()
@@ -117,12 +117,12 @@ mod tests {
                 "",
                 Node::Tensor(Tensor {
                     elements: vec![
-                        Number::new(1.).with_span(3, 3),
-                        Number::new(2.).with_span(5, 5),
-                        Number::new(3.).with_span(7, 7),
-                        Number::new(4.).with_span(11, 11),
-                        Number::new(5.).with_span(13, 13),
-                        Number::new(6.).with_span(15, 15),
+                        Number::new_node(1.).with_span(3, 3),
+                        Number::new_node(2.).with_span(5, 5),
+                        Number::new_node(3.).with_span(7, 7),
+                        Number::new_node(4.).with_span(11, 11),
+                        Number::new_node(5.).with_span(13, 13),
+                        Number::new_node(6.).with_span(15, 15),
                     ],
                     shape: vec![1, 2, 3],
                     trace: Trace::new()

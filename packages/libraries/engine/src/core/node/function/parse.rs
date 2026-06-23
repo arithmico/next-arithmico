@@ -82,7 +82,7 @@ mod tests {
             result,
             (
                 "",
-                Function::new(signature, Number::new(2.).with_span(6, 6))
+                Function::new(signature, Number::new_node(2.).with_span(6, 6))
                     .with_span(0, 6)
             )
         );

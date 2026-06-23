@@ -64,7 +64,7 @@ fn multiply_numbers(
         return Err(EvaluateNodeError::unsupported_operation());
     }
 
-    Ok(Number::new(left.value * right.value))
+    Ok(Number::new_node(left.value * right.value))
 }
 
 fn multiply_number_and_tensor(
@@ -80,7 +80,7 @@ fn multiply_number_and_tensor(
         .elements
         .iter()
         .map(|element| {
-            Product::new(vec![Number::new(number.value), element.clone()])
+            Product::new(vec![Number::new_node(number.value), element.clone()])
                 .evaluate(context)
         })
         .collect::<Result<Vec<_>, _>>()?;
@@ -180,7 +180,7 @@ mod tests {
     #[test]
     fn evaluate_invalid_product() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new(1.)]).evaluate(&context);
+        let result = Product::new(vec![Number::new_node(1.)]).evaluate(&context);
         assert_eq!(
             result,
             Err(EvaluateNodeError::invalid_node(NodeType::Product))
@@ -190,19 +190,19 @@ mod tests {
     #[test]
     fn evaluate_product_number_number_2() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new(1.), Number::new(2.)])
+        let result = Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(2.));
+        assert_eq!(result, Number::new_node(2.));
     }
 
     #[test]
     fn evaluate_product_number_number_3() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new(1.), Number::new(2.)])
+        let result = Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(2.));
+        assert_eq!(result, Number::new_node(2.));
     }
 
     #[test]
@@ -210,30 +210,30 @@ mod tests {
         let context = Context::default();
         let result = Product::new(vec![
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
         ])
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(14.));
+        assert_eq!(result, Number::new_node(14.));
     }
 
     #[test]
     fn evaluate_product_number_vector() {
         let context = Context::default();
         let result = Product::new(vec![
-            Number::new(2.),
+            Number::new_node(2.),
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
         ])
         .evaluate(&context)
@@ -241,9 +241,9 @@ mod tests {
         assert_eq!(
             result,
             Tensor::new(vec![
-                Number::new(2.),
-                Number::new(4.),
-                Number::new(6.),
+                Number::new_node(2.),
+                Number::new_node(4.),
+                Number::new_node(6.),
             ]),
         );
     }
@@ -252,10 +252,10 @@ mod tests {
     fn evaluate_product_number_matrix() {
         let context = Context::default();
         let result = Product::new(vec![
-            Number::new(2.),
+            Number::new_node(2.),
             Tensor::new(vec![
-                Tensor::new(vec![Number::new(1.), Number::new(2.)]),
-                Tensor::new(vec![Number::new(3.), Number::new(4.)]),
+                Tensor::new(vec![Number::new_node(1.), Number::new_node(2.)]),
+                Tensor::new(vec![Number::new_node(3.), Number::new_node(4.)]),
             ]),
         ])
         .evaluate(&context)
@@ -265,10 +265,10 @@ mod tests {
             Tensor::new_with_shape(
                 vec![2, 2],
                 vec![
-                    Number::new(2.),
-                    Number::new(4.),
-                    Number::new(6.),
-                    Number::new(8.),
+                    Number::new_node(2.),
+                    Number::new_node(4.),
+                    Number::new_node(6.),
+                    Number::new_node(8.),
                 ]
             ),
         );
@@ -281,27 +281,27 @@ mod tests {
             Product::new(vec![
                 Tensor::new(vec![
                     Tensor::new(vec![
-                        Number::new(3.0),
-                        Number::new(2.0),
-                        Number::new(1.0),
+                        Number::new_node(3.0),
+                        Number::new_node(2.0),
+                        Number::new_node(1.0),
                     ]),
                     Tensor::new(vec![
-                        Number::new(1.0),
-                        Number::new(0.0),
-                        Number::new(2.0),
+                        Number::new_node(1.0),
+                        Number::new_node(0.0),
+                        Number::new_node(2.0),
                     ]),
                 ]),
                 Tensor::new(vec![
-                    Tensor::new(vec![Number::new(1.0), Number::new(2.0),]),
-                    Tensor::new(vec![Number::new(0.0), Number::new(1.0),]),
-                    Tensor::new(vec![Number::new(4.0), Number::new(0.0),]),
+                    Tensor::new(vec![Number::new_node(1.0), Number::new_node(2.0),]),
+                    Tensor::new(vec![Number::new_node(0.0), Number::new_node(1.0),]),
+                    Tensor::new(vec![Number::new_node(4.0), Number::new_node(0.0),]),
                 ]),
             ])
             .evaluate(&context)
             .unwrap(),
             Tensor::new(vec![
-                Tensor::new(vec![Number::new(7.0), Number::new(8.0),]),
-                Tensor::new(vec![Number::new(9.0), Number::new(2.0),]),
+                Tensor::new(vec![Number::new_node(7.0), Number::new_node(8.0),]),
+                Tensor::new(vec![Number::new_node(9.0), Number::new_node(2.0),]),
             ]),
         )
     }

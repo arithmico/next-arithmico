@@ -11,7 +11,7 @@ impl SerializeUtils for Number {
         context: &Context,
     ) -> Result<Node, SerializeNodeError> {
         if self.value == 0.0 {
-            return Ok(Number::new(self.value));
+            return Ok(Number::new_node(self.value));
         }
 
         let decimal_places = i32::from(&context.decimal_places);
@@ -20,22 +20,22 @@ impl SerializeUtils for Number {
         let magnitude_abs = if magnitude < 0 { -magnitude } else { magnitude };
         if magnitude_abs <= decimal_places as i64 {
             return if self.value < 0.0 {
-                Ok(Negate::new(Number::new(self.value.abs())))
+                Ok(Negate::new(Number::new_node(self.value.abs())))
             } else {
-                Ok(Number::new(self.value))
+                Ok(Number::new_node(self.value))
             };
         }
 
         let sign = self.value.signum();
         let factor = self.value.abs() * 10_f64.powi(-magnitude as i32);
         let scientific_notation = Product::new(vec![
-            Number::new(factor).into(),
+            Number::new_node(factor).into(),
             Power::new(
-                Number::new(10.0),
+                Number::new_node(10.0),
                 if magnitude < 0 {
-                    Node::from(Negate::new(Number::new(magnitude.abs() as f64)))
+                    Node::from(Negate::new(Number::new_node(magnitude.abs() as f64)))
                 } else {
-                    Node::from(Number::new(magnitude.abs() as f64))
+                    Node::from(Number::new_node(magnitude.abs() as f64))
                 },
             )
             .into(),
@@ -93,7 +93,7 @@ mod tests {
     #[test]
     fn serialize_number_int() {
         assert_eq!(
-            serialize_node(&Number::new(1.), &Context::default()).unwrap(),
+            serialize_node(&Number::new_node(1.), &Context::default()).unwrap(),
             "1"
         );
     }
@@ -101,7 +101,7 @@ mod tests {
     #[test]
     fn serialize_negative_number() {
         assert_eq!(
-            Number::new(-1.).serialize(&Context::default()),
+            Number::new_node(-1.).serialize(&Context::default()),
             Err(SerializeNodeError::InvalidNode)
         );
     }
@@ -109,7 +109,7 @@ mod tests {
     #[test]
     fn serialize_number_float_dot() {
         assert_eq!(
-            serialize_node(&Number::new(1.23), &Context::default()).unwrap(),
+            serialize_node(&Number::new_node(1.23), &Context::default()).unwrap(),
             "1.23"
         );
     }
@@ -118,7 +118,7 @@ mod tests {
     fn serialize_number_float_comma() {
         assert_eq!(
             serialize_node(
-                &Number::new(1.23),
+                &Number::new_node(1.23),
                 &Context::new(
                     Stack::new(),
                     DecimalPlaces::from(5),
@@ -134,7 +134,7 @@ mod tests {
     #[test]
     fn serialize_number_scientific_notation() {
         assert_eq!(
-            serialize_node(&Number::new(112345678.), &Context::default())
+            serialize_node(&Number::new_node(112345678.), &Context::default())
                 .unwrap(),
             "1.12346 * 10 ^ 8"
         );
@@ -143,7 +143,7 @@ mod tests {
     #[test]
     fn serialize_number_scientific_notation_negative() {
         assert_eq!(
-            serialize_node(&Number::new(-112345678.), &Context::default())
+            serialize_node(&Number::new_node(-112345678.), &Context::default())
                 .unwrap(),
             "-1.12346 * 10 ^ 8"
         );

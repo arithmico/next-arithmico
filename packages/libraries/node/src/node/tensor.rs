@@ -185,16 +185,16 @@ mod tests {
 
     #[test]
     fn tensor_shape_rank1() {
-        assert_eq!(Tensor::get_shape(&vec![Number::new(1.)]), vec![1])
+        assert_eq!(Tensor::get_shape(&vec![Number::new_node(1.)]), vec![1])
     }
 
     #[test]
     fn tensor_shape_rank2() {
         assert_eq!(
             Tensor::get_shape(&vec![
-                Tensor::new(vec![Number::new(1.)]),
-                Tensor::new(vec![Number::new(2.)]),
-                Tensor::new(vec![Number::new(3.)]),
+                Tensor::new(vec![Number::new_node(1.)]),
+                Tensor::new(vec![Number::new_node(2.)]),
+                Tensor::new(vec![Number::new_node(3.)]),
             ]),
             vec![3, 1]
         )
@@ -205,14 +205,14 @@ mod tests {
         assert_eq!(
             Tensor::get_shape(&vec![Tensor::new(vec![
                 Tensor::new(vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.)
+                    Number::new_node(1.),
+                    Number::new_node(2.),
+                    Number::new_node(3.)
                 ]),
                 Tensor::new(vec![
-                    Number::new(4.),
-                    Number::new(5.),
-                    Number::new(6.)
+                    Number::new_node(4.),
+                    Number::new_node(5.),
+                    Number::new_node(6.)
                 ]),
             ]),]),
             vec![1, 2, 3]
@@ -222,9 +222,9 @@ mod tests {
     #[test]
     fn new_tensor_rank1() {
         assert_eq!(
-            Tensor::new(vec![Number::new(1.)]),
+            Tensor::new(vec![Number::new_node(1.)]),
             Node::Tensor(Tensor {
-                elements: vec![Number::new(1.)],
+                elements: vec![Number::new_node(1.)],
                 shape: vec![1],
                 trace: Trace::new()
             })
@@ -235,15 +235,15 @@ mod tests {
     fn new_tensor_rank2() {
         assert_eq!(
             Tensor::new(vec![
-                Tensor::new(vec![Number::new(1.)]),
-                Tensor::new(vec![Number::new(2.)]),
-                Tensor::new(vec![Number::new(3.)]),
+                Tensor::new(vec![Number::new_node(1.)]),
+                Tensor::new(vec![Number::new_node(2.)]),
+                Tensor::new(vec![Number::new_node(3.)]),
             ]),
             Node::Tensor(Tensor {
                 elements: vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.)
+                    Number::new_node(1.),
+                    Number::new_node(2.),
+                    Number::new_node(3.)
                 ],
                 shape: vec![3, 1],
                 trace: Trace::new()
@@ -256,24 +256,24 @@ mod tests {
         assert_eq!(
             Tensor::new(vec![Tensor::new(vec![
                 Tensor::new(vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.)
+                    Number::new_node(1.),
+                    Number::new_node(2.),
+                    Number::new_node(3.)
                 ]),
                 Tensor::new(vec![
-                    Number::new(4.),
-                    Number::new(5.),
-                    Number::new(6.)
+                    Number::new_node(4.),
+                    Number::new_node(5.),
+                    Number::new_node(6.)
                 ]),
             ]),]),
             Node::Tensor(Tensor {
                 elements: vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.),
-                    Number::new(4.),
-                    Number::new(5.),
-                    Number::new(6.),
+                    Number::new_node(1.),
+                    Number::new_node(2.),
+                    Number::new_node(3.),
+                    Number::new_node(4.),
+                    Number::new_node(5.),
+                    Number::new_node(6.),
                 ],
                 shape: vec![1, 2, 3],
                 trace: Trace::new()

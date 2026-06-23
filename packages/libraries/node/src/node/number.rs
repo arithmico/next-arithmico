@@ -9,14 +9,14 @@ pub struct Number {
 }
 
 impl Number {
-    pub fn new(value: f64) -> Node {
+    pub fn new_node(value: f64) -> Node {
         Node::Number(Self {
             value,
             trace: Trace::new(),
         })
     }
 
-    pub fn new_self(value: f64) -> Self {
+    pub fn new(value: f64) -> Self {
         Self {
             value,
             trace: Trace::new(),

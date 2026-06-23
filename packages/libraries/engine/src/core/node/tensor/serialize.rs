@@ -176,7 +176,7 @@ mod tests {
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                         Tensor::new(vec![Symbol::new("a"), Symbol::new("b")]),
                     ]),
-                    Number::new(1.)
+                    Number::new_node(1.)
                 ]),
                 &Context::default()
             )

@@ -74,7 +74,7 @@ mod tests {
     fn serialize_power_number() {
         assert_eq!(
             serialize_node(
-                &Power::new(Number::new(2.), Number::new(3.)),
+                &Power::new(Number::new_node(2.), Number::new_node(3.)),
                 &Context::default()
             )
             .unwrap(),

@@ -41,7 +41,7 @@ mod tests {
             result,
             (
                 "",
-                Negate::new(Number::new(1.).with_span(1, 1)).with_span(0, 1)
+                Negate::new(Number::new_node(1.).with_span(1, 1)).with_span(0, 1)
             )
         );
     }
@@ -53,7 +53,7 @@ mod tests {
             result,
             (
                 "",
-                Negate::new(Number::new(1.).with_span(4, 4)).with_span(1, 4)
+                Negate::new(Number::new_node(1.).with_span(4, 4)).with_span(1, 4)
             )
         );
     }
@@ -67,8 +67,8 @@ mod tests {
                 "",
                 Negate::new(
                     Product::new(vec![
-                        Number::new(1.).with_span(1, 1),
-                        Number::new(2.).with_span(3, 3)
+                        Number::new_node(1.).with_span(1, 1),
+                        Number::new_node(2.).with_span(3, 3)
                     ])
                     .with_span(1, 3)
                 )

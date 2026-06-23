@@ -10,7 +10,7 @@ impl EvaluateNode for Number {
             ));
         }
 
-        Ok(Number::new(self.value))
+        Ok(Number::new_node(self.value))
     }
 }
 
@@ -22,17 +22,17 @@ mod tests {
     #[test]
     fn evaluate_number() {
         let context = Context::default();
-        let result = Number::new(1.2345).evaluate(&context).unwrap();
-        assert_eq!(result, Number::new(1.2345));
+        let result = Number::new_node(1.2345).evaluate(&context).unwrap();
+        assert_eq!(result, Number::new_node(1.2345));
     }
 
     #[test]
     fn evaluate_number_with_trace() {
         let context = Context::default();
-        let result = Number::new(1.2345)
+        let result = Number::new_node(1.2345)
             .with_span(0, 5)
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(1.2345).with_span(0, 5));
+        assert_eq!(result, Number::new_node(1.2345).with_span(0, 5));
     }
 }

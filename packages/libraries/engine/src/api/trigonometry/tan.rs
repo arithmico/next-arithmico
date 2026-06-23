@@ -1,4 +1,4 @@
-use std::{collections::HashMap, f64::consts::PI};
+use std::f64::consts::PI;
 
 use engine_derive::FunctionArguments;
 use float_utils::F64Extension;
@@ -30,9 +30,9 @@ impl FunctionEndpoint for TanEndpoint {
         let value = x.value;
 
         if value.is_close_to_multiple_of(PI) {
-            return Ok(Number::new_self(0.));
+            return Ok(Number::new(0.));
         }
 
-        Ok(Number::new_self(value.tan()))
+        Ok(Number::new(value.tan()))
     }
 }

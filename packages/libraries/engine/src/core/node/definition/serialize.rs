@@ -58,7 +58,7 @@ mod tests {
     fn serialize_define_constant() {
         assert_eq!(
             serialize_node(
-                &Definition::new("a", Number::new(1.)),
+                &Definition::new("a", Number::new_node(1.)),
                 &Context::default()
             )
             .unwrap(),
