@@ -1,9 +1,13 @@
 use std::collections::HashMap;
 
-use node::{FunctionSignature, Node};
+use node::{
+    FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType, Number,
+};
 use translate_core::Language;
 
-use crate::{core::EvaluateNodeError, ArgumentMapping, Context};
+use crate::{
+    core::EvaluateNodeError, ArgumentMapping, Context, FunctionArguments,
+};
 
 pub type FunctionExecutor =
     fn(&ArgumentMapping, &Context) -> Result<Node, EvaluateNodeError>;
@@ -66,6 +70,37 @@ pub enum HostEndpoint {
 }
 
 impl HostEndpoint {
+    pub fn function<F: FunctionEndpoint>(
+        module_id: &str,
+        module_name: TranslatedString,
+    ) -> Self {
+        Self::Function {
+            metadata: EndpointMetadata {
+                endpoint_name: F::name().to_string(),
+                module_id: module_id.to_string(),
+                module_name,
+                description: F::description(),
+            },
+            signature: F::signature(),
+            executor: F::call,
+        }
+    }
+
+    pub fn constant<C: ConstantEndpoint>(
+        module_id: &str,
+        module_name: TranslatedString,
+    ) -> Self {
+        Self::Constant {
+            metadata: EndpointMetadata {
+                endpoint_name: C::name().to_string(),
+                module_id: module_id.to_string(),
+                module_name,
+                description: C::description(),
+            },
+            executor: C::call,
+        }
+    }
+
     fn metadata(&self) -> &EndpointMetadata {
         match self {
             HostEndpoint::Function { metadata, .. } => metadata,
@@ -83,5 +118,57 @@ impl HostEndpoint {
 
     pub fn module_name(&self) -> &TranslatedString {
         &self.metadata().module_name
+    }
+}
+
+pub trait FunctionEndpoint {
+    type Output: GetStaticNodeType + IntoNode;
+    type Arguments<'a>: FunctionArguments<'a>;
+
+    fn name() -> &'static str;
+
+    fn description() -> TranslatedString;
+
+    fn executor<'a>(
+        args: Self::Arguments<'a>,
+        context: &Context,
+    ) -> Result<Self::Output, EvaluateNodeError>;
+
+    #[doc(hidden)]
+    fn call(
+        arguments: &ArgumentMapping,
+        context: &Context,
+    ) -> Result<Node, EvaluateNodeError> {
+        Ok(
+            Self::executor(Self::Arguments::from_mapping(arguments)?, context)?
+                .into_node(),
+        )
+    }
+
+    #[doc(hidden)]
+    fn signature() -> FunctionSignature {
+        Self::Arguments::signature()
+            .add_return_type(Self::Output::static_node_type())
+    }
+}
+
+pub trait ConstantEndpoint {
+    type Output: IntoNode + GetStaticNodeType;
+
+    fn name() -> &'static str;
+
+    fn description() -> TranslatedString;
+
+    fn executor(context: &Context) -> Self::Output;
+
+    #[doc(hidden)]
+    fn call(context: &Context) -> Node {
+        let node = Self::executor(context);
+        node.into_node()
+    }
+
+    #[doc(hidden)]
+    fn node_type() -> NodeType {
+        Self::Output::static_node_type()
     }
 }

@@ -15,6 +15,13 @@ impl Number {
             trace: Trace::new(),
         })
     }
+
+    pub fn new_self(value: f64) -> Self {
+        Self {
+            value,
+            trace: Trace::new(),
+        }
+    }
 }
 
 impl_node_traits!(Number);

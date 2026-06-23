@@ -1,6 +1,20 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{Data, DeriveInput, Type, spanned::Spanned};
+use syn::{spanned::Spanned, Data, DeriveInput, Type};
+
+use crate::function_arguments::impl_function_arguments;
+
+mod function_arguments;
+
+#[proc_macro_derive(FunctionArguments)]
+pub fn function_arguments_derive(input: TokenStream) -> TokenStream {
+    let ast = match syn::parse(input) {
+        Ok(ast) => ast,
+        Err(err) => return err.to_compile_error().into(),
+    };
+
+    impl_function_arguments(&ast)
+}
 
 #[proc_macro_derive(FromArgumentMapping)]
 pub fn from_argument_mapping_derive(input: TokenStream) -> TokenStream {
