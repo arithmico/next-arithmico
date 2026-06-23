@@ -7,14 +7,12 @@ use node::Number;
 
 use crate::core::FunctionEndpoint;
 
-// TODO: add descriptions with attribute macros
-
 #[derive(FunctionArguments)]
-#[description(Language::German, "Tangens")]
-#[description(Language::English, "tangent")]
+#[description(Language::German, "Berechnet den Tangens von x.")]
+#[description(Language::English, "Calculates the tangent of x.")]
 pub struct TanArgs<'a> {
     #[description(Language::German, "Winkel")]
-    #[description(Language::Enlish, "Angle")]
+    #[description(Language::English, "angle")]
     x: &'a Number,
 }
 

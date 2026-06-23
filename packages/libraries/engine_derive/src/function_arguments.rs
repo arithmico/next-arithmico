@@ -11,6 +11,7 @@ struct ArgumentField {
     name: String,
     cardinality: ArgumentCardinality,
     field_type: Type,
+    description: Vec<proc_macro2::TokenStream>,
 }
 
 enum ArgumentCardinality {
@@ -84,6 +85,31 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             let ident = field.ident.clone().ok_or_else(|| {
                 syn::Error::new(field.span(), "expected named field")
             })?;
+
+            let description = field
+                .attrs
+                .iter()
+                .filter_map(|attribute| {
+                    if attribute.path().is_ident("description") {
+                        Some(attribute.parse_args::<DescriptionAttribute>())
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Result<Vec<_>, _>>()?
+                .into_iter()
+                .map(|attribute| {
+                    let language = &attribute.language;
+                    let description = &attribute.description;
+                    quote! {
+                        .description(
+                            #language,
+                            #description
+                        )
+                    }
+                })
+                .collect::<Vec<_>>();
+
             let name = ident.to_string();
             let field_type = match &field.ty {
                 Type::Reference(type_ref) => &*type_ref.elem,
@@ -119,6 +145,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 name,
                 cardinality,
                 field_type: field_type.clone(),
+                description,
             })
         })
         .collect::<Result<Vec<_>, syn::Error>>();
@@ -156,10 +183,11 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         .iter()
         .map(
             |ArgumentField {
-                 ident,
                  name,
                  cardinality,
                  field_type,
+                 description,
+                 ..
              }| {
                 match cardinality {
                     ArgumentCardinality::Optional => quote! {
@@ -168,6 +196,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                             |arg| arg.optional().node_type(
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
+                            #(#description)*
                         )
                     },
                     ArgumentCardinality::Multiple => quote! {
@@ -176,6 +205,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                             |arg| arg.repeatable().node_type(
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
+                            #(#description)*
                         )
                     },
                     ArgumentCardinality::Required => quote! {
@@ -184,6 +214,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                             |arg| arg.node_type(
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
+                            #(#description)*
                         )
                     },
                 }
