@@ -1,6 +1,6 @@
 use language::Language;
 
-use crate::{cursor::LexerCursor, Error, Span, Token, TokenContent};
+use crate::{Error, Span, Token, TokenContent, cursor::LexerCursor};
 
 pub fn tokenize<'a>(
     input: &'a str,
@@ -196,7 +196,7 @@ pub fn tokenize<'a>(
                                 None => {
                                     return Err(Error::MissingDecimalPlaces {
                                         position: decimal_separator_span.to,
-                                    })
+                                    });
                                 }
                             }
                         } else {
@@ -217,7 +217,7 @@ pub fn tokenize<'a>(
                 return Err(Error::UnexpectedCharacter {
                     character: char,
                     position,
-                })
+                });
             }
         }
     }

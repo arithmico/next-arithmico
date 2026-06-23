@@ -1,3 +1,5 @@
+#[cfg(feature = "api_endpoint_trigonometry_asin")]
+use crate::api::trigonometry::asin::AsinEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_cos")]
 use crate::api::trigonometry::cos::CosEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_sin")]
@@ -7,6 +9,7 @@ use crate::api::trigonometry::tan::TanEndpoint;
 use crate::core::{HostApiModule, Language};
 use pi::load_pi_endpoint;
 
+mod asin;
 mod cos;
 mod pi;
 mod sin;
@@ -30,6 +33,9 @@ pub fn load_trigonometry_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_trigonometry_tan")]
     let module = module.function::<TanEndpoint>();
+
+    #[cfg(feature = "api_endpoint_trigonometry_asin")]
+    let module = module.function::<AsinEndpoint>();
 
     module.build()
 }

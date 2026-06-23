@@ -9,6 +9,7 @@ pub mod incompatible_matrix_dimensions;
 pub mod incompatible_vector_dimensions;
 pub mod invalid_node;
 pub mod invalid_parameter_type;
+pub mod invalid_parameter_value;
 pub mod invalid_repeatable_parameter_count;
 pub mod missing_parameter;
 pub mod runtime_error;

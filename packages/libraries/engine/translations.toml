@@ -93,3 +93,12 @@ German = "Zu viele Parameter: Die letzten {count} Parameter konnten nicht auf Fu
 [engine.evaluate.error.too_many_parameters.error_kind]
 English = "Too many parameters"
 German = "Zu viele Parameter"
+
+[engine.evaluate.error.invalid_parameter_value.error_kind]
+English = "Invalid parameter value"
+German = "Ungültiger Parameterwert"
+
+# API specific error messages
+[engine.api.error.trigonometry.asin.out-of-bounds]
+English = "Parameter value is not between -1 and 1"
+German = "Parameterwert liegt nicht zwischen -1 und 1"

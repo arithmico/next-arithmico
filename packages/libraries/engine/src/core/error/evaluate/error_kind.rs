@@ -16,6 +16,7 @@ pub enum EvaluateNodeErrorKind {
     InvalidRepeatableParameterCount,
     InvalidParameterType,
     TooManyParameters,
+    InvalidParameterValue,
 }
 
 impl Translatable for EvaluateNodeErrorKind {
@@ -60,6 +61,9 @@ impl Translatable for EvaluateNodeErrorKind {
             EvaluateNodeErrorKind::TooManyParameters => {
                 "engine.evaluate.error.too_many_parameters.error_kind"
             }
+            EvaluateNodeErrorKind::InvalidParameterValue => {
+                "engine.evaluate.error.invalid_parameter_value.error_kind"
+            },
         };
 
         TranslatedMessage::new(translation_id, translation_resolver)

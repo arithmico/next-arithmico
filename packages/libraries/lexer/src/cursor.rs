@@ -1,6 +1,6 @@
 use std::{iter::Enumerate, ops::RangeInclusive, str::CharIndices};
 
-use itertools::{peek_nth, PeekNth};
+use itertools::{PeekNth, peek_nth};
 
 use crate::{Position, Span};
 

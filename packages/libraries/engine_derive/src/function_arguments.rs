@@ -12,6 +12,7 @@ struct ArgumentField {
     cardinality: ArgumentCardinality,
     field_type: Type,
     description: Vec<proc_macro2::TokenStream>,
+    skip_evaluate: bool,
 }
 
 enum ArgumentCardinality {
@@ -104,6 +105,12 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 syn::Error::new(field.span(), "expected named field")
             })?;
 
+            let skip_evaluate = field
+                .attrs
+                .iter()
+                .find(|attribute| attribute.path().is_ident("skip_evaluate"))
+                .is_some();
+
             let description = field
                 .attrs
                 .iter()
@@ -164,6 +171,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 cardinality,
                 field_type: field_type.clone(),
                 description,
+                skip_evaluate,
             })
         })
         .collect::<Result<Vec<_>, syn::Error>>();
@@ -205,8 +213,15 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                  cardinality,
                  field_type,
                  description,
+                 skip_evaluate,
                  ..
              }| {
+                let evaluate = if !*skip_evaluate {
+                    Some(quote! {.evaluate()})
+                } else {
+                    None
+                };
+
                 match cardinality {
                     ArgumentCardinality::Optional => quote! {
                         .argument(
@@ -215,6 +230,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
                             #(#description)*
+                            #evaluate
                         )
                     },
                     ArgumentCardinality::Multiple => quote! {
@@ -224,6 +240,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
                             #(#description)*
+                            #evaluate
                         )
                     },
                     ArgumentCardinality::Required => quote! {
@@ -233,6 +250,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
                             #(#description)*
+                            #evaluate
                         )
                     },
                 }

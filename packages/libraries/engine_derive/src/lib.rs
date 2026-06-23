@@ -6,7 +6,10 @@ use crate::function_arguments::impl_function_arguments;
 
 mod function_arguments;
 
-#[proc_macro_derive(FunctionArguments, attributes(description, name))]
+#[proc_macro_derive(
+    FunctionArguments,
+    attributes(description, name, skip_evaluate)
+)]
 pub fn function_arguments_derive(input: TokenStream) -> TokenStream {
     let ast = match syn::parse(input) {
         Ok(ast) => ast,
