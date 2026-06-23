@@ -102,3 +102,7 @@ German = "Ungültiger Parameterwert"
 [engine.api.error.trigonometry.asin.out-of-bounds]
 English = "Parameter value is not between -1 and 1"
 German = "Parameterwert liegt nicht zwischen -1 und 1"
+
+[engine.api.error.trigonometry.acos.out-of-bounds]
+English = "Parameter value is not between -1 and 1"
+German = "Parameterwert liegt nicht zwischen -1 und 1"
