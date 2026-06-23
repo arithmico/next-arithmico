@@ -1,13 +1,14 @@
 use std::{collections::HashMap, f64::consts::PI};
-use translate_core::Language;
 
 use engine_derive::FunctionArguments;
 use float_utils::F64Extension;
 use node::Number;
+use translate_core::Language;
 
 use crate::core::FunctionEndpoint;
 
 #[derive(FunctionArguments)]
+#[name("tan")]
 #[description(Language::German, "Berechnet den Tangens von x.")]
 #[description(Language::English, "Calculates the tangent of x.")]
 pub struct TanArgs<'a> {
@@ -21,10 +22,6 @@ pub struct TanEndpoint;
 impl FunctionEndpoint for TanEndpoint {
     type Output = Number;
     type Arguments<'a> = TanArgs<'a>;
-
-    fn name() -> &'static str {
-        "tan"
-    }
 
     fn executor<'a>(
         TanArgs { x }: Self::Arguments<'a>,
