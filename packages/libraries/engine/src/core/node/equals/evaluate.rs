@@ -85,7 +85,7 @@ mod tests {
     #[test]
     fn evaluate_equals_number_number_true() {
         let context = Context::default();
-        let result = Equals::new(Number::new(3.), Number::new(3.))
+        let result = Equals::new(Number::new_node(3.), Number::new_node(3.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(true));
@@ -94,7 +94,7 @@ mod tests {
     #[test]
     fn evaluate_equals_number_number_false() {
         let context = Context::default();
-        let result = Equals::new(Number::new(3.), Number::new(4.))
+        let result = Equals::new(Number::new_node(3.), Number::new_node(4.))
             .evaluate(&context)
             .unwrap();
         assert_eq!(result, Boolean::new(false));
@@ -105,14 +105,14 @@ mod tests {
         let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
         )
         .evaluate(&context)
@@ -125,14 +125,14 @@ mod tests {
         let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(4.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(4.),
             ]),
         )
         .evaluate(&context)
@@ -145,14 +145,14 @@ mod tests {
         let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
             Tensor::new(vec![
-                Tensor::new(vec![Number::new(1.)]),
-                Tensor::new(vec![Number::new(2.)]),
-                Tensor::new(vec![Number::new(3.)]),
+                Tensor::new(vec![Number::new_node(1.)]),
+                Tensor::new(vec![Number::new_node(2.)]),
+                Tensor::new(vec![Number::new_node(3.)]),
             ]),
         )
         .evaluate(&context)
@@ -165,13 +165,13 @@ mod tests {
         let context = Context::default();
         let result = Equals::new(
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ]),
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
+                Number::new_node(1.),
+                Number::new_node(2.),
                 Boolean::new(true),
             ]),
         )

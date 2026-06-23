@@ -21,14 +21,14 @@ fn cos_executor(
     let value = x.value;
 
     if value.is_close_to_multiple_of(2.0 * PI) {
-        return Ok(Number::new(1.));
+        return Ok(Number::new_node(1.));
     } else if value.is_close_to_shifted_multiple_of(PI, PI / 2.0) {
-        return Ok(Number::new(0.));
+        return Ok(Number::new_node(0.));
     } else if value.is_close_to_shifted_multiple_of(2.0 * PI, PI) {
-        return Ok(Number::new(-1.));
+        return Ok(Number::new_node(-1.));
     }
 
-    Ok(Number::new(value.cos()))
+    Ok(Number::new_node(value.cos()))
 }
 
 #[cfg(feature = "api_endpoint_trigonometry_cos")]

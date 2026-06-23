@@ -36,7 +36,7 @@ fn add_sum_elements(
                 return Err(EvaluateNodeError::unsupported_operation());
             }
 
-            Ok(Number::new(left.value + right.value))
+            Ok(Number::new_node(left.value + right.value))
         }
         (Node::Tensor(left), Node::Tensor(right)) => {
             let left_rank = left.get_rank();
@@ -86,27 +86,27 @@ mod tests {
     #[test]
     fn evaluate_invalid_sum() {
         let context = Context::default();
-        let result = Sum::new(vec![Number::new(1.)]).evaluate(&context);
+        let result = Sum::new(vec![Number::new_node(1.)]).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Sum)));
     }
 
     #[test]
     fn evaluate_sum_number_number_2() {
         let context = Context::default();
-        let result = Sum::new(vec![Number::new(1.), Number::new(2.)])
+        let result = Sum::new(vec![Number::new_node(1.), Number::new_node(2.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(3.));
+        assert_eq!(result, Number::new_node(3.));
     }
 
     #[test]
     fn evaluate_sum_number_number_3() {
         let context = Context::default();
         let result =
-            Sum::new(vec![Number::new(1.), Number::new(2.), Number::new(3.)])
+            Sum::new(vec![Number::new_node(1.), Number::new_node(2.), Number::new_node(3.)])
                 .evaluate(&context)
                 .unwrap();
-        assert_eq!(result, Number::new(6.));
+        assert_eq!(result, Number::new_node(6.));
     }
 
     #[test]

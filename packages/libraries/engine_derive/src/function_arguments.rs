@@ -256,7 +256,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             }
 
             fn function_description() -> crate::core::TranslatedString {
-                let mut description = HashMap::new();
+                let mut description = std::collections::HashMap::new();
                 #(
                     #struct_descriptions
                 )*

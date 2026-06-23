@@ -12,7 +12,7 @@ impl EvaluateNode for Negate {
                     return Err(EvaluateNodeError::unsupported_operation());
                 }
 
-                Ok(Number::new(-number.value))
+                Ok(Number::new_node(-number.value))
             }
             Node::Boolean(boolean) => {
                 if !cfg!(feature = "operator_negate_boolean") {
@@ -49,18 +49,18 @@ mod tests {
     #[test]
     fn evaluate_negate_number() {
         let context = Context::default();
-        let result = Negate::new(Number::new(42.)).evaluate(&context).unwrap();
-        assert_eq!(result, Number::new(-42.));
+        let result = Negate::new(Number::new_node(42.)).evaluate(&context).unwrap();
+        assert_eq!(result, Number::new_node(-42.));
     }
 
     #[test]
     fn evaluate_negate_number_with_trace() {
         let context = Context::default();
-        let result = Negate::new(Number::new(42.).with_span(1, 2))
+        let result = Negate::new(Number::new_node(42.).with_span(1, 2))
             .with_span(0, 2)
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(-42.).with_span(0, 2));
+        assert_eq!(result, Number::new_node(-42.).with_span(0, 2));
     }
 
     #[test]
@@ -85,18 +85,18 @@ mod tests {
     fn evaluate_negate_tensor() {
         let context = Context::default();
         let result = Negate::new(Tensor::new(vec![
-            Number::new(1.),
-            Number::new(2.),
-            Number::new(3.),
+            Number::new_node(1.),
+            Number::new_node(2.),
+            Number::new_node(3.),
         ]))
         .evaluate(&context)
         .unwrap();
         assert_eq!(
             result,
             Tensor::new(vec![
-                Number::new(-1.),
-                Number::new(-2.),
-                Number::new(-3.),
+                Number::new_node(-1.),
+                Number::new_node(-2.),
+                Number::new_node(-3.),
             ])
         );
     }
@@ -106,9 +106,9 @@ mod tests {
         let context = Context::default();
         let result = Negate::new(
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ])
             .with_span(1, 5),
         )
@@ -118,9 +118,9 @@ mod tests {
         assert_eq!(
             result,
             Tensor::new(vec![
-                Number::new(-1.),
-                Number::new(-2.),
-                Number::new(-3.),
+                Number::new_node(-1.),
+                Number::new_node(-2.),
+                Number::new_node(-3.),
             ])
             .with_span(0, 5)
         );

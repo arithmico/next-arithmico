@@ -96,7 +96,7 @@ mod tests {
             result,
             (
                 "",
-                Definition::new("a", Number::new(1.).with_span(5, 5))
+                Definition::new("a", Number::new_node(1.).with_span(5, 5))
                     .with_span(0, 5)
             )
         );
@@ -113,7 +113,7 @@ mod tests {
                     "f",
                     Function::new(
                         FunctionSignature::new().add_return_type(NodeType::Any),
-                        Number::new(1.).with_span(7, 7)
+                        Number::new_node(1.).with_span(7, 7)
                     )
                     .with_span(0, 7)
                 )

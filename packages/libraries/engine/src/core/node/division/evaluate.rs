@@ -31,7 +31,7 @@ fn divide_number_by_number(
         return Err(EvaluateNodeError::division_by_zero());
     }
 
-    Ok(Number::new(dividend.value / divisor.value))
+    Ok(Number::new_node(dividend.value / divisor.value))
 }
 
 fn divide_tensor_by_number(
@@ -47,7 +47,7 @@ fn divide_tensor_by_number(
         .elements
         .iter()
         .map(|element| {
-            Division::new(element.clone(), Number::new(divisor.value))
+            Division::new(element.clone(), Number::new_node(divisor.value))
         })
         .collect();
 
@@ -62,17 +62,17 @@ mod tests {
     fn evaluate_division_by_zero() {
         let context = Context::default();
         let result =
-            Division::new(Number::new(8.), Number::new(0.)).evaluate(&context);
+            Division::new(Number::new_node(8.), Number::new_node(0.)).evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::division_by_zero()));
     }
 
     #[test]
     fn evaluate_division_number_number() {
         let context = Context::default();
-        let result = Division::new(Number::new(8.), Number::new(2.))
+        let result = Division::new(Number::new_node(8.), Number::new_node(2.))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(4.));
+        assert_eq!(result, Number::new_node(4.));
     }
 
     #[test]
@@ -80,20 +80,20 @@ mod tests {
         let context = Context::default();
         let result = Division::new(
             Tensor::new(vec![
-                Number::new(2.),
-                Number::new(4.),
-                Number::new(6.),
+                Number::new_node(2.),
+                Number::new_node(4.),
+                Number::new_node(6.),
             ]),
-            Number::new(2.),
+            Number::new_node(2.),
         )
         .evaluate(&context)
         .unwrap();
         assert_eq!(
             result,
             Tensor::new(vec![
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ])
         );
     }

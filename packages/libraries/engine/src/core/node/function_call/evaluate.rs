@@ -110,11 +110,11 @@ mod tests {
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
             ),
-            vec![Number::new(2.)],
+            vec![Number::new_node(2.)],
         )
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(2.));
+        assert_eq!(result, Number::new_node(2.));
     }
 
     #[test]
@@ -128,7 +128,7 @@ mod tests {
             TestArgs { x }: TestArgs,
             context: &Context,
         ) -> Result<Node, EvaluateNodeError> {
-            Power::new(Number::new(x.value), Number::new(2.)).evaluate(context)
+            Power::new(Number::new_node(x.value), Number::new_node(2.)).evaluate(context)
         }
 
         let context = Context::new(
@@ -163,10 +163,10 @@ mod tests {
                     .build(),
             ),
         );
-        let result = FunctionCall::new(Symbol::new("f"), vec![Number::new(2.)])
+        let result = FunctionCall::new(Symbol::new("f"), vec![Number::new_node(2.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(4.));
+        assert_eq!(result, Number::new_node(4.));
     }
 
     #[test]
@@ -180,7 +180,7 @@ mod tests {
             TestArgs { x }: TestArgs,
             context: &Context,
         ) -> Result<Node, EvaluateNodeError> {
-            Power::new(Number::new(x.value), Number::new(2.)).evaluate(context)
+            Power::new(Number::new_node(x.value), Number::new_node(2.)).evaluate(context)
         }
 
         let context = Context::new(
@@ -234,9 +234,9 @@ mod tests {
             context: &Context,
         ) -> Result<Node, EvaluateNodeError> {
             let result = if let Some(_) = b {
-                Number::new(a.value)
+                Number::new_node(a.value)
             } else {
-                Number::new(c.iter().map(|n| n.value).sum())
+                Number::new_node(c.iter().map(|n| n.value).sum())
             };
 
             result.evaluate(context)
@@ -287,15 +287,15 @@ mod tests {
         let result = FunctionCall::new(
             Symbol::new("f"),
             vec![
-                Number::new(5.),
+                Number::new_node(5.),
                 Boolean::new(false),
-                Number::new(1.),
-                Number::new(2.),
-                Number::new(3.),
+                Number::new_node(1.),
+                Number::new_node(2.),
+                Number::new_node(3.),
             ],
         )
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(5.));
+        assert_eq!(result, Number::new_node(5.));
     }
 }

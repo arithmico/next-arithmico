@@ -61,8 +61,8 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Number::new(1.).with_span(0, 0),
-                    Number::new(2.).with_span(2, 2)
+                    Number::new_node(1.).with_span(0, 0),
+                    Number::new_node(2.).with_span(2, 2)
                 ])
                 .with_span(0, 2)
             )
@@ -77,9 +77,9 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Number::new(1.).with_span(0, 0),
-                    Number::new(2.).with_span(2, 2),
-                    Number::new(3.).with_span(4, 4)
+                    Number::new_node(1.).with_span(0, 0),
+                    Number::new_node(2.).with_span(2, 2),
+                    Number::new_node(3.).with_span(4, 4)
                 ])
                 .with_span(0, 4)
             )
@@ -94,9 +94,9 @@ mod tests {
             (
                 "",
                 Product::new(vec![
-                    Number::new(1.).with_span(0, 0),
-                    Number::new(2.).with_span(3, 3),
-                    Number::new(3.).with_span(10, 10)
+                    Number::new_node(1.).with_span(0, 0),
+                    Number::new_node(2.).with_span(3, 3),
+                    Number::new_node(3.).with_span(10, 10)
                 ])
                 .with_span(0, 10)
             )
@@ -112,11 +112,11 @@ mod tests {
                 "",
                 Product::new(vec![
                     Division::new(
-                        Number::new(1.).with_span(0, 0),
-                        Number::new(2.).with_span(4, 4)
+                        Number::new_node(1.).with_span(0, 0),
+                        Number::new_node(2.).with_span(4, 4)
                     )
                     .with_span(0, 4),
-                    Number::new(3.).with_span(8, 8)
+                    Number::new_node(3.).with_span(8, 8)
                 ])
                 .with_span(0, 8)
             )

@@ -38,7 +38,7 @@ mod tests {
     #[test]
     fn evaluate_symbol_from_stack() {
         let mut stack = Stack::new();
-        stack.insert("x", Number::new(42.));
+        stack.insert("x", Number::new_node(42.));
         let context = Context::new(
             stack,
             DecimalPlaces::default(),
@@ -46,13 +46,13 @@ mod tests {
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x").evaluate(&context).unwrap();
-        assert_eq!(result, Number::new(42.));
+        assert_eq!(result, Number::new_node(42.));
     }
 
     #[test]
     fn evaluate_symbol_from_stack_with_trace() {
         let mut stack = Stack::new();
-        stack.insert("x", Number::new(42.));
+        stack.insert("x", Number::new_node(42.));
         let context = Context::new(
             stack,
             DecimalPlaces::default(),
@@ -61,7 +61,7 @@ mod tests {
         );
         let result =
             Symbol::new("x").with_span(0, 0).evaluate(&context).unwrap();
-        assert_eq!(result, Number::new(42.).with_span(0, 0));
+        assert_eq!(result, Number::new_node(42.).with_span(0, 0));
     }
 
     #[test]
@@ -75,7 +75,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
-                            .constant(|_context| Number::new(42.0).into())
+                            .constant(|_context| Number::new_node(42.0).into())
                     }])
                     .build()
             })
@@ -89,7 +89,7 @@ mod tests {
         );
 
         let result = Symbol::new("test").evaluate(&context).unwrap();
-        assert_eq!(result, Number::new(42.));
+        assert_eq!(result, Number::new_node(42.));
     }
 
     #[test]
@@ -103,7 +103,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
-                            .constant(|_context| Number::new(42.0).into())
+                            .constant(|_context| Number::new_node(42.0).into())
                     }])
                     .build()
             })
@@ -120,6 +120,6 @@ mod tests {
             .with_span(0, 3)
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(42.).with_span(0, 3));
+        assert_eq!(result, Number::new_node(42.).with_span(0, 3));
     }
 }

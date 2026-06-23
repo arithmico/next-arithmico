@@ -24,10 +24,10 @@ mod tests {
         let context = Context::default();
         let result = Definition::new(
             "test",
-            Sum::new(vec![Number::new(1.), Number::new(2.)]),
+            Sum::new(vec![Number::new_node(1.), Number::new_node(2.)]),
         )
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Definition::new("test", Number::new(3.)));
+        assert_eq!(result, Definition::new("test", Number::new_node(3.)));
     }
 }

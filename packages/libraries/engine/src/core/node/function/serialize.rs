@@ -91,7 +91,7 @@ mod tests {
             serialize_node(
                 &Function::new(
                     FunctionSignature::new().add_return_type(NodeType::Any),
-                    Number::new(1.)
+                    Number::new_node(1.)
                 ),
                 &Context::default()
             )

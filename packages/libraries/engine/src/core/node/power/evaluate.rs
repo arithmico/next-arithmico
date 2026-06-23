@@ -14,14 +14,14 @@ impl EvaluateNode for Power {
                 }
 
                 if exponent.value == 0. {
-                    return Ok(Number::new(1.));
+                    return Ok(Number::new_node(1.));
                 }
 
                 if base.value == 0. {
-                    return Ok(Number::new(0.));
+                    return Ok(Number::new_node(0.));
                 }
 
-                Ok(Number::new(base.value.powf(exponent.value)))
+                Ok(Number::new_node(base.value.powf(exponent.value)))
             }
             _ => Err(EvaluateNodeError::unsupported_operation()),
         }
@@ -36,66 +36,66 @@ mod tests {
     #[test]
     fn evaluate_power_number_number() {
         let context = Context::default();
-        let result = Power::new(Number::new(8.), Number::new(2.))
+        let result = Power::new(Number::new_node(8.), Number::new_node(2.))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(64.));
+        assert_eq!(result, Number::new_node(64.));
     }
 
     #[test]
     fn evaluate_power_number_number_with_trace() {
         let context = Context::default();
         let result = Power::new(
-            Number::new(8.).with_span(0, 0),
-            Number::new(2.).with_span(2, 2),
+            Number::new_node(8.).with_span(0, 0),
+            Number::new_node(2.).with_span(2, 2),
         )
         .with_span(0, 2)
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(64.).with_span(0, 2));
+        assert_eq!(result, Number::new_node(64.).with_span(0, 2));
     }
 
     #[test]
     fn evaluate_power_number_number0() {
         let context = Context::default();
-        let result = Power::new(Number::new(8.), Number::new(0.))
+        let result = Power::new(Number::new_node(8.), Number::new_node(0.))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(1.));
+        assert_eq!(result, Number::new_node(1.));
     }
 
     #[test]
     fn evaluate_power_number_number0_with_trace() {
         let context = Context::default();
         let result = Power::new(
-            Number::new(8.).with_span(0, 0),
-            Number::new(0.).with_span(2, 2),
+            Number::new_node(8.).with_span(0, 0),
+            Number::new_node(0.).with_span(2, 2),
         )
         .with_span(0, 2)
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(1.).with_span(0, 2));
+        assert_eq!(result, Number::new_node(1.).with_span(0, 2));
     }
 
     #[test]
     fn evaluate_power_number0_number() {
         let context = Context::default();
-        let result = Power::new(Number::new(0.), Number::new(2.))
+        let result = Power::new(Number::new_node(0.), Number::new_node(2.))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new(0.));
+        assert_eq!(result, Number::new_node(0.));
     }
 
     #[test]
     fn evaluate_power_number0_number_with_trace() {
         let context = Context::default();
         let result = Power::new(
-            Number::new(0.).with_span(0, 0),
-            Number::new(2.).with_span(2, 2),
+            Number::new_node(0.).with_span(0, 0),
+            Number::new_node(2.).with_span(2, 2),
         )
         .with_span(0, 2)
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Number::new(0.).with_span(0, 2));
+        assert_eq!(result, Number::new_node(0.).with_span(0, 2));
     }
 }

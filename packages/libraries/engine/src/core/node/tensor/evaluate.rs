@@ -46,28 +46,30 @@ mod tests {
     #[test]
     fn evaluate_tensor_with_numbers() {
         let context = Context::default();
-        let result = Tensor::new(vec![Number::new(1.)])
+        let result = Tensor::new(vec![Number::new_node(1.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Tensor::new(vec![Number::new(1.)]));
+        assert_eq!(result, Tensor::new(vec![Number::new_node(1.)]));
     }
 
     #[test]
     fn evaluate_tensor_with_sum() {
         let context = Context::default();
-        let result =
-            Tensor::new(vec![Sum::new(vec![Number::new(1.), Number::new(2.)])])
-                .evaluate(&context)
-                .unwrap();
-        assert_eq!(result, Tensor::new(vec![Number::new(3.)]));
+        let result = Tensor::new(vec![Sum::new(vec![
+            Number::new_node(1.),
+            Number::new_node(2.),
+        ])])
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(result, Tensor::new(vec![Number::new_node(3.)]));
     }
 
     #[test]
     fn evaluate_tensor_with_sum_with_trace() {
         let context = Context::default();
         let result = Tensor::new(vec![Sum::new(vec![
-            Number::new(1.).with_span(1, 1),
-            Number::new(2.).with_span(3, 3),
+            Number::new_node(1.).with_span(1, 1),
+            Number::new_node(2.).with_span(3, 3),
         ])
         .with_span(1, 3)])
         .with_span(0, 4)
@@ -75,7 +77,8 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![Number::new(3.).with_span(1, 3)]).with_span(0, 4)
+            Tensor::new(vec![Number::new_node(3.).with_span(1, 3)])
+                .with_span(0, 4)
         );
     }
 
@@ -83,8 +86,8 @@ mod tests {
     fn evaluate_tensor_preserve_shape() {
         let context = Context::default();
         let result = Tensor::new(vec![
-            Tensor::new(vec![Number::new(1.), Number::new(2.)]),
-            Tensor::new(vec![Number::new(3.), Number::new(4.)]),
+            Tensor::new(vec![Number::new_node(1.), Number::new_node(2.)]),
+            Tensor::new(vec![Number::new_node(3.), Number::new_node(4.)]),
         ])
         .evaluate(&context)
         .unwrap();
@@ -93,10 +96,10 @@ mod tests {
             Tensor::new_with_shape(
                 vec![2, 2],
                 vec![
-                    Number::new(1.),
-                    Number::new(2.),
-                    Number::new(3.),
-                    Number::new(4.)
+                    Number::new_node(1.),
+                    Number::new_node(2.),
+                    Number::new_node(3.),
+                    Number::new_node(4.)
                 ]
             )
         );
