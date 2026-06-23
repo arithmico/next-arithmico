@@ -23,6 +23,7 @@ impl FunctionEndpoint for TanEndpoint {
     type Output = Number;
     type Arguments<'a> = TanArgs<'a>;
 
+    // TODO: unit tests
     fn executor<'a>(
         TanArgs { x }: Self::Arguments<'a>,
         _context: &crate::Context,

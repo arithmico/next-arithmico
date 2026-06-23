@@ -23,6 +23,7 @@ impl FunctionEndpoint for AsinEndpoint {
 
     type Arguments<'a> = AsinArgs<'a>;
 
+    // TODO: unit tests
     // TODO: handle special values
     fn executor<'a>(
         AsinArgs { x }: Self::Arguments<'a>,

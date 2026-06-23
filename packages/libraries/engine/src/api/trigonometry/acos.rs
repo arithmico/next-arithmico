@@ -23,6 +23,7 @@ impl FunctionEndpoint for AcosEndpoint {
 
     type Arguments<'a> = AcosArgs<'a>;
 
+    // TODO: unit tests
     // TODO: handle special values
     fn executor<'a>(
         AcosArgs { x }: Self::Arguments<'a>,
