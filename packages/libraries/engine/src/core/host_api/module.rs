@@ -3,7 +3,9 @@ use std::collections::{HashMap, HashSet};
 use node::FunctionSignature;
 use translate_core::Language;
 
-use crate::core::{ConstantExecutor, EndpointMetadata, FunctionExecutor};
+use crate::core::{
+    ConstantExecutor, EndpointMetadata, FunctionEndpoint, FunctionExecutor,
+};
 
 use super::{endpoint::HostEndpoint, TranslatedString};
 
@@ -82,6 +84,15 @@ impl HostApiModuleBuilderEndpointsStage {
         name: &str,
     ) -> HostApiModuleBuilderEndpointsStage {
         self.module_name.insert(language, name.to_string());
+        self
+    }
+
+    pub fn function<F: FunctionEndpoint>(mut self) -> Self {
+        let endpoint = HostEndpoint::function::<F>(
+            &self.module_id,
+            self.module_name.clone(),
+        );
+        self.endpoints.push(endpoint);
         self
     }
 
