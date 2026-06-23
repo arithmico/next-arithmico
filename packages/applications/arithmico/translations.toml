@@ -154,6 +154,10 @@ German = "Referenz"
 English = "Search"
 German = "Suche"
 
+[reference.item.details]
+English = "Details"
+German = "Details"
+
 [reference.item.description]
 English = "Description"
 German = "Beschreibung"

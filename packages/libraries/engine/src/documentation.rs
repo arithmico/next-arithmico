@@ -74,6 +74,7 @@ pub enum DocumentationItemType {
 
 #[derive(Clone, Debug)]
 pub struct DocumentationItem {
+    endpoint_name: String,
     documentation_type: DocumentationItemType,
     synopsis: TranslatedString,
     description: TranslatedString,
@@ -82,23 +83,25 @@ pub struct DocumentationItem {
 }
 
 impl DocumentationItem {
-    pub fn new_function() -> Self {
+    pub fn new_function(id: &str) -> Self {
         Self {
             documentation_type: DocumentationItemType::Function,
             synopsis: HashMap::new(),
             description: HashMap::new(),
             parameters: Vec::new(),
             return_types: Vec::new(),
+            endpoint_name: id.to_string(),
         }
     }
 
-    pub fn new_constant() -> Self {
+    pub fn new_constant(id: &str) -> Self {
         Self {
             documentation_type: DocumentationItemType::Constant,
             synopsis: HashMap::new(),
             description: HashMap::new(),
             parameters: Vec::new(),
             return_types: Vec::new(),
+            endpoint_name: id.to_string(),
         }
     }
 
@@ -122,6 +125,10 @@ impl DocumentationItem {
         &self.return_types
     }
 
+    pub fn get_endpoint_name(&self) -> &str {
+        &self.endpoint_name
+    }
+
     pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
         match endpoint {
             HostEndpoint::Function {
@@ -129,7 +136,8 @@ impl DocumentationItem {
                 signature,
                 ..
             } => {
-                let mut item = DocumentationItem::new_function();
+                let mut item =
+                    DocumentationItem::new_function(metadata.endpoint_name());
                 item.description = metadata.description().clone();
                 item.parameters = signature
                     .arguments()
@@ -175,7 +183,8 @@ impl DocumentationItem {
                 item
             }
             HostEndpoint::Constant { metadata, .. } => {
-                let mut item = DocumentationItem::new_constant();
+                let mut item =
+                    DocumentationItem::new_constant(metadata.endpoint_name());
                 item.description = metadata.description().clone();
                 let synopsis_expression = Symbol::new(name);
                 item.synopsis.insert(
