@@ -243,6 +243,17 @@ impl Documentation {
     pub fn modules(&self) -> &[DocumentationModule] {
         &self.modules
     }
+
+    pub fn find_endpoint(
+        &self,
+        endpoint_name: &str,
+    ) -> Option<DocumentationItem> {
+        self.modules()
+            .iter()
+            .flat_map(|module| module.items())
+            .find(|item| item.endpoint_name == endpoint_name)
+            .cloned()
+    }
 }
 
 impl From<&HostApi> for Documentation {

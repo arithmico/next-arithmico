@@ -8,6 +8,7 @@ mod definitions;
 mod history;
 mod not_found;
 mod reference;
+mod reference_details;
 mod settings;
 
 pub use about::AboutPage;
@@ -17,6 +18,8 @@ pub use history::HistoryPage;
 pub use not_found::NotFoundPage;
 pub use reference::ReferencePage;
 pub use settings::SettingsPage;
+
+use crate::pages::reference_details::ReferenceDetailsPage;
 
 #[component]
 pub fn ApplicationRouter() -> impl IntoView {
@@ -29,6 +32,10 @@ pub fn ApplicationRouter() -> impl IntoView {
                 <Route path=path!("/about") view=AboutPage />
                 <Route path=path!("/history") view=HistoryPage />
                 <Route path=path!("/definitions") view=DefinitionsPage />
+                <Route
+                    path=path!("/reference/:endpoint_name")
+                    view=ReferenceDetailsPage
+                />
             </Routes>
         </Router>
     }
