@@ -1,10 +1,11 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{
-    parse::{Parse, ParseStream},
     spanned::Spanned,
-    Data, DeriveInput, Ident, LitStr, Path, Token, Type,
+    Data, DeriveInput, Ident, LitStr, Type,
 };
+
+use crate::DescriptionAttribute;
 
 struct ArgumentField {
     ident: Ident,
@@ -19,24 +20,6 @@ enum ArgumentCardinality {
     Multiple,
     Optional,
     Required,
-}
-
-struct DescriptionAttribute {
-    language: Path,
-    description: LitStr,
-}
-
-impl Parse for DescriptionAttribute {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        let language: Path = input.parse()?;
-        let _comma: Token![,] = input.parse()?;
-        let description: LitStr = input.parse()?;
-
-        Ok(Self {
-            language,
-            description,
-        })
-    }
 }
 
 pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
