@@ -4,7 +4,7 @@ use node::FunctionSignature;
 use translate_core::Language;
 
 use crate::core::{
-    ConstantExecutor, EndpointMetadata, FunctionEndpoint, FunctionExecutor,
+    ConstantEndpoint, ConstantExecutor, EndpointMetadata, FunctionEndpoint, FunctionExecutor,
 };
 
 use super::{endpoint::HostEndpoint, TranslatedString};
@@ -92,6 +92,15 @@ impl HostApiModuleBuilderEndpointsStage {
             &self.module_id,
             self.module_name.clone(),
         );
+        self.endpoints.push(endpoint);
+        self
+    }
+
+    pub fn constant<F: ConstantEndpoint>(mut self) -> Self {
+        let endpoint = HostEndpoint::constant::<F>(
+    &self.module_id,
+    self.module_name.clone(),
+);
         self.endpoints.push(endpoint);
         self
     }

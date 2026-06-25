@@ -156,19 +156,30 @@ pub trait FunctionEndpoint {
     }
 }
 
-pub trait ConstantEndpoint {
+
+pub trait ConstantMetadata {
+    fn constant_name() -> &'static str;
+    fn constant_description() -> TranslatedString;
+}
+
+pub trait ConstantEndpoint: ConstantMetadata {
     type Output: IntoNode + GetStaticNodeType;
-
-    fn name() -> &'static str;
-
-    fn description() -> TranslatedString;
 
     fn executor(context: &Context) -> Self::Output;
 
     #[doc(hidden)]
+    fn name() -> &'static str {
+        Self::constant_name()
+    }
+
+    #[doc(hidden)]
+    fn description() -> TranslatedString {
+        Self::constant_description()
+    }
+
+    #[doc(hidden)]
     fn call(context: &Context) -> Node {
-        let node = Self::executor(context);
-        node.into_node()
+        Self::executor(context).into_node()
     }
 
     #[doc(hidden)]
