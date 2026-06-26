@@ -10,6 +10,6 @@ pub fn load_host_api() -> HostApi {
             cfg!(feature = "api_module_loader_trigonometry"),
             load_trigonometry_module,
         )
-        .module(cfg!("api_module_physics"), load_physics_module)
+        .module(cfg!(feature = "api_module_loader_physics"), load_physics_module)
         .build()
 }
