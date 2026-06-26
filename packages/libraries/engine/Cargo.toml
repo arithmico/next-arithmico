@@ -85,7 +85,11 @@ operator_less_than_or_equals_number_number = ["datatype_boolean", "datatype_numb
 operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
 
 # api modules
-api_modules = ["api_module_trigonometry"]
+api_modules = [
+    "api_module_trigonometry",
+    "api_module_physics"
+]
+
 api_module_trigonometry = [
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
@@ -94,6 +98,49 @@ api_module_trigonometry = [
     "api_endpoint_trigonometry_asin",
     "api_endpoint_trigonometry_acos",
     "api_endpoint_trigonometry_atan"
+]
+
+api_module_physics = [
+    "api_endpoint_physics_m_p",
+    "api_endpoint_physics_m_n",
+    "api_endpoint_physics_m_e",
+    "api_endpoint_physics_m_mu",
+    "api_endpoint_physics_a_0",
+    "api_endpoint_physics_h",
+    "api_endpoint_physics_mu_nucleus",
+    "api_endpoint_physics_mu_b",
+    "api_endpoint_physics_hbar",
+    "api_endpoint_physics_alpha",
+    "api_endpoint_physics_r_e",
+    "api_endpoint_physics_lambda_c",
+    "api_endpoint_physics_gamma_p",
+    "api_endpoint_physics_lambda_cp",
+    "api_endpoint_physics_lambda_cn",
+    "api_endpoint_physics_r_inf",
+    "api_endpoint_physics_u",
+    "api_endpoint_physics_mu_p",
+    "api_endpoint_physics_mu_e",
+    "api_endpoint_physics_mu_n",
+    "api_endpoint_physics_mu_mu",
+    "api_endpoint_physics_f",
+    "api_endpoint_physics_e",
+    "api_endpoint_physics_n_a",
+    "api_endpoint_physics_k",
+    "api_endpoint_physics_v_m",
+    "api_endpoint_physics_r",
+    "api_endpoint_physics_c",
+    "api_endpoint_physics_c_1",
+    "api_endpoint_physics_c_2",
+    "api_endpoint_physics_sigma",
+    "api_endpoint_physics_epsilon_0",
+    "api_endpoint_physics_mu_0",
+    "api_endpoint_physics_phi_0",
+    "api_endpoint_physics_g_standard",
+    "api_endpoint_physics_g_0",
+    "api_endpoint_physics_z_0",
+    "api_endpoint_physics_t",
+    "api_endpoint_physics_g",
+    "api_endpoint_physics_atm"
 ]
 
 # trigonometry
@@ -105,3 +152,45 @@ api_endpoint_trigonometry_tan = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_asin = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_acos = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_atan = ["api_module_loader_trigonometry"]
+
+# physics
+api_endpoint_physics_m_p = ["api_module_loader_physics"]
+api_endpoint_physics_m_n = ["api_module_loader_physics"]
+api_endpoint_physics_m_e = ["api_module_loader_physics"]
+api_endpoint_physics_m_mu = ["api_module_loader_physics"]
+api_endpoint_physics_a_0 = ["api_module_loader_physics"]
+api_endpoint_physics_h = ["api_module_loader_physics"]
+api_endpoint_physics_mu_nucleus = ["api_module_loader_physics"]
+api_endpoint_physics_mu_b = ["api_module_loader_physics"]
+api_endpoint_physics_hbar = ["api_module_loader_physics"]
+api_endpoint_physics_alpha = ["api_module_loader_physics"]
+api_endpoint_physics_r_e = ["api_module_loader_physics"]
+api_endpoint_physics_lambda_c = ["api_module_loader_physics"]
+api_endpoint_physics_gamma_p = ["api_module_loader_physics"]
+api_endpoint_physics_lambda_cp = ["api_module_loader_physics"]
+api_endpoint_physics_lambda_cn = ["api_module_loader_physics"]
+api_endpoint_physics_r_inf = ["api_module_loader_physics"]
+api_endpoint_physics_u = ["api_module_loader_physics"]
+api_endpoint_physics_mu_p = ["api_module_loader_physics"]
+api_endpoint_physics_mu_e = ["api_module_loader_physics"]
+api_endpoint_physics_mu_n = ["api_module_loader_physics"]
+api_endpoint_physics_mu_mu = ["api_module_loader_physics"]
+api_endpoint_physics_f = ["api_module_loader_physics"]
+api_endpoint_physics_e = ["api_module_loader_physics"]
+api_endpoint_physics_n_a = ["api_module_loader_physics"]
+api_endpoint_physics_k = ["api_module_loader_physics"]
+api_endpoint_physics_v_m = ["api_module_loader_physics"]
+api_endpoint_physics_r = ["api_module_loader_physics"]
+api_endpoint_physics_c = ["api_module_loader_physics"]
+api_endpoint_physics_c_1 = ["api_module_loader_physics"]
+api_endpoint_physics_c_2 = ["api_module_loader_physics"]
+api_endpoint_physics_sigma = ["api_module_loader_physics"]
+api_endpoint_physics_epsilon_0 = ["api_module_loader_physics"]
+api_endpoint_physics_mu_0 = ["api_module_loader_physics"]
+api_endpoint_physics_phi_0 = ["api_module_loader_physics"]
+api_endpoint_physics_g_standard = ["api_module_loader_physics"]
+api_endpoint_physics_g_0 = ["api_module_loader_physics"]
+api_endpoint_physics_z_0 = ["api_module_loader_physics"]
+api_endpoint_physics_t = ["api_module_loader_physics"]
+api_endpoint_physics_g = ["api_module_loader_physics"]
+api_endpoint_physics_atm = ["api_module_loader_physics"]
