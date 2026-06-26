@@ -154,6 +154,7 @@ api_endpoint_trigonometry_acos = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_atan = ["api_module_loader_trigonometry"]
 
 # physics
+api_module_loader_physics = []
 api_endpoint_physics_m_p = ["api_module_loader_physics"]
 api_endpoint_physics_m_n = ["api_module_loader_physics"]
 api_endpoint_physics_m_e = ["api_module_loader_physics"]
