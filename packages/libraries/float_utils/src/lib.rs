@@ -1,3 +1,5 @@
+use approx::relative_eq;
+
 #[allow(dead_code)]
 pub trait F64Extension {
     fn relative_epsilon_tolerance(&self) -> f64;
@@ -15,6 +17,13 @@ impl F64Extension for f64 {
     /// This ensures stable comparisons for both very small and large values.
     /// The tolerance is defined as:
     /// `max(|self|, 1.0) * f64::EPSILON`
+    /// Using `max(|self|, 1.0)` guarantees that:
+    /// - for values with |self| >= 1, the tolerance scales proportionally (relative error),
+    /// - for values with |self| < 1, the tolerance does not shrink below `f64::EPSILON`,
+    ///   avoiding overly strict comparisons near zero.
+    ///
+    /// `f64::EPSILON` is the difference between 1.0 and the next representable `f64` value,
+    /// i.e. the machine precision for values around 1.0.
     fn relative_epsilon_tolerance(&self) -> f64 {
         self.abs().max(1.0) * f64::EPSILON
     }
@@ -22,20 +31,23 @@ impl F64Extension for f64 {
     /// Checks whether `self` is approximately equal to `other`.
     /// Uses a relative epsilon comparison based on the magnitude of both values.
     /// This should be preferred over direct equality (`==`) for floating-point values.
-    /// Returns `false` if either value is `NaN`.
+    /// Returns `false` if either value is `NaN`, `f64::INFINITY` or `f64::NEG_INFINITY`.
     fn is_close_to(&self, other: f64) -> bool {
-        if self.is_nan() || other.is_nan() {
+        if self.is_nan()
+            || other.is_nan()
+            || self.is_infinite()
+            || other.is_infinite()
+        {
             return false;
         }
 
-        if self == &other {
-            return true;
-        }
-        let eps = self
-            .relative_epsilon_tolerance()
-            .max(other.relative_epsilon_tolerance());
-
-        (self - other).abs() <= eps
+        relative_eq!(
+            *self,
+            other,
+            epsilon = self
+                .relative_epsilon_tolerance()
+                .max(other.relative_epsilon_tolerance())
+        )
     }
 
     /// Checks whether `self` is approximately zero.
