@@ -1,15 +1,13 @@
 use std::f64::consts::PI;
 
-#[cfg(feature = "api_endpoint_trigonometry_pi")]
 use engine_derive::ConstantMetadata;
 use node::Number;
 
 use crate::{
-    Context,
     core::{ConstantEndpoint, Language},
+    Context,
 };
 
-#[cfg(feature = "api_endpoint_trigonometry_pi")]
 #[derive(ConstantMetadata)]
 #[name("pi")]
 #[description(Language::German, "Die Kreiszahl π ist allgemein definiert als das Verhältnis des Umfangs eines Kreises zu seinem Durchmesser.")]
