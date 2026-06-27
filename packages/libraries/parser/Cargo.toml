@@ -1,0 +1,10 @@
+[package]
+name = "parser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+language = { version = "0.1.0", path = "../language" }
+lexer = { version = "0.1.0", path = "../lexer" }
+node = { version = "0.1.0", path = "../node" }
+nom.workspace = true
