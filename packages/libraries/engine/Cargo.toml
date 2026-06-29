@@ -87,7 +87,8 @@ operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_n
 # api modules
 api_modules = [
     "api_module_trigonometry",
-    "api_module_physics"
+    "api_module_physics",
+    "api_module_distributions"
 ]
 
 api_module_trigonometry = [
@@ -143,6 +144,8 @@ api_module_physics = [
     "api_endpoint_physics_atm"
 ]
 
+api_module_distributions = []
+
 # trigonometry
 api_module_loader_trigonometry = []
 api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
@@ -195,3 +198,7 @@ api_endpoint_physics_z_0 = ["api_module_loader_physics"]
 api_endpoint_physics_t = ["api_module_loader_physics"]
 api_endpoint_physics_g = ["api_module_loader_physics"]
 api_endpoint_physics_atm = ["api_module_loader_physics"]
+
+
+# distributions
+api_module_loader_distributions = []

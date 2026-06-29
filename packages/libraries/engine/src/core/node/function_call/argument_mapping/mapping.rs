@@ -109,4 +109,21 @@ impl ArgumentMapping {
             }
         }
     }
+
+    pub fn optional_with_default<'a, T>(
+        &'a self,
+        name: &'a str,
+        default: &'a Node,
+    ) -> Result<&'a T, EvaluateNodeError>
+    where
+        T: NodeCast,
+    {
+        match self.get_parameter_entry(name)? {
+            ArgumentMappingEntry::Value(node) => T::downcast(node),
+            ArgumentMappingEntry::None => T::downcast(default),
+            ArgumentMappingEntry::ValueList(nodes) => {
+                Err(EvaluateNodeError::too_many_parameters(nodes.len()))
+            }
+        }
+    }
 }
