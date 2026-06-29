@@ -1,7 +1,8 @@
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
-use math_utils::calculate_normal_pdf;
+use float_utils::F64Extension;
+use math_utils::calculate_quantile_of_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
@@ -18,19 +19,19 @@ static DEFAULT_SD: LazyLock<Node> =
     LazyLock::new(|| Number::new(1.0).into_node());
 
 #[derive(FunctionArguments)]
-#[name("normal")]
+#[name("qnormal")]
 #[description(
     Language::German,
-    "Berechnet die Normalverteilung von x. Falls keine weiteren Parameter übergeben werden, wird die Standardnormalverteilung berechnet."
+    "Quantilsfunktion der kumulierten Normalverteilung. Berechnet die entsprechende Zufallsvariable für das gegebene Quantil p."
 )]
 #[description(
     Language::English,
-    "Calculates the normal distribution of x. If no further parameters are passed, the standard normal distribution is calculated."
+    "Quantile function of the cumulative normal distribution. Calculate the corresponding random variable for the given quantile p."
 )]
-pub struct NormalArgs<'a> {
+pub struct QNormalArgs<'a> {
     #[description(Language::German, "Wert")]
     #[description(Language::English, "value")]
-    x: &'a Number,
+    p: &'a Number,
 
     #[default(&*DEFAULT_MEAN)]
     #[description(Language::German, "Mittelwert")]
@@ -43,21 +44,29 @@ pub struct NormalArgs<'a> {
     sd: &'a Number,
 }
 
-pub struct NormalEndpoint;
+pub struct QNormalEndpoint;
 
-impl FunctionEndpoint for NormalEndpoint {
+impl FunctionEndpoint for QNormalEndpoint {
     type Output = Number;
-    type Arguments<'a> = NormalArgs<'a>;
+    type Arguments<'a> = QNormalArgs<'a>;
 
     // TODO: unit tests
     fn executor<'a>(
-        NormalArgs { x, mean, sd }: Self::Arguments<'a>,
+        QNormalArgs { p, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let x = x.value;
+        let p = p.value;
         let mean = mean.value;
         let standard_deviation = sd.value;
 
+        if !p.is_in_open_interval(0., 1.) {
+            return Err(EvaluateNodeError::invalid_parameter_value(
+                "engine.api.error.distributions.open_interval.zero_one",
+            )
+            .build()
+            .with_tracable(sd));
+        }
+        
         if standard_deviation < 0.0 {
             return Err(EvaluateNodeError::invalid_parameter_value(
                 "engine.api.error.distributions.normal.smaller_than_zero",
@@ -66,10 +75,10 @@ impl FunctionEndpoint for NormalEndpoint {
             .with_tracable(sd));
         }
 
-        return if let Ok(result) = calculate_normal_pdf(x, mean, standard_deviation) {
-            Ok(Number::new(result))
-        } else {
-            Err(EvaluateNodeError::runtime_error("normal"))
-        };
+        Ok(Number::new(calculate_quantile_of_normal_cdf(
+            p,
+            mean,
+            standard_deviation,
+        )))
     }
 }

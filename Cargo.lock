@@ -544,6 +544,7 @@ version = "0.1.0"
 dependencies = [
  "engine_derive",
  "float_utils",
+ "math_utils",
  "node",
  "nom",
  "serde",
@@ -1324,6 +1325,13 @@ dependencies = [
  "proc-macro-utils",
  "proc-macro2",
  "quote",
+]
+
+[[package]]
+name = "math_utils"
+version = "0.1.0"
+dependencies = [
+ "thiserror 2.0.18",
 ]
 
 [[package]]

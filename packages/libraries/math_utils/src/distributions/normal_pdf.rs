@@ -6,8 +6,6 @@ use std::{
     ops::{Div, Mul, Sub},
 };
 
-use crate::api::distributions::utils::cnormal_utils::calculate_erf;
-
 /// Calculates the probability density function of the normal distribution.
 /// The normal probability density function is defined as:
 ///
@@ -20,13 +18,21 @@ use crate::api::distributions::utils::cnormal_utils::calculate_erf;
 /// - `standard_deviation` is the standard deviation `σ`.
 ///
 /// Returns `NaN` if `standard_deviation <= 0.0`.
-pub fn calculate_normal_pdf(x: f64, mean: f64, standard_deviation: f64) -> f64 {
+pub fn calculate_normal_pdf(
+    x: f64,
+    mean: f64,
+    standard_deviation: f64,
+) -> Result<f64, String> {
     if standard_deviation <= 0.0 {
-        return f64::NAN;
+        return Err(String::from(
+            "Standard deviation must not be smaller than zero.",
+        ));
     }
 
-    (-x.sub(mean).div(standard_deviation).powi(2).mul(0.5)).exp()
-        / (standard_deviation * SQRT_2 * PI.sqrt())
+    Ok(
+        (-x.sub(mean).div(standard_deviation).powi(2).mul(0.5)).exp()
+            / (standard_deviation * SQRT_2 * PI.sqrt()),
+    )
 }
 
 #[cfg(test)]
@@ -34,9 +40,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn standard_normal_pdf_0() {
+        assert_eq!(
+            calculate_normal_pdf(0.0, 0.0, 1.0).unwrap(),
+            0.39894228040143265 // sage: 0.3989422804014327
+        )
+    }
+
+    #[test]
     fn standard_normal_pdf_1() {
         assert_eq!(
-            calculate_normal_pdf(1.0, 0.0, 1.0),
+            calculate_normal_pdf(1.0, 0.0, 1.0).unwrap(),
             0.24197072451914334 // sage: 0.24197072451914337
         )
     }
@@ -44,7 +58,7 @@ mod tests {
     #[test]
     fn standard_normal_pdf_0_23() {
         assert_eq!(
-            calculate_normal_pdf(0.23, 0.0, 1.0),
+            calculate_normal_pdf(0.23, 0.0, 1.0).unwrap(),
             0.38852858531583584 // sage: 0.3885285853158359
         )
     }
@@ -52,13 +66,15 @@ mod tests {
     #[test]
     fn standard_normal_pdf_minus_0_23() {
         assert_eq!(
-            calculate_normal_pdf(-0.23, 0.0, 1.0),
+            calculate_normal_pdf(-0.23, 0.0, 1.0).unwrap(),
             0.38852858531583584 // sage: 0.3885285853158359
         )
     }
 
     #[test]
     fn normal_pdf3() {
-        assert_eq!(calculate_normal_pdf(3.0, 2.0, 5.0), 0.07820853879509117)
+        assert_eq!(calculate_normal_pdf(3.0, 2.0, 5.0).unwrap(),
+        0.07820853879509117
+    )
     }
 }

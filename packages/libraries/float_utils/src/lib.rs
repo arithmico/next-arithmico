@@ -1,6 +1,5 @@
 use approx::relative_eq;
 
-#[allow(dead_code)]
 pub trait F64Extension {
     fn relative_epsilon_tolerance(&self) -> f64;
     fn is_close_to(&self, other: f64) -> bool;

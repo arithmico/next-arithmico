@@ -13,6 +13,7 @@ nom = { workspace = true }
 engine_derive = { path = "../engine_derive" }
 node = { version = "0.1.0", path = "../node" }
 float_utils = { path = "../float_utils" }
+math_utils = { path = "../math_utils" }
 
 [features]
 default = ["datatypes", "operators", "api_modules"]
@@ -91,6 +92,7 @@ api_modules = [
     "api_module_distributions"
 ]
 
+# trigonometry
 api_module_trigonometry = [
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
@@ -101,6 +103,16 @@ api_module_trigonometry = [
     "api_endpoint_trigonometry_atan"
 ]
 
+api_module_loader_trigonometry = []
+api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_cos = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_tan = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_asin = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_acos = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_atan = ["api_module_loader_trigonometry"]
+
+# physics
 api_module_physics = [
     "api_endpoint_physics_m_p",
     "api_endpoint_physics_m_n",
@@ -144,19 +156,6 @@ api_module_physics = [
     "api_endpoint_physics_atm"
 ]
 
-api_module_distributions = []
-
-# trigonometry
-api_module_loader_trigonometry = []
-api_endpoint_trigonometry_pi = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_sin = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_cos = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_tan = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_asin = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_acos = ["api_module_loader_trigonometry"]
-api_endpoint_trigonometry_atan = ["api_module_loader_trigonometry"]
-
-# physics
 api_module_loader_physics = []
 api_endpoint_physics_m_p = ["api_module_loader_physics"]
 api_endpoint_physics_m_n = ["api_module_loader_physics"]
@@ -201,4 +200,19 @@ api_endpoint_physics_atm = ["api_module_loader_physics"]
 
 
 # distributions
+api_module_distributions = [
+    "api_endpoint_distributions_normal",
+    "api_endpoint_distributions_cnormal",
+    "api_endpoint_distributions_qnormal",
+    "api_endpoint_distributions_binom",
+    "api_endpoint_distributions_cbinom",
+    "api_endpoint_distributions_qbinom"
+]
+
 api_module_loader_distributions = []
+api_endpoint_distributions_normal = ["api_module_loader_distributions"]
+api_endpoint_distributions_cnormal = ["api_module_loader_distributions"]
+api_endpoint_distributions_qnormal = ["api_module_loader_distributions"]
+api_endpoint_distributions_binom = ["api_module_loader_distributions"]
+api_endpoint_distributions_cbinom = ["api_module_loader_distributions"]
+api_endpoint_distributions_qbinom = ["api_module_loader_distributions"]

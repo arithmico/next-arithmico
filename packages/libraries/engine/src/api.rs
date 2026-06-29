@@ -17,7 +17,7 @@ pub fn load_host_api() -> HostApi {
             load_trigonometry_module,
         )
         .module(
-            cfg!(feature = "api_mdoule_loader_distributions"),
+            cfg!(feature = "api_module_loader_distributions"),
             load_distributions_module,
         )
         .module(
