@@ -3,9 +3,9 @@
 ///
 /// The CDF is defined as:
 ///
-/// Φ(x; μ, σ) = P(X ≤ x)
+/// Φ(x; μ, σ) = P(X <= x)
 ///
-/// where X ~ N(μ, σ²).
+/// where X ~ N(μ, σ^2).
 ///
 /// Internally, the input is standardized to the standard normal distribution:
 /// and then evaluated using a numerically stable implementation of the
@@ -102,8 +102,9 @@ const U: [f64; 5] = [
     4.92673942608635921086E4,
 ];
 
-const UTHRESH: f64 = 37.519379347;
+//const UTHRESH: f64 = 37.519379347;
 const MAXLOG: f64 = 7.09782712893383996732E2; // MAXLOG ≈ ln(f64::MAX), see const.c
+const USE_EXPXSQ: bool = true;
 
 /// This is a direct Rust port of the Cephes ndtr implementation,
 /// which evaluates:
@@ -132,10 +133,18 @@ fn ndtr(a: f64) -> f64 {
     let y = if z < 1.0 {
         0.5 + 0.5 * erf(x)
     } else {
-        let mut y = 0.5 * erfce(z);
+        let mut y;
 
-        let exp_term = expx2(a, -1); // ≈ exp(-a^2)
-        y = y * exp_term.sqrt(); // ergibt exp(-x^2)
+        if USE_EXPXSQ {
+            // See below for erfce.
+            y = 0.5 * erfce(z);
+
+            // Multiply by exp(-x^2 / 2)
+            let z = expx2(a, -1);
+            y = y * z.sqrt();
+        } else {
+            y = 0.5 * erfc(z);
+        }
 
         if x > 0.0 {
             y = 1.0 - y;
@@ -175,7 +184,12 @@ fn erfc(a: f64) -> f64 {
         return if a < 0.0 { 2.0 } else { 0.0 };
     }
 
-    let z = expx2(a, -1);
+    let z = if USE_EXPXSQ {
+        /* Compute z = exp(z).  */
+        expx2(a, -1)
+    } else {
+        z.exp()
+    };
 
     let (p, q) = if x < 8.0 {
         let p = polevl(x, &P);
@@ -322,4 +336,46 @@ fn p1evl(x: f64, coef: &[f64]) -> f64 {
     }
 
     ans
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn standard_normal_cdf_0() {
+        assert_eq!(
+            calculate_normal_cdf(0.0, 0.0, 1.0),
+            0.5
+        )
+    }
+    
+    #[test]
+    fn standard_normal_cdf_1() {
+        assert_eq!(
+            calculate_normal_cdf(1.0, 0.0, 1.0),
+            0.8413447460685429
+        )
+    }
+
+    #[test]
+    fn standard_normal_cdf_0_23() {
+        assert_eq!(
+            calculate_normal_cdf(0.23, 0.0, 1.0),
+            0.5909541151420059
+        )
+    }
+
+    #[test]
+    fn standard_normal_cdf_minus_0_23() {
+        assert_eq!(
+            calculate_normal_cdf(-0.23, 0.0, 1.0),
+            0.40904588485799415
+        )
+    }
+
+    #[test]
+    fn normal_cdf_3() {
+        assert_eq!(calculate_normal_cdf(3.0, 2.0, 5.0), 0.579259709439103)
+    }
 }

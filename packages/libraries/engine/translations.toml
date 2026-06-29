@@ -108,5 +108,21 @@ English = "Parameter value is not between -1 and 1"
 German = "Parameterwert liegt nicht zwischen -1 und 1"
 
 [engine.api.error.distributions.normal.smaller_than_zero]
-English = "Parameter is smaller than 0"
+English = "Parameter value is smaller than 0"
 German = "Parameterwert ist kleiner als 0"
+
+[engine.api.error.distributions.open_interval.zero_one]
+English = "Parameter value has to be in the open interval between 0 and 1."
+German = "Parameterwert muss im offenen Intervall zwischen 0 und 1 liegen."
+
+[engine.api.error.distributions.binomial.non_integer]
+English = "Parameter value is not an integer."
+German = "Parameterwert ist keine Ganzzahl."
+
+[engine.api.error.distributions.binomial.closed_interval_zero_one]
+English = "Parameter value has to be in the closed interval between 0 and 1."
+German = "Parameterwert muss im geschlossenen Intervall zwischen 0 und 1 liegen."
+
+[engine.api.error.distributions.binomial.negative_value]
+English = "Parameter value must be non negative."
+German = "Parameterwert darf nicht negativ sein."

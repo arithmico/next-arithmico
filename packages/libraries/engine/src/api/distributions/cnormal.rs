@@ -1,11 +1,11 @@
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
+use math_utils::calculate_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
 
-use crate::api::distributions::utils::cnormal_utils::calculate_normal_cdf;
 use crate::{
     core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
@@ -19,10 +19,12 @@ static DEFAULT_SD: LazyLock<Node> =
 
 #[derive(FunctionArguments)]
 #[name("cnormal")]
-#[description(Language::German, "Berechnet den Cosinus von x.")]
+#[description(
+    Language::German,
+    "Calculates the cumulative normal distribution of x. If no further parameters are passed, the standard cumulative normal distribution is calculated.")]
 #[description(
     Language::English,
-    "Calculates the normal distribution. The default values are: for expactation 0 and for sd 1 (standard normal distribution).)"
+    "Berechnet die kumulierte Normalverteilung von x. Wenn keine weiteren Parameter übergeben werden, wird die kumulierte Standardnormalverteilung berechnet."
 )]
 pub struct CNormalArgs<'a> {
     #[description(Language::German, "Wert")]
