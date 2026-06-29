@@ -1,9 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{
-    spanned::Spanned,
-    Data, DeriveInput, Ident, LitStr, Type,
-};
+use syn::{spanned::Spanned, Data, DeriveInput, Ident, LitStr, Type};
 
 use crate::DescriptionAttribute;
 
@@ -19,6 +16,7 @@ struct ArgumentField {
 enum ArgumentCardinality {
     Multiple,
     Optional,
+    OptionalWithDefault { default: proc_macro2::TokenStream },
     Required,
 }
 
@@ -94,6 +92,15 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 .find(|attribute| attribute.path().is_ident("skip_evaluate"))
                 .is_some();
 
+            let default = field
+                .attrs
+                .iter()
+                .find(|attr| attr.path().is_ident("default"))
+                .map(|attr| {
+                    let expr: syn::Expr = attr.parse_args().unwrap();
+                    quote! { #expr }
+                });
+
             let description = field
                 .attrs
                 .iter()
@@ -142,10 +149,14 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 .ident
                 .to_string();
 
-            let cardinality = match root_field_type.as_str() {
-                "Option" => ArgumentCardinality::Optional,
-                "Vec" => ArgumentCardinality::Multiple,
-                _ => ArgumentCardinality::Required,
+            let cardinality = if let Some(default) = default {
+                ArgumentCardinality::OptionalWithDefault { default }
+            } else {
+                match root_field_type.as_str() {
+                    "Option" => ArgumentCardinality::Optional,
+                    "Vec" => ArgumentCardinality::Multiple,
+                    _ => ArgumentCardinality::Required,
+                }
             };
 
             Ok(ArgumentField {
@@ -183,6 +194,9 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                     ArgumentCardinality::Required => quote! {
                         #ident: arguments.required(#name)?
                     },
+                    ArgumentCardinality::OptionalWithDefault { default} => quote! {
+                        #ident: arguments.optional_with_default(#name, #default)?
+                    }
                 }
             },
         )
@@ -236,6 +250,18 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                             #evaluate
                         )
                     },
+                    ArgumentCardinality::OptionalWithDefault { default } => quote! {
+                        .argument(
+                            #name,
+                            |arg| arg
+                                .default((#default).clone())
+                                .node_type(
+                                    <#field_type as node::GetStaticNodeType>::static_node_type()
+                                )
+                            #(#description)*
+                            #evaluate
+                        )
+                    }
                 }
             },
         )
