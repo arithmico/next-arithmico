@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v6.2.1
+      uses: aws-actions/configure-aws-credentials@6.2.2
       with:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
@@ -38,7 +38,7 @@ jobs:
       with:
         node-version: 24
     - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v6.2.1
+      uses: aws-actions/configure-aws-credentials@6.2.2
       with:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
