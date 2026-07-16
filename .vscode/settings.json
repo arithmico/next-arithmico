@@ -13,7 +13,8 @@
         "infrastructure",
         "ci",
         "lexer",
-        "node"
+        "node",
+        "parser"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }

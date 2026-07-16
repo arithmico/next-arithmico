@@ -1413,7 +1413,7 @@ dependencies = [
  "language",
  "lexer",
  "node",
- "nom",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
