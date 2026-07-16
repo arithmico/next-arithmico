@@ -1,11 +1,15 @@
 use language::Language;
 
-use crate::{Error, Span, Token, TokenContent, cursor::LexerCursor};
+use crate::{
+    cursor::LexerCursor, ArrowToken, BooleanToken, CaretToken, DefineToken,
+    DivideToken, Error, GreaterThanOrEqualsToken, GreaterThanToken,
+    IdentifierToken, LeftBracketToken, LeftParenthesisToken,
+    LessThanOrEqualsToken, LessThanToken, MinusToken, MultiplyToken,
+    NumberToken, PlusToken, RightBracketToken, RightParenthesisToken,
+    SeparatorToken, Span, Token,
+};
 
-pub fn tokenize<'a>(
-    input: &'a str,
-    language: Language,
-) -> Result<Vec<Token<'a>>, Error> {
+pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
     let mut tokens = Vec::new();
     let mut cursor = LexerCursor::from(input);
     while let Some((position, char)) = cursor.next() {
@@ -15,120 +19,110 @@ pub fn tokenize<'a>(
                 continue;
             }
             '+' => {
-                tokens.push(Token {
+                tokens.push(Token::Plus(PlusToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Plus,
-                });
+                }));
             }
             '-' if let Some(span) = cursor.match_and_advance(">") => {
-                tokens.push(Token {
+                tokens.push(Token::Arrow(ArrowToken {
                     span: Span::new(position, span.to),
-                    content: TokenContent::Arrow,
-                });
+                }));
             }
             '-' => {
-                tokens.push(Token {
+                tokens.push(Token::Minus(MinusToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Minus,
-                });
+                }));
             }
             '*' => {
-                tokens.push(Token {
+                tokens.push(Token::Multiply(MultiplyToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Multiply,
-                });
+                }));
             }
             '/' => {
-                tokens.push(Token {
+                tokens.push(Token::Divide(DivideToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Divide,
-                });
+                }));
             }
             '^' => {
-                tokens.push(Token {
+                tokens.push(Token::Caret(CaretToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Caret,
-                });
+                }));
             }
             ':' if let Some(span) = cursor.match_and_advance("=") => {
-                tokens.push(Token {
+                tokens.push(Token::Define(DefineToken {
                     span: Span::new(position, span.to),
-                    content: TokenContent::Define,
-                });
+                }));
             }
             '<' if let Some(span) = cursor.match_and_advance("=") => {
-                tokens.push(Token {
+                tokens.push(Token::LessThanOrEquals(LessThanOrEqualsToken {
                     span: Span::new(position, span.to),
-                    content: TokenContent::LessThanOrEquals,
-                });
+                }));
             }
             '<' => {
-                tokens.push(Token {
+                tokens.push(Token::LessThan(LessThanToken {
                     span: Span::new(position, position),
-                    content: TokenContent::LessThan,
-                });
+                }));
             }
             '>' if let Some(span) = cursor.match_and_advance("=") => {
-                tokens.push(Token {
-                    span: Span::new(position, span.to),
-                    content: TokenContent::GreaterThanOrEquals,
-                });
+                tokens.push(Token::GreaterThanOrEquals(
+                    GreaterThanOrEqualsToken {
+                        span: Span::new(position, span.to),
+                    },
+                ));
             }
             '>' => {
-                tokens.push(Token {
+                tokens.push(Token::GreaterThan(GreaterThanToken {
                     span: Span::new(position, position),
-                    content: TokenContent::GreaterThan,
-                });
+                }));
             }
             ',' if language == Language::English => {
-                tokens.push(Token {
+                tokens.push(Token::Separator(SeparatorToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Separator,
-                });
+                }));
             }
             ';' if language == Language::German => {
-                tokens.push(Token {
+                tokens.push(Token::Separator(SeparatorToken {
                     span: Span::new(position, position),
-                    content: TokenContent::Separator,
-                });
+                }));
             }
             '(' => {
-                tokens.push(Token {
+                tokens.push(Token::LeftParenthesis(LeftParenthesisToken {
                     span: Span::new(position, position),
-                    content: TokenContent::LeftParenthesis,
-                });
+                }));
             }
             ')' => {
-                tokens.push(Token {
+                tokens.push(Token::RightParenthesis(RightParenthesisToken {
                     span: Span::new(position, position),
-                    content: TokenContent::RightParenthesis,
-                });
+                }));
             }
             '[' => {
-                tokens.push(Token {
+                tokens.push(Token::LeftBracket(LeftBracketToken {
                     span: Span::new(position, position),
-                    content: TokenContent::LeftBracket,
-                });
+                }));
             }
             ']' => {
-                tokens.push(Token {
+                tokens.push(Token::RightBracket(RightBracketToken {
                     span: Span::new(position, position),
-                    content: TokenContent::RightBracket,
-                });
+                }));
+            }
+            '=' => {
+                tokens.push(Token::Equals(crate::EqualsToken {
+                    span: Span::new(position, position),
+                }));
             }
             // true
             't' if let Some(span) = cursor.match_and_advance("rue") => {
-                tokens.push(Token {
+                tokens.push(Token::Boolean(BooleanToken {
                     span: Span::new(position, span.to),
-                    content: TokenContent::Boolean(true),
-                });
+                    value: true,
+                }));
             }
             // false
             'f' if let Some(span) = cursor.match_and_advance("alse") => {
-                tokens.push(Token {
+                tokens.push(Token::Boolean(BooleanToken {
                     span: Span::new(position, span.to),
-                    content: TokenContent::Boolean(false),
-                });
+                    value: false,
+                }));
             }
             // identifier
             'a'..='z' | 'A'..='Z' | '_' => {
@@ -142,12 +136,10 @@ pub fn tokenize<'a>(
                 } else {
                     Span::new(position, position)
                 };
-                tokens.push(Token {
+                tokens.push(Token::Identifier(IdentifierToken {
                     span,
-                    content: TokenContent::Identifier(
-                        span.extract_substr(input),
-                    ),
-                });
+                    name: span.extract_substr(input).to_string(),
+                }));
             }
             // number
             '0'..='9' => {
@@ -188,10 +180,10 @@ pub fn tokenize<'a>(
                                     .parse()
                                     .expect("Float");
 
-                                    tokens.push(Token {
+                                    tokens.push(Token::Number(NumberToken {
                                         span,
-                                        content: TokenContent::Number(value),
-                                    });
+                                        value,
+                                    }));
                                 }
                                 None => {
                                     return Err(Error::MissingDecimalPlaces {
@@ -205,10 +197,10 @@ pub fn tokenize<'a>(
                                 .parse()
                                 .expect("Multi digit integer");
 
-                            tokens.push(Token {
+                            tokens.push(Token::Number(NumberToken {
                                 span,
-                                content: TokenContent::Number(value),
-                            });
+                                value,
+                            }));
                         }
                     }
                 }
@@ -244,7 +236,7 @@ mod tests {
     fn plus() {
         assert_eq!(
             tokenize("    +  ", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Plus(PlusToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -255,8 +247,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Plus
-            }]
+            })]
         );
     }
 
@@ -264,7 +255,7 @@ mod tests {
     fn arrow() {
         assert_eq!(
             tokenize(" \n \t-> \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Arrow(ArrowToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -275,8 +266,7 @@ mod tests {
                         char_index: 5
                     }
                 ),
-                content: TokenContent::Arrow
-            }]
+            })]
         );
     }
 
@@ -284,7 +274,7 @@ mod tests {
     fn minus() {
         assert_eq!(
             tokenize(" \n \t- \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Minus(MinusToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -295,8 +285,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Minus
-            }]
+            })]
         );
     }
 
@@ -304,7 +293,7 @@ mod tests {
     fn multiply() {
         assert_eq!(
             tokenize(" \n \t* \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Multiply(MultiplyToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -315,8 +304,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Multiply
-            }]
+            })]
         );
     }
 
@@ -324,7 +312,7 @@ mod tests {
     fn divide() {
         assert_eq!(
             tokenize(" \n \t/ \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Divide(DivideToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -335,8 +323,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Divide
-            }]
+            })]
         );
     }
 
@@ -344,7 +331,7 @@ mod tests {
     fn caret() {
         assert_eq!(
             tokenize(" \n \t^ \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Caret(CaretToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -355,8 +342,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Caret
-            }]
+            })]
         );
     }
 
@@ -364,7 +350,7 @@ mod tests {
     fn define() {
         assert_eq!(
             tokenize(" \n \t:= \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Define(DefineToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -375,8 +361,7 @@ mod tests {
                         char_index: 5
                     }
                 ),
-                content: TokenContent::Define
-            }]
+            })]
         );
     }
 
@@ -384,7 +369,7 @@ mod tests {
     fn less_than_or_equals() {
         assert_eq!(
             tokenize(" \n \t<= \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::LessThanOrEquals(LessThanOrEqualsToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -395,8 +380,7 @@ mod tests {
                         char_index: 5
                     }
                 ),
-                content: TokenContent::LessThanOrEquals
-            }]
+            })]
         );
     }
 
@@ -404,7 +388,7 @@ mod tests {
     fn less_than() {
         assert_eq!(
             tokenize(" \n \t< \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::LessThan(LessThanToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -415,8 +399,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::LessThan
-            }]
+            })]
         );
     }
 
@@ -424,7 +407,7 @@ mod tests {
     fn greater_than_or_equals() {
         assert_eq!(
             tokenize(" \n \t>= \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::GreaterThanOrEquals(GreaterThanOrEqualsToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -435,8 +418,7 @@ mod tests {
                         char_index: 5
                     }
                 ),
-                content: TokenContent::GreaterThanOrEquals
-            }]
+            })]
         );
     }
 
@@ -444,7 +426,7 @@ mod tests {
     fn greater_than() {
         assert_eq!(
             tokenize(" \n \t> \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::GreaterThan(GreaterThanToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -455,8 +437,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::GreaterThan
-            }]
+            })]
         );
     }
 
@@ -464,7 +445,7 @@ mod tests {
     fn separator() {
         assert_eq!(
             tokenize(" \n \t, \r", Language::English).unwrap(),
-            vec![Token {
+            vec![Token::Separator(SeparatorToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -475,12 +456,11 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Separator
-            }]
+            })]
         );
         assert_eq!(
             tokenize(" \n \t; \r", Language::German).unwrap(),
-            vec![Token {
+            vec![Token::Separator(SeparatorToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -491,8 +471,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Separator
-            }]
+            })]
         );
     }
 
@@ -500,7 +479,7 @@ mod tests {
     fn left_parenthesis() {
         assert_eq!(
             tokenize(" \n \t( \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::LeftParenthesis(LeftParenthesisToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -511,8 +490,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::LeftParenthesis
-            }]
+            })]
         );
     }
 
@@ -520,7 +498,7 @@ mod tests {
     fn right_parenthesis() {
         assert_eq!(
             tokenize(" \n \t) \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::RightParenthesis(RightParenthesisToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -531,8 +509,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::RightParenthesis
-            }]
+            })]
         );
     }
 
@@ -540,7 +517,7 @@ mod tests {
     fn left_bracket() {
         assert_eq!(
             tokenize(" \n \t[ \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::LeftBracket(LeftBracketToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -551,8 +528,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::LeftBracket
-            }]
+            })]
         );
     }
 
@@ -560,7 +536,7 @@ mod tests {
     fn right_bracket() {
         assert_eq!(
             tokenize(" \n \t] \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::RightBracket(RightBracketToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -571,8 +547,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::RightBracket
-            }]
+            })]
         );
     }
 
@@ -580,7 +555,7 @@ mod tests {
     fn boolean_true() {
         assert_eq!(
             tokenize(" \n \ttrue \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Boolean(BooleanToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -591,8 +566,8 @@ mod tests {
                         char_index: 7
                     }
                 ),
-                content: TokenContent::Boolean(true)
-            }]
+                value: true
+            })]
         );
     }
 
@@ -600,7 +575,7 @@ mod tests {
     fn boolean_false() {
         assert_eq!(
             tokenize(" \n \tfalse \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Boolean(BooleanToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -611,8 +586,8 @@ mod tests {
                         char_index: 8
                     }
                 ),
-                content: TokenContent::Boolean(false)
-            }]
+                value: false
+            })]
         );
     }
 
@@ -620,7 +595,7 @@ mod tests {
     fn identifier_length_1() {
         assert_eq!(
             tokenize(" \n \tx \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Identifier(IdentifierToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -631,8 +606,8 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Identifier("x")
-            }]
+                name: "x".to_string()
+            })]
         );
     }
 
@@ -640,7 +615,7 @@ mod tests {
     fn identifier_length_3() {
         assert_eq!(
             tokenize(" \n \txyz \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Identifier(IdentifierToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -651,8 +626,8 @@ mod tests {
                         char_index: 6
                     }
                 ),
-                content: TokenContent::Identifier("xyz")
-            }]
+                name: "xyz".to_string()
+            })]
         );
     }
 
@@ -660,7 +635,7 @@ mod tests {
     fn number_single_digit_integer() {
         assert_eq!(
             tokenize(" \n \t1 \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Number(NumberToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -671,8 +646,8 @@ mod tests {
                         char_index: 4
                     }
                 ),
-                content: TokenContent::Number(1.0)
-            }]
+                value: 1.0
+            })]
         );
     }
 
@@ -680,7 +655,7 @@ mod tests {
     fn number_multi_digit_integer() {
         assert_eq!(
             tokenize(" \n \t12 \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Number(NumberToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -691,8 +666,8 @@ mod tests {
                         char_index: 5
                     }
                 ),
-                content: TokenContent::Number(12.0)
-            }]
+                value: 12.0
+            })]
         );
     }
 
@@ -700,7 +675,7 @@ mod tests {
     fn number_float_leading_zero() {
         assert_eq!(
             tokenize(" \n \t0.1 \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Number(NumberToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -711,8 +686,8 @@ mod tests {
                         char_index: 6
                     }
                 ),
-                content: TokenContent::Number(0.1)
-            }]
+                value: 0.1
+            })]
         );
     }
 
@@ -720,7 +695,7 @@ mod tests {
     fn number_float_leading_non_zero() {
         assert_eq!(
             tokenize(" \n \t1.12 \r", Default::default()).unwrap(),
-            vec![Token {
+            vec![Token::Number(NumberToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -731,8 +706,8 @@ mod tests {
                         char_index: 7
                     }
                 ),
-                content: TokenContent::Number(1.12)
-            }]
+                value: 1.12
+            })]
         );
     }
 
