@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
 export type StaticWebsiteStackProps = {
@@ -51,6 +52,14 @@ export class StaticWebsiteDeployment extends Construct {
                     responsePagePath: "/index.html"
                 }
             ]
+        });
+
+        new BucketDeployment(this, "BucketDeployment", {
+            sources: [Source.asset("../packages/applications/arithmico/dist")],
+            destinationKeyPrefix: artifactPath,
+            destinationBucket: bucket,
+            distribution,
+            distributionPaths: ["/*"]
         });
 
         new cdk.CfnOutput(this, 'DistributionId', {
