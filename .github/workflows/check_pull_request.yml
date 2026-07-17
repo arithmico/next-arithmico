@@ -52,9 +52,11 @@ jobs:
       working-directory: packages/applications/arithmico-e2e
       run: npx playwright test
 
-  build-review-artifact:
-    name: Build Review Artifact
+  build-and-deploy:
+    name: Build And Deploy Review Artifact
     runs-on: ubuntu-latest
+    concurrency:
+      group: review-environment-${{ github.event.number }}
     steps:
     - uses: actions/checkout@v7
     - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -79,35 +81,9 @@ jobs:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ vars.AWS_REGION }}
-    - name: Upload Artifact
-      working-directory: packages/applications/arithmico/dist
-      shell: bash
-      env:
-        BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
-        PR_NUMBER: ${{ github.event.number }}
-      run:
-        ARTIFACT="review-$PR_NUMBER";
-        DEST_PATH="s3://$BUCKET_NAME/calculator/$ARTIFACT/main/web";
-        aws s3 sync . $DEST_PATH --delete;
-
-  deploy-review-environment:
-    name: Deploy Review Environment
-    runs-on: ubuntu-latest
-    needs: 
-      - build-review-artifact
-    concurrency:
-      group: review-environment-${{ github.event.number }}
-    steps:
-    - uses: actions/checkout@v7
     - uses: actions/setup-node@v6
       with:
         node-version: 24
-    - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@6.2.2
-      with:
-        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
-        role-session-name: GitHub_to_AWS_via_FederatedOIDC
-        aws-region: ${{ vars.AWS_REGION }}
     - name: Install NPM Dependencies
       run: npm ci
     - name: CDK Deploy
@@ -118,14 +94,6 @@ jobs:
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
       run: npm run cdk -- deploy --all --require-approval never
-    - name: Create Cloudfront Invalidation
-      shell: bash
-      env:
-        CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
-      run: |
-        DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name applications-$CDK_DEPLOY_ENVIRONMENT | jq -r '.Stacks | .[] | .Outputs | reduce .[] as $i ({}; .[$i.OutputKey] = $i.OutputValue) | .DistributionId')
-        aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
-
 
   formatting:
     name: Check Formatting
@@ -145,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.action == 'opened'
     needs: 
-      - deploy-review-environment
+      - build-and-deploy
     steps:
       - uses: actions/github-script@v9
         env:

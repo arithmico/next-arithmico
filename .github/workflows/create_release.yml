@@ -38,43 +38,8 @@ jobs:
           git push origin $VERSION_TAG
           echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
-  deploy-production-environment:
-    name: Deploy Infrastructure
-    runs-on: ubuntu-24.04
-    needs: 
-      - create-release
-      - build-calculator
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@6.2.2
-        with:
-          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ vars.AWS_REGION }}
-      - name: Install NPM Dependencies
-        run: npm ci
-      - name: CDK Deploy
-        working-directory: infrastructure
-        shell: bash
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
-          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
-        run: npm run cdk -- deploy --all --require-approval never
-      - name: Create Cloudfront Invalidation
-        shell: bash
-        run: |
-          DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name applications-main | jq -r '.Stacks | .[] | .Outputs | reduce .[] as $i ({}; .[$i.OutputKey] = $i.OutputValue) | .DistributionId')
-          aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"
-
-  build-calculator:
-    name: Build Calculator
+  build-and-deploy-calculator:
+    name: Build And Deploy Calculator
     runs-on: ubuntu-24.04
     needs: create-release
     steps:
@@ -102,12 +67,16 @@ jobs:
         run: |
           touch index.css 
           ~/.cargo/bin/trunk build --release
-      - name: upload artifact
-        working-directory: packages/applications/arithmico/dist
-        shell: bash
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install NPM Dependencies
+        run: npm ci
+      - name: CDK Deploy
+        working-directory: infrastructure
         env:
-          VERSION_TAG: ${{ needs.create-release.outputs.version_tag }}
-          BUCKET_NAME: ${{ vars.ARTIFACTS_BUCKET_NAME }}
-        run: |
-          DEST_PATH="s3://$BUCKET_NAME/calculator/$VERSION_TAG/main/web"
-          aws s3 sync . $DEST_PATH
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
+          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
+        run: npm run cdk -- deploy --all --require-approval never
