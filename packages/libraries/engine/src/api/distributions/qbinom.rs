@@ -77,12 +77,12 @@ impl FunctionEndpoint for QBinomEndpoint {
             .with_tracable(n));
         }
 
-        return if let Some(result) =
+        return if let Ok(result) =
             calculate_quantile_of_binomial_cdf(p_q_val, n_val as usize, p_val)
         {
             Ok(Number::new(result as f64))
         } else {
-            Err(EvaluateNodeError::runtime_error("cbinom"))
+            Err(EvaluateNodeError::runtime_error("qbinom"))
         };
     }
 }

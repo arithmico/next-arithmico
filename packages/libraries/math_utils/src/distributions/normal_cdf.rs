@@ -9,7 +9,7 @@
 ///
 /// Internally, the input is standardized to the standard normal distribution:
 /// and then evaluated using a numerically stable implementation of the
-/// standard normal CDF (ndtr), based on the Cephes library.
+/// standard normal CDF (`ndtr`), based on the Cephes library.
 ///
 /// # Arguments
 /// - x: The value at which to evaluate the CDF
@@ -17,23 +17,29 @@
 /// - standard_deviation: The standard deviation (σ), must be > 0
 ///
 /// # Returns
-/// The probability P(X ≤ x)
+/// The probability P(X <= x)
 ///
 /// # Panics / Notes
-/// - For standard_deviation < 0.0 NaN returns.
+/// - For standard_deviation < 0.0 Err returns.
 ///
 /// # Accuracy
 /// This implementation inherits the numerical stability and precision
-/// of the Cephes ndtr function, which provides high accuracy across
+/// of the Cephes `ndtr` function, which provides high accuracy across
 /// the full range of f64 values, including extreme tails.
-pub fn calculate_normal_cdf(x: f64, mean: f64, standard_deviation: f64) -> f64 {
+pub fn calculate_normal_cdf(
+    x: f64,
+    mean: f64,
+    standard_deviation: f64,
+) -> Result<f64, String> {
     if standard_deviation < 0.0 {
-        return f64::NAN;
+        return Err(String::from(
+            "Standard deviation must be greater than zero.",
+        ));
     }
 
     let z = (x - mean) / standard_deviation;
 
-    ndtr(z)
+    Ok(ndtr(z))
 }
 
 // This is Rust transpilation of ndtr.c:
@@ -262,7 +268,7 @@ fn erf(x: f64) -> f64 {
 ///
 /// # Returns
 /// exp(sign * x^2)
-fn expx2(x: f64, sign: i32) -> f64 {
+fn expx2(x: f64, sign: i8) -> f64 {
     // since we have no DEC architecture, const as follows
     const M: f64 = 128.0;
     const MINV: f64 = 0.0078125; // 1 / M
@@ -344,16 +350,13 @@ mod tests {
 
     #[test]
     fn standard_normal_cdf_0() {
-        assert_eq!(
-            calculate_normal_cdf(0.0, 0.0, 1.0),
-            0.5
-        )
+        assert_eq!(calculate_normal_cdf(0.0, 0.0, 1.0).unwrap(), 0.5)
     }
-    
+
     #[test]
     fn standard_normal_cdf_1() {
         assert_eq!(
-            calculate_normal_cdf(1.0, 0.0, 1.0),
+            calculate_normal_cdf(1.0, 0.0, 1.0).unwrap(),
             0.8413447460685429
         )
     }
@@ -361,7 +364,7 @@ mod tests {
     #[test]
     fn standard_normal_cdf_0_23() {
         assert_eq!(
-            calculate_normal_cdf(0.23, 0.0, 1.0),
+            calculate_normal_cdf(0.23, 0.0, 1.0).unwrap(),
             0.5909541151420059
         )
     }
@@ -369,13 +372,16 @@ mod tests {
     #[test]
     fn standard_normal_cdf_minus_0_23() {
         assert_eq!(
-            calculate_normal_cdf(-0.23, 0.0, 1.0),
+            calculate_normal_cdf(-0.23, 0.0, 1.0).unwrap(),
             0.40904588485799415
         )
     }
 
     #[test]
     fn normal_cdf_3() {
-        assert_eq!(calculate_normal_cdf(3.0, 2.0, 5.0), 0.579259709439103)
+        assert_eq!(
+            calculate_normal_cdf(3.0, 2.0, 5.0).unwrap(),
+            0.579259709439103
+        )
     }
 }

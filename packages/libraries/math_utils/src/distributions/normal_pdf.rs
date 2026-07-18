@@ -1,8 +1,5 @@
 use std::{
-    f64::{
-        self,
-        consts::{PI, SQRT_2},
-    },
+    f64::{self, consts::TAU},
     ops::{Div, Mul, Sub},
 };
 
@@ -17,7 +14,7 @@ use std::{
 /// - `mean` is the mean `μ`,
 /// - `standard_deviation` is the standard deviation `σ`.
 ///
-/// Returns `NaN` if `standard_deviation <= 0.0`.
+/// Returns `Err` if `standard_deviation <= 0.0`.
 pub fn calculate_normal_pdf(
     x: f64,
     mean: f64,
@@ -31,7 +28,7 @@ pub fn calculate_normal_pdf(
 
     Ok(
         (-x.sub(mean).div(standard_deviation).powi(2).mul(0.5)).exp()
-            / (standard_deviation * SQRT_2 * PI.sqrt()),
+            / (standard_deviation * TAU.sqrt()),
     )
 }
 
@@ -43,7 +40,7 @@ mod tests {
     fn standard_normal_pdf_0() {
         assert_eq!(
             calculate_normal_pdf(0.0, 0.0, 1.0).unwrap(),
-            0.39894228040143265 // sage: 0.3989422804014327
+            0.3989422804014327 // sage: 0.3989422804014327 python: 0.3989422804014326779399461
         )
     }
 
@@ -51,7 +48,7 @@ mod tests {
     fn standard_normal_pdf_1() {
         assert_eq!(
             calculate_normal_pdf(1.0, 0.0, 1.0).unwrap(),
-            0.24197072451914334 // sage: 0.24197072451914337
+            0.24197072451914337 // sage: 0.24197072451914337
         )
     }
 
@@ -59,7 +56,7 @@ mod tests {
     fn standard_normal_pdf_0_23() {
         assert_eq!(
             calculate_normal_pdf(0.23, 0.0, 1.0).unwrap(),
-            0.38852858531583584 // sage: 0.3885285853158359
+            0.3885285853158359 // sage: 0.3885285853158359
         )
     }
 
@@ -67,14 +64,15 @@ mod tests {
     fn standard_normal_pdf_minus_0_23() {
         assert_eq!(
             calculate_normal_pdf(-0.23, 0.0, 1.0).unwrap(),
-            0.38852858531583584 // sage: 0.3885285853158359
+            0.3885285853158359 // sage: 0.3885285853158359
         )
     }
 
     #[test]
     fn normal_pdf3() {
-        assert_eq!(calculate_normal_pdf(3.0, 2.0, 5.0).unwrap(),
-        0.07820853879509117
-    )
+        assert_eq!(
+            calculate_normal_pdf(3.0, 2.0, 5.0).unwrap(),
+            0.07820853879509118
+        )
     }
 }
