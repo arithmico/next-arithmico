@@ -65,10 +65,14 @@ impl FunctionEndpoint for CNormalEndpoint {
             .with_tracable(sd));
         }
 
-        Ok(Number::new(calculate_normal_cdf(
+        return if let Ok(result) = calculate_normal_cdf(
             x,
             mean,
             standard_deviation,
-        )))
+        ) {
+            Ok(Number::new(result))
+        } else {
+            Err(EvaluateNodeError::runtime_error("cnormal"))
+        };
     }
 }

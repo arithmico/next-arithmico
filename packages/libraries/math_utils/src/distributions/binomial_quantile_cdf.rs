@@ -22,8 +22,8 @@ use crate::{calculate_binomial_cdf, calculate_quantile_of_normal_cdf};
 ///
 /// # Returns
 ///
-/// * `Some(k)` where `k` is the binomial quantile
-/// * `None` if `p_q` is outside `[0, 1]`
+/// * `Ok(k)` where `k` is the binomial quantile
+/// * `Err(...)` if `p_q` is outside `[0, 1]`
 ///
 /// # Edge Cases
 ///
@@ -49,19 +49,21 @@ pub fn calculate_quantile_of_binomial_cdf(
     p_q: f64,
     n: usize,
     p: f64,
-) -> Option<usize> {
+) -> Result<usize, String> {
     if p_q < 0.0 || p_q > 1.0 {
-        return None;
+        return Err(String::from(
+            "p_q has to be in the interval between zero and one",
+        ));
     }
 
     if p_q == 0.0 || n == 0 {
-        return Some(0);
+        return Ok(0);
     }
     if p_q == 1.0 {
-        return Some(n);
+        return Ok(n);
     }
 
-    qbinom(p_q, n, p)
+    qbinom(p_q, n, p).ok_or_else(|| String::from("error"))
 }
 
 /// This implementation follows the approach used in the R math library (`qbinom`)
@@ -111,7 +113,7 @@ fn qbinom(p_q: f64, n: usize, p: f64) -> Option<usize> {
 
     // from qDiscrete_search.h
     /* y := approx.value (Cornish-Fisher expansion) :  */
-    let z = calculate_quantile_of_normal_cdf(p_q, 0.0, 1.0);
+    let z = calculate_quantile_of_normal_cdf(p_q, 0.0, 1.0).ok()?;
 
     let correction = gamma * (z * z - 1.0) / 6.0;
     let mut y = mu + sigma * (z + correction);
@@ -136,15 +138,11 @@ fn do_search(k: usize, n: usize, p: f64, p_q: f64) -> Option<usize> {
 
     let mut incr = 1;
     let mut k = k;
+
     if z < p_q {
         // upward search
-        loop {
-            let k_new = k + incr;
-            if k_new >= n {
-                k = n;
-                break;
-            }
-
+        let mut k_new = k + incr;
+        while k_new < n {
             let z_new = calculate_binomial_cdf(n, p, k_new)?;
 
             if z_new >= p_q {
@@ -154,16 +152,16 @@ fn do_search(k: usize, n: usize, p: f64, p_q: f64) -> Option<usize> {
 
             k = k_new;
             incr *= 2;
+            k_new = k + incr;
+        }
+
+        if k + incr >= n {
+            k = n;
         }
     } else {
         // downward search
-        loop {
-            if k == 0 {
-                break;
-            }
-
-            let k_new = k.saturating_sub(incr);
-
+        let mut k_new = k - incr;
+        while k > 0 {
             let z_new = calculate_binomial_cdf(n, p, k_new)?;
 
             if z_new < p_q {
@@ -173,6 +171,7 @@ fn do_search(k: usize, n: usize, p: f64, p_q: f64) -> Option<usize> {
 
             k = k_new;
             incr *= 2;
+            k_new = k - incr;
         }
     }
 

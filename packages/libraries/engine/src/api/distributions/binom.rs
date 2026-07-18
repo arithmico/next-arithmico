@@ -87,8 +87,10 @@ impl FunctionEndpoint for BinomEndpoint {
             return Ok(Number::new(0.0));
         }
 
-        let result = calculate_binomial_pmf(n_val as usize, p_val, k_val as usize);
-
-        Ok(Number::new(result))
+        return if let Ok(result) = calculate_binomial_pmf(n_val as usize, p_val, k_val as usize) {
+            Ok(Number::new(result))
+        } else {
+            Err(EvaluateNodeError::runtime_error("binom"))
+        };
     }
 }

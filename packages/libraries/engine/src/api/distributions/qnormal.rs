@@ -75,10 +75,16 @@ impl FunctionEndpoint for QNormalEndpoint {
             .with_tracable(sd));
         }
 
-        Ok(Number::new(calculate_quantile_of_normal_cdf(
+        return if let Ok(result) =
+            calculate_quantile_of_normal_cdf(
             p,
             mean,
             standard_deviation,
-        )))
+        )
+        {
+            Ok(Number::new(result as f64))
+        } else {
+            Err(EvaluateNodeError::runtime_error("qnormal"))
+        };
     }
 }

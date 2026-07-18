@@ -5,12 +5,12 @@ use core::f64;
 ///
 /// This function returns the value `x` such that:
 ///
-/// P(X ≤ x) = p,  where X ~ N(μ, σ²)
+/// P(X <= x) = p,  where X ~ N(μ, σ²)
 ///
 /// Internally, the probability `p` is mapped to the standard normal distribution
 /// using an approximation of the inverse CDF (`ppnd16`), and then scaled:
 ///
-/// x = μ + σ · Φ⁻¹(p)
+/// x = μ + σ * Φ^{-1}(p)
 ///
 /// where Φ⁻¹ is the inverse CDF of the standard normal distribution.
 ///
@@ -23,7 +23,7 @@ use core::f64;
 /// - The quantile corresponding to probability `p`
 ///
 /// # Special Cases
-/// - If `standard_deviation <= 0.0`, returns `NAN`
+/// - If `standard_deviation <= 0.0`, returns `Err`
 /// - If `p <= 0.0`, returns `-∞`
 /// - If `p >= 1.0`, returns `+∞`
 ///
@@ -34,19 +34,21 @@ pub fn calculate_quantile_of_normal_cdf(
     p: f64,
     mean: f64,
     standard_deviation: f64,
-) -> f64 {
-    if standard_deviation <= 0.0 {
-        return f64::NAN;
+) -> Result<f64, String> {
+    if standard_deviation < 0.0 {
+        return Err(String::from(
+            "Standard deviation hast to be greater than zero.",
+        ));
     }
 
     if p <= 0.0 {
-        return f64::NEG_INFINITY;
+        return Ok(f64::NEG_INFINITY);
     }
     if p >= 1.0 {
-        return f64::INFINITY;
+        return Ok(f64::INFINITY);
     }
 
-    mean + standard_deviation * ppnd16(p)
+    Ok(mean + standard_deviation * ppnd16(p))
 }
 
 /*
@@ -186,13 +188,16 @@ mod tests {
 
     #[test]
     fn inverse_standard_normal_cdf_0_5() {
-        assert_eq!(calculate_quantile_of_normal_cdf(0.5, 0.0, 1.0), 0.0)
+        assert_eq!(
+            calculate_quantile_of_normal_cdf(0.5, 0.0, 1.0).unwrap(),
+            0.0
+        )
     }
 
     #[test]
     fn inverse_standard_normal_cdf_0_23() {
         assert_eq!(
-            calculate_quantile_of_normal_cdf(0.23, 0.0, 1.0),
+            calculate_quantile_of_normal_cdf(0.23, 0.0, 1.0).unwrap(),
             -0.7388468491852137
         )
     }
@@ -200,7 +205,7 @@ mod tests {
     #[test]
     fn inverse_normal_cdf_0_78() {
         assert_eq!(
-            calculate_quantile_of_normal_cdf(0.78, 2., 5.),
+            calculate_quantile_of_normal_cdf(0.78, 2., 5.).unwrap(),
             5.860966070943425
         )
     }
@@ -208,7 +213,7 @@ mod tests {
     #[test]
     fn inverse_normal_cdf_0_9999() {
         assert_eq!(
-            calculate_quantile_of_normal_cdf(0.9999, 2., 5.),
+            calculate_quantile_of_normal_cdf(0.9999, 2., 5.).unwrap(),
             20.59508242727854
         )
     }
@@ -216,7 +221,7 @@ mod tests {
     #[test]
     fn inverse_normal_cdf_10_power_minus_9() {
         assert_eq!(
-            calculate_quantile_of_normal_cdf(10e-9, 2., 5.),
+            calculate_quantile_of_normal_cdf(10e-9, 2., 5.).unwrap(),
             -26.06000622087395
         )
     }

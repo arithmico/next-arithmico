@@ -16,19 +16,25 @@
 /// # Notes
 ///
 /// Internally converts integer inputs to `f64` to match the numerical backend.
-pub fn calculate_binomial_pmf(n: usize, p: f64, k: usize) -> f64 {
+pub fn calculate_binomial_pmf(
+    n: usize,
+    p: f64,
+    k: usize,
+) -> Result<f64, String> {
     let n = n as f64;
     let k = k as f64;
 
     if !(0.0..=1.0).contains(&p) {
-        return f64::NAN;
+        return Err(String::from(
+            "p has to be in the interval of zero and one.",
+        ));
     }
 
     if k < 0.0 || n < 0.0 || k > n {
-        return 0.0;
+        return Ok(0.0);
     }
 
-    dbinom(k, n, p)
+    Ok(dbinom(k, n, p))
 }
 
 /*
@@ -67,16 +73,14 @@ const SFE: [f64; 16] = [
     0.0055547335519628013710386899,
 ];
 
-/// stirlerr(n) = log(n!) - log( sqrt(2*pi*n)*(n/e)^n )
+/// stirlerr(n) = log(n!) - log( sqrt(2 * pi * n)*(n/e)^n )
 fn stirlerr(n: f64) -> f64 {
     let n_int = n as usize;
     if n_int < 16 {
         return SFE[n_int];
     }
 
-    let n = n_int as f64;
-    let nn = n;
-    let nn = nn * nn;
+    let nn = n * n;
     if n > 500. {
         return (S0 - S1 / nn) / n;
     }
@@ -130,7 +134,7 @@ fn dbinom(x: f64, n: f64, p: f64) -> f64 {
         - stirlerr(n - x)
         - bd0(x, n * p)
         - bd0(n - x, n * (1.0 - p));
-    
+
     return lc.exp() * (n / (TAU * x * (n - x))).sqrt();
 }
 
@@ -151,6 +155,9 @@ mod tests {
 
     #[test]
     fn binomial_pdf() {
-        assert_eq!(calculate_binomial_pmf(10, 0.87, 9), 0.37120740051593837)
+        assert_eq!(
+            calculate_binomial_pmf(10, 0.87, 9).unwrap(),
+            0.37120740051593837
+        )
     }
 }
