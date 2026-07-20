@@ -12,6 +12,17 @@ impl Trace {
         Self { frames: vec![] }
     }
 
+    pub fn is_hull(&self) -> bool {
+        if let Some(frame) = self.frames.last()
+            && frame.is_hull()
+            && self.frames.len() == 1
+        {
+            true
+        } else {
+            false
+        }
+    }
+
     pub fn first(&self) -> Option<&Frame> {
         self.frames.first()
     }
@@ -43,6 +54,10 @@ impl Trace {
             frame.merge(f);
         });
         self.frames.push(frame);
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.frames.is_empty()
     }
 }
 
