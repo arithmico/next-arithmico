@@ -53,4 +53,6 @@ jobs:
         AWS_REGION: ${{ vars.AWS_REGION }}
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
-      run: npm run cdk -- destroy --all --force
+      run: |
+        mkdir -p ../packages/applications/arithmico/dist
+        npm run cdk -- destroy --all --force
