@@ -41,6 +41,14 @@ impl Span {
     pub fn contains(&self, other: &Self) -> bool {
         self.from <= other.from && self.to >= other.to
     }
+
+    pub fn len_bytes(&self) -> usize {
+        self.from.byte_index.abs_diff(self.to.byte_index) + 1
+    }
+
+    pub fn len_chars(&self) -> usize {
+        self.from.char_index.abs_diff(self.to.char_index) + 1
+    }
 }
 
 pub trait GetTokenSpan {
