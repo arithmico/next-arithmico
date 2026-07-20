@@ -108,7 +108,8 @@ fn parse_expression_pratt<'a>(
                 left = Division::new(left, right).with_optional_span(span);
             }
             TokenKind::Caret => {
-                left = Power::new(left, right);
+                let span = (&left, &right).combine_hulls();
+                left = Power::new(left, right).with_optional_span(span);
             }
             TokenKind::Define => {
                 if let Node::Symbol(symbol) = left {
@@ -656,7 +657,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Power::new(Number::new_node(1.0), Number::new_node(2.0))
+            Power::new(
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            )
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -668,9 +673,14 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Power::new(
-                Number::new_node(1.0),
-                Power::new(Number::new_node(2.0), Number::new_node(3.0))
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Power::new(
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                    Number::new_node(3.0).with_span(Span::new_between(8, 8)),
+                )
+                .with_span(Span::new_between(4, 8)),
             )
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
