@@ -59,7 +59,8 @@ export class StaticWebsiteDeployment extends Construct {
             destinationKeyPrefix: artifactPath,
             destinationBucket: bucket,
             distribution,
-            distributionPaths: ["/*"]
+            distributionPaths: ["/*"],
+            retainOnDelete: true
         });
 
         new cdk.CfnOutput(this, 'DistributionId', {
