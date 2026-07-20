@@ -28,6 +28,14 @@ impl Span {
         Self { from, to }
     }
 
+    #[cfg(feature = "test_utils")]
+    pub fn new_between(from: usize, to: usize) -> Self {
+        Self {
+            from: Position::new_at(from),
+            to: Position::new_at(to),
+        }
+    }
+
     pub fn extract_str_from<'a, 'b>(&'a self, input: &'b str) -> &'b str {
         &input[self.from.byte_index..=self.to.byte_index]
     }
