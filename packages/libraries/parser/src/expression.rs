@@ -1,9 +1,19 @@
 use lexer::{GetTokenKind, Token, TokenKind};
 use node::{
-    And, Boolean, Definition, Division, Equals, Function, FunctionCall, FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan, LessThanOrEquals, Negate, Node, NodeType, Number, Power, Product, Sum, Symbol, Tensor,
+    And, Boolean, Definition, Division, Equals, Function, FunctionCall,
+    FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan,
+    LessThanOrEquals, Negate, Node, NodeType, Number, Power, Product, Sum,
+    Symbol, Tensor,
 };
+use trace::{Tracable, TracableMut};
 
-use crate::{ParseError::{self, InvalidFunctionArgumentDeclaration, InvalidFunctionName}, ParseResult, cursor::Cursor};
+use crate::{
+    ParseError::{
+        self, InvalidFunctionArgumentDeclaration, InvalidFunctionName,
+    },
+    ParseResult,
+    cursor::Cursor,
+};
 
 fn binding_power(token: &Token) -> Option<u8> {
     match token.token_kind() {
@@ -69,9 +79,16 @@ fn parse_expression_pratt<'a>(
         match operator.token_kind() {
             TokenKind::Plus => {
                 if let Node::Sum(sum) = &mut left {
+                    let right_hull = right.hull();
                     sum.elements.push(right);
+                    left = left.with_optional_span(right_hull).only_hull();
                 } else {
-                    left = Sum::new(vec![left, right]);
+                    let left_hull = left.hull();
+                    let right_hull = right.hull();
+                    left = Sum::new(vec![left, right])
+                        .with_optional_span(left_hull)
+                        .with_optional_span(right_hull)
+                        .only_hull();
                 }
             }
             TokenKind::Minus => {
@@ -101,18 +118,21 @@ fn parse_expression_pratt<'a>(
                     let mut signature = FunctionSignature::new();
                     for argument in &function_call.arguments {
                         if let Node::Symbol(symbol) = argument {
-                            signature.add_argument(
-                                &symbol.name, 
-                                |argument| argument.node_type(NodeType::Any)
-                            );
+                            signature.add_argument(&symbol.name, |argument| {
+                                argument.node_type(NodeType::Any)
+                            });
                         } else {
-                            return Err(InvalidFunctionArgumentDeclaration)
+                            return Err(InvalidFunctionArgumentDeclaration);
                         }
                     }
-                    if let Node::Symbol(symbol) = function_call.target.as_ref() {
-                        left = Definition::new(&symbol.name, Function::new(signature, right))
+                    if let Node::Symbol(symbol) = function_call.target.as_ref()
+                    {
+                        left = Definition::new(
+                            &symbol.name,
+                            Function::new(signature, right),
+                        )
                     } else {
-                        return Err(InvalidFunctionName)
+                        return Err(InvalidFunctionName);
                     }
                 } else {
                     return Err(ParseError::UnexpectedLeftSideOfDefinition {
@@ -130,12 +150,13 @@ fn parse_expression_pratt<'a>(
                 let relation_type =
                     RelationType::try_from_token(&operator).unwrap();
                 items.push((relation_type, right));
-                while 
-                    let Some(token) = cursor.peek() &&
-                    let Some(relation_type) = RelationType::try_from_token(token)
+                while let Some(token) = cursor.peek()
+                    && let Some(relation_type) =
+                        RelationType::try_from_token(token)
                 {
                     cursor.next();
-                    let (next_cursor, item) = parse_expression_pratt(cursor, next_min_minding_power)?;
+                    let (next_cursor, item) =
+                        parse_expression_pratt(cursor, next_min_minding_power)?;
                     cursor = next_cursor;
                     items.push((relation_type, item));
                 }
@@ -144,29 +165,44 @@ fn parse_expression_pratt<'a>(
                 for (relation_type, item) in items {
                     match relation_type {
                         RelationType::Equals => {
-                            output.push(Equals::new(current_left, item.clone()));
+                            output
+                                .push(Equals::new(current_left, item.clone()));
                             current_left = item;
-                        },
+                        }
                         RelationType::LessThan => {
-                            output.push(LessThan::new(current_left, item.clone()));
+                            output.push(LessThan::new(
+                                current_left,
+                                item.clone(),
+                            ));
                             current_left = item;
-                        },
+                        }
                         RelationType::LessThanOrEquals => {
-                            output.push(LessThanOrEquals::new(current_left, item.clone()));
+                            output.push(LessThanOrEquals::new(
+                                current_left,
+                                item.clone(),
+                            ));
                             current_left = item;
-                        },
+                        }
                         RelationType::GreaterThan => {
-                            output.push(GreaterThan::new(current_left, item.clone()));
+                            output.push(GreaterThan::new(
+                                current_left,
+                                item.clone(),
+                            ));
                             current_left = item;
-                        },
+                        }
                         RelationType::GreaterThanOrEquals => {
-                            output.push(GreaterThanOrEquals::new(current_left, item.clone()));
+                            output.push(GreaterThanOrEquals::new(
+                                current_left,
+                                item.clone(),
+                            ));
                             current_left = item;
-                        },
+                        }
                     }
                 }
 
-                if let Some(first) = output.first() && output.len() == 1 {
+                if let Some(first) = output.first()
+                    && output.len() == 1
+                {
                     left = first.clone();
                 } else {
                     left = And::new(output);
@@ -188,7 +224,7 @@ fn parse_expression_pratt<'a>(
                         TokenKind::Equals,
                     ],
                     actual: operator.clone(),
-                })
+                });
             }
         }
     }
@@ -228,44 +264,63 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     // function call
                     cursor.next(); // consume left parenthesis
                     let mut arguments = Vec::<Node>::new();
-                    while let Ok((next_cursor, node)) = parse_expression(cursor) {
+                    while let Ok((next_cursor, node)) = parse_expression(cursor)
+                    {
                         cursor = next_cursor;
                         arguments.push(node);
-                        match cursor.next().ok_or_else(|| ParseError::UnexpectedEndOfInput)? {
+                        match cursor
+                            .next()
+                            .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
+                        {
                             Token::Separator(_) => (),
                             Token::RightParenthesis(_) => break,
-                            token => return Err(ParseError::UnexpectedToken { 
-                                expected: vec![
-                                    TokenKind::RightParenthesis,
-                                    TokenKind::Separator
-                                ], 
-                                actual: token.clone() 
-                            })
+                            token => {
+                                return Err(ParseError::UnexpectedToken {
+                                    expected: vec![
+                                        TokenKind::RightParenthesis,
+                                        TokenKind::Separator,
+                                    ],
+                                    actual: token.clone(),
+                                });
+                            }
                         }
                     }
                     if arguments.is_empty() {
                         // consume right parenthesis
                         match cursor.next() {
-                            None => return Err(ParseError::UnexpectedEndOfInput),
+                            None => {
+                                return Err(ParseError::UnexpectedEndOfInput);
+                            }
                             Some(Token::RightParenthesis(_)) => (),
-                            Some(token) => return Err(ParseError::UnexpectedToken { 
-                                expected: vec![TokenKind::RightParenthesis], 
-                                actual: token.clone() 
-                            })
+                            Some(token) => {
+                                return Err(ParseError::UnexpectedToken {
+                                    expected: vec![TokenKind::RightParenthesis],
+                                    actual: token.clone(),
+                                });
+                            }
                         };
                     }
-                    Ok((cursor, FunctionCall::new(Symbol::new(&identifier_token.name), arguments)))
+                    Ok((
+                        cursor,
+                        FunctionCall::new(
+                            Symbol::new(&identifier_token.name),
+                            arguments,
+                        ),
+                    ))
                 } else {
                     // symbol
                     Ok((cursor, Symbol::new(&identifier_token.name)))
                 }
             }
-            Token::Number(number_token) => {
-                Ok((cursor, Number::new_node(number_token.value)))
-            }
-            Token::Boolean(boolean_token) => {
-                Ok((cursor, Boolean::new(boolean_token.value)))
-            }
+            Token::Number(number_token) => Ok((
+                cursor,
+                Number::new_node(number_token.value)
+                    .with_span(number_token.span),
+            )),
+            Token::Boolean(boolean_token) => Ok((
+                cursor,
+                Boolean::new(boolean_token.value).with_span(boolean_token.span),
+            )),
             Token::LeftParenthesis(_) => {
                 let (next_cursor, node) = parse_expression(cursor)?;
                 cursor = next_cursor;
@@ -282,16 +337,21 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 while let Ok((next_cursor, node)) = parse_expression(cursor) {
                     cursor = next_cursor;
                     elements.push(node);
-                    match cursor.next().ok_or_else(|| ParseError::UnexpectedEndOfInput)? {
+                    match cursor
+                        .next()
+                        .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
+                    {
                         Token::Separator(_) => (),
                         Token::RightBracket(_) => break,
-                        token => return Err(ParseError::UnexpectedToken { 
-                            expected: vec![
-                                TokenKind::RightBracket,
-                                TokenKind::Separator
-                            ], 
-                            actual: token.clone() 
-                        })
+                        token => {
+                            return Err(ParseError::UnexpectedToken {
+                                expected: vec![
+                                    TokenKind::RightBracket,
+                                    TokenKind::Separator,
+                                ],
+                                actual: token.clone(),
+                            });
+                        }
                     }
                 }
                 if elements.is_empty() {
@@ -299,10 +359,12 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     match cursor.next() {
                         None => return Err(ParseError::UnexpectedEndOfInput),
                         Some(Token::RightBracket(_)) => (),
-                        Some(token) => return Err(ParseError::UnexpectedToken { 
-                            expected: vec![TokenKind::RightBracket], 
-                            actual: token.clone() 
-                        })
+                        Some(token) => {
+                            return Err(ParseError::UnexpectedToken {
+                                expected: vec![TokenKind::RightBracket],
+                                actual: token.clone(),
+                            });
+                        }
                     };
                 }
                 Ok((cursor, Tensor::new(elements)))
@@ -329,12 +391,48 @@ mod tests {
     use super::*;
 
     #[test]
+    fn number() {
+        let tokens = tokenize("1", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Number::new_node(1.0)
+                .with_span(Span::new(Position::new(0, 0), Position::new(0, 0)))
+        );
+    }
+
+    #[test]
+    fn boolean_true() {
+        let tokens = tokenize("true", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Boolean::new(true)
+                .with_span(Span::new(Position::new(0, 0), Position::new(3, 3)))
+        );
+    }
+
+    #[test]
+    fn boolean_false() {
+        let tokens = tokenize("false", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Boolean::new(false).with_span(Span::new_between(0, 4))
+        );
+    }
+
+    #[test]
     fn sum_number_x2() {
         let tokens = tokenize("1 + 2", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Sum::new(vec![Number::new_node(1.0), Number::new_node(2.0)])
+            Sum::new(vec![
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            ])
+            .with_span(Span::new_between(0, 4))
         );
     }
 
@@ -346,10 +444,11 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
-                Number::new_node(1.0),
-                Number::new_node(2.0),
-                Number::new_node(3.0)
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                Number::new_node(3.0).with_span(Span::new_between(8, 8)),
             ])
+            .with_span(Span::new_between(0, 8))
         );
     }
 
@@ -493,8 +592,7 @@ mod tests {
 
     #[test]
     fn power_number_x2() {
-        let tokens =
-            tokenize("1 ^ 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 ^ 2", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -528,15 +626,19 @@ mod tests {
 
     #[test]
     fn define_function() {
-        let tokens = tokenize("f(x) := x", language::Language::English).unwrap();
+        let tokens =
+            tokenize("f(x) := x", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Definition::new("f", Function::new(
-                FunctionSignature::new()
-                    .argument("x", |arg| arg.node_type(NodeType::Any)), 
-                Symbol::new("x")
-            ))
+            Definition::new(
+                "f",
+                Function::new(
+                    FunctionSignature::new()
+                        .argument("x", |arg| arg.node_type(NodeType::Any)),
+                    Symbol::new("x")
+                )
+            )
         );
     }
 
@@ -592,7 +694,8 @@ mod tests {
 
     #[test]
     fn relation_chain_x2() {
-        let tokens = tokenize("a < b < c", language::Language::English).unwrap();
+        let tokens =
+            tokenize("a < b < c", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -605,7 +708,9 @@ mod tests {
 
     #[test]
     fn relation_chain_x5() {
-        let tokens = tokenize("a < b <= c = d >= e > f", language::Language::English).unwrap();
+        let tokens =
+            tokenize("a < b <= c = d >= e > f", language::Language::English)
+                .unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -619,7 +724,6 @@ mod tests {
             ])
         );
         assert!(cursor.is_eof())
-
     }
 
     #[test]
@@ -627,10 +731,7 @@ mod tests {
         let tokens = tokenize("f()", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(
-            result,
-            FunctionCall::new(Symbol::new("f"), vec![])
-        );
+        assert_eq!(result, FunctionCall::new(Symbol::new("f"), vec![]));
         assert!(cursor.is_eof())
     }
 
@@ -641,9 +742,7 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            FunctionCall::new(Symbol::new("f"), vec![
-                Symbol::new("x")
-            ])
+            FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")])
         );
         assert!(cursor.is_eof())
     }
@@ -655,10 +754,10 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            FunctionCall::new(Symbol::new("f"), vec![
-                Symbol::new("x"),
-                Symbol::new("y")
-            ])
+            FunctionCall::new(
+                Symbol::new("f"),
+                vec![Symbol::new("x"), Symbol::new("y")]
+            )
         );
         assert!(cursor.is_eof())
     }
@@ -668,12 +767,9 @@ mod tests {
         let tokens = tokenize("f(x, y", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let err = parse_expression(cursor).unwrap_err();
-        assert_eq!(
-            err,
-            ParseError::UnexpectedEndOfInput
-        );
+        assert_eq!(err, ParseError::UnexpectedEndOfInput);
     }
-    
+
     #[test]
     fn function_call_err_unexpected_token() {
         let tokens = tokenize("f(x]", language::Language::English).unwrap();
@@ -681,39 +777,39 @@ mod tests {
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(
             err,
-            ParseError::UnexpectedToken { 
+            ParseError::UnexpectedToken {
                 expected: vec![
                     TokenKind::RightParenthesis,
                     TokenKind::Separator
-                ], 
-                actual: Token::RightBracket(
-                    RightBracketToken { 
-                        span: Span::new(
-                            Position { byte_index: 3, char_index: 3 }, 
-                            Position { byte_index: 3, char_index: 3 }
-                        )
-                    }
-                ) 
+                ],
+                actual: Token::RightBracket(RightBracketToken {
+                    span: Span::new(
+                        Position {
+                            byte_index: 3,
+                            char_index: 3
+                        },
+                        Position {
+                            byte_index: 3,
+                            char_index: 3
+                        }
+                    )
+                })
             }
         );
     }
 
     #[test]
     fn sum_function_call_x2() {
-        let tokens = tokenize("f(x) + f(y)", language::Language::English).unwrap();
+        let tokens =
+            tokenize("f(x) + f(y)", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
             Sum::new(vec![
-                FunctionCall::new(Symbol::new("f"), vec![
-                    Symbol::new("x"),
-                ]),
-                FunctionCall::new(Symbol::new("f"), vec![
-                    Symbol::new("y"),
-                ]),
+                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x"),]),
+                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("y"),]),
             ])
-            
         );
         assert!(cursor.is_eof())
     }
@@ -723,10 +819,7 @@ mod tests {
         let tokens = tokenize("[]", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(
-            result,
-            Tensor::new(vec![])
-        );
+        assert_eq!(result, Tensor::new(vec![]));
         assert!(cursor.is_eof())
     }
 
@@ -735,12 +828,7 @@ mod tests {
         let tokens = tokenize("[2]", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(
-            result,
-            Tensor::new(vec![
-                Number::new_node(2.0)
-            ])
-        );
+        assert_eq!(result, Tensor::new(vec![Number::new_node(2.0)]));
         assert!(cursor.is_eof())
     }
 
@@ -751,10 +839,7 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
-                Number::new_node(1.0),
-                Number::new_node(2.0)
-            ])
+            Tensor::new(vec![Number::new_node(1.0), Number::new_node(2.0)])
         );
         assert!(cursor.is_eof())
     }

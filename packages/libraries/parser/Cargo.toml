@@ -7,4 +7,8 @@ edition = "2024"
 language = { version = "0.1.0", path = "../language" }
 lexer = { version = "0.1.0", path = "../lexer" }
 node = { version = "0.1.0", path = "../node" }
+trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true
+
+[dev-dependencies]
+lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
