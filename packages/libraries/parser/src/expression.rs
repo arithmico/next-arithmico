@@ -10,7 +10,10 @@ use trace::{CombineHulls, Tracable, TracableMut};
 use crate::{
     ParseError::{
         self, InvalidFunctionArgumentDeclaration, InvalidFunctionName,
-    }, ParseResult, binding_power::GetBindingPower, cursor::Cursor,
+    },
+    ParseResult,
+    binding_power::GetBindingPower,
+    cursor::Cursor,
 };
 
 pub(crate) fn parse_expression<'a>(
@@ -23,7 +26,10 @@ fn parse_expression_pratt<'a>(
     mut cursor: Cursor<'a>,
     min_binding_power: u8,
 ) -> ParseResult<'a, Node> {
-    let (mut cursor, mut left) = if let Some(Token::Minus(token)) = cursor.peek() && Some(min_binding_power) <= TokenKind::Minus.binding_power() {
+    let (mut cursor, mut left) = if let Some(Token::Minus(token)) =
+        cursor.peek()
+        && Some(min_binding_power) <= TokenKind::Minus.binding_power()
+    {
         // consume minus token
         cursor.next();
         let (cursor, mut left) = parse_primary(cursor)?;
@@ -88,9 +94,13 @@ fn parse_expression_pratt<'a>(
             }
             TokenKind::Multiply => {
                 if let Node::Product(product) = &mut left {
+                    let span = (product.trace(), &right).combine_hulls();
                     product.elements.push(right);
+                    left = left.with_optional_span(span);
                 } else {
+                    let span = (&left, &right).combine_hulls();
                     left = Product::new(vec![left, right])
+                        .with_optional_span(span);
                 }
             }
             TokenKind::Divide => {
@@ -477,17 +487,21 @@ mod tests {
         );
     }
     #[test]
-    fn sum_number_negate_number_number() {
+    fn sum_number_number_negate_number() {
         let tokens =
             tokenize("1 - 2 + 3", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
-                Number::new_node(1.0),
-                Negate::new(Number::new_node(2.0)),
-                Number::new_node(3.0)
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Negate::new(
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                )
+                .with_span(Span::new_between(2, 4)),
+                Number::new_node(3.0).with_span(Span::new_between(8, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -497,7 +511,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Product::new(vec![Number::new_node(1.0), Number::new_node(2.0)])
+            Product::new(vec![
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            ])
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -509,10 +527,11 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Product::new(vec![
-                Number::new_node(1.0),
-                Number::new_node(2.0),
-                Number::new_node(3.0)
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                Number::new_node(3.0).with_span(Span::new_between(8, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -524,12 +543,14 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
-                Number::new_node(1.0),
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
                 Product::new(vec![
-                    Number::new_node(2.0),
-                    Number::new_node(3.0)
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                    Number::new_node(3.0).with_span(Span::new_between(8, 8)),
                 ])
+                .with_span(Span::new_between(4, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -542,11 +563,13 @@ mod tests {
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
                 Product::new(vec![
-                    Number::new_node(1.0),
-                    Number::new_node(2.0)
-                ]),
-                Number::new_node(3.0),
+                    Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                ])
+                .with_span(Span::new_between(0, 4)),
+                Number::new_node(3.0).with_span(Span::new_between(8, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -593,12 +616,22 @@ mod tests {
         let tokens =
             tokenize("(1 + 2) * (3 + 4)", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
-            parse_expression(cursor).unwrap().1,
+            output,
             Product::new(vec![
-                Sum::new(vec![Number::new_node(1.0), Number::new_node(2.0),]),
-                Sum::new(vec![Number::new_node(3.0), Number::new_node(4.0),]),
+                Sum::new(vec![
+                    Number::new_node(1.0).with_span(Span::new_between(1, 1)),
+                    Number::new_node(2.0).with_span(Span::new_between(5, 5)),
+                ])
+                .with_span(Span::new_between(1, 5)),
+                Sum::new(vec![
+                    Number::new_node(3.0).with_span(Span::new_between(11, 11)),
+                    Number::new_node(4.0).with_span(Span::new_between(15, 15)),
+                ])
+                .with_span(Span::new_between(11, 15)),
             ])
+            .with_span(Span::new_between(1, 15)),
         );
     }
 
