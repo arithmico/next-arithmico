@@ -33,8 +33,15 @@ impl Frame {
     pub fn hull(&self) -> Span {
         // Safety: frames are always initialized with at least one span
         let first = self.spans.first().unwrap();
+        if self.spans.len() == 1 {
+            return *first;
+        }
         let last = self.spans.last().unwrap();
         Span::new(first.from.min(last.from), first.to.max(last.to))
+    }
+
+    pub fn is_hull(&self) -> bool {
+        self.spans.len() == 1
     }
 
     pub fn merge(&mut self, frame: Frame) {
