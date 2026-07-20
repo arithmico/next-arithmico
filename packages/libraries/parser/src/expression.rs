@@ -104,7 +104,8 @@ fn parse_expression_pratt<'a>(
                 }
             }
             TokenKind::Divide => {
-                left = Division::new(left, right);
+                let span = (&left, &right).combine_hulls();
+                left = Division::new(left, right).with_optional_span(span);
             }
             TokenKind::Caret => {
                 left = Power::new(left, right);
@@ -579,7 +580,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Division::new(Number::new_node(1.0), Number::new_node(2.0),)
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            )
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -591,9 +596,14 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Division::new(
-                Division::new(Number::new_node(1.0), Number::new_node(2.0),),
-                Number::new_node(3.0)
+                Division::new(
+                    Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                )
+                .with_span(Span::new_between(0, 4)),
+                Number::new_node(3.0).with_span(Span::new_between(8, 8)),
             )
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -605,9 +615,14 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Product::new(vec![
-                Number::new_node(1.0),
-                Division::new(Number::new_node(2.0), Number::new_node(3.0),)
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Division::new(
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+                    Number::new_node(3.0).with_span(Span::new_between(8, 8)),
+                )
+                .with_span(Span::new_between(4, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
