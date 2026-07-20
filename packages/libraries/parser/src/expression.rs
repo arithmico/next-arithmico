@@ -1,44 +1,17 @@
-use lexer::{GetTokenKind, Token, TokenKind};
+use lexer::{GetTokenKind, GetTokenSpan, Token, TokenKind};
 use node::{
     And, Boolean, Definition, Division, Equals, Function, FunctionCall,
     FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan,
     LessThanOrEquals, Negate, Node, NodeType, Number, Power, Product, Sum,
     Symbol, Tensor,
 };
-use trace::{Tracable, TracableMut};
+use trace::{CombineHulls, Tracable, TracableMut};
 
 use crate::{
     ParseError::{
         self, InvalidFunctionArgumentDeclaration, InvalidFunctionName,
-    },
-    ParseResult,
-    cursor::Cursor,
+    }, ParseResult, binding_power::GetBindingPower, cursor::Cursor,
 };
-
-fn binding_power(token: &Token) -> Option<u8> {
-    match token.token_kind() {
-        TokenKind::Identifier
-        | TokenKind::Number
-        | TokenKind::Boolean
-        | TokenKind::LeftParenthesis
-        | TokenKind::RightParenthesis
-        | TokenKind::LeftBracket
-        | TokenKind::Separator
-        | TokenKind::Arrow
-        | TokenKind::RightBracket => None,
-        TokenKind::Define => Some(0),
-        TokenKind::LessThanOrEquals => Some(1),
-        TokenKind::LessThan => Some(1),
-        TokenKind::GreaterThanOrEquals => Some(1),
-        TokenKind::GreaterThan => Some(1),
-        TokenKind::Equals => Some(1),
-        TokenKind::Plus => Some(2),
-        TokenKind::Minus => Some(3),
-        TokenKind::Multiply => Some(4),
-        TokenKind::Divide => Some(5),
-        TokenKind::Caret => Some(6),
-    }
-}
 
 pub(crate) fn parse_expression<'a>(
     cursor: Cursor<'a>,
@@ -47,13 +20,25 @@ pub(crate) fn parse_expression<'a>(
 }
 
 fn parse_expression_pratt<'a>(
-    cursor: Cursor<'a>,
+    mut cursor: Cursor<'a>,
     min_binding_power: u8,
 ) -> ParseResult<'a, Node> {
-    let (mut cursor, mut left) = parse_primary(cursor)?;
+    let (mut cursor, mut left) = if let Some(Token::Minus(token)) = cursor.peek() && Some(min_binding_power) <= TokenKind::Minus.binding_power() {
+        // consume minus token
+        cursor.next();
+        let (cursor, mut left) = parse_primary(cursor)?;
+        let mut span = token.span;
+        if let Some(s) = left.hull() {
+            span = span.hull(&s);
+        }
+        left = Negate::new(left).with_span(span);
+        (cursor, left)
+    } else {
+        parse_primary(cursor)?
+    };
 
     while let Some(next_token) = cursor.peek() {
-        let Some(binding_power) = binding_power(next_token) else {
+        let Some(binding_power) = next_token.binding_power() else {
             break;
         };
 
@@ -79,23 +64,26 @@ fn parse_expression_pratt<'a>(
         match operator.token_kind() {
             TokenKind::Plus => {
                 if let Node::Sum(sum) = &mut left {
-                    let right_hull = right.hull();
+                    let span = (sum.trace(), &right).combine_hulls();
                     sum.elements.push(right);
-                    left = left.with_optional_span(right_hull).only_hull();
+                    left = left.with_optional_span(span);
                 } else {
-                    let left_hull = left.hull();
-                    let right_hull = right.hull();
-                    left = Sum::new(vec![left, right])
-                        .with_optional_span(left_hull)
-                        .with_optional_span(right_hull)
-                        .only_hull();
+                    let span = (&left, &right).combine_hulls();
+                    left = Sum::new(vec![left, right]).with_optional_span(span);
                 }
             }
             TokenKind::Minus => {
+                let mut span = operator.get_span();
+                if let Some(right_span) = right.hull() {
+                    span = span.hull(&right_span);
+                }
                 if let Node::Sum(sum) = &mut left {
-                    sum.elements.push(Negate::new(right));
+                    sum.elements.push(Negate::new(right).with_span(span));
+                    left = left.with_span(span).only_hull();
                 } else {
-                    left = Sum::new(vec![left, Negate::new(right)]);
+                    let right = Negate::new(right).with_span(span);
+                    let span = (&left, &right).combine_hulls();
+                    left = Sum::new(vec![left, right]).with_optional_span(span);
                 }
             }
             TokenKind::Multiply => {
@@ -332,7 +320,8 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     }),
                 }
             }
-            Token::LeftBracket(_) => {
+            Token::LeftBracket(token) => {
+                let mut span = token.span;
                 let mut elements = Vec::<Node>::new();
                 while let Ok((next_cursor, node)) = parse_expression(cursor) {
                     cursor = next_cursor;
@@ -342,7 +331,10 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
                     {
                         Token::Separator(_) => (),
-                        Token::RightBracket(_) => break,
+                        Token::RightBracket(token) => {
+                            span = span.hull(&token.span);
+                            break;
+                        }
                         token => {
                             return Err(ParseError::UnexpectedToken {
                                 expected: vec![
@@ -358,7 +350,9 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     // consume right bracket
                     match cursor.next() {
                         None => return Err(ParseError::UnexpectedEndOfInput),
-                        Some(Token::RightBracket(_)) => (),
+                        Some(Token::RightBracket(token)) => {
+                            span = span.hull(&token.span);
+                        }
                         Some(token) => {
                             return Err(ParseError::UnexpectedToken {
                                 expected: vec![TokenKind::RightBracket],
@@ -367,7 +361,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         }
                     };
                 }
-                Ok((cursor, Tensor::new(elements)))
+                Ok((cursor, Tensor::new(elements).with_span(span)))
             }
             token => Err(ParseError::UnexpectedToken {
                 expected: vec![
@@ -453,15 +447,33 @@ mod tests {
     }
 
     #[test]
-    fn sum_number_negate_number() {
-        let tokens = tokenize("1 - 2", language::Language::English).unwrap();
+    fn single_negate() {
+        let tokens = tokenize("-3", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
+            Negate::new(
+                Number::new_node(3.0).with_span(Span::new_between(1, 1))
+            )
+            .with_span(Span::new_between(0, 1))
+        );
+    }
+
+    #[test]
+    fn sum_number_negate_number() {
+        let tokens = tokenize("1 - 2", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
             Sum::new(vec![
-                Number::new_node(1.0),
-                Negate::new(Number::new_node(2.0))
+                Number::new_node(1.0).with_span(Span::new_between(0, 0)),
+                Negate::new(
+                    Number::new_node(2.0).with_span(Span::new_between(4, 4))
+                )
+                .with_span(Span::new_between(2, 4))
             ])
+            .with_span(Span::new_between(0, 4))
         );
     }
     #[test]
@@ -819,7 +831,10 @@ mod tests {
         let tokens = tokenize("[]", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(result, Tensor::new(vec![]));
+        assert_eq!(
+            result,
+            Tensor::new(vec![]).with_span(Span::new_between(0, 1))
+        );
         assert!(cursor.is_eof())
     }
 
@@ -828,7 +843,13 @@ mod tests {
         let tokens = tokenize("[2]", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(result, Tensor::new(vec![Number::new_node(2.0)]));
+        assert_eq!(
+            result,
+            Tensor::new(vec![
+                Number::new_node(2.0).with_span(Span::new_between(1, 1))
+            ])
+            .with_span(Span::new_between(0, 2))
+        );
         assert!(cursor.is_eof())
     }
 
@@ -839,7 +860,11 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![Number::new_node(1.0), Number::new_node(2.0)])
+            Tensor::new(vec![
+                Number::new_node(1.0).with_span(Span::new_between(1, 1)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4))
+            ])
+            .with_span(Span::new_between(0, 5))
         );
         assert!(cursor.is_eof())
     }
