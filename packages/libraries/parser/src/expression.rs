@@ -112,8 +112,10 @@ fn parse_expression_pratt<'a>(
                 left = Power::new(left, right).with_optional_span(span);
             }
             TokenKind::Define => {
+                let span = (&left, &right).combine_hulls();
                 if let Node::Symbol(symbol) = left {
-                    left = Definition::new(symbol.name, right);
+                    left = Definition::new(symbol.name, right)
+                        .with_optional_span(span);
                 } else if let Node::FunctionCall(function_call) = &left {
                     let mut signature = FunctionSignature::new();
                     for argument in &function_call.arguments {
@@ -122,6 +124,7 @@ fn parse_expression_pratt<'a>(
                                 argument.node_type(NodeType::Any)
                             });
                         } else {
+                            // TODO: add span to error
                             return Err(InvalidFunctionArgumentDeclaration);
                         }
                     }
@@ -131,10 +134,12 @@ fn parse_expression_pratt<'a>(
                             &symbol.name,
                             Function::new(signature, right),
                         )
+                        .with_optional_span(span)
                     } else {
                         return Err(InvalidFunctionName);
                     }
                 } else {
+                    // TODO: add span to error
                     return Err(ParseError::UnexpectedLeftSideOfDefinition {
                         node_type: left.node_type(),
                     });
@@ -161,40 +166,58 @@ fn parse_expression_pratt<'a>(
                     items.push((relation_type, item));
                 }
                 let mut output = vec![];
+                let mut outer_span = left.hull();
                 let mut current_left = left;
                 for (relation_type, item) in items {
+                    match (outer_span, item.hull()) {
+                        (None, Some(s)) => outer_span = Some(s),
+                        (Some(s), None) => outer_span = Some(s),
+                        (Some(left), Some(right)) => {
+                            outer_span = Some(left.hull(&right))
+                        }
+                        _ => {}
+                    };
+                    let span = (&current_left, &item).combine_hulls();
                     match relation_type {
                         RelationType::Equals => {
-                            output
-                                .push(Equals::new(current_left, item.clone()));
+                            output.push(
+                                Equals::new(current_left, item.clone())
+                                    .with_optional_span(span),
+                            );
                             current_left = item;
                         }
                         RelationType::LessThan => {
-                            output.push(LessThan::new(
-                                current_left,
-                                item.clone(),
-                            ));
+                            output.push(
+                                LessThan::new(current_left, item.clone())
+                                    .with_optional_span(span),
+                            );
                             current_left = item;
                         }
                         RelationType::LessThanOrEquals => {
-                            output.push(LessThanOrEquals::new(
-                                current_left,
-                                item.clone(),
-                            ));
+                            output.push(
+                                LessThanOrEquals::new(
+                                    current_left,
+                                    item.clone(),
+                                )
+                                .with_optional_span(span),
+                            );
                             current_left = item;
                         }
                         RelationType::GreaterThan => {
-                            output.push(GreaterThan::new(
-                                current_left,
-                                item.clone(),
-                            ));
+                            output.push(
+                                GreaterThan::new(current_left, item.clone())
+                                    .with_optional_span(span),
+                            );
                             current_left = item;
                         }
                         RelationType::GreaterThanOrEquals => {
-                            output.push(GreaterThanOrEquals::new(
-                                current_left,
-                                item.clone(),
-                            ));
+                            output.push(
+                                GreaterThanOrEquals::new(
+                                    current_left,
+                                    item.clone(),
+                                )
+                                .with_optional_span(span),
+                            );
                             current_left = item;
                         }
                     }
@@ -205,7 +228,7 @@ fn parse_expression_pratt<'a>(
                 {
                     left = first.clone();
                 } else {
-                    left = And::new(output);
+                    left = And::new(output).with_optional_span(outer_span);
                 }
             }
             _ => {
@@ -309,7 +332,11 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     ))
                 } else {
                     // symbol
-                    Ok((cursor, Symbol::new(&identifier_token.name)))
+                    Ok((
+                        cursor,
+                        Symbol::new(&identifier_token.name)
+                            .with_span(token.get_span()),
+                    ))
                 }
             }
             Token::Number(number_token) => Ok((
@@ -395,6 +422,16 @@ mod tests {
     use lexer::{Position, RightBracketToken, Span, tokenize};
 
     use super::*;
+
+    #[test]
+    fn symbol() {
+        let tokens = tokenize("foo", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Symbol::new("foo").with_span(Span::new_between(0, 2))
+        );
+    }
 
     #[test]
     fn number() {
@@ -688,9 +725,15 @@ mod tests {
     fn define_symbol() {
         let tokens = tokenize("a := 2", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        dbg!(&output);
         assert_eq!(
-            parse_expression(cursor).unwrap().1,
-            Definition::new("a", Number::new_node(2.0))
+            output,
+            Definition::new(
+                "a",
+                Number::new_node(2.0).with_span(Span::new_between(5, 5))
+            )
+            .with_span(Span::new_between(0, 5))
         );
     }
 
