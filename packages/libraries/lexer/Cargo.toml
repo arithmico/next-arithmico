@@ -7,3 +7,7 @@ edition = "2024"
 itertools = "0.15.0"
 language = { version = "0.1.0", path = "../language" }
 thiserror.workspace = true
+
+[features]
+default = []
+test_utils = []

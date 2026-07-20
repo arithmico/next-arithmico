@@ -23,4 +23,12 @@ impl Position {
             char_index,
         }
     }
+
+    #[cfg(feature = "test_utils")]
+    pub fn new_at(index: usize) -> Self {
+        Self {
+            byte_index: index,
+            char_index: index,
+        }
+    }
 }
