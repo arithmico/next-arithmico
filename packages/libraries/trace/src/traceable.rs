@@ -6,6 +6,10 @@ use super::trace::Trace;
 
 pub trait Tracable: AsRef<Trace> {
     fn trace(&self) -> &Trace;
+
+    fn hull(&self) -> Option<Span> {
+        self.trace().last().map(|frame| frame.hull())
+    }
 }
 
 impl<T: AsRef<Trace>> Tracable for T {
@@ -27,6 +31,14 @@ pub trait TracableMut: Sized {
         self
     }
 
+    fn with_optional_span(self, span: Option<Span>) -> Self {
+        if let Some(span) = span {
+            self.with_span(span)
+        } else {
+            self
+        }
+    }
+
     fn with_trace(mut self, trace: &Trace) -> Self {
         let t = self.trace_mut();
         t.compact();
@@ -34,6 +46,20 @@ pub trait TracableMut: Sized {
             (_, None) => (),
             (None, Some(frame)) => self.trace_mut().push(frame),
             (Some(last), Some(frame)) => last.merge(frame),
+        }
+        self
+    }
+
+    /// reduce the trace to a single hull span if possible
+    fn only_hull(mut self) -> Self {
+        let trace = self.trace_mut();
+        trace.compact();
+        if let Some(frame) = trace.last_mut() {
+            if !frame.is_hull() {
+                let hull = frame.hull();
+                let hull_frame = Frame::from(hull);
+                *frame = hull_frame;
+            }
         }
         self
     }
