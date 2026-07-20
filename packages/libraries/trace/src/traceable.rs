@@ -18,6 +18,12 @@ impl<T: AsRef<Trace>> Tracable for T {
     }
 }
 
+impl AsRef<Trace> for Trace {
+    fn as_ref(&self) -> &Trace {
+        &self
+    }
+}
+
 pub trait TracableMut: Sized {
     fn trace_mut(&mut self) -> &mut Trace;
 

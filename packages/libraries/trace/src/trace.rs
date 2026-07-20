@@ -35,6 +35,10 @@ impl Trace {
         self.frames.last()
     }
 
+    pub fn hull(&self) -> Option<Span> {
+        self.frames.last().map(|frame| frame.hull())
+    }
+
     pub fn last_mut(&mut self) -> Option<&mut Frame> {
         self.frames.last_mut()
     }
