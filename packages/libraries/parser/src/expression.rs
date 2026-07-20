@@ -132,7 +132,8 @@ fn parse_expression_pratt<'a>(
                     {
                         left = Definition::new(
                             &symbol.name,
-                            Function::new(signature, right),
+                            Function::new(signature, right)
+                                .with_optional_span(span),
                         )
                         .with_optional_span(span)
                     } else {
@@ -284,6 +285,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             // TODO: handle anonymous composite function calls: (f + g)(x)
             Token::Identifier(identifier_token) => {
                 if let Some(Token::LeftParenthesis(..)) = cursor.peek() {
+                    let mut outer_span = identifier_token.get_span();
                     // function call
                     cursor.next(); // consume left parenthesis
                     let mut arguments = Vec::<Node>::new();
@@ -296,7 +298,10 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                             .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
                         {
                             Token::Separator(_) => (),
-                            Token::RightParenthesis(_) => break,
+                            Token::RightParenthesis(token) => {
+                                outer_span = outer_span.hull(&token.get_span());
+                                break;
+                            }
                             token => {
                                 return Err(ParseError::UnexpectedToken {
                                     expected: vec![
@@ -314,7 +319,9 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                             None => {
                                 return Err(ParseError::UnexpectedEndOfInput);
                             }
-                            Some(Token::RightParenthesis(_)) => (),
+                            Some(Token::RightParenthesis(token)) => {
+                                outer_span = outer_span.hull(&token.get_span());
+                            }
                             Some(token) => {
                                 return Err(ParseError::UnexpectedToken {
                                     expected: vec![TokenKind::RightParenthesis],
@@ -326,9 +333,11 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     Ok((
                         cursor,
                         FunctionCall::new(
-                            Symbol::new(&identifier_token.name),
+                            Symbol::new(&identifier_token.name)
+                                .with_span(identifier_token.get_span()),
                             arguments,
-                        ),
+                        )
+                        .with_span(outer_span),
                     ))
                 } else {
                     // symbol
@@ -738,20 +747,38 @@ mod tests {
     }
 
     #[test]
+    fn function_call() {
+        let tokens = tokenize("f(x)", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            FunctionCall::new(
+                Symbol::new("f").with_span(Span::new_between(0, 0)),
+                vec![Symbol::new("x").with_span(Span::new_between(2, 2))]
+            )
+            .with_span(Span::new_between(0, 3))
+        );
+    }
+
+    #[test]
     fn define_function() {
         let tokens =
             tokenize("f(x) := x", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
-            parse_expression(cursor).unwrap().1,
+            output,
             Definition::new(
                 "f",
                 Function::new(
                     FunctionSignature::new()
                         .argument("x", |arg| arg.node_type(NodeType::Any)),
-                    Symbol::new("x")
+                    Symbol::new("x").with_span(Span::new_between(8, 8))
                 )
+                .with_span(Span::new_between(0, 8))
             )
+            .with_span(Span::new_between(0, 8))
         );
     }
 
@@ -761,7 +788,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Equals::new(Symbol::new("a"), Number::new_node(2.0))
+            Equals::new(
+                Symbol::new("a").with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            )
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -771,7 +802,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            LessThan::new(Symbol::new("a"), Number::new_node(2.0))
+            LessThan::new(
+                Symbol::new("a").with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4))
+            )
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -781,7 +816,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            LessThanOrEquals::new(Symbol::new("a"), Number::new_node(2.0))
+            LessThanOrEquals::new(
+                Symbol::new("a").with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(5, 5)),
+            )
+            .with_span(Span::new_between(0, 5)),
         );
     }
 
@@ -791,7 +830,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            GreaterThan::new(Symbol::new("a"), Number::new_node(2.0))
+            GreaterThan::new(
+                Symbol::new("a").with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(4, 4)),
+            )
+            .with_span(Span::new_between(0, 4)),
         );
     }
 
@@ -801,7 +844,11 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            GreaterThanOrEquals::new(Symbol::new("a"), Number::new_node(2.0))
+            GreaterThanOrEquals::new(
+                Symbol::new("a").with_span(Span::new_between(0, 0)),
+                Number::new_node(2.0).with_span(Span::new_between(5, 5)),
+            )
+            .with_span(Span::new_between(0, 5)),
         );
     }
 
@@ -810,12 +857,22 @@ mod tests {
         let tokens =
             tokenize("a < b < c", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
-            parse_expression(cursor).unwrap().1,
+            output,
             And::new(vec![
-                LessThan::new(Symbol::new("a"), Symbol::new("b")),
-                LessThan::new(Symbol::new("b"), Symbol::new("c")),
+                LessThan::new(
+                    Symbol::new("a").with_span(Span::new_between(0, 0)),
+                    Symbol::new("b").with_span(Span::new_between(4, 4)),
+                )
+                .with_span(Span::new_between(0, 4)),
+                LessThan::new(
+                    Symbol::new("b").with_span(Span::new_between(4, 4)),
+                    Symbol::new("c").with_span(Span::new_between(8, 8)),
+                )
+                .with_span(Span::new_between(4, 8)),
             ])
+            .with_span(Span::new_between(0, 8)),
         );
     }
 
@@ -825,16 +882,37 @@ mod tests {
             tokenize("a < b <= c = d >= e > f", language::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
-        let (cursor, result) = parse_expression(cursor).unwrap();
+        let (cursor, output) = parse_expression(cursor).unwrap();
         assert_eq!(
-            result,
+            output,
             And::new(vec![
-                LessThan::new(Symbol::new("a"), Symbol::new("b")),
-                LessThanOrEquals::new(Symbol::new("b"), Symbol::new("c")),
-                Equals::new(Symbol::new("c"), Symbol::new("d")),
-                GreaterThanOrEquals::new(Symbol::new("d"), Symbol::new("e")),
-                GreaterThan::new(Symbol::new("e"), Symbol::new("f")),
+                LessThan::new(
+                    Symbol::new("a").with_span(Span::new_between(0, 0)),
+                    Symbol::new("b").with_span(Span::new_between(4, 4)),
+                )
+                .with_span(Span::new_between(0, 4)),
+                LessThanOrEquals::new(
+                    Symbol::new("b").with_span(Span::new_between(4, 4)),
+                    Symbol::new("c").with_span(Span::new_between(9, 9)),
+                )
+                .with_span(Span::new_between(4, 9)),
+                Equals::new(
+                    Symbol::new("c").with_span(Span::new_between(9, 9)),
+                    Symbol::new("d").with_span(Span::new_between(13, 13)),
+                )
+                .with_span(Span::new_between(9, 13)),
+                GreaterThanOrEquals::new(
+                    Symbol::new("d").with_span(Span::new_between(13, 13)),
+                    Symbol::new("e").with_span(Span::new_between(18, 18)),
+                )
+                .with_span(Span::new_between(13, 18)),
+                GreaterThan::new(
+                    Symbol::new("e").with_span(Span::new_between(18, 18)),
+                    Symbol::new("f").with_span(Span::new_between(22, 22)),
+                )
+                .with_span(Span::new_between(18, 22)),
             ])
+            .with_span(Span::new_between(0, 22)),
         );
         assert!(cursor.is_eof())
     }
@@ -843,8 +921,15 @@ mod tests {
     fn function_call_no_args() {
         let tokens = tokenize("f()", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
-        let (cursor, result) = parse_expression(cursor).unwrap();
-        assert_eq!(result, FunctionCall::new(Symbol::new("f"), vec![]));
+        let (cursor, output) = parse_expression(cursor).unwrap();
+        assert_eq!(
+            output,
+            FunctionCall::new(
+                Symbol::new("f").with_span(Span::new_between(0, 0)),
+                vec![]
+            )
+            .with_span(Span::new_between(0, 2))
+        );
         assert!(cursor.is_eof())
     }
 
@@ -855,7 +940,11 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x")])
+            FunctionCall::new(
+                Symbol::new("f").with_span(Span::new_between(0, 0)),
+                vec![Symbol::new("x").with_span(Span::new_between(2, 2)),]
+            )
+            .with_span(Span::new_between(0, 3)),
         );
         assert!(cursor.is_eof())
     }
@@ -868,9 +957,13 @@ mod tests {
         assert_eq!(
             result,
             FunctionCall::new(
-                Symbol::new("f"),
-                vec![Symbol::new("x"), Symbol::new("y")]
+                Symbol::new("f").with_span(Span::new_between(0, 0)),
+                vec![
+                    Symbol::new("x").with_span(Span::new_between(2, 2)),
+                    Symbol::new("y").with_span(Span::new_between(5, 5)),
+                ]
             )
+            .with_span(Span::new_between(0, 6)),
         );
         assert!(cursor.is_eof())
     }
@@ -920,9 +1013,18 @@ mod tests {
         assert_eq!(
             result,
             Sum::new(vec![
-                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("x"),]),
-                FunctionCall::new(Symbol::new("f"), vec![Symbol::new("y"),]),
+                FunctionCall::new(
+                    Symbol::new("f").with_span(Span::new_between(0, 0)),
+                    vec![Symbol::new("x").with_span(Span::new_between(2, 2)),]
+                )
+                .with_span(Span::new_between(0, 3)),
+                FunctionCall::new(
+                    Symbol::new("f").with_span(Span::new_between(7, 7)),
+                    vec![Symbol::new("y").with_span(Span::new_between(9, 9))]
+                )
+                .with_span(Span::new_between(7, 10)),
             ])
+            .with_span(Span::new_between(0, 10)),
         );
         assert!(cursor.is_eof())
     }
