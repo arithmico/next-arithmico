@@ -1,119 +1,61 @@
-use super::span::Span;
+use lexer::Span;
+
+use crate::frame::Frame;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Trace {
-    spans: Vec<Span>,
-}
-
-impl From<Span> for Trace {
-    fn from(value: Span) -> Self {
-        Self {
-            spans: vec![value.into()],
-        }
-    }
+    frames: Vec<Frame>,
 }
 
 impl Trace {
     pub fn new() -> Self {
-        Self { spans: Vec::new() }
+        Self { frames: vec![] }
     }
 
-    pub fn hull_span(&self) -> Span {
-        self.spans
-            .iter()
-            .cloned()
-            .reduce(|left, right| left.hull(&right))
-            .expect("hull span")
+    pub fn first(&self) -> Option<&Frame> {
+        self.frames.first()
     }
 
-    pub fn hull_trace(&self, other: &Trace) -> Trace {
-        self.spans
-            .iter()
-            .chain(other.spans.iter())
-            .cloned()
-            .reduce(|left, right| left.hull(&right))
-            .expect("hull span")
-            .into()
+    pub fn first_mut(&mut self) -> Option<&mut Frame> {
+        self.frames.first_mut()
     }
 
-    pub fn append_trace(&mut self, trace: &Trace) {
-        self.spans.append(&mut trace.spans.clone());
-        self.merge_spans();
+    pub fn last(&self) -> Option<&Frame> {
+        self.frames.last()
     }
 
-    /// merges all spans in the trace in O(n * log(n))
-    pub fn merge_spans(&mut self) {
-        let mut sorted_spans: Vec<Span> = self.spans.clone();
-        sorted_spans.sort_by(|left, right| left.start().cmp(&right.start()));
+    pub fn last_mut(&mut self) -> Option<&mut Frame> {
+        self.frames.last_mut()
+    }
 
-        let spans = if sorted_spans.len() < 1 {
-            sorted_spans
-        } else {
-            let mut result = vec![sorted_spans.get(0).expect("span").clone()];
+    pub fn push(&mut self, frame: Frame) {
+        self.frames.push(frame);
+    }
 
-            for current in sorted_spans.into_iter().skip(1) {
-                let previous = result.last_mut().expect("previous span");
-                if current.start() <= previous.end() {
-                    let end = previous.end().max(current.end());
-                    previous.set_end(end);
-                } else {
-                    result.push(current);
-                }
-            }
-
-            result
+    /// merge all frames into a single one
+    pub fn compact(&mut self) {
+        let mut frames =
+            std::mem::replace(&mut self.frames, Vec::<Frame>::with_capacity(1));
+        let Some(mut frame) = frames.pop() else {
+            return;
         };
-
-        self.spans = spans;
-    }
-
-    /// merge two traces and their spans in O(n * log(n))
-    pub fn merge(&self, other: &Trace) -> Trace {
-        let spans = self
-            .spans
-            .iter()
-            .chain(other.spans.iter())
-            .cloned()
-            .collect::<Vec<_>>();
-        let mut trace = Trace { spans };
-        trace.merge_spans();
-        trace
-    }
-
-    pub fn push_span(&mut self, span: Span) {
-        self.spans.push(span);
-        self.merge_spans();
-    }
-
-    pub fn with_span(mut self, start: usize, end: usize) -> Self {
-        self.push_span(Span::new(start, end));
-        self
-    }
-
-    pub fn spans(&self) -> Vec<Span> {
-        self.spans.clone()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.spans.is_empty()
+        frames.into_iter().for_each(|f| {
+            frame.merge(f);
+        });
+        self.frames.push(frame);
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    pub fn merge_spans() {
-        let trace =
-            Trace::new().with_span(0, 0).with_span(2, 2).with_span(0, 2);
-        assert_eq!(trace, Trace::new().with_span(0, 2))
+impl From<Frame> for Trace {
+    fn from(value: Frame) -> Self {
+        let mut trace = Self::new();
+        trace.push(value);
+        trace
     }
+}
 
-    #[test]
-    pub fn merge_traces() {
-        let trace_1 = Trace::new().with_span(0, 0).with_span(2, 2);
-        let trace_2 = Trace::new().with_span(0, 2);
-        assert_eq!(trace_1.merge(&trace_2), Trace::new().with_span(0, 2))
+impl From<Span> for Trace {
+    fn from(value: Span) -> Trace {
+        Trace::from(Frame::from(value))
     }
 }

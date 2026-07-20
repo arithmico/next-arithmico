@@ -15,3 +15,12 @@ impl Ord for Position {
         self.byte_index.cmp(&other.byte_index)
     }
 }
+
+impl Position {
+    pub fn new(byte_index: usize, char_index: usize) -> Self {
+        Self {
+            byte_index,
+            char_index,
+        }
+    }
+}

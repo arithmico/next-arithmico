@@ -1,4 +1,6 @@
-use crate::{IntoTrace, Span};
+use lexer::Span;
+
+use crate::{IntoTrace, frame::Frame};
 
 use super::trace::Trace;
 
@@ -15,19 +17,29 @@ impl<T: AsRef<Trace>> Tracable for T {
 pub trait TracableMut: Sized {
     fn trace_mut(&mut self) -> &mut Trace;
 
-    fn with_span(mut self, start: usize, end: usize) -> Self {
-        self.trace_mut().push_span(Span::new(start, end));
+    /// append a span to the last trace frame
+    fn with_span(mut self, span: Span) -> Self {
+        let trace = self.trace_mut();
+        match trace.last_mut() {
+            Some(frame) => frame.push(span),
+            None => trace.push(Frame::new(span)),
+        }
         self
     }
 
     fn with_trace(mut self, trace: &Trace) -> Self {
-        self.trace_mut().append_trace(&trace);
+        let t = self.trace_mut();
+        t.compact();
+        match (t.last_mut(), trace.last().cloned()) {
+            (_, None) => (),
+            (None, Some(frame)) => self.trace_mut().push(frame),
+            (Some(last), Some(frame)) => last.merge(frame),
+        }
         self
     }
 
-    fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
-        self.trace_mut().append_trace(&tracable.into_trace());
-        self
+    fn with_tracable<T: IntoTrace>(self, tracable: T) -> Self {
+        self.with_trace(&tracable.into_trace())
     }
 }
 
