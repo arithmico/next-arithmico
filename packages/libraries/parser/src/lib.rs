@@ -1,6 +1,7 @@
 use language::Language;
 use lexer::tokenize;
 
+mod binding_power;
 mod cursor;
 mod error;
 mod expression;
