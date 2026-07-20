@@ -138,7 +138,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                 };
                 tokens.push(Token::Identifier(IdentifierToken {
                     span,
-                    name: span.extract_substr(input).to_string(),
+                    name: span.extract_str_from(input).to_string(),
                 }));
             }
             // number
@@ -157,7 +157,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
 
                         let head_digits =
                             Span::new(position, head_digits_span.to)
-                                .extract_substr(input);
+                                .extract_str_from(input);
                         if let Some(decimal_separator_span) = cursor
                             .match_and_advance(match language {
                                 Language::German => ",",
@@ -172,7 +172,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                                         trailing_digits_span.to,
                                     );
                                     let trailing_digits = trailing_digits_span
-                                        .extract_substr(input);
+                                        .extract_str_from(input);
                                     let value: f64 = format!(
                                         "{}.{}",
                                         head_digits, trailing_digits
