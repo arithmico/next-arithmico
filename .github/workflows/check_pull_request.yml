@@ -33,7 +33,7 @@ jobs:
         rustup target add wasm32-unknown-unknown
         cargo binstall -y --locked trunk
         cargo install cssbundler --path packages/applications/cssbundler
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@v7
       with:
         node-version: 22
     - name: Install NPM Dependencies
@@ -81,7 +81,7 @@ jobs:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ vars.AWS_REGION }}
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@v7
       with:
         node-version: 24
     - name: Install NPM Dependencies
