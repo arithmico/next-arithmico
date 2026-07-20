@@ -1,12 +1,12 @@
 use language::Language;
 
 use crate::{
-    cursor::LexerCursor, ArrowToken, BooleanToken, CaretToken, DefineToken,
-    DivideToken, Error, GreaterThanOrEqualsToken, GreaterThanToken,
-    IdentifierToken, LeftBracketToken, LeftParenthesisToken,
-    LessThanOrEqualsToken, LessThanToken, MinusToken, MultiplyToken,
-    NumberToken, PlusToken, RightBracketToken, RightParenthesisToken,
-    SeparatorToken, Span, Token,
+    ArrowToken, BooleanToken, CaretToken, DefineToken, DivideToken, Error,
+    GreaterThanOrEqualsToken, GreaterThanToken, IdentifierToken,
+    LeftBracketToken, LeftParenthesisToken, LessThanOrEqualsToken,
+    LessThanToken, MinusToken, MultiplyToken, NumberToken, PlusToken,
+    RightBracketToken, RightParenthesisToken, SeparatorToken, Span, Token,
+    cursor::LexerCursor,
 };
 
 pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
