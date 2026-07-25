@@ -3,31 +3,31 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct AndToken {
+pub struct OrToken {
     pub span: Span,
 }
 
-impl GetTokenKind for AndToken {
+impl GetTokenKind for OrToken {
     fn token_kind(&self) -> crate::TokenKind {
-        crate::TokenKind::And
+        crate::TokenKind::Or
     }
 }
 
-impl GetStaticTokenKind for AndToken {
+impl GetStaticTokenKind for OrToken {
     fn token_kind() -> crate::TokenKind {
-        crate::TokenKind::And
+        crate::TokenKind::Or
     }
 }
 
-impl GetTokenSpan for AndToken {
+impl GetTokenSpan for OrToken {
     fn get_span(&self) -> Span {
         self.span
     }
 }
 
-impl DowncastToken for AndToken {
+impl DowncastToken for OrToken {
     fn downcast(token: &super::Token) -> Option<&Self> {
-        if let crate::Token::And(token) = token {
+        if let crate::Token::Or(token) = token {
             Some(token)
         } else {
             None
