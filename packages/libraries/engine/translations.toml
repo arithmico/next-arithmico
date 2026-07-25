@@ -98,31 +98,23 @@ German = "Zu viele Parameter"
 English = "Invalid parameter value"
 German = "Ungültiger Parameterwert"
 
-# API specific error messages
-[engine.api.error.trigonometry.asin.out-of-bounds]
-English = "Parameter value is not between -1 and 1"
-German = "Parameterwert liegt nicht zwischen -1 und 1"
+# Invalid parameter errors
+[engine.api.error.invalid_parameter_value.negative_value]
+English = "Parameter value must be non negative."
+German = "Parameterwert darf nicht negativ sein."
 
-[engine.api.error.trigonometry.acos.out-of-bounds]
-English = "Parameter value is not between -1 and 1"
-German = "Parameterwert liegt nicht zwischen -1 und 1"
+[engine.api.error.invalid_parameter_value.zero]
+English = "Parameter value must not be 0."
+German = "Parameterwert darf nicht 0 sein."
 
-[engine.api.error.distributions.normal.smaller_than_zero]
-English = "Parameter value is smaller than 0"
-German = "Parameterwert ist kleiner als 0"
-
-[engine.api.error.distributions.open_interval.zero_one]
-English = "Parameter value has to be in the open interval between 0 and 1."
-German = "Parameterwert muss im offenen Intervall zwischen 0 und 1 liegen."
-
-[engine.api.error.distributions.binomial.non_integer]
+[engine.api.error.invalid_parameter_value.non_integer]
 English = "Parameter value is not an integer."
 German = "Parameterwert ist keine Ganzzahl."
 
-[engine.api.error.distributions.binomial.closed_interval_zero_one]
-English = "Parameter value has to be in the closed interval between 0 and 1."
-German = "Parameterwert muss im geschlossenen Intervall zwischen 0 und 1 liegen."
+[engine.api.error.invalid_parameter_value.open_interval.out_of_bounds]
+English = "Parameter value has to be in the open interval between {lower} and {upper}."
+German = "Parameterwert muss im offenen Intervall zwischen {lower} und {upper} liegen."
 
-[engine.api.error.distributions.binomial.negative_value]
-English = "Parameter value must be non negative."
-German = "Parameterwert darf nicht negativ sein."
+[engine.api.error.invalid_parameter_value.closed_interval.out_of_bounds]
+English = "Parameter value has to be in the closed interval between {lower} and {upper}."
+German = "Parameterwert muss im geschlossenem Intervall zwischen {lower} und {upper} liegen."

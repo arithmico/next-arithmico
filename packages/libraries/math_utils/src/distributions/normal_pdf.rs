@@ -3,6 +3,8 @@ use std::{
     ops::{Div, Mul, Sub},
 };
 
+use crate::DistributionError::{self, NonNegativeStandardDeviation};
+
 /// Calculates the probability density function of the normal distribution.
 /// The normal probability density function is defined as:
 ///
@@ -19,11 +21,9 @@ pub fn calculate_normal_pdf(
     x: f64,
     mean: f64,
     standard_deviation: f64,
-) -> Result<f64, String> {
+) -> Result<f64, DistributionError> {
     if standard_deviation <= 0.0 {
-        return Err(String::from(
-            "Standard deviation must not be smaller than zero.",
-        ));
+        return Err(NonNegativeStandardDeviation);
     }
 
     Ok(

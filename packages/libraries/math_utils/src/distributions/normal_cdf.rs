@@ -1,3 +1,8 @@
+use core::f64;
+use std::f64::consts::FRAC_1_SQRT_2;
+
+use crate::DistributionError::{self, NonNegativeStandardDeviation};
+
 /// Computes the cumulative distribution function (CDF) of a normal (Gaussian)
 /// distribution with given mean and standard deviation.
 ///
@@ -30,11 +35,9 @@ pub fn calculate_normal_cdf(
     x: f64,
     mean: f64,
     standard_deviation: f64,
-) -> Result<f64, String> {
-    if standard_deviation < 0.0 {
-        return Err(String::from(
-            "Standard deviation must be greater than zero.",
-        ));
+) -> Result<f64, DistributionError> {
+    if standard_deviation <= 0.0 {
+        return Err(NonNegativeStandardDeviation);
     }
 
     let z = (x - mean) / standard_deviation;
@@ -42,16 +45,15 @@ pub fn calculate_normal_cdf(
     Ok(ndtr(z))
 }
 
-// This is Rust transpilation of ndtr.c:
-//
-// Cephes Math Library Release 2.9:  November, 2000
-// Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
-//
-// Original web site: https://www.netlib.org/cephes/
-// Code mirror: https://github.com/jeremybarnes/cephes/blob/master/cprob/ndtr.c
+/*
+    This is Rust port of ndtr.c:
 
-use core::f64;
-use std::f64::consts::FRAC_1_SQRT_2;
+    Cephes Math Library Release 2.9:  November, 2000
+    Copyright 1984, 1987, 1988, 1992, 2000 by Stephen L. Moshier
+
+    Original web site: https://www.netlib.org/cephes/
+    Code mirror: https://github.com/jeremybarnes/cephes/blob/master/cprob/ndtr.c
+*/
 
 const P: [f64; 9] = [
     2.46196981473530512524E-10,

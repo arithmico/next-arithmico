@@ -1,3 +1,7 @@
+use std::f64::consts::TAU;
+
+use crate::DistributionError;
+
 /// Computes the probability mass function (PMF) of the binomial distribution.
 ///
 /// This is a thin wrapper around the internal `dbinom` implementation,
@@ -20,14 +24,16 @@ pub fn calculate_binomial_pmf(
     n: usize,
     p: f64,
     k: usize,
-) -> Result<f64, String> {
+) -> Result<f64, DistributionError> {
     let n = n as f64;
     let k = k as f64;
 
     if !(0.0..=1.0).contains(&p) {
-        return Err(String::from(
-            "p has to be in the interval of zero and one.",
-        ));
+        return Err(DistributionError::OutOfRange {
+            min: 0.0,
+            max: 1.0,
+            actual: p,
+        });
     }
 
     if k < 0.0 || n < 0.0 || k > n {
@@ -44,8 +50,6 @@ pub fn calculate_binomial_pmf(
 
     Source: https://www.r-project.org/doc/reports/CLoader-dbinom-2002.pdf
 */
-
-use std::f64::consts::TAU;
 
 //const PI2: f64 = 6.283185307179586476925286;
 const S0: f64 = 0.083333333333333333333; /* 1/12 */

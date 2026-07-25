@@ -1,4 +1,7 @@
-use crate::distributions::incomplete_beta_function::calculate_complementary_incomplete_beta_function;
+use crate::{
+    distributions::incomplete_beta_function::calculate_complementary_incomplete_beta_function,
+    DistributionError,
+};
 
 /// Computes the cumulative distribution function of the binomial distribution.
 ///
@@ -18,15 +21,23 @@ use crate::distributions::incomplete_beta_function::calculate_complementary_inco
 ///
 /// # Errors
 ///
-/// Returns `None` if `k > n` or if the underlying incomplete
+/// Returns `Err` if `k > n` or if the underlying incomplete
 /// beta function rejects the parameters.
-pub fn calculate_binomial_cdf(n: usize, p: f64, k: usize) -> Option<f64> {
-    if k >= n {
-        return Some(1.0);
+pub fn calculate_binomial_cdf(
+    n: usize,
+    p: f64,
+    k: usize,
+) -> Result<f64, DistributionError> {
+    if !(0.0..=1.0).contains(&p) {
+        return Err(DistributionError::OutOfRange {
+            min: 0.0,
+            max: 1.0,
+            actual: p,
+        });
     }
 
-    if n == 0 {
-        return Some(1.0);
+    if k >= n || n == 0 {
+        return Ok(1.0);
     }
 
     calculate_complementary_incomplete_beta_function(
@@ -34,7 +45,7 @@ pub fn calculate_binomial_cdf(n: usize, p: f64, k: usize) -> Option<f64> {
         (k + 1) as f64,
         (n - k) as f64,
     )
-    .ok()
+    .map_err(|_| DistributionError::BetaError)
 }
 
 #[cfg(test)]
