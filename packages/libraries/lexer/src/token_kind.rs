@@ -1,6 +1,9 @@
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub enum TokenKind {
+    /// any variable or function name
     Identifier,
+
+    /// any number
     Number,
 
     /// "true" or "false"
@@ -56,6 +59,9 @@ pub enum TokenKind {
 
     /// "="
     Equals,
+
+    /// "&"
+    And,
 }
 
 pub trait GetTokenKind {
