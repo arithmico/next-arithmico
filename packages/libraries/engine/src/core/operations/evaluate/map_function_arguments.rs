@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 use node::{Cardinality, FunctionSignature, GetNodeType, Node, Preprocess};
+use trace::{CombineHulls, Tracable, TracableMut};
 
 use crate::{
     ArgumentMapping,
@@ -59,7 +60,7 @@ pub fn map_function_parameters(
                             options.node_types(),
                             node.node_type(),
                         )
-                        .with_tracable(node));
+                        .with_optional_span(node.hull()));
                     }
                 }
                 Cardinality::Optional => {
@@ -92,13 +93,13 @@ pub fn map_function_parameters(
                         };
 
                         if matched > max.unwrap_or(matched) {
-                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
+                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_optional_span(node.hull()));
                         }
                         if !argument.has_node_type(node.node_type()) {
                             if matched >= min {
                                 continue 'outer;
                             }
-                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_tracable(node));
+                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_optional_span(node.hull()));
                         } else {
                             if matched >= max.unwrap_or(usize::MAX) {
                                 return Err(
@@ -108,7 +109,7 @@ pub fn map_function_parameters(
                     max,
                     matched,
                 )
-                .with_tracable(node),
+                .with_optional_span(node.hull()),
             );
                             }
                             values.push(node);
@@ -125,7 +126,9 @@ pub fn map_function_parameters(
 
     if !parameters.is_empty() {
         return Err(EvaluateNodeError::too_many_parameters(parameters.len())
-            .with_tracable(parameters.into_iter().collect::<Vec<_>>()));
+            .with_optional_span(
+                parameters.into_iter().collect::<Vec<_>>().combine_hulls(),
+            ));
     }
 
     Ok(mapping)

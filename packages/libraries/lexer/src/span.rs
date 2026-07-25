@@ -57,6 +57,14 @@ impl Span {
     pub fn len_chars(&self) -> usize {
         self.from.char_index.abs_diff(self.to.char_index) + 1
     }
+
+    pub fn from_byte_offset(&self) -> usize {
+        self.from.byte_index
+    }
+
+    pub fn to_byte_offset(&self) -> usize {
+        self.to.byte_index
+    }
 }
 
 pub trait GetTokenSpan {

@@ -1,11 +1,12 @@
+use parser::ParseError;
 use thiserror::Error;
 
-use crate::core::{EvaluateNodeError, ParseNodeError, SerializeNodeError};
+use crate::core::{EvaluateNodeError, SerializeNodeError};
 
 #[derive(Error, Debug, Clone)]
 pub enum SessionError {
-    #[error("ParserError: {0:?}")]
-    ParseNodeError(#[from] ParseNodeError),
+    #[error("ParseError: {0:?}")]
+    ParseNodeError(#[from] ParseError),
 
     #[error("SerializationError: {0:?}")]
     SerializeNodeError(#[from] SerializeNodeError),

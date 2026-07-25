@@ -1,4 +1,5 @@
 use node::{Node, Symbol};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{EvaluateNodeError, NodeCast};
 
@@ -7,7 +8,7 @@ impl NodeCast for Symbol {
         match node {
             Node::Symbol(symbol) => Ok(symbol),
             _ => Err(EvaluateNodeError::runtime_error("expected symbol")
-                .with_tracable(node)),
+                .with_optional_span(node.hull())),
         }
     }
 }

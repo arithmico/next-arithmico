@@ -1,4 +1,5 @@
 use node::{Boolean, GetNodeType, Node};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -10,15 +11,15 @@ impl EvaluateNode for Boolean {
             ));
         }
 
-        Ok(Boolean::new(self.value))
+        Ok(Boolean::new(self.value).with_optional_span(self.hull()))
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lexer::Span;
     use trace::TracableMut;
-    use trace::Trace;
 
     #[test]
     fn evaluate_boolean_true() {
@@ -37,11 +38,13 @@ mod tests {
     #[test]
     fn evaluate_boolean_with_trace() {
         let context = Context::default();
-        let trace = Trace::new().with_span(0, 4);
         let result = Boolean::new(false)
-            .with_trace(&trace)
+            .with_span(Span::new_between(0, 4))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Boolean::new(false).with_trace(&trace));
+        assert_eq!(
+            result,
+            Boolean::new(false).with_span(Span::new_between(0, 4))
+        );
     }
 }

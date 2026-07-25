@@ -1,5 +1,5 @@
 use node::Node;
-use trace::TracableMut;
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -35,7 +35,7 @@ impl EvaluateNode for Node {
             }
             Node::Definition(definition) => definition.evaluate(context),
         }
-        .map(|node| node.with_tracable(self))
-        .map_err(|error| error.with_tracable(self))
+        .map(|node| node.with_optional_span(self.hull()))
+        .map_err(|error| error.with_optional_new_frame(self.hull()))
     }
 }

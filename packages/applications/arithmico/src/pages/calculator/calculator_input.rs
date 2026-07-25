@@ -3,10 +3,11 @@ use editor::{
     node::{MarkNode, TextNode},
 };
 use editor_core::{
-    EditorContainerNode, EditorLeafNode,
     selection::{SelectionRange, SelectionRangePoint},
+    EditorContainerNode, EditorLeafNode,
 };
 use leptos::prelude::*;
+use trace::Trace;
 use web_state::WebState;
 
 use crate::state::{EvaluateAction, State, UpdateInputEditorAction};
@@ -22,20 +23,20 @@ fn CalculatorInputEditor() -> impl IntoView {
     let error_trace = state.select(|state| state.current_error_trace);
 
     Effect::new(move |_| {
-        if let Some(trace) = error_trace.get() {
+        if let Option::<&Trace>::Some(trace) = error_trace.read().as_ref() {
             let editor_state = state.get().input_editor_state;
             let content = editor_state
                 .serialize_node(editor_state.get_root_id())
                 .expect("field content");
             let mut segments = Vec::<(String, bool)>::new();
             let mut pos = 0;
-            for span in trace.spans() {
-                let start = span.start();
-                let end = span.end();
+            for span in trace.first_spans().into_iter().flatten() {
+                let start = span.from_byte_offset();
+                let end = span.to_byte_offset();
                 assert!(start >= pos);
                 assert!(start < content.len());
                 if pos < start {
-                    segments.push((content[pos..start].to_string(), false));
+                    segments.push((content[pos..=start].to_string(), false));
                     pos = start;
                 }
                 segments.push((content[pos..=end].to_string(), true));

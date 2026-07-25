@@ -1,5 +1,5 @@
 use node::{And, Boolean, GetNodeType, Node};
-use trace::TracableMut;
+use trace::{CombineHulls, Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -13,6 +13,7 @@ impl EvaluateNode for And {
             .iter()
             .map(|element| element.evaluate(context))
             .reduce(|left, right| combine_and_elements(&left?, &right?))
+            // Safety: this can not panic due to the previous length check
             .expect("min 2 elements")
     }
 }
@@ -22,22 +23,24 @@ fn combine_and_elements(
     right: &Node,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
-        (Node::Boolean(left), Node::Boolean(right)) => {
-            if !cfg!(feature = "operator_and_boolean_boolean") {
-                return Err(EvaluateNodeError::unsupported_operation());
-            }
-
-            Ok(Boolean::new(left.value && right.value)
-                .with_tracable((left, right)))
+        (Node::Boolean(left), Node::Boolean(right))
+            if cfg!(feature = "operator_and_boolean_boolean") =>
+        {
+            let span = (left, right).combine_hulls();
+            Ok(
+                Boolean::new(left.value && right.value)
+                    .with_optional_span(span),
+            )
         }
         (left, right) => Err(EvaluateNodeError::unsupported_operation()
-            .with_tracable((left, right))),
+            .with_optional_span(left.hull())
+            .with_optional_span(right.hull())),
     }
-    .map(|node| node.with_tracable((left, right)))
 }
 
 #[cfg(test)]
 mod tests {
+    use lexer::Span;
     use node::NodeType;
 
     use super::*;
@@ -75,12 +78,15 @@ mod tests {
     fn evaluate_and_with_trace() {
         let context = Context::default();
         let result = And::new(vec![
-            Boolean::new(false).with_span(0, 0),
-            Boolean::new(true).with_span(2, 2),
+            Boolean::new(false).with_span(Span::new_between(0, 0)),
+            Boolean::new(true).with_span(Span::new_between(2, 2)),
         ])
-        .with_span(0, 2)
+        .with_span(Span::new_between(0, 2))
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Boolean::new(false).with_span(0, 2));
+        assert_eq!(
+            result,
+            Boolean::new(false).with_span(Span::new_between(0, 2))
+        );
     }
 }

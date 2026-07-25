@@ -41,7 +41,7 @@ pub fn Definitions() -> impl IntoView {
                         context.decimal_format = settings
                             .override_decimal_format
                             .decimal_format()
-                            .unwrap_or(&DecimalFormat::from(&settings.get_language()))
+                            .unwrap_or(&DecimalFormat::from(settings.get_language()))
                             .clone();
                         let key_string = key_node.serialize(&context)?;
                         let value_string = value_node.serialize(&context)?;

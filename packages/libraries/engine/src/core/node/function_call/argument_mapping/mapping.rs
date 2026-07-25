@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use node::Node;
+use trace::{Tracable, TracableMut};
 
 use crate::core::{EvaluateNodeError, NodeCast};
 
@@ -102,7 +103,7 @@ impl ArgumentMapping {
             }
             ArgumentMappingEntry::Value(node) => {
                 Err(EvaluateNodeError::runtime_error("argument is not a list")
-                    .with_tracable(node))
+                    .with_optional_span(node.hull()))
             }
             ArgumentMappingEntry::None => {
                 Err(EvaluateNodeError::runtime_error("argument list missing"))

@@ -23,6 +23,7 @@ impl EvaluateNode for Tensor {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lexer::Span;
     use node::{Number, Sum};
     use trace::TracableMut;
 
@@ -37,10 +38,13 @@ mod tests {
     fn evaluate_empty_tensor_with_trace() {
         let context = Context::default();
         let result = Tensor::new(vec![])
-            .with_span(0, 1)
+            .with_span(Span::new_between(0, 1))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Tensor::new(vec![]).with_span(0, 1));
+        assert_eq!(
+            result,
+            Tensor::new(vec![]).with_span(Span::new_between(0, 1))
+        );
     }
 
     #[test]
@@ -69,18 +73,20 @@ mod tests {
         let context = Context::default();
         let result = Tensor::new(vec![
             Sum::new(vec![
-                Number::new_node(1.).with_span(1, 1),
-                Number::new_node(2.).with_span(3, 3),
+                Number::new_node(1.).with_span(Span::new_between(1, 1)),
+                Number::new_node(2.).with_span(Span::new_between(3, 3)),
             ])
-            .with_span(1, 3),
+            .with_span(Span::new_between(1, 3)),
         ])
-        .with_span(0, 4)
+        .with_span(Span::new_between(0, 4))
         .evaluate(&context)
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![Number::new_node(3.).with_span(1, 3)])
-                .with_span(0, 4)
+            Tensor::new(vec![
+                Number::new_node(3.).with_span(Span::new_between(1, 3))
+            ])
+            .with_span(Span::new_between(0, 4))
         );
     }
 

@@ -88,6 +88,10 @@ impl Frame {
             }
         }
     }
+
+    pub fn spans(&self) -> &[Span] {
+        &self.spans
+    }
 }
 
 impl From<Span> for Frame {

@@ -1,4 +1,5 @@
 use node::{GetNodeType, Node, Symbol};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -10,15 +11,17 @@ impl EvaluateNode for Symbol {
             ));
         }
 
-        context
-            .lookup(&self.name)
-            .ok_or_else(|| EvaluateNodeError::unknown_symbol(&self.name))
+        context.lookup(&self.name).ok_or_else(|| {
+            EvaluateNodeError::unknown_symbol(&self.name)
+                .with_optional_span(self.hull())
+        })
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lexer::Span;
     use node::Number;
     use std::sync::Arc;
     use trace::TracableMut;
@@ -59,9 +62,14 @@ mod tests {
             DecimalFormat::default(),
             Arc::new(HostApi::empty()),
         );
-        let result =
-            Symbol::new("x").with_span(0, 0).evaluate(&context).unwrap();
-        assert_eq!(result, Number::new_node(42.).with_span(0, 0));
+        let result = Symbol::new("x")
+            .with_span(Span::new_between(0, 0))
+            .evaluate(&context)
+            .unwrap();
+        assert_eq!(
+            result,
+            Number::new_node(42.).with_span(Span::new_between(0, 0))
+        );
     }
 
     #[test]
@@ -117,9 +125,12 @@ mod tests {
         );
 
         let result = Symbol::new("test")
-            .with_span(0, 3)
+            .with_span(Span::new_between(0, 3))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new_node(42.).with_span(0, 3));
+        assert_eq!(
+            result,
+            Number::new_node(42.).with_span(Span::new_between(0, 3))
+        );
     }
 }

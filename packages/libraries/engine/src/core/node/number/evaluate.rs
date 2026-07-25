@@ -17,6 +17,7 @@ impl EvaluateNode for Number {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lexer::Span;
     use trace::TracableMut;
 
     #[test]
@@ -30,9 +31,12 @@ mod tests {
     fn evaluate_number_with_trace() {
         let context = Context::default();
         let result = Number::new_node(1.2345)
-            .with_span(0, 5)
+            .with_span(Span::new_between(0, 5))
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Number::new_node(1.2345).with_span(0, 5));
+        assert_eq!(
+            result,
+            Number::new_node(1.2345).with_span(Span::new_between(0, 5))
+        );
     }
 }

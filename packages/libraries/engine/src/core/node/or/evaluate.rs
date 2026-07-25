@@ -1,5 +1,5 @@
 use node::{Boolean, GetNodeType, Node, Or};
-use trace::TracableMut;
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -28,22 +28,22 @@ fn combine_or_elements(
     right: &Node,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
-        (Node::Boolean(left), Node::Boolean(right)) => {
-            if !cfg!(feature = "operator_or_boolean_boolean") {
-                return Err(EvaluateNodeError::unsupported_operation());
-            }
-
+        (Node::Boolean(left), Node::Boolean(right))
+            if cfg!(feature = "operator_or_boolean_boolean") =>
+        {
             Ok(Boolean::new(left.value || right.value)
-                .with_tracable((left, right)))
+                .with_optional_span(left.hull())
+                .with_optional_span(right.hull()))
         }
         (left, right) => Err(EvaluateNodeError::unsupported_operation()
-            .with_tracable((left, right))),
+            .with_optional_span(left.hull())
+            .with_optional_span(right.hull())),
     }
-    .map(|node| node.with_tracable((left, right)))
 }
 
 #[cfg(test)]
 mod tests {
+    use lexer::Span;
     use node::NodeType;
 
     use super::*;
@@ -81,12 +81,15 @@ mod tests {
     fn evaluate_or_with_trace() {
         let context = Context::default();
         let result = Or::new(vec![
-            Boolean::new(false).with_span(0, 0),
-            Boolean::new(false).with_span(2, 2),
+            Boolean::new(false).with_span(Span::new_between(0, 0)),
+            Boolean::new(false).with_span(Span::new_between(2, 2)),
         ])
-        .with_span(0, 2)
+        .with_span(Span::new_between(0, 2))
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Boolean::new(false).with_span(0, 2));
+        assert_eq!(
+            result,
+            Boolean::new(false).with_span(Span::new_between(0, 2))
+        );
     }
 }

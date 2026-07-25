@@ -12,7 +12,6 @@ pub use context::*;
 pub use error::*;
 pub use evaluate::*;
 pub use host_api::*;
-pub use node::*;
 pub use operations::*;
 pub use serialize::*;
 pub use stack::*;

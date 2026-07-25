@@ -1,4 +1,5 @@
 use node::{Node, Number};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{EvaluateNodeError, NodeCast};
 
@@ -7,7 +8,7 @@ impl NodeCast for Number {
         match node {
             Node::Number(number) => Ok(number),
             _ => Err(EvaluateNodeError::runtime_error("expected number")
-                .with_tracable(node)),
+                .with_optional_span(node.hull())),
         }
     }
 }

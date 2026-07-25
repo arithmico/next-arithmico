@@ -529,9 +529,10 @@ version = "0.1.0"
 dependencies = [
  "engine_derive",
  "float_utils",
+ "lexer",
  "math_utils",
  "node",
- "nom",
+ "parser",
  "serde",
  "thiserror 2.0.19",
  "trace",
