@@ -62,6 +62,9 @@ pub enum TokenKind {
 
     /// "&"
     And,
+
+    /// "|"
+    Or,
 }
 
 pub trait GetTokenKind {

@@ -1,12 +1,12 @@
 use language::Language;
 
 use crate::{
-    cursor::LexerCursor, ArrowToken, BooleanToken, CaretToken, DefineToken,
-    DivideToken, Error, GreaterThanOrEqualsToken, GreaterThanToken,
-    IdentifierToken, LeftBracketToken, LeftParenthesisToken,
-    LessThanOrEqualsToken, LessThanToken, MinusToken, MultiplyToken,
-    NumberToken, PlusToken, RightBracketToken, RightParenthesisToken,
-    SeparatorToken, Span, Token,
+    ArrowToken, BooleanToken, CaretToken, DefineToken, DivideToken, Error,
+    GreaterThanOrEqualsToken, GreaterThanToken, IdentifierToken,
+    LeftBracketToken, LeftParenthesisToken, LessThanOrEqualsToken,
+    LessThanToken, MinusToken, MultiplyToken, NumberToken, PlusToken,
+    RightBracketToken, RightParenthesisToken, SeparatorToken, Span, Token,
+    cursor::LexerCursor,
 };
 
 pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
@@ -112,6 +112,11 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
             }
             '&' => {
                 tokens.push(Token::And(crate::AndToken {
+                    span: Span::new(position, position),
+                }));
+            }
+            '|' => {
+                tokens.push(Token::Or(crate::OrToken {
                     span: Span::new(position, position),
                 }));
             }
@@ -224,7 +229,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{AndToken, Position};
+    use crate::{AndToken, OrToken, Position};
 
     use super::*;
 
@@ -451,6 +456,25 @@ mod tests {
         assert_eq!(
             tokenize(" \n \t& \r", Default::default()).unwrap(),
             vec![Token::And(AndToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
+    fn or() {
+        assert_eq!(
+            tokenize(" \n \t| \r", Default::default()).unwrap(),
+            vec![Token::Or(OrToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,

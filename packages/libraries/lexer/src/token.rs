@@ -15,6 +15,7 @@ mod less_than_or_equals;
 mod minus;
 mod multiply;
 mod number;
+mod or;
 mod plus;
 mod right_bracket;
 mod right_parenthesis;
@@ -37,6 +38,7 @@ pub use less_than_or_equals::*;
 pub use minus::*;
 pub use multiply::*;
 pub use number::*;
+pub use or::*;
 pub use plus::*;
 pub use right_bracket::*;
 pub use right_parenthesis::*;
@@ -67,6 +69,7 @@ pub enum Token {
     GreaterThanOrEquals(GreaterThanOrEqualsToken),
     Equals(EqualsToken),
     And(AndToken),
+    Or(OrToken),
 }
 
 impl GetTokenKind for Token {
@@ -93,6 +96,7 @@ impl GetTokenKind for Token {
             Token::GreaterThanOrEquals(token) => token.token_kind(),
             Token::Equals(token) => token.token_kind(),
             Token::And(token) => token.token_kind(),
+            Token::Or(token) => token.token_kind(),
         }
     }
 }
@@ -121,6 +125,7 @@ impl GetTokenSpan for Token {
             Token::GreaterThanOrEquals(token) => token.get_span(),
             Token::Equals(token) => token.get_span(),
             Token::And(token) => token.get_span(),
+            Token::Or(token) => token.get_span(),
         }
     }
 }
