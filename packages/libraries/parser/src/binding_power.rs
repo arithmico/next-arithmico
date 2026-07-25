@@ -22,11 +22,13 @@ impl GetBindingPower for TokenKind {
             TokenKind::GreaterThanOrEquals => Some(1),
             TokenKind::GreaterThan => Some(1),
             TokenKind::Equals => Some(1),
-            TokenKind::Plus => Some(2),
-            TokenKind::Minus => Some(3),
-            TokenKind::Multiply => Some(4),
-            TokenKind::Divide => Some(5),
-            TokenKind::Caret => Some(6),
+            TokenKind::Or => Some(2),
+            TokenKind::And => Some(3),
+            TokenKind::Plus => Some(4),
+            TokenKind::Minus => Some(5),
+            TokenKind::Multiply => Some(6),
+            TokenKind::Divide => Some(7),
+            TokenKind::Caret => Some(8),
         }
     }
 }

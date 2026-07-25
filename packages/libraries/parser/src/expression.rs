@@ -2,7 +2,7 @@ use lexer::{GetTokenKind, GetTokenSpan, Token, TokenKind};
 use node::{
     And, Boolean, Definition, Division, Equals, Function, FunctionCall,
     FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan,
-    LessThanOrEquals, Negate, Node, NodeType, Number, Power, Product, Sum,
+    LessThanOrEquals, Negate, Node, NodeType, Number, Or, Power, Product, Sum,
     Symbol, Tensor,
 };
 use trace::{CombineHulls, Tracable, TracableMut};
@@ -144,6 +144,26 @@ fn parse_expression_pratt<'a>(
                     return Err(ParseError::UnexpectedLeftSideOfDefinition {
                         node_type: left.node_type(),
                     });
+                }
+            }
+            TokenKind::Or => {
+                if let Node::Or(or) = &mut left {
+                    let span = (or.trace(), &right).combine_hulls();
+                    or.elements.push(right);
+                    left = left.with_optional_span(span);
+                } else {
+                    let span = (&left, &right).combine_hulls();
+                    left = Or::new(vec![left, right]).with_optional_span(span);
+                }
+            }
+            TokenKind::And => {
+                if let Node::And(and) = &mut left {
+                    let span = (and.trace(), &right).combine_hulls();
+                    and.elements.push(right);
+                    left = left.with_optional_span(span);
+                } else {
+                    let span = (&left, &right).combine_hulls();
+                    left = And::new(vec![left, right]).with_optional_span(span);
                 }
             }
             TokenKind::LessThan
@@ -1070,5 +1090,115 @@ mod tests {
             .with_span(Span::new_between(0, 5))
         );
         assert!(cursor.is_eof())
+    }
+
+    #[test]
+    fn or_boolean_x2() {
+        let tokens =
+            tokenize("true | false", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Or::new(vec![
+                Boolean::new(true).with_span(Span::new_between(0, 3)),
+                Boolean::new(false).with_span(Span::new_between(7, 11)),
+            ])
+            .with_span(Span::new_between(0, 11)),
+        );
+    }
+
+    #[test]
+    fn or_boolean_x3() {
+        let tokens =
+            tokenize("true | false | true", language::Language::English)
+                .unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Or::new(vec![
+                Boolean::new(true).with_span(Span::new_between(0, 3)),
+                Boolean::new(false).with_span(Span::new_between(7, 11)),
+                Boolean::new(true).with_span(Span::new_between(15, 18)),
+            ])
+            .with_span(Span::new_between(0, 18)),
+        );
+    }
+
+    #[test]
+    fn and_boolean_x2() {
+        let tokens =
+            tokenize("true & false", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            And::new(vec![
+                Boolean::new(true).with_span(Span::new_between(0, 3)),
+                Boolean::new(false).with_span(Span::new_between(7, 11)),
+            ])
+            .with_span(Span::new_between(0, 11)),
+        );
+    }
+
+    #[test]
+    fn and_boolean_x3() {
+        let tokens =
+            tokenize("true & false & true", language::Language::English)
+                .unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            And::new(vec![
+                Boolean::new(true).with_span(Span::new_between(0, 3)),
+                Boolean::new(false).with_span(Span::new_between(7, 11)),
+                Boolean::new(true).with_span(Span::new_between(15, 18)),
+            ])
+            .with_span(Span::new_between(0, 18)),
+        );
+    }
+
+    #[test]
+    fn or_and() {
+        let tokens =
+            tokenize("true | false & true", language::Language::English)
+                .unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Or::new(vec![
+                Boolean::new(true).with_span(Span::new_between(0, 3)),
+                And::new(vec![
+                    Boolean::new(false).with_span(Span::new_between(7, 11)),
+                    Boolean::new(true).with_span(Span::new_between(15, 18)),
+                ])
+                .with_span(Span::new_between(7, 18)),
+            ])
+            .with_span(Span::new_between(0, 18)),
+        );
+    }
+
+    #[test]
+    fn and_or() {
+        let tokens =
+            tokenize("true & false | true", language::Language::English)
+                .unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Or::new(vec![
+                And::new(vec![
+                    Boolean::new(true).with_span(Span::new_between(0, 3)),
+                    Boolean::new(false).with_span(Span::new_between(7, 11)),
+                ])
+                .with_span(Span::new_between(0, 11)),
+                Boolean::new(true).with_span(Span::new_between(15, 18)),
+            ])
+            .with_span(Span::new_between(0, 18)),
+        );
     }
 }
