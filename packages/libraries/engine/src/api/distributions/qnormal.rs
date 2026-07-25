@@ -1,12 +1,12 @@
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
-use float_utils::F64Extension;
 use math_utils::calculate_quantile_of_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
 
+use crate::api::validations::NumberValidation;
 use crate::{
     core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
@@ -55,36 +55,12 @@ impl FunctionEndpoint for QNormalEndpoint {
         QNormalArgs { p, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let p = p.value;
-        let mean = mean.value;
-        let standard_deviation = sd.value;
+        p.validate_open_interval(0.0, 1.0)?;
 
-        if !p.is_in_open_interval(0., 1.) {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.open_interval.zero_one",
-            )
-            .build()
-            .with_tracable(sd));
-        }
-        
-        if standard_deviation < 0.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.normal.smaller_than_zero",
-            )
-            .build()
-            .with_tracable(sd));
-        }
+        sd.validate_non_negative()?.validate_non_zero()?;
 
-        return if let Ok(result) =
-            calculate_quantile_of_normal_cdf(
-            p,
-            mean,
-            standard_deviation,
-        )
-        {
-            Ok(Number::new(result as f64))
-        } else {
-            Err(EvaluateNodeError::runtime_error("qnormal"))
-        };
+        calculate_quantile_of_normal_cdf(p.value, mean.value, sd.value)
+            .map_err(|_| EvaluateNodeError::runtime_error("qnormal"))
+            .map(|result| Number::new(result))
     }
 }

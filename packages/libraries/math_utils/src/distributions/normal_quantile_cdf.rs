@@ -1,5 +1,7 @@
 use core::f64;
 
+use crate::DistributionError::{self, NonNegativeStandardDeviation};
+
 /// Computes the quantile (inverse cumulative distribution function, inverse CDF)
 /// of a normal (Gaussian) distribution with given mean and standard deviation.
 ///
@@ -34,11 +36,9 @@ pub fn calculate_quantile_of_normal_cdf(
     p: f64,
     mean: f64,
     standard_deviation: f64,
-) -> Result<f64, String> {
-    if standard_deviation < 0.0 {
-        return Err(String::from(
-            "Standard deviation hast to be greater than zero.",
-        ));
+) -> Result<f64, DistributionError> {
+    if standard_deviation <= 0.0 {
+        return Err(NonNegativeStandardDeviation);
     }
 
     if p <= 0.0 {
@@ -48,7 +48,9 @@ pub fn calculate_quantile_of_normal_cdf(
         return Ok(f64::INFINITY);
     }
 
-    Ok(mean + standard_deviation * ppnd16(p))
+    let result = mean + standard_deviation * ppnd16(p);
+
+    Ok(result)
 }
 
 /*

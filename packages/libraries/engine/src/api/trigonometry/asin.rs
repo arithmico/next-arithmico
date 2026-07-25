@@ -2,8 +2,7 @@ use engine_derive::FunctionArguments;
 use node::Number;
 
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
-    Context,
+    Context, api::validations::NumberValidation, core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -29,17 +28,9 @@ impl FunctionEndpoint for AsinEndpoint {
         AsinArgs { x }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let value = x.value;
+        x.validate_closed_interval(-1.0, 1.0)?;
 
-        if value < -1.0 || value > 1.0 || !value.is_finite() {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.trigonometry.asin.out-of-bounds",
-            )
-            .build()
-            .with_tracable(x));
-        }
-
-        let result = value.asin();
+        let result = x.value.asin();
 
         Ok(Number::new(result))
     }

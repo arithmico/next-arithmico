@@ -6,6 +6,7 @@ use crate::{
 };
 use trigonometry::load_trigonometry_module;
 
+mod validations;
 mod distributions;
 mod physics;
 mod trigonometry;

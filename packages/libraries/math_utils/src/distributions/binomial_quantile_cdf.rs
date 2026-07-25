@@ -1,4 +1,6 @@
-use crate::{calculate_binomial_cdf, calculate_quantile_of_normal_cdf};
+use crate::{
+    calculate_binomial_cdf, calculate_quantile_of_normal_cdf, DistributionError,
+};
 
 /// Computes the quantile (inverse CDF) of the binomial distribution.
 ///
@@ -49,11 +51,13 @@ pub fn calculate_quantile_of_binomial_cdf(
     p_q: f64,
     n: usize,
     p: f64,
-) -> Result<usize, String> {
+) -> Result<usize, DistributionError> {
     if p_q < 0.0 || p_q > 1.0 {
-        return Err(String::from(
-            "p_q has to be in the interval between zero and one",
-        ));
+        return Err(DistributionError::OutOfRange {
+            min: 0.0,
+            max: 1.0,
+            actual: p_q,
+        });
     }
 
     if p_q == 0.0 || n == 0 {
@@ -63,7 +67,7 @@ pub fn calculate_quantile_of_binomial_cdf(
         return Ok(n);
     }
 
-    qbinom(p_q, n, p).ok_or_else(|| String::from("error"))
+    qbinom(p_q, n, p)
 }
 
 /// This implementation follows the approach used in the R math library (`qbinom`)
@@ -96,7 +100,7 @@ pub fn calculate_quantile_of_binomial_cdf(
 ///      F(k-1) < p_q ≤ F(k)
 ///      ```
 ///
-fn qbinom(p_q: f64, n: usize, p: f64) -> Option<usize> {
+fn qbinom(p_q: f64, n: usize, p: f64) -> Result<usize, DistributionError> {
     // from qbinom.c
     // (NB: unavoidable cancellation for pr ~= 1)
     let n_f = n as f64;
@@ -106,14 +110,14 @@ fn qbinom(p_q: f64, n: usize, p: f64) -> Option<usize> {
     let sigma = (n_f * p * q).sqrt();
 
     if sigma == 0.0 {
-        return Some(mu.round() as usize);
+        return Ok(mu.round() as usize);
     }
 
     let gamma = (q - p) / sigma;
 
     // from qDiscrete_search.h
     /* y := approx.value (Cornish-Fisher expansion) :  */
-    let z = calculate_quantile_of_normal_cdf(p_q, 0.0, 1.0).ok()?;
+    let z = calculate_quantile_of_normal_cdf(p_q, 0.0, 1.0)?;
 
     let correction = gamma * (z * z - 1.0) / 6.0;
     let mut y = mu + sigma * (z + correction);
@@ -132,7 +136,12 @@ fn qbinom(p_q: f64, n: usize, p: f64) -> Option<usize> {
     do_search(k, n, p, p_q)
 }
 
-fn do_search(k: usize, n: usize, p: f64, p_q: f64) -> Option<usize> {
+fn do_search(
+    k: usize,
+    n: usize,
+    p: f64,
+    p_q: f64,
+) -> Result<usize, DistributionError> {
     // equals: y = F(k)
     let z = calculate_binomial_cdf(n, p, k)?;
 
@@ -193,7 +202,7 @@ fn do_search(k: usize, n: usize, p: f64, p_q: f64) -> Option<usize> {
         k -= 1;
     }
 
-    Some(k)
+    Ok(k)
 }
 
 #[cfg(test)]

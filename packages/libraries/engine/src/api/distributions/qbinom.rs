@@ -1,9 +1,7 @@
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
-    Context,
+    Context, api::validations::NumberValidation, core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 use engine_derive::FunctionArguments;
-use float_utils::F64Extension;
 use math_utils::calculate_quantile_of_binomial_cdf;
 use node::Number;
 
@@ -41,48 +39,13 @@ impl FunctionEndpoint for QBinomEndpoint {
         QBinomArgs { p_q, n, p }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let p_q_val = p_q.value;
-        let n_val = n.value;
-        let p_val = p.value;
-
-        if !p_q_val.is_in_closed_interval(0.0, 1.0) {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.binomial.closed_interval_zero_one",
-            )
-            .build()
-            .with_tracable(p_q));
-        }
-
-        if !p_val.is_in_closed_interval(0.0, 1.0) {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.binomial.closed_interval_zero_one",
-            )
-            .build()
-            .with_tracable(p));
-        }
-
-        if n_val < 0.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.binomial.negative_value",
-            )
-            .build()
-            .with_tracable(n));
-        }
-
-        if !n_val.is_integer() {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.binomial.non_integer",
-            )
-            .build()
-            .with_tracable(n));
-        }
-
-        return if let Ok(result) =
-            calculate_quantile_of_binomial_cdf(p_q_val, n_val as usize, p_val)
-        {
-            Ok(Number::new(result as f64))
-        } else {
-            Err(EvaluateNodeError::runtime_error("qbinom"))
-        };
+        p_q.validate_closed_interval(0.0, 1.0)?;
+        p.validate_closed_interval(0.0, 1.0)?;
+        
+        n.validate_non_negative()?.validate_integer()?;
+        
+        calculate_quantile_of_binomial_cdf(p_q.value, n.value as usize, p.value)
+            .map_err(|_| EvaluateNodeError::runtime_error("qbinom"))
+            .map(|result| Number::new(result as f64))
     }
 }

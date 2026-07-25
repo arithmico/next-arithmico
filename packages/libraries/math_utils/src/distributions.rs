@@ -1,3 +1,5 @@
+use thiserror::Error;
+
 mod binomial_cdf;
 mod binomial_pmf;
 mod binomial_quantile_cdf;
@@ -12,3 +14,13 @@ pub use binomial_quantile_cdf::calculate_quantile_of_binomial_cdf;
 pub use normal_cdf::calculate_normal_cdf;
 pub use normal_pdf::calculate_normal_pdf;
 pub use normal_quantile_cdf::calculate_quantile_of_normal_cdf;
+
+#[derive(Debug, Clone, Error)]
+pub enum DistributionError {
+    #[error("Value {actual} is out of bounds: expected a value between {min} and {max} (excluve).")]
+    OutOfRange { min: f64, max: f64, actual: f64 },
+    #[error("Standard deviation must be greater or equal to zero.")]
+    NonNegativeStandardDeviation,
+    #[error("Evaluation error in Beta function.")]
+    BetaError,
+}

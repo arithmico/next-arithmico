@@ -6,6 +6,7 @@ use node::IntoNode;
 use node::Node;
 use node::Number;
 
+use crate::api::validations::NumberValidation;
 use crate::{
     core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
@@ -54,22 +55,10 @@ impl FunctionEndpoint for NormalEndpoint {
         NormalArgs { x, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let x = x.value;
-        let mean = mean.value;
-        let standard_deviation = sd.value;
+        sd.validate_non_negative()?.validate_non_zero()?;
 
-        if standard_deviation < 0.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.distributions.normal.smaller_than_zero",
-            )
-            .build()
-            .with_tracable(sd));
-        }
-
-        return if let Ok(result) = calculate_normal_pdf(x, mean, standard_deviation) {
-            Ok(Number::new(result))
-        } else {
-            Err(EvaluateNodeError::runtime_error("normal"))
-        };
+        calculate_normal_pdf(x.value, mean.value, sd.value)
+            .map_err(|_| EvaluateNodeError::runtime_error("normal"))
+            .map(|result| Number::new(result))
     }
 }
