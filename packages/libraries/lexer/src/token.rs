@@ -1,3 +1,4 @@
+mod and;
 mod arrow;
 mod boolean;
 mod caret;
@@ -19,6 +20,7 @@ mod right_bracket;
 mod right_parenthesis;
 mod separator;
 
+pub use and::*;
 pub use arrow::*;
 pub use boolean::*;
 pub use caret::*;
@@ -64,6 +66,7 @@ pub enum Token {
     GreaterThan(GreaterThanToken),
     GreaterThanOrEquals(GreaterThanOrEqualsToken),
     Equals(EqualsToken),
+    And(AndToken),
 }
 
 impl GetTokenKind for Token {
@@ -89,6 +92,7 @@ impl GetTokenKind for Token {
             Token::GreaterThan(token) => token.token_kind(),
             Token::GreaterThanOrEquals(token) => token.token_kind(),
             Token::Equals(token) => token.token_kind(),
+            Token::And(token) => token.token_kind(),
         }
     }
 }
@@ -116,6 +120,7 @@ impl GetTokenSpan for Token {
             Token::GreaterThan(token) => token.get_span(),
             Token::GreaterThanOrEquals(token) => token.get_span(),
             Token::Equals(token) => token.get_span(),
+            Token::And(token) => token.get_span(),
         }
     }
 }
