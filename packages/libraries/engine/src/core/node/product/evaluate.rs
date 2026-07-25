@@ -3,9 +3,9 @@ use std::iter::zip;
 use node::{
     GetNodeType, Node, Number, Product, Sum, Tensor, convert_to_outer_index,
 };
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
-use trace::TracableMut;
 
 impl EvaluateNode for Product {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -18,6 +18,7 @@ impl EvaluateNode for Product {
             .iter()
             .map(|element| element.evaluate(context));
 
+        // Safety: this can not panic due to the previous length check
         let mut accumulator = elements.next().unwrap()?;
         for current_element in elements {
             accumulator = multiply_product_elements(
@@ -37,33 +38,45 @@ fn multiply_product_elements(
     context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
     match (left, right) {
-        (Node::Number(left), Node::Number(right)) => {
+        (Node::Number(left), Node::Number(right))
+            if cfg!(feature = "operator_product_number_number") =>
+        {
             multiply_numbers(left, right)
         }
-        (Node::Number(left), Node::Tensor(right)) => {
+        (Node::Number(left), Node::Tensor(right))
+            if cfg!(feature = "operator_product_number_tensor") =>
+        {
             multiply_number_and_tensor(left, right, context)
         }
-        (Node::Tensor(left), Node::Number(right)) => {
+        (Node::Tensor(left), Node::Number(right))
+            if cfg!(feature = "operator_product_number_tensor") =>
+        {
             multiply_number_and_tensor(right, left, context)
         }
-        (Node::Tensor(left), Node::Tensor(right)) => {
-            multiply_tensors(left, right, context)
+        (Node::Tensor(left), Node::Tensor(right))
+            if left.get_rank() == 1
+                && right.get_rank() == 1
+                && cfg!(feature = "operator_product_vector_vector") =>
+        {
+            multiply_vectors(left, right, context)
         }
-        (_, right) => {
-            Err(EvaluateNodeError::unsupported_operation().with_tracable(right))
+        (Node::Tensor(left), Node::Tensor(right))
+            if left.get_rank() == 2
+                && right.get_rank() == 2
+                && cfg!(feature = "operator_product_matrix_matrix") =>
+        {
+            multiply_matrices(left, right, context)
         }
+        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+            .with_optional_span(left.hull())
+            .with_optional_span(right.hull())),
     }
-    .map(|node| node.with_tracable((left, right)))
 }
 
 fn multiply_numbers(
     left: &Number,
     right: &Number,
 ) -> Result<Node, EvaluateNodeError> {
-    if !cfg!(feature = "operator_product_number_number") {
-        return Err(EvaluateNodeError::unsupported_operation());
-    }
-
     Ok(Number::new_node(left.value * right.value))
 }
 
@@ -72,10 +85,6 @@ fn multiply_number_and_tensor(
     tensor: &Tensor,
     context: &Context,
 ) -> Result<Node, EvaluateNodeError> {
-    if !cfg!(feature = "operator_product_number_tensor") {
-        return Err(EvaluateNodeError::unsupported_operation());
-    }
-
     let elements = tensor
         .elements
         .iter()
@@ -88,21 +97,6 @@ fn multiply_number_and_tensor(
     Ok(Tensor::new_with_shape(tensor.shape.clone(), elements))
 }
 
-fn multiply_tensors(
-    left: &Tensor,
-    right: &Tensor,
-    context: &Context,
-) -> Result<Node, EvaluateNodeError> {
-    let left_rank = left.get_rank();
-    let right_rank = right.get_rank();
-
-    match (left_rank, right_rank) {
-        (1, 1) => multiply_vectors(left, right, context),
-        (2, 2) => multiply_matrices(left, right, context),
-        _ => Err(EvaluateNodeError::unsupported_operation()),
-    }
-}
-
 fn multiply_vectors(
     left: &Tensor,
     right: &Tensor,
@@ -110,10 +104,6 @@ fn multiply_vectors(
 ) -> Result<Node, EvaluateNodeError> {
     debug_assert_eq!(left.get_rank(), 1);
     debug_assert_eq!(right.get_rank(), 1);
-
-    if !cfg!(feature = "operator_product_number_number") {
-        return Err(EvaluateNodeError::unsupported_operation());
-    }
 
     if left.elements.len() != right.elements.len() {
         return Err(EvaluateNodeError::incompatible_vector_dimensions(
@@ -171,6 +161,7 @@ fn multiply_matrices(
     Tensor::new_with_shape(result_shape, elements).evaluate(context)
 }
 
+// TODO: tests with traces
 #[cfg(test)]
 mod tests {
     use node::{NodeType, Tensor};

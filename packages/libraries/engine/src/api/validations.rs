@@ -1,5 +1,6 @@
 use float_utils::F64Extension;
 use node::Number;
+use trace::{Tracable, TracableMut};
 
 use crate::core::EvaluateNodeError;
 
@@ -34,7 +35,7 @@ impl NumberValidation for Number {
             .key("lower", min)
             .key("upper", max)
             .build()
-            .with_tracable(self);
+            .with_optional_span(self.hull());
 
             Err(err)
         } else {
@@ -56,7 +57,7 @@ impl NumberValidation for Number {
             .key("lower", min)
             .key("upper", max)
             .build()
-            .with_tracable(self);
+            .with_optional_span(self.hull());
 
             Err(err)
         } else {
@@ -72,7 +73,7 @@ impl NumberValidation for Number {
                 "engine.api.error.invalid_parameter_value.negative_value",
             )
             .build()
-            .with_tracable(self);
+            .with_optional_span(self.hull());
 
             Err(err)
         } else {
@@ -88,7 +89,7 @@ impl NumberValidation for Number {
                 "engine.api.error.invalid_parameter_value.non_integer",
             )
             .build()
-            .with_tracable(self);
+            .with_optional_span(self.hull());
 
             Err(err)
         } else {
@@ -104,7 +105,7 @@ impl NumberValidation for Number {
                 "engine.api.error.invalid_parameter_value.zero",
             )
             .build()
-            .with_tracable(self);
+            .with_optional_span(self.hull());
 
             Err(err)
         } else {

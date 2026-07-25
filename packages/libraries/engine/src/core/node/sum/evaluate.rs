@@ -1,8 +1,8 @@
 use node::{GetNodeType, Node, Number, Sum, Tensor};
 use std::iter::zip;
+use trace::{Tracable, TracableMut};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
-use trace::TracableMut;
 
 impl EvaluateNode for Sum {
     fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
@@ -38,45 +38,44 @@ fn add_sum_elements(
 
             Ok(Number::new_node(left.value + right.value))
         }
-        (Node::Tensor(left), Node::Tensor(right)) => {
-            let left_rank = left.get_rank();
-            let right_rank = right.get_rank();
-
-            match (left_rank, right_rank) {
-                (1, 1) => {
-                    if !cfg!(feature = "operator_sum_vector_vector") {
-                        return Err(EvaluateNodeError::unsupported_operation());
-                    }
-
-                    if left.elements.len() != right.elements.len() {
-                        return Err(
-                            EvaluateNodeError::incompatible_vector_dimensions(
-                                left.elements.len(),
-                                right.elements.len(),
-                            ),
-                        );
-                    }
-
-                    Ok(Tensor::new_with_shape(
-                        left.shape.clone(),
-                        zip(left.elements.iter(), right.elements.iter())
-                            .map(|(left, right)| {
-                                Sum::new(vec![left.clone(), right.clone()])
-                                    .evaluate(context)
-                            })
-                            .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
-                    ))
-                }
-                _ => Err(EvaluateNodeError::unsupported_operation()),
+        (Node::Tensor(left), Node::Tensor(right))
+            if (left.get_rank() == 1
+                && right.get_rank() == 1
+                && cfg!(feature = "operator_sum_vector_vector"))
+                || (left.get_rank() == 2
+                    && right.get_rank() == 2
+                    && cfg!(feature = "operator_sum_matrix_matrix"))
+                || (left.get_rank() > 2
+                    && right.get_rank() > 2
+                    && cfg!(feature = "operator_sum_tensor_tensor")) =>
+        {
+            // TODO: add special error variants for vectors and matrices
+            if left.shape != right.shape {
+                return Err(EvaluateNodeError::incompatible_tensor_shapes(
+                    left.elements.len(),
+                    right.elements.len(),
+                ));
             }
+
+            Ok(Tensor::new_with_shape(
+                left.shape.clone(),
+                zip(left.elements.iter(), right.elements.iter())
+                    .map(|(left, right)| {
+                        Sum::new(vec![left.clone(), right.clone()])
+                            .with_optional_span(left.hull())
+                            .with_optional_span(right.hull())
+                            .evaluate(context)
+                    })
+                    .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
+            ))
         }
-        (_, right) => {
-            Err(EvaluateNodeError::unsupported_operation().with_tracable(right))
-        }
+        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+            .with_optional_span(left.hull())
+            .with_optional_span(right.hull())),
     }
-    .map(|node| node.with_tracable((left, right)))
 }
 
+// TODO: add tests with traces
 #[cfg(test)]
 mod tests {
     use node::NodeType;
@@ -120,4 +119,8 @@ mod tests {
             .unwrap();
         assert_eq!(result, Tensor::new(vec![]));
     }
+
+    // TODO: sum vector vector
+    // TODO: sum matrix matrix
+    // TODO: sum tensor tensor
 }

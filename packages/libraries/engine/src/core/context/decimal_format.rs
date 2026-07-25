@@ -7,8 +7,8 @@ pub enum DecimalFormat {
     Dot,
 }
 
-impl From<&Language> for DecimalFormat {
-    fn from(value: &Language) -> Self {
+impl From<Language> for DecimalFormat {
+    fn from(value: Language) -> Self {
         match value {
             Language::German => DecimalFormat::Comma,
             Language::English => DecimalFormat::Dot,

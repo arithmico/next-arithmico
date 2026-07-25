@@ -5,9 +5,8 @@ mod macros;
 mod session;
 
 pub use core::{
-    Context, DecimalFormat, DecimalPlaces, Expectation, Language,
-    NodeConverter, ParseNodeErrorSummary, Serialize, SerializeNodeError,
-    node::*,
+    node::*, Context, DecimalFormat, DecimalPlaces, Language, NodeConverter,
+    Serialize, SerializeNodeError,
 };
 pub use documentation::{
     Documentation, DocumentationItem, DocumentationItemType,

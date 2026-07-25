@@ -1,11 +1,12 @@
 pub use error_kind::*;
 use thiserror::Error;
-use trace::{IntoTrace, Trace};
+use trace::Trace;
 use translate_core::TranslatedMessage;
 
 pub mod division_by_zero;
 mod error_kind;
 pub mod incompatible_matrix_dimensions;
+pub mod incompatible_tensor_shapes;
 pub mod incompatible_vector_dimensions;
 pub mod invalid_node;
 pub mod invalid_parameter_type;
@@ -22,7 +23,7 @@ pub mod unsupported_operation;
 #[error("{kind:?}")]
 pub struct EvaluateNodeError {
     kind: EvaluateNodeErrorKind,
-    stack_trace: Vec<Trace>,
+    trace: Trace,
     message: TranslatedMessage,
 }
 
@@ -30,7 +31,7 @@ impl EvaluateNodeError {
     fn new(kind: EvaluateNodeErrorKind, message: TranslatedMessage) -> Self {
         Self {
             kind,
-            stack_trace: Vec::new(),
+            trace: Trace::new(),
             message,
         }
     }
@@ -43,15 +44,19 @@ impl EvaluateNodeError {
         self.kind.clone()
     }
 
-    pub fn with_tracable<T: IntoTrace>(mut self, tracable: T) -> Self {
-        let trace = tracable.into_trace();
-        if !trace.is_empty() {
-            self.stack_trace.push(trace);
-        }
-        self
+    pub fn stack_trace(&self) -> &Trace {
+        &self.trace
     }
+}
 
-    pub fn stack_trace(&self) -> Vec<Trace> {
-        self.stack_trace.clone()
+impl AsRef<Trace> for EvaluateNodeError {
+    fn as_ref(&self) -> &Trace {
+        &self.trace
+    }
+}
+
+impl AsMut<Trace> for EvaluateNodeError {
+    fn as_mut(&mut self) -> &mut Trace {
+        &mut self.trace
     }
 }

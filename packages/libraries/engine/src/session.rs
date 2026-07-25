@@ -6,9 +6,15 @@ use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
 
+use crate::core::{Context, HostApi, SerializeUtils, Stack, evaluate_node};
+use crate::{DecimalFormat, DecimalPlaces};
+use crate::{Documentation, api::load_host_api};
+
 pub use entry::SessionEntry;
 pub use error::*;
 use node::Node;
+use parser::parse;
+use translate::Language;
 
 mod entry;
 mod error;
@@ -46,11 +52,12 @@ impl Session {
         &mut self,
         input: &str,
         decimal_places: DecimalPlaces,
-        decimal_format: DecimalFormat,
+        language: Language,
     ) -> Result<Node, SessionError> {
-        let context = self.create_context(decimal_places, decimal_format);
+        let context =
+            self.create_context(decimal_places, DecimalFormat::from(language));
 
-        let node = parse(input, &context)?;
+        let node = parse(input, language)?;
 
         let evaluatd_node =
             evaluate_node(&node, &context)?.normalize_node(&context)?;
@@ -69,9 +76,9 @@ impl Session {
         &mut self,
         input: &str,
         decimal_places: DecimalPlaces,
-        decimal_format: DecimalFormat,
+        language: Language,
     ) {
-        let output = self.evaluate_input(input, decimal_places, decimal_format);
+        let output = self.evaluate_input(input, decimal_places, language);
 
         self.entries.push(SessionEntry {
             input: input.to_string(),

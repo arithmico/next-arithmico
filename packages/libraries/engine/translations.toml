@@ -46,6 +46,14 @@ German = "Inkompatible Vektordimensionen: {left} und {right}"
 English = "Incompatible vector dimensions"
 German = "Inkompatible Vektordimensionen"
 
+[engine.evaluate.error.incompatible_tensor_shapes]
+English = "Incompatible tensor dimensions: {left} and {right}"
+German = "Inkompatible Tensordimensionen: {left} und {right}"
+
+[engine.evaluate.error.incompatible_tensor_shapes.error_kind]
+English = "Incompatible tensor dimensions"
+German = "Inkompatible Tensordimensionen"
+
 [engine.evaluate.error.incompatible_matrix_dimensions]
 English = "Incompatible matrix dimensions: {left} and {right}"
 German = "Inkompatible Matrixdimensionen: {left} und {right}"

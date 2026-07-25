@@ -1,4 +1,5 @@
 use node::{FunctionCall, Node};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{
     Context, EvaluateNode, EvaluateNodeError, HostEndpoint,
@@ -60,10 +61,8 @@ impl EvaluateNode for FunctionCall {
 
                 executor(&mapping, context)
             }
-            node => {
-                Err(EvaluateNodeError::unsupported_operation()
-                    .with_tracable(node))
-            }
+            node => Err(EvaluateNodeError::unsupported_operation()
+                .with_optional_span(node.hull())),
         }
     }
 }

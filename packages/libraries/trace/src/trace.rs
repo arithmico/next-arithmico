@@ -27,6 +27,10 @@ impl Trace {
         self.frames.first()
     }
 
+    pub fn first_spans(&self) -> Option<&[Span]> {
+        self.first().map(|frame| frame.spans())
+    }
+
     pub fn first_mut(&mut self) -> Option<&mut Frame> {
         self.frames.first_mut()
     }

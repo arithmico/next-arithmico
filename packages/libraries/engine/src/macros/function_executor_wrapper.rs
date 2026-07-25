@@ -2,7 +2,7 @@
 macro_rules! function_executor_wrapper {
     ($args:ty, $implementation:path) => {{
         fn wrapper(
-            arguments: &$crate::core::ArgumentMapping,
+            arguments: &$crate::core::node::ArgumentMapping,
             context: &$crate::Context,
         ) -> Result<node::Node, $crate::core::EvaluateNodeError> {
             let typed =

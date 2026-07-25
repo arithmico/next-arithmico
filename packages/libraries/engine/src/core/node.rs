@@ -21,10 +21,8 @@ mod tensor;
 
 mod evaluate;
 mod for_each;
-mod parse;
 mod serialize;
 
 pub use function_call::{
     ArgumentMapping, FromArgumentMapping, FunctionArguments,
 };
-pub use symbol::parse_raw_symbol;

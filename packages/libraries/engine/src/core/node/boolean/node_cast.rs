@@ -1,4 +1,5 @@
 use node::{Boolean, Node};
+use trace::{Tracable, TracableMut};
 
 use crate::core::{EvaluateNodeError, NodeCast};
 
@@ -7,7 +8,7 @@ impl NodeCast for Boolean {
         match node {
             Node::Boolean(bool) => Ok(bool),
             _ => Err(EvaluateNodeError::runtime_error("expected boolean")
-                .with_tracable(node)),
+                .with_optional_span(node.hull())),
         }
     }
 }
