@@ -1,0 +1,11 @@
+[error.error.unexpected_character]
+English = "Invalid character '{character}' found at position {position}."
+German = "Ungültiges Zeichen \"{character}\" an Position {position} gefunden."
+
+[error.error.invalid_leading_zero]
+English = "Invalid leading zero in number at position {position}."
+German = "Ungültige führende Null in der Zahl an Position {position}."
+
+[error.error.missing_decimal_places]
+English = "Missing digits after decimal separator at position {position}."
+German = "Fehlende Nachkommastellen nach dem Dezimaltrenner an Position {position}."
