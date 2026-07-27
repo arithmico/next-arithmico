@@ -5,6 +5,7 @@ mod binding_power;
 mod cursor;
 mod error;
 mod expression;
+mod translations;
 
 pub use error::*;
 use node::Node;

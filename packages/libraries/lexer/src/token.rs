@@ -72,6 +72,39 @@ pub enum Token {
     Or(OrToken),
 }
 
+impl ToString for Token {
+    fn to_string(&self) -> String {
+        match self {
+            Token::Identifier(identifier_token) => {
+                identifier_token.name.to_string()
+            }
+            Token::Number(number_token) => number_token.value.to_string(),
+            Token::Boolean(boolean_token) => boolean_token.value.to_string(),
+            Token::LeftParenthesis(_) => String::from("("),
+            Token::RightParenthesis(_) => String::from(")"),
+            Token::LeftBracket(_) => String::from("["),
+            Token::RightBracket(_) => String::from("]"),
+            Token::Plus(_) => String::from("+"),
+            Token::Minus(_) => String::from("-"),
+            Token::Multiply(_) => String::from("*"),
+            Token::Divide(_) => String::from("/"),
+            Token::Caret(_) => String::from("^"),
+            Token::Separator(separator_token) => {
+                separator_token.content.clone()
+            }
+            Token::Arrow(_) => String::from("->"),
+            Token::Define(_) => String::from(":="),
+            Token::LessThan(_) => String::from("<"),
+            Token::LessThanOrEquals(_) => String::from("<="),
+            Token::GreaterThan(_) => String::from(">"),
+            Token::GreaterThanOrEquals(_) => String::from(">="),
+            Token::Equals(_) => String::from("="),
+            Token::And(_) => String::from("&"),
+            Token::Or(_) => String::from("|"),
+        }
+    }
+}
+
 impl GetTokenKind for Token {
     fn token_kind(&self) -> crate::TokenKind {
         match self {

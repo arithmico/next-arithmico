@@ -9,6 +9,7 @@ lexer = { version = "0.1.0", path = "../lexer" }
 node = { version = "0.1.0", path = "../node" }
 trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true
+translate_core = { version = "0.1.0", path = "../translate_core" }
 
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }

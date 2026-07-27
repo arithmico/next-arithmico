@@ -5,6 +5,7 @@ use crate::{
 #[derive(Debug, Clone, PartialEq)]
 pub struct SeparatorToken {
     pub span: Span,
+    pub content: String,
 }
 
 impl GetTokenKind for SeparatorToken {
