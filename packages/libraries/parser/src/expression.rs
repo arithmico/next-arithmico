@@ -8,9 +8,7 @@ use node::{
 use trace::{CombineHulls, Tracable, TracableMut};
 
 use crate::{
-    ParseError::{
-        self, InvalidFunctionArgumentDeclaration, InvalidFunctionName,
-    },
+    Error::{self, InvalidFunctionArgumentDeclaration, InvalidFunctionName},
     ParseResult,
     binding_power::GetBindingPower,
     cursor::Cursor,
@@ -141,7 +139,7 @@ fn parse_expression_pratt<'a>(
                     }
                 } else {
                     // TODO: add span to error
-                    return Err(ParseError::UnexpectedLeftSideOfDefinition {
+                    return Err(Error::UnexpectedLeftSideOfDefinition {
                         node_type: left.node_type(),
                     });
                 }
@@ -253,7 +251,7 @@ fn parse_expression_pratt<'a>(
                 }
             }
             _ => {
-                return Err(ParseError::UnexpectedToken {
+                return Err(Error::UnexpectedToken {
                     expected: vec![
                         TokenKind::Plus,
                         TokenKind::Minus,
@@ -315,7 +313,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         arguments.push(node);
                         match cursor
                             .next()
-                            .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
+                            .ok_or_else(|| Error::UnexpectedEndOfInput)?
                         {
                             Token::Separator(_) => (),
                             Token::RightParenthesis(token) => {
@@ -323,7 +321,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                                 break;
                             }
                             token => {
-                                return Err(ParseError::UnexpectedToken {
+                                return Err(Error::UnexpectedToken {
                                     expected: vec![
                                         TokenKind::RightParenthesis,
                                         TokenKind::Separator,
@@ -337,13 +335,13 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         // consume right parenthesis
                         match cursor.next() {
                             None => {
-                                return Err(ParseError::UnexpectedEndOfInput);
+                                return Err(Error::UnexpectedEndOfInput);
                             }
                             Some(Token::RightParenthesis(token)) => {
                                 outer_span = outer_span.hull(&token.get_span());
                             }
                             Some(token) => {
-                                return Err(ParseError::UnexpectedToken {
+                                return Err(Error::UnexpectedToken {
                                     expected: vec![TokenKind::RightParenthesis],
                                     actual: token.clone(),
                                 });
@@ -380,9 +378,9 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             Token::LeftParenthesis(_) => {
                 let (next_cursor, node) = parse_expression(cursor)?;
                 cursor = next_cursor;
-                match cursor.next().ok_or(ParseError::UnexpectedEndOfInput)? {
+                match cursor.next().ok_or(Error::UnexpectedEndOfInput)? {
                     Token::RightParenthesis(_) => Ok((cursor, node)),
-                    token => Err(ParseError::UnexpectedToken {
+                    token => Err(Error::UnexpectedToken {
                         expected: vec![TokenKind::RightParenthesis],
                         actual: token.clone(),
                     }),
@@ -396,7 +394,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     elements.push(node);
                     match cursor
                         .next()
-                        .ok_or_else(|| ParseError::UnexpectedEndOfInput)?
+                        .ok_or_else(|| Error::UnexpectedEndOfInput)?
                     {
                         Token::Separator(_) => (),
                         Token::RightBracket(token) => {
@@ -404,7 +402,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                             break;
                         }
                         token => {
-                            return Err(ParseError::UnexpectedToken {
+                            return Err(Error::UnexpectedToken {
                                 expected: vec![
                                     TokenKind::RightBracket,
                                     TokenKind::Separator,
@@ -417,12 +415,12 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 if elements.is_empty() {
                     // consume right bracket
                     match cursor.next() {
-                        None => return Err(ParseError::UnexpectedEndOfInput),
+                        None => return Err(Error::UnexpectedEndOfInput),
                         Some(Token::RightBracket(token)) => {
                             span = span.hull(&token.span);
                         }
                         Some(token) => {
-                            return Err(ParseError::UnexpectedToken {
+                            return Err(Error::UnexpectedToken {
                                 expected: vec![TokenKind::RightBracket],
                                 actual: token.clone(),
                             });
@@ -431,7 +429,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 }
                 Ok((cursor, Tensor::new(elements).with_span(span)))
             }
-            token => Err(ParseError::UnexpectedToken {
+            token => Err(Error::UnexpectedToken {
                 expected: vec![
                     TokenKind::Identifier,
                     TokenKind::Boolean,
@@ -442,7 +440,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 actual: token.clone(),
             }),
         },
-        None => Err(ParseError::UnexpectedEndOfInput),
+        None => Err(Error::UnexpectedEndOfInput),
     }
 }
 
@@ -993,7 +991,7 @@ mod tests {
         let tokens = tokenize("f(x, y", language::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let err = parse_expression(cursor).unwrap_err();
-        assert_eq!(err, ParseError::UnexpectedEndOfInput);
+        assert_eq!(err, Error::UnexpectedEndOfInput);
     }
 
     #[test]
@@ -1003,7 +1001,7 @@ mod tests {
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(
             err,
-            ParseError::UnexpectedToken {
+            Error::UnexpectedToken {
                 expected: vec![
                     TokenKind::RightParenthesis,
                     TokenKind::Separator
