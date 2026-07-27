@@ -9,3 +9,20 @@ German = "Ungültige führende Null in der Zahl an Position {position}."
 [error.error.missing_decimal_places]
 English = "Missing digits after decimal separator at position {position}."
 German = "Fehlende Nachkommastellen nach dem Dezimaltrenner an Position {position}."
+
+[token_kind.identifier]
+English = "symbol"
+German = "Symbol"
+
+[token_kind.number]
+English = "number"
+German = "Zahl"
+
+[token_kind.boolean]
+English = "boolean"
+German = "Boolean"
+
+[token_kind.seperator]
+English = "seperator"
+German = "Seperator"
+
