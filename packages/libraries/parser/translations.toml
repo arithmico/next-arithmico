@@ -1,0 +1,20 @@
+[error.unexpected_token]
+English = "Expected {expected} at position {position}, but received {received}."
+German = "An Position {position} wurde {expected} erwartet, aber {received} empfangen."
+
+[error.unexpected_end_of_input]
+English = "Unfinished expression. Expected further input."
+German = "Unvollständiger Ausdruck. Weitere Eingabe erforderlich."
+
+[error.unexpected_left_side_of_definition]
+English = "The left side of a definition must be a symbol or a function signature."
+German = "Die linke Seite einer Definition muss ein Symbol oder eine Funktionssignatur sein."
+
+[error.invalid_function_argument_declaration]
+English = "Function arguments in a definition must be variable names."
+German = "Funktionsargumente in einer Definition müssen Variablenbezeichner sein."
+
+[error.invalid_function_name]
+English = "Function definition must include a valid function name."
+German = "Eine Funktionsdefinition muss einen gültigen Funktionsnamen enthalten."
+

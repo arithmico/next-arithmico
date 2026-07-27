@@ -78,11 +78,13 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
             ',' if language == Language::English => {
                 tokens.push(Token::Separator(SeparatorToken {
                     span: Span::new(position, position),
+                    content: String::from(","),
                 }));
             }
             ';' if language == Language::German => {
                 tokens.push(Token::Separator(SeparatorToken {
                     span: Span::new(position, position),
+                    content: String::from(";"),
                 }));
             }
             '(' => {
@@ -504,6 +506,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
+                content: String::from(",")
             })]
         );
         assert_eq!(
@@ -519,6 +522,7 @@ mod tests {
                         char_index: 4
                     }
                 ),
+                content: String::from(";")
             })]
         );
     }

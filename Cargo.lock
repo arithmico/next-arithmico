@@ -1386,6 +1386,7 @@ dependencies = [
  "node",
  "thiserror 2.0.19",
  "trace",
+ "translate_core",
 ]
 
 [[package]]

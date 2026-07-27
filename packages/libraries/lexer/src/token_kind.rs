@@ -1,5 +1,7 @@
 use language::Language;
-use translate_core::{Translatable, TranslatedMessage, TranslationError};
+use translate_core::{
+    Quoted, Translatable, TranslatedMessage, TranslationError,
+};
 
 use crate::translations::translation_resolver;
 
@@ -101,29 +103,37 @@ impl Translatable for TokenKind {
                 translation_resolver,
             )
             .translate(language),
-            TokenKind::LeftParenthesis => Ok(String::from("(")),
-            TokenKind::RightParenthesis => Ok(String::from(")")),
-            TokenKind::LeftBracket => Ok(String::from("[")),
-            TokenKind::RightBracket => Ok(String::from("]")),
-            TokenKind::Plus => Ok(String::from("+")),
-            TokenKind::Minus => Ok(String::from(".")),
-            TokenKind::Multiply => Ok(String::from("*")),
-            TokenKind::Divide => Ok(String::from("/")),
-            TokenKind::Caret => Ok(String::from("^")),
+            TokenKind::LeftParenthesis => {
+                Ok(String::from("(").quoted(language)?)
+            }
+            TokenKind::RightParenthesis => {
+                Ok(String::from(")").quoted(language)?)
+            }
+            TokenKind::LeftBracket => Ok(String::from("[").quoted(language)?),
+            TokenKind::RightBracket => Ok(String::from("]").quoted(language)?),
+            TokenKind::Plus => Ok(String::from("+").quoted(language)?),
+            TokenKind::Minus => Ok(String::from(".").quoted(language)?),
+            TokenKind::Multiply => Ok(String::from("*").quoted(language)?),
+            TokenKind::Divide => Ok(String::from("/").quoted(language)?),
+            TokenKind::Caret => Ok(String::from("^").quoted(language)?),
             TokenKind::Separator => TranslatedMessage::new(
                 "token_kind.seperator",
                 translation_resolver,
             )
             .translate(language),
-            TokenKind::Arrow => Ok(String::from("->")),
-            TokenKind::Define => Ok(String::from(":=")),
-            TokenKind::LessThan => Ok(String::from("<")),
-            TokenKind::LessThanOrEquals => Ok(String::from("<=")),
-            TokenKind::GreaterThan => Ok(String::from(">")),
-            TokenKind::GreaterThanOrEquals => Ok(String::from(">=")),
-            TokenKind::Equals => Ok(String::from("=")),
-            TokenKind::And => Ok(String::from("&")),
-            TokenKind::Or => Ok(String::from("|")),
+            TokenKind::Arrow => Ok(String::from("->").quoted(language)?),
+            TokenKind::Define => Ok(String::from(":=").quoted(language)?),
+            TokenKind::LessThan => Ok(String::from("<").quoted(language)?),
+            TokenKind::LessThanOrEquals => {
+                Ok(String::from("<=").quoted(language)?)
+            }
+            TokenKind::GreaterThan => Ok(String::from(">").quoted(language)?),
+            TokenKind::GreaterThanOrEquals => {
+                Ok(String::from(">=").quoted(language)?)
+            }
+            TokenKind::Equals => Ok(String::from("=").quoted(language)?),
+            TokenKind::And => Ok(String::from("&").quoted(language)?),
+            TokenKind::Or => Ok(String::from("|").quoted(language)?),
         }
     }
 }
