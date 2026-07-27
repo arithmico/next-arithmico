@@ -3,8 +3,8 @@ use editor::{
     node::{MarkNode, TextNode},
 };
 use editor_core::{
-    selection::{SelectionRange, SelectionRangePoint},
     EditorContainerNode, EditorLeafNode,
+    selection::{SelectionRange, SelectionRangePoint},
 };
 use leptos::prelude::*;
 use trace::Trace;
@@ -20,6 +20,7 @@ pub fn CaluclatorInput() -> impl IntoView {
 #[component]
 fn CalculatorInputEditor() -> impl IntoView {
     let state = State::expect_state();
+    // TODO: get lexer and parser error positions as well
     let error_trace = state.select(|state| state.current_error_trace);
 
     Effect::new(move |_| {

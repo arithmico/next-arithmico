@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use engine::SessionError;
 use leptos::prelude::*;
-use translate::{use_translate, FormattedMessage, TranslatableObject};
+use translate::{FormattedMessage, TranslatableObject, use_translate};
 
 #[component]
 pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
