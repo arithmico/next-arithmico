@@ -1,10 +1,10 @@
 use node::{Negate, Product};
 use nom::{
-    character::complete::space0, error::context, sequence::preceded, Parser,
+    Parser, character::complete::space0, error::context, sequence::preceded,
 };
 
 use crate::core::{
-    expect_tag, with_parser, ParseNode, ParseResult, TraceUtils,
+    ParseNode, ParseResult, TraceUtils, expect_tag, with_parser,
 };
 
 impl ParseNode for Negate {
@@ -41,7 +41,8 @@ mod tests {
             result,
             (
                 "",
-                Negate::new(Number::new_node(1.).with_span(1, 1)).with_span(0, 1)
+                Negate::new(Number::new_node(1.).with_span(1, 1))
+                    .with_span(0, 1)
             )
         );
     }
@@ -53,7 +54,8 @@ mod tests {
             result,
             (
                 "",
-                Negate::new(Number::new_node(1.).with_span(4, 4)).with_span(1, 4)
+                Negate::new(Number::new_node(1.).with_span(4, 4))
+                    .with_span(1, 4)
             )
         );
     }

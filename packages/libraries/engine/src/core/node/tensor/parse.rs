@@ -5,8 +5,7 @@ use nom::{
 };
 
 use crate::core::{
-    ParseNode, ParseResult, TraceUtils, expect_tag,
-    with_parser,
+    ParseNode, ParseResult, TraceUtils, expect_tag, with_parser,
 };
 
 impl ParseNode for Tensor {

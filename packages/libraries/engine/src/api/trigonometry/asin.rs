@@ -2,7 +2,9 @@ use engine_derive::FunctionArguments;
 use node::Number;
 
 use crate::{
-    Context, api::validations::NumberValidation, core::{EvaluateNodeError, FunctionEndpoint, Language},
+    Context,
+    api::validations::NumberValidation,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]

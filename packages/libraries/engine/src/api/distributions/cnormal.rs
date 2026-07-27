@@ -8,8 +8,8 @@ use node::Number;
 
 use crate::api::validations::NumberValidation;
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 static DEFAULT_MEAN: LazyLock<Node> =
@@ -22,7 +22,8 @@ static DEFAULT_SD: LazyLock<Node> =
 #[name("cnormal")]
 #[description(
     Language::German,
-    "Calculates the cumulative normal distribution of x. If no further parameters are passed, the standard cumulative normal distribution is calculated.")]
+    "Calculates the cumulative normal distribution of x. If no further parameters are passed, the standard cumulative normal distribution is calculated."
+)]
 #[description(
     Language::English,
     "Berechnet die kumulierte Normalverteilung von x. Wenn keine weiteren Parameter übergeben werden, wird die kumulierte Standardnormalverteilung berechnet."

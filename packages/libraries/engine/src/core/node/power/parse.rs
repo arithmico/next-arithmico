@@ -1,11 +1,11 @@
 use node::{Power, Tensor};
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::preceded, Parser,
+    Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::preceded,
 };
 use trace::{IntoTrace, TracableMut};
 
-use crate::core::{expect_tag, with_parser, ParseNode, ParseResult};
+use crate::core::{ParseNode, ParseResult, expect_tag, with_parser};
 
 impl ParseNode for Power {
     fn parse(input: &'_ str) -> ParseResult<'_> {

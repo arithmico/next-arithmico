@@ -1,12 +1,12 @@
 use node::Node;
 use nom::{
-    character::complete::space0, combinator::cut, error::context,
-    sequence::delimited, Parser,
+    Parser, character::complete::space0, combinator::cut, error::context,
+    sequence::delimited,
 };
 
 use crate::core::operations::parse::tag::expect_tag;
 
-use super::{with_parser, ParseNode, ParseResult};
+use super::{ParseNode, ParseResult, with_parser};
 
 pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
     with_parser("parse_sub_expression", |input| {
@@ -26,7 +26,7 @@ pub fn parse_sub_expression(input: &'_ str) -> ParseResult<'_> {
 mod tests {
     use std::assert_matches;
 
-    use crate::core::{parse, ParseNodeError};
+    use crate::core::{ParseNodeError, parse};
 
     #[test]
     fn error_missing_closing_parenthesis() {

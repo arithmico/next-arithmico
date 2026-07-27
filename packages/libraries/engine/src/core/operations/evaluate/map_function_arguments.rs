@@ -3,8 +3,8 @@ use std::collections::VecDeque;
 use node::{Cardinality, FunctionSignature, GetNodeType, Node, Preprocess};
 
 use crate::{
-    core::{Context, EvaluateNodeError},
     ArgumentMapping,
+    core::{Context, EvaluateNodeError},
 };
 
 use super::EvaluateNode;

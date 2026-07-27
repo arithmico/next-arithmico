@@ -1,11 +1,18 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{Data, DeriveInput, LitStr, Path, Token, Type, parse::{Parse, ParseStream}, spanned::Spanned};
+use syn::{
+    Data, DeriveInput, LitStr, Path, Token, Type,
+    parse::{Parse, ParseStream},
+    spanned::Spanned,
+};
 
-use crate::{constant_metadata::impl_constant_metadata, function_arguments::impl_function_arguments};
+use crate::{
+    constant_metadata::impl_constant_metadata,
+    function_arguments::impl_function_arguments,
+};
 
-mod function_arguments;
 mod constant_metadata;
+mod function_arguments;
 
 struct DescriptionAttribute {
     language: Path,

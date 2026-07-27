@@ -5,8 +5,8 @@ use float_utils::F64Extension;
 use node::Number;
 
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]

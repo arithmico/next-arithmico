@@ -4,7 +4,7 @@ use node::{FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType};
 use translate_core::Language;
 
 use crate::{
-    core::EvaluateNodeError, ArgumentMapping, Context, FunctionArguments,
+    ArgumentMapping, Context, FunctionArguments, core::EvaluateNodeError,
 };
 
 pub type FunctionExecutor =
@@ -155,7 +155,6 @@ pub trait FunctionEndpoint {
             .add_return_type(Self::Output::static_node_type())
     }
 }
-
 
 pub trait ConstantMetadata {
     fn constant_name() -> &'static str;

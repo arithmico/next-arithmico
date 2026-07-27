@@ -1,5 +1,5 @@
 use crate::{
-    calculate_binomial_cdf, calculate_quantile_of_normal_cdf, DistributionError,
+    DistributionError, calculate_binomial_cdf, calculate_quantile_of_normal_cdf,
 };
 
 /// Computes the quantile (inverse CDF) of the binomial distribution.

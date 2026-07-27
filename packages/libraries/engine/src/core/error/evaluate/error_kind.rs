@@ -63,7 +63,7 @@ impl Translatable for EvaluateNodeErrorKind {
             }
             EvaluateNodeErrorKind::InvalidParameterValue => {
                 "engine.evaluate.error.invalid_parameter_value.error_kind"
-            },
+            }
         };
 
         TranslatedMessage::new(translation_id, translation_resolver)

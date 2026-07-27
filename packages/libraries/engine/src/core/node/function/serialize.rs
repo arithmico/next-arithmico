@@ -4,8 +4,8 @@ use node::{Cardinality, Function, Node};
 use translate::use_translate;
 
 use crate::core::{
-    get_argument_separator, Context, Serialize, SerializeNodeError,
-    SerializeUtils,
+    Context, Serialize, SerializeNodeError, SerializeUtils,
+    get_argument_separator,
 };
 
 impl SerializeUtils for Function {

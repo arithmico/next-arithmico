@@ -14,13 +14,12 @@ use crate::api::distributions::qbinom::QBinomEndpoint;
 use crate::api::distributions::qnormal::QNormalEndpoint;
 use crate::core::HostApiModule;
 
-
-mod normal;
-mod cnormal;
-mod qnormal;
 mod binom;
 mod cbinom;
+mod cnormal;
+mod normal;
 mod qbinom;
+mod qnormal;
 
 pub fn load_distributions_module() -> HostApiModule {
     let module = HostApiModule::builder()

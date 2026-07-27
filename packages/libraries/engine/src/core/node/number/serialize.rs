@@ -1,8 +1,8 @@
 use node::{Negate, Node, Number, Power, Product};
 
 use crate::core::{
-    get_decimal_separator, Context, Serialize, SerializeNodeError,
-    SerializeUtils,
+    Context, Serialize, SerializeNodeError, SerializeUtils,
+    get_decimal_separator,
 };
 
 impl SerializeUtils for Number {
@@ -33,7 +33,9 @@ impl SerializeUtils for Number {
             Power::new(
                 Number::new_node(10.0),
                 if magnitude < 0 {
-                    Node::from(Negate::new(Number::new_node(magnitude.abs() as f64)))
+                    Node::from(Negate::new(Number::new_node(
+                        magnitude.abs() as f64
+                    )))
                 } else {
                     Node::from(Number::new_node(magnitude.abs() as f64))
                 },
@@ -85,7 +87,7 @@ impl Serialize for Number {
 mod tests {
 
     use crate::core::{
-        serialize_node, DecimalFormat, DecimalPlaces, HostApi, Stack,
+        DecimalFormat, DecimalPlaces, HostApi, Stack, serialize_node,
     };
 
     use super::*;
@@ -109,7 +111,8 @@ mod tests {
     #[test]
     fn serialize_number_float_dot() {
         assert_eq!(
-            serialize_node(&Number::new_node(1.23), &Context::default()).unwrap(),
+            serialize_node(&Number::new_node(1.23), &Context::default())
+                .unwrap(),
             "1.23"
         );
     }

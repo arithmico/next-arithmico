@@ -8,8 +8,8 @@ use node::Number;
 
 use crate::api::validations::NumberValidation;
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 static DEFAULT_MEAN: LazyLock<Node> =
