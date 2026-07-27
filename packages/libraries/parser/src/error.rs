@@ -11,7 +11,7 @@ use crate::translations::translation_resolver;
 // TODO: add input spans for tracing
 #[derive(Debug, Clone, Error, PartialEq)]
 #[error("ParseError")]
-pub enum ParseError {
+pub enum Error {
     UnexpectedToken {
         expected: Vec<TokenKind>,
         actual: Token,
@@ -25,19 +25,19 @@ pub enum ParseError {
     Lexer(lexer::Error),
 }
 
-impl From<lexer::Error> for ParseError {
+impl From<lexer::Error> for Error {
     fn from(value: lexer::Error) -> Self {
         Self::Lexer(value)
     }
 }
 
-impl Translatable for ParseError {
+impl Translatable for Error {
     fn translate(
         &self,
         language: Language,
     ) -> Result<String, TranslationError> {
         match self {
-            ParseError::UnexpectedToken { expected, actual } => {
+            Error::UnexpectedToken { expected, actual } => {
                 let expected = expected.translate_list_or(language)?;
                 let received = actual.to_string().quoted(language)?;
                 TranslatedMessage::new(
@@ -48,31 +48,31 @@ impl Translatable for ParseError {
                 .key("received", received)
                 .translate(language)
             }
-            ParseError::UnexpectedEndOfInput => TranslatedMessage::new(
+            Error::UnexpectedEndOfInput => TranslatedMessage::new(
                 "error.unexpected_end_of_input",
                 translation_resolver,
             )
             .translate(language),
-            ParseError::UnexpectedLeftSideOfDefinition { .. } => {
+            Error::UnexpectedLeftSideOfDefinition { .. } => {
                 TranslatedMessage::new(
                     "error.unexpected_left_side_of_definition",
                     translation_resolver,
                 )
                 .translate(language)
             }
-            ParseError::InvalidFunctionArgumentDeclaration => {
+            Error::InvalidFunctionArgumentDeclaration => {
                 TranslatedMessage::new(
                     "error.invalid_function_argument_declaration",
                     translation_resolver,
                 )
                 .translate(language)
             }
-            ParseError::InvalidFunctionName => TranslatedMessage::new(
+            Error::InvalidFunctionName => TranslatedMessage::new(
                 "error.invalid_function_name",
                 translation_resolver,
             )
             .translate(language),
-            ParseError::Lexer(error) => error.translate(language),
+            Error::Lexer(error) => error.translate(language),
         }
     }
 }
