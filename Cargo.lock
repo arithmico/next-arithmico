@@ -1230,6 +1230,7 @@ dependencies = [
  "itertools 0.15.0",
  "language",
  "thiserror 2.0.19",
+ "translate_core",
 ]
 
 [[package]]

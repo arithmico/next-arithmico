@@ -5,6 +5,7 @@ mod span;
 mod token;
 mod token_kind;
 mod tokenize;
+mod translations;
 
 pub use error::*;
 pub use position::*;
