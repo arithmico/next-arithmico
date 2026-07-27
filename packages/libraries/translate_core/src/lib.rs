@@ -1,4 +1,5 @@
 mod error;
+mod provider_macro;
 mod standalone_translated_message;
 mod template;
 mod translatable;
