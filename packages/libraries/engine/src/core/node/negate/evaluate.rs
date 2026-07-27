@@ -49,7 +49,9 @@ mod tests {
     #[test]
     fn evaluate_negate_number() {
         let context = Context::default();
-        let result = Negate::new(Number::new_node(42.)).evaluate(&context).unwrap();
+        let result = Negate::new(Number::new_node(42.))
+            .evaluate(&context)
+            .unwrap();
         assert_eq!(result, Number::new_node(-42.));
     }
 

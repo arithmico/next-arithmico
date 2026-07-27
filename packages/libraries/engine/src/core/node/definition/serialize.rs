@@ -1,8 +1,8 @@
 use node::{Definition, Node};
 
 use crate::core::{
-    get_argument_separator, Context, Serialize, SerializeNodeError,
-    SerializeUtils,
+    Context, Serialize, SerializeNodeError, SerializeUtils,
+    get_argument_separator,
 };
 
 impl SerializeUtils for Definition {
@@ -50,7 +50,7 @@ mod tests {
 
     use node::{Function, FunctionSignature, NodeType, Number, Symbol};
 
-    use crate::core::{serialize_node, Context};
+    use crate::core::{Context, serialize_node};
 
     use super::*;
 

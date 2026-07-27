@@ -3,13 +3,13 @@ use node::{
     Node, Sum,
 };
 use nom::{
-    branch::alt, character::complete::space0, combinator::cut, error::context,
-    multi::many1, sequence::delimited, IResult, Parser,
+    IResult, Parser, branch::alt, character::complete::space0, combinator::cut,
+    error::context, multi::many1, sequence::delimited,
 };
 use trace::{IntoTrace, TracableMut};
 
 use crate::core::{
-    expect_tag, with_parser, ParseNode, ParseNodeError, ParseResult, TraceUtils,
+    ParseNode, ParseNodeError, ParseResult, TraceUtils, expect_tag, with_parser,
 };
 
 pub fn parse_relation(input: &'_ str) -> ParseResult<'_> {

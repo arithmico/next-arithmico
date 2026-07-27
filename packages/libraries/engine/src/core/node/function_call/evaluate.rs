@@ -1,8 +1,8 @@
 use node::{FunctionCall, Node};
 
 use crate::core::{
-    map_function_parameters, Context, EvaluateNode, EvaluateNodeError,
-    HostEndpoint,
+    Context, EvaluateNode, EvaluateNodeError, HostEndpoint,
+    map_function_parameters,
 };
 
 impl EvaluateNode for FunctionCall {
@@ -78,8 +78,9 @@ mod tests {
     };
 
     use crate::{
+        DecimalFormat, DecimalPlaces,
         core::{HostApi, HostApiModule, Language, Stack},
-        function_executor_wrapper, DecimalFormat, DecimalPlaces,
+        function_executor_wrapper,
     };
 
     use super::*;

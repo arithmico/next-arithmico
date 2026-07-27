@@ -1,8 +1,8 @@
 use node::FunctionSignature;
 
 use crate::{
-    core::{EvaluateNodeError, TranslatedString},
     ArgumentMapping,
+    core::{EvaluateNodeError, TranslatedString},
 };
 
 pub trait FunctionArguments<'a>: Sized {

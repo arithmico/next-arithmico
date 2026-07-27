@@ -2,8 +2,8 @@ use engine_derive::ConstantMetadata;
 use node::Number;
 
 use crate::{
-    core::{ConstantEndpoint, Language},
     Context,
+    core::{ConstantEndpoint, Language},
 };
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mp
@@ -69,8 +69,14 @@ impl ConstantEndpoint for MMuEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0
 #[derive(ConstantMetadata)]
 #[name("physics_a_0")]
-#[description(Language::English, "Bohr radius in m denotes the radius of the hydrogen atom in the lowest energy state.")]
-#[description(Language::German, "Der bohrsche Radius in m bezeichnet den Radius des Wasserstoffatoms im niedrigsten Energiezustand.")]
+#[description(
+    Language::English,
+    "Bohr radius in m denotes the radius of the hydrogen atom in the lowest energy state."
+)]
+#[description(
+    Language::German,
+    "Der bohrsche Radius in m bezeichnet den Radius des Wasserstoffatoms im niedrigsten Energiezustand."
+)]
 pub struct A0Endpoint;
 
 impl ConstantEndpoint for A0Endpoint {
@@ -103,7 +109,10 @@ impl ConstantEndpoint for HEndpoint {
     Language::English,
     "Nuclear magneton in J/T is a constant of magnetic moment."
 )]
-#[description(Language::German, "Das Kernmagneton in J/T wird als Einheit für magnetische Momente verwendet.")]
+#[description(
+    Language::German,
+    "Das Kernmagneton in J/T wird als Einheit für magnetische Momente verwendet."
+)]
 pub struct MuNEndpoint;
 
 impl ConstantEndpoint for MuNEndpoint {
@@ -117,8 +126,14 @@ impl ConstantEndpoint for MuNEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mub
 #[derive(ConstantMetadata)]
 #[name("physics_mu_B")]
-#[description(Language::English, "Bohr magneton in J/T the magnitude of the magnetic moment of an electron with orbital angular momentum quantum number ℓ = 1.")]
-#[description(Language::German, "Das bohrsche Magneton in J/T der Betrag des magnetischen Moments eines Elektrons mit Bahndrehimpulsquantenzahl ℓ = 1.")]
+#[description(
+    Language::English,
+    "Bohr magneton in J/T the magnitude of the magnetic moment of an electron with orbital angular momentum quantum number ℓ = 1."
+)]
+#[description(
+    Language::German,
+    "Das bohrsche Magneton in J/T der Betrag des magnetischen Moments eines Elektrons mit Bahndrehimpulsquantenzahl ℓ = 1."
+)]
 pub struct MuBEndpoint;
 
 impl ConstantEndpoint for MuBEndpoint {
@@ -136,7 +151,10 @@ impl ConstantEndpoint for MuBEndpoint {
     Language::English,
     "Reduced Planck constant in J s equals the Planck constant divided by 2π."
 )]
-#[description(Language::German, "Reduzierte Planck-Konstante in J s entspricht dem Planckschen Wirkungsquantum geteilt durch 2π.")]
+#[description(
+    Language::German,
+    "Reduzierte Planck-Konstante in J s entspricht dem Planckschen Wirkungsquantum geteilt durch 2π."
+)]
 pub struct HBarEndpoint;
 
 impl ConstantEndpoint for HBarEndpoint {
@@ -150,8 +168,14 @@ impl ConstantEndpoint for HBarEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?alph
 #[derive(ConstantMetadata)]
 #[name("physics_alpha")]
-#[description(Language::English, "The fine-structure constant is dimensionless and indicates the strength of the electromagnetic interaction.")]
-#[description(Language::German, "Die Feinstrukturkonstante ist dimensionslos und gibt die Stärke der elektromagnetischen Wechselwirkung an.")]
+#[description(
+    Language::English,
+    "The fine-structure constant is dimensionless and indicates the strength of the electromagnetic interaction."
+)]
+#[description(
+    Language::German,
+    "Die Feinstrukturkonstante ist dimensionslos und gibt die Stärke der elektromagnetischen Wechselwirkung an."
+)]
 pub struct AlphaEndpoint;
 
 impl ConstantEndpoint for AlphaEndpoint {
@@ -165,8 +189,14 @@ impl ConstantEndpoint for AlphaEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?re
 #[derive(ConstantMetadata)]
 #[name("physics_r_e")]
-#[description(Language::English, "Classical electron radius in m represents the effective size of an electron in classical electrodynamics.")]
-#[description(Language::German, "Klassischer Elektronenradius in m beschreibt die effektive Größe eines Elektrons in der klassischen Elektrodynamik.")]
+#[description(
+    Language::English,
+    "Classical electron radius in m represents the effective size of an electron in classical electrodynamics."
+)]
+#[description(
+    Language::German,
+    "Klassischer Elektronenradius in m beschreibt die effektive Größe eines Elektrons in der klassischen Elektrodynamik."
+)]
 pub struct REEndpoint;
 
 impl ConstantEndpoint for REEndpoint {
@@ -180,8 +210,14 @@ impl ConstantEndpoint for REEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?ecomwl
 #[derive(ConstantMetadata)]
 #[name("physics_lambda_C")]
-#[description(Language::English, "Compton wavelength in m characterizes the quantum mechanical wavelength associated with a particle.")]
-#[description(Language::German, "Compton-Wellenlänge in m charakterisiert die quantenmechanische Wellenlänge eines Teilchens.")]
+#[description(
+    Language::English,
+    "Compton wavelength in m characterizes the quantum mechanical wavelength associated with a particle."
+)]
+#[description(
+    Language::German,
+    "Compton-Wellenlänge in m charakterisiert die quantenmechanische Wellenlänge eines Teilchens."
+)]
 pub struct LambdaCEndpoint;
 
 impl ConstantEndpoint for LambdaCEndpoint {
@@ -260,10 +296,12 @@ impl ConstantEndpoint for LambdaCNEndpoint {
 #[name("physics_R_inf")]
 #[description(
     Language::English,
-    "The Rydberg constant in 1/m is used for the calculation of atomic spectra.")]
+    "The Rydberg constant in 1/m is used for the calculation of atomic spectra."
+)]
 #[description(
     Language::German,
-    "Die Rydberg-Konstante in 1/m wird zur Berechnung von Atomspektren verwendet.")]
+    "Die Rydberg-Konstante in 1/m wird zur Berechnung von Atomspektren verwendet."
+)]
 pub struct RInfEndpoint;
 
 impl ConstantEndpoint for RInfEndpoint {
@@ -358,8 +396,14 @@ impl ConstantEndpoint for MuMuEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?f
 #[derive(ConstantMetadata)]
 #[name("physics_F")]
-#[description(Language::English, "The Faraday constant in C/mol is the electric charge of one mole of electrons.")]
-#[description(Language::German, "Die Faraday-Konstante in C/mol ist die elektrische Ladung eines Mols einfach geladener Ionen.")]
+#[description(
+    Language::English,
+    "The Faraday constant in C/mol is the electric charge of one mole of electrons."
+)]
+#[description(
+    Language::German,
+    "Die Faraday-Konstante in C/mol ist die elektrische Ladung eines Mols einfach geladener Ionen."
+)]
 pub struct FEndpoint;
 
 impl ConstantEndpoint for FEndpoint {
@@ -394,8 +438,14 @@ impl ConstantEndpoint for EEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?na
 #[derive(ConstantMetadata)]
 #[name("physics_N_A")]
-#[description(Language::English, "The Avogadro constant in 1/mol indicates how many particles are contained in one mole.")]
-#[description(Language::German, "Die Avogadro-Konstante in 1/mol gibt an, wie viele Teilchen in einem Mol enthalten sind.")]
+#[description(
+    Language::English,
+    "The Avogadro constant in 1/mol indicates how many particles are contained in one mole."
+)]
+#[description(
+    Language::German,
+    "Die Avogadro-Konstante in 1/mol gibt an, wie viele Teilchen in einem Mol enthalten sind."
+)]
 pub struct NAEndpoint;
 
 impl ConstantEndpoint for NAEndpoint {
@@ -409,8 +459,14 @@ impl ConstantEndpoint for NAEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?k
 #[derive(ConstantMetadata)]
 #[name("physics_k")]
-#[description(Language::English, "The Boltzmann constant in J/K indicates the scaling between energy and temperature.")]
-#[description(Language::German, "Die Boltzmann-Konstante in J/K gibt die Skalierung zwischen Energie und Temperatur an.")]
+#[description(
+    Language::English,
+    "The Boltzmann constant in J/K indicates the scaling between energy and temperature."
+)]
+#[description(
+    Language::German,
+    "Die Boltzmann-Konstante in J/K gibt die Skalierung zwischen Energie und Temperatur an."
+)]
 pub struct KEndpoint;
 
 impl ConstantEndpoint for KEndpoint {
@@ -445,8 +501,14 @@ impl ConstantEndpoint for VMEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?r
 #[derive(ConstantMetadata)]
 #[name("physics_R")]
-#[description(Language::English, "The molar gas constant in J/(mol K) occurs in the thermal equation of state of ideal gases.")]
-#[description(Language::German, "Die molare Gaskonstante in J/(mol K) tritt in der thermischen Zustandsgleichung idealer Gase auf.")]
+#[description(
+    Language::English,
+    "The molar gas constant in J/(mol K) occurs in the thermal equation of state of ideal gases."
+)]
+#[description(
+    Language::German,
+    "Die molare Gaskonstante in J/(mol K) tritt in der thermischen Zustandsgleichung idealer Gase auf."
+)]
 pub struct REndpoint;
 
 impl ConstantEndpoint for REndpoint {
@@ -538,8 +600,14 @@ impl ConstantEndpoint for SigmaEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?ep0
 #[derive(ConstantMetadata)]
 #[name("physics_epsilon_0")]
-#[description(Language::English, "The vacuum electric permittivity in (A s)/(V m) gives the ratio of electric flux density to electric field strength in vacuum.")]
-#[description(Language::German, "Die elektrische Feldkonstante in (A s)/(V m) gibt das Verhältnis der elektrischen Flussdichte zur elektrischen Feldstärke im Vakuum an.")]
+#[description(
+    Language::English,
+    "The vacuum electric permittivity in (A s)/(V m) gives the ratio of electric flux density to electric field strength in vacuum."
+)]
+#[description(
+    Language::German,
+    "Die elektrische Feldkonstante in (A s)/(V m) gibt das Verhältnis der elektrischen Flussdichte zur elektrischen Feldstärke im Vakuum an."
+)]
 pub struct Epsilon0Endpoint;
 
 impl ConstantEndpoint for Epsilon0Endpoint {
@@ -553,8 +621,14 @@ impl ConstantEndpoint for Epsilon0Endpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mu0
 #[derive(ConstantMetadata)]
 #[name("physics_mu_0")]
-#[description(Language::English, "The vacuum magnetic permeability in N/(A^2) gives the ratio of the magnetic flux density to the magnetic field strength in vacuum.")]
-#[description(Language::German, "Die magnetische Feldkonstante in N/(A^2) gibt das Verhältnis der magnetischen Flussdichte zur magnetischen Feldstärke im Vakuum an.")]
+#[description(
+    Language::English,
+    "The vacuum magnetic permeability in N/(A^2) gives the ratio of the magnetic flux density to the magnetic field strength in vacuum."
+)]
+#[description(
+    Language::German,
+    "Die magnetische Feldkonstante in N/(A^2) gibt das Verhältnis der magnetischen Flussdichte zur magnetischen Feldstärke im Vakuum an."
+)]
 pub struct Mu0Endpoint;
 
 impl ConstantEndpoint for Mu0Endpoint {
@@ -672,8 +746,14 @@ impl ConstantEndpoint for TEndpoint {
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?bg
 #[derive(ConstantMetadata)]
 #[name("physics_G")]
-#[description(Language::English, "The Newtonian constant of gravitation in m^3/(kg s^2) gives the strength of the gravitational force between two bodies as a function of their distance and masses.")]
-#[description(Language::German, "Die Gravitationskonstante in m^3/(kg s^2) gibt die Stärke der Gravitationskraft zwischen zwei Körpern in Abhängigkeit von ihrem Abstand und ihren Massen berechnen.")]
+#[description(
+    Language::English,
+    "The Newtonian constant of gravitation in m^3/(kg s^2) gives the strength of the gravitational force between two bodies as a function of their distance and masses."
+)]
+#[description(
+    Language::German,
+    "Die Gravitationskonstante in m^3/(kg s^2) gibt die Stärke der Gravitationskraft zwischen zwei Körpern in Abhängigkeit von ihrem Abstand und ihren Massen berechnen."
+)]
 pub struct GEndpoint;
 
 impl ConstantEndpoint for GEndpoint {

@@ -102,10 +102,13 @@ mod tests {
     #[test]
     fn evaluate_sum_number_number_3() {
         let context = Context::default();
-        let result =
-            Sum::new(vec![Number::new_node(1.), Number::new_node(2.), Number::new_node(3.)])
-                .evaluate(&context)
-                .unwrap();
+        let result = Sum::new(vec![
+            Number::new_node(1.),
+            Number::new_node(2.),
+            Number::new_node(3.),
+        ])
+        .evaluate(&context)
+        .unwrap();
         assert_eq!(result, Number::new_node(6.));
     }
 

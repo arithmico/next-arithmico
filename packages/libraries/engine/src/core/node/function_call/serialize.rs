@@ -1,8 +1,8 @@
 use node::{FunctionCall, Node};
 
 use crate::core::{
-    get_argument_separator, Context, Serialize, SerializeNodeError,
-    SerializeUtils,
+    Context, Serialize, SerializeNodeError, SerializeUtils,
+    get_argument_separator,
 };
 
 impl SerializeUtils for FunctionCall {

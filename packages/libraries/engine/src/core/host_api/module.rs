@@ -4,10 +4,11 @@ use node::FunctionSignature;
 use translate_core::Language;
 
 use crate::core::{
-    ConstantEndpoint, ConstantExecutor, EndpointMetadata, FunctionEndpoint, FunctionExecutor,
+    ConstantEndpoint, ConstantExecutor, EndpointMetadata, FunctionEndpoint,
+    FunctionExecutor,
 };
 
-use super::{endpoint::HostEndpoint, TranslatedString};
+use super::{TranslatedString, endpoint::HostEndpoint};
 
 pub struct HostApiModule {
     module_name: TranslatedString,
@@ -98,9 +99,9 @@ impl HostApiModuleBuilderEndpointsStage {
 
     pub fn constant<F: ConstantEndpoint>(mut self) -> Self {
         let endpoint = HostEndpoint::constant::<F>(
-    &self.module_id,
-    self.module_name.clone(),
-);
+            &self.module_id,
+            self.module_name.clone(),
+        );
         self.endpoints.push(endpoint);
         self
     }

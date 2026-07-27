@@ -24,8 +24,8 @@ mod tests {
     use trace::TracableMut;
 
     use crate::{
-        core::{HostApi, HostApiModule, Language, Stack},
         DecimalFormat, DecimalPlaces,
+        core::{HostApi, HostApiModule, Language, Stack},
     };
 
     #[test]

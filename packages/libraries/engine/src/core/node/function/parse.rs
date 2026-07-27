@@ -1,17 +1,17 @@
 use node::{Function, FunctionSignature, Node, NodeType, Or};
 use nom::{
+    IResult, Parser,
     branch::alt,
     character::complete::space0,
     combinator::{cut, opt},
     error::context,
     multi::many0,
     sequence::delimited,
-    IResult, Parser,
 };
 
 use crate::core::{
-    expect_tag, parse_raw_symbol, with_parser, ParseNode, ParseNodeError,
-    ParseResult, TraceUtils,
+    ParseNode, ParseNodeError, ParseResult, TraceUtils, expect_tag,
+    parse_raw_symbol, with_parser,
 };
 
 impl ParseNode for Function {

@@ -2,8 +2,8 @@ use engine_derive::FunctionArguments;
 use node::Number;
 
 use crate::{
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
     Context,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]

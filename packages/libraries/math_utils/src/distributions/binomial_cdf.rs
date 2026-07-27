@@ -1,6 +1,6 @@
 use crate::{
-    distributions::incomplete_beta_function::calculate_complementary_incomplete_beta_function,
     DistributionError,
+    distributions::incomplete_beta_function::calculate_complementary_incomplete_beta_function,
 };
 
 /// Computes the cumulative distribution function of the binomial distribution.

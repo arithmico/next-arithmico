@@ -4,8 +4,8 @@ use node::{Argument, Cardinality, FunctionCall, NodeType, Symbol};
 use translate_core::TranslationError;
 
 use crate::core::{
-    serialize_node, Context, DecimalFormat, DecimalPlaces, HostApi,
-    HostEndpoint, Language, Stack, TranslatedString,
+    Context, DecimalFormat, DecimalPlaces, HostApi, HostEndpoint, Language,
+    Stack, TranslatedString, serialize_node,
 };
 
 #[derive(Debug, Clone)]

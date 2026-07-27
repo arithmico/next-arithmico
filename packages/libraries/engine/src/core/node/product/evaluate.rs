@@ -1,7 +1,7 @@
 use std::iter::zip;
 
 use node::{
-    convert_to_outer_index, GetNodeType, Node, Number, Product, Sum, Tensor,
+    GetNodeType, Node, Number, Product, Sum, Tensor, convert_to_outer_index,
 };
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
@@ -180,7 +180,8 @@ mod tests {
     #[test]
     fn evaluate_invalid_product() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new_node(1.)]).evaluate(&context);
+        let result =
+            Product::new(vec![Number::new_node(1.)]).evaluate(&context);
         assert_eq!(
             result,
             Err(EvaluateNodeError::invalid_node(NodeType::Product))
@@ -190,18 +191,20 @@ mod tests {
     #[test]
     fn evaluate_product_number_number_2() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
-            .evaluate(&context)
-            .unwrap();
+        let result =
+            Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
+                .evaluate(&context)
+                .unwrap();
         assert_eq!(result, Number::new_node(2.));
     }
 
     #[test]
     fn evaluate_product_number_number_3() {
         let context = Context::default();
-        let result = Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
-            .evaluate(&context)
-            .unwrap();
+        let result =
+            Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
+                .evaluate(&context)
+                .unwrap();
         assert_eq!(result, Number::new_node(2.));
     }
 
@@ -292,16 +295,29 @@ mod tests {
                     ]),
                 ]),
                 Tensor::new(vec![
-                    Tensor::new(vec![Number::new_node(1.0), Number::new_node(2.0),]),
-                    Tensor::new(vec![Number::new_node(0.0), Number::new_node(1.0),]),
-                    Tensor::new(vec![Number::new_node(4.0), Number::new_node(0.0),]),
+                    Tensor::new(vec![
+                        Number::new_node(1.0),
+                        Number::new_node(2.0),
+                    ]),
+                    Tensor::new(vec![
+                        Number::new_node(0.0),
+                        Number::new_node(1.0),
+                    ]),
+                    Tensor::new(vec![
+                        Number::new_node(4.0),
+                        Number::new_node(0.0),
+                    ]),
                 ]),
             ])
             .evaluate(&context)
             .unwrap(),
             Tensor::new(vec![
-                Tensor::new(vec![Number::new_node(7.0), Number::new_node(8.0),]),
-                Tensor::new(vec![Number::new_node(9.0), Number::new_node(2.0),]),
+                Tensor::new(
+                    vec![Number::new_node(7.0), Number::new_node(8.0),]
+                ),
+                Tensor::new(
+                    vec![Number::new_node(9.0), Number::new_node(2.0),]
+                ),
             ]),
         )
     }

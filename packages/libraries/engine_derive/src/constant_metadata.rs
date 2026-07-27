@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{spanned::Spanned, DeriveInput, LitStr};
+use syn::{DeriveInput, LitStr, spanned::Spanned};
 
 use crate::DescriptionAttribute;
 

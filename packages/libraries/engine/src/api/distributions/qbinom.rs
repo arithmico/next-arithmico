@@ -1,5 +1,7 @@
 use crate::{
-    Context, api::validations::NumberValidation, core::{EvaluateNodeError, FunctionEndpoint, Language},
+    Context,
+    api::validations::NumberValidation,
+    core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 use engine_derive::FunctionArguments;
 use math_utils::calculate_quantile_of_binomial_cdf;
@@ -41,9 +43,9 @@ impl FunctionEndpoint for QBinomEndpoint {
     ) -> Result<Self::Output, EvaluateNodeError> {
         p_q.validate_closed_interval(0.0, 1.0)?;
         p.validate_closed_interval(0.0, 1.0)?;
-        
+
         n.validate_non_negative()?.validate_integer()?;
-        
+
         calculate_quantile_of_binomial_cdf(p_q.value, n.value as usize, p.value)
             .map_err(|_| EvaluateNodeError::runtime_error("qbinom"))
             .map(|result| Number::new(result as f64))

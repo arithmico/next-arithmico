@@ -61,8 +61,8 @@ mod tests {
     #[test]
     fn evaluate_division_by_zero() {
         let context = Context::default();
-        let result =
-            Division::new(Number::new_node(8.), Number::new_node(0.)).evaluate(&context);
+        let result = Division::new(Number::new_node(8.), Number::new_node(0.))
+            .evaluate(&context);
         assert_eq!(result, Err(EvaluateNodeError::division_by_zero()));
     }
 
