@@ -37,7 +37,7 @@ fn CalculatorInputEditor() -> impl IntoView {
                 assert!(start >= pos);
                 assert!(start < content.len());
                 if pos < start {
-                    segments.push((content[pos..=start].to_string(), false));
+                    segments.push((content[pos..start].to_string(), false));
                     pos = start;
                 }
                 segments.push((content[pos..=end].to_string(), true));
