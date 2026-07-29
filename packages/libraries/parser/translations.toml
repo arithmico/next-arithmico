@@ -1,6 +1,6 @@
 [error.unexpected_token]
 English = "Expected {expected} at position {position}, but received {received}."
-German = "An Position {position} wurde {expected} erwartet, aber {received} empfangen."
+German = "An Position {position} wurde {expected} erwartet, stattdessen wurde {received} vorgefunden."
 
 [error.unexpected_end_of_input]
 English = "Unfinished expression. Expected further input."
@@ -18,3 +18,6 @@ German = "Funktionsargumente in einer Definition müssen Variablenbezeichner sei
 English = "Function definition must include a valid function name."
 German = "Eine Funktionsdefinition muss einen gültigen Funktionsnamen enthalten."
 
+[error.missing_multiply_between]
+English = "Missing \"*\" between positions {from} and {to}."
+German = "Fehlendes \"*\" zwischen den Positionen {from} und {to}."

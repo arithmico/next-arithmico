@@ -1,5 +1,5 @@
 use language::Language;
-use lexer::{Token, TokenKind};
+use lexer::{GetTokenSpan, Span, Token, TokenKind};
 use node::NodeType;
 use thiserror::Error;
 use translate_core::{
@@ -19,6 +19,9 @@ pub enum Error {
     UnexpectedEndOfInput,
     UnexpectedLeftSideOfDefinition {
         node_type: NodeType,
+    },
+    MissingMultiplyBetween {
+        span: Span,
     },
     InvalidFunctionArgumentDeclaration,
     InvalidFunctionName,
@@ -46,6 +49,7 @@ impl Translatable for Error {
                 )
                 .key("expected", expected)
                 .key("received", received)
+                .key("position", actual.get_span().from.char_index + 1)
                 .translate(language)
             }
             Error::UnexpectedEndOfInput => TranslatedMessage::new(
@@ -73,6 +77,13 @@ impl Translatable for Error {
             )
             .translate(language),
             Error::Lexer(error) => error.translate(language),
+            Error::MissingMultiplyBetween { span } => TranslatedMessage::new(
+                "error.missing_multiply_between",
+                translation_resolver,
+            )
+            .key("from", span.from.char_index + 1)
+            .key("to", span.to.char_index + 1)
+            .translate(language),
         }
     }
 }

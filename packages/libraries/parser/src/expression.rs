@@ -1,4 +1,4 @@
-use lexer::{GetTokenKind, GetTokenSpan, Token, TokenKind};
+use lexer::{GetTokenKind, GetTokenSpan, Span, Token, TokenKind};
 use node::{
     And, Boolean, Definition, Division, Equals, Function, FunctionCall,
     FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan,
@@ -42,6 +42,23 @@ fn parse_expression_pratt<'a>(
     };
 
     while let Some(next_token) = cursor.peek() {
+        match (cursor.current_token_kind(), cursor.peek_token_kind()) {
+            (
+                Some(TokenKind::RightParenthesis),
+                Some(TokenKind::LeftParenthesis),
+            ) => {
+                return Err(Error::MissingMultiplyBetween {
+                    span: Span::new(
+                        // Safety: the match pattern garantees that this is always Some(_)
+                        cursor.current_position().unwrap(),
+                        // Safety: the match pattern garantees that this is always Some(_)
+                        cursor.peek_position().unwrap(),
+                    ),
+                });
+            }
+            _ => (),
+        };
+
         let Some(binding_power) = next_token.binding_power() else {
             break;
         };

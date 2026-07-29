@@ -1,4 +1,4 @@
-use lexer::Token;
+use lexer::{GetTokenKind, GetTokenSpan, Position, Token, TokenKind};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Cursor<'a> {
@@ -27,7 +27,27 @@ impl<'a> Cursor<'a> {
         token
     }
 
+    pub fn current(&self) -> Option<&'a Token> {
+        self.tokens.get(self.position.checked_sub(1)?)
+    }
+
+    pub fn current_token_kind(&self) -> Option<TokenKind> {
+        self.current().map(|token| token.token_kind())
+    }
+
+    pub fn current_position(&self) -> Option<Position> {
+        self.current().map(|token| token.get_span().from)
+    }
+
     pub fn peek(&self) -> Option<&'a Token> {
         self.tokens.get(self.position)
+    }
+
+    pub fn peek_token_kind(&self) -> Option<TokenKind> {
+        self.peek().map(|token| token.token_kind())
+    }
+
+    pub fn peek_position(&self) -> Option<Position> {
+        self.peek().map(|token| token.get_span().from)
     }
 }
