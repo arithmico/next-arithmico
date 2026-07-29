@@ -30,38 +30,6 @@ German = "Fehlertyp"
 English = "Syntax Error"
 German = "Syntaxfehler"
 
-[calculator.syntax-error.expectation.one]
-English = "Expected {expectation}, but found {actual}."
-German = "Erwartet wurde {expectation}, aber es wurde {actual} gefunden."
-
-[calculator.syntax-error.expectation.two]
-English = "Expected {expectation_1} or {expectation_2}, but found {actual}."
-German = "Erwartet wurde {expectation_1} oder {expectation_2}, aber es wurde {actual} gefunden."
-
-[calculator.syntax-error.expectation.more]
-English = "Expected one of the following: {expectations}, or {last_expectation}, but found {actual}."
-German = "Erwartet wurde eines der folgenden Elemente: {expectations} oder {last_expectation}, aber es wurde {actual} gefunden."
-
-[calculator.syntax-error.expectation.number]
-English = "number"
-German = "Zahl"
-
-[calculator.syntax-error.expectation.boolean]
-English = "boolean"
-German = "Wahrheitswert"
-
-[calculator.syntax-error.expectation.symbol]
-English = "symbol"
-German = "Symbol"
-
-[calculator.syntax-error.missing-parenthesis]
-English = "Missing or unmatched parenthesis or bracket."
-German = "Fehlende oder unpaarige Klammer."
-
-[calculator.syntax-error.actual.end-of-input]
-English = "end of input"
-German = "das Ende der Eingabe"
-
 [calculator.evaluate_node_error]
 English = "Evaluation Error"
 German = "Auswertungsfehler"
