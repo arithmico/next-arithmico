@@ -16,6 +16,15 @@ impl From<Language> for DecimalFormat {
     }
 }
 
+impl From<DecimalFormat> for Language {
+    fn from(value: DecimalFormat) -> Self {
+        match value {
+            DecimalFormat::Comma => Language::German,
+            DecimalFormat::Dot => Language::English,
+        }
+    }
+}
+
 impl Default for DecimalFormat {
     fn default() -> Self {
         DecimalFormat::Dot

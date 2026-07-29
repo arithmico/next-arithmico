@@ -23,11 +23,11 @@ impl WebStateAction<State> for EvaluateAction {
             .override_decimal_format
             .decimal_format()
             .cloned()
-            .unwrap_or_else(|| (&state.settings.get_language()).into());
+            .unwrap_or_else(|| (state.settings.get_language()).into());
 
         state
             .session
-            .push(&self.input, decimal_places, decimal_format);
+            .push(&self.input, decimal_places, decimal_format.into());
         state.current_output = state
             .session
             .last_entry()
@@ -42,7 +42,7 @@ impl WebStateAction<State> for EvaluateAction {
                     .map(|session_error| match session_error {
                         SessionError::EvaluateNodeError(
                             evaluate_node_error,
-                        ) => evaluate_node_error.stack_trace().first().cloned(),
+                        ) => Some(evaluate_node_error.stack_trace().clone()),
                         _ => None,
                     })
             })

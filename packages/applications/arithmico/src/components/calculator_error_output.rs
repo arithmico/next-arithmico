@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use engine::SessionError;
 use leptos::prelude::*;
-use translate::{FormattedMessage, TranslatableObject, use_translate};
+use translate::{FormattedMessage, TranslatableObject};
 
 #[component]
 pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
@@ -10,9 +8,18 @@ pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
         <>
             {match error {
                 SessionError::ParseNodeError(error) => {
-                    let translate = use_translate();
+                    (move || {
+                        let error = error.clone();
 
-                    view! { <>Error</> }
+                        view! {
+                            <>
+                                <h2>
+                                    <FormattedMessage id="calculator.syntax-error.title" />
+                                </h2>
+                                <TranslatableObject value=error />
+                            </>
+                        }
+                    })
                         .into_any()
                 }
                 SessionError::SerializeNodeError(_) => {
