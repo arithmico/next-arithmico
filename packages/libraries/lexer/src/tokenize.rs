@@ -143,6 +143,8 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                         'a'..='z',
                         'A'..='Z',
                         '_'..='_',
+                        ':'..=':',
+                        '0'..='9',
                     ]) {
                     Span::new(position, span.to)
                 } else {
@@ -679,6 +681,46 @@ mod tests {
                     }
                 ),
                 name: "xyz".to_string()
+            })]
+        );
+    }
+
+    #[test]
+    fn identifier_with_colon() {
+        assert_eq!(
+            tokenize(" \n \tx:y:z \r", Default::default()).unwrap(),
+            vec![Token::Identifier(IdentifierToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 8,
+                        char_index: 8
+                    }
+                ),
+                name: "x:y:z".to_string()
+            })]
+        );
+    }
+
+    #[test]
+    fn identifier_with_digits() {
+        assert_eq!(
+            tokenize(" \n \tmu_0 \r", Default::default()).unwrap(),
+            vec![Token::Identifier(IdentifierToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 7,
+                        char_index: 7
+                    }
+                ),
+                name: "mu_0".to_string()
             })]
         );
     }
