@@ -107,7 +107,7 @@ fn parse_expression_pratt<'a>(
                     left = Sum::new(vec![left, right]).with_optional_span(span);
                 }
             }
-            TokenKind::Multiply => {
+            TokenKind::Asterisk => {
                 if let Node::Product(product) = &mut left {
                     let span = (product.trace(), &right).combine_hulls();
                     product.elements.push(right);
@@ -118,7 +118,7 @@ fn parse_expression_pratt<'a>(
                         .with_optional_span(span);
                 }
             }
-            TokenKind::Divide => {
+            TokenKind::Slash => {
                 let span = (&left, &right).combine_hulls();
                 left = Division::new(left, right).with_optional_span(span);
             }
@@ -272,8 +272,8 @@ fn parse_expression_pratt<'a>(
                     expected: vec![
                         TokenKind::Plus,
                         TokenKind::Minus,
-                        TokenKind::Multiply,
-                        TokenKind::Divide,
+                        TokenKind::Asterisk,
+                        TokenKind::Slash,
                         TokenKind::Caret,
                         TokenKind::Define,
                         TokenKind::LessThan,

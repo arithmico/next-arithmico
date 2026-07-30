@@ -26,8 +26,8 @@ impl GetBindingPower for TokenKind {
             TokenKind::And => Some(3),
             TokenKind::Plus => Some(4),
             TokenKind::Minus => Some(5),
-            TokenKind::Multiply => Some(6),
-            TokenKind::Divide => Some(7),
+            TokenKind::Asterisk => Some(6),
+            TokenKind::Slash => Some(7),
             TokenKind::Caret => Some(8),
         }
     }
