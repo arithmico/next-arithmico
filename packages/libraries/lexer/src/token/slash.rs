@@ -3,31 +3,31 @@ use crate::{
 };
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct DivideToken {
+pub struct SlashToken {
     pub span: Span,
 }
 
-impl GetTokenKind for DivideToken {
+impl GetTokenKind for SlashToken {
     fn token_kind(&self) -> crate::TokenKind {
-        crate::TokenKind::Divide
+        crate::TokenKind::Slash
     }
 }
 
-impl GetStaticTokenKind for DivideToken {
+impl GetStaticTokenKind for SlashToken {
     fn token_kind() -> crate::TokenKind {
-        crate::TokenKind::Divide
+        crate::TokenKind::Slash
     }
 }
 
-impl GetTokenSpan for DivideToken {
+impl GetTokenSpan for SlashToken {
     fn get_span(&self) -> Span {
         self.span
     }
 }
 
-impl DowncastToken for DivideToken {
+impl DowncastToken for SlashToken {
     fn downcast(token: &super::Token) -> Option<&Self> {
-        if let crate::Token::Divide(token) = token {
+        if let crate::Token::Slash(token) = token {
             Some(token)
         } else {
             None

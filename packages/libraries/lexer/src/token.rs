@@ -1,9 +1,9 @@
 mod and;
 mod arrow;
+mod asterisk;
 mod boolean;
 mod caret;
 mod define;
-mod divide;
 mod equals;
 mod greater_than;
 mod greater_than_or_equals;
@@ -13,20 +13,20 @@ mod left_parenthesis;
 mod less_than;
 mod less_than_or_equals;
 mod minus;
-mod multiply;
 mod number;
 mod or;
 mod plus;
 mod right_bracket;
 mod right_parenthesis;
 mod separator;
+mod slash;
 
 pub use and::*;
 pub use arrow::*;
+pub use asterisk::*;
 pub use boolean::*;
 pub use caret::*;
 pub use define::*;
-pub use divide::*;
 pub use equals::*;
 pub use greater_than::*;
 pub use greater_than_or_equals::*;
@@ -36,13 +36,13 @@ pub use left_parenthesis::*;
 pub use less_than::*;
 pub use less_than_or_equals::*;
 pub use minus::*;
-pub use multiply::*;
 pub use number::*;
 pub use or::*;
 pub use plus::*;
 pub use right_bracket::*;
 pub use right_parenthesis::*;
 pub use separator::*;
+pub use slash::*;
 
 use crate::{GetTokenKind, GetTokenSpan};
 
@@ -57,8 +57,8 @@ pub enum Token {
     RightBracket(RightBracketToken),
     Plus(PlusToken),
     Minus(MinusToken),
-    Multiply(MultiplyToken),
-    Divide(DivideToken),
+    Asterisk(AsteriskToken),
+    Slash(SlashToken),
     Caret(CaretToken),
     Separator(SeparatorToken),
     Arrow(ArrowToken),
@@ -86,8 +86,8 @@ impl ToString for Token {
             Token::RightBracket(_) => String::from("]"),
             Token::Plus(_) => String::from("+"),
             Token::Minus(_) => String::from("-"),
-            Token::Multiply(_) => String::from("*"),
-            Token::Divide(_) => String::from("/"),
+            Token::Asterisk(_) => String::from("*"),
+            Token::Slash(_) => String::from("/"),
             Token::Caret(_) => String::from("^"),
             Token::Separator(separator_token) => {
                 separator_token.content.clone()
@@ -117,8 +117,8 @@ impl GetTokenKind for Token {
             Token::RightBracket(token) => token.token_kind(),
             Token::Plus(token) => token.token_kind(),
             Token::Minus(token) => token.token_kind(),
-            Token::Multiply(token) => token.token_kind(),
-            Token::Divide(token) => token.token_kind(),
+            Token::Asterisk(token) => token.token_kind(),
+            Token::Slash(token) => token.token_kind(),
             Token::Caret(token) => token.token_kind(),
             Token::Separator(token) => token.token_kind(),
             Token::Arrow(token) => token.token_kind(),
@@ -146,8 +146,8 @@ impl GetTokenSpan for Token {
             Token::RightBracket(token) => token.get_span(),
             Token::Plus(token) => token.get_span(),
             Token::Minus(token) => token.get_span(),
-            Token::Multiply(token) => token.get_span(),
-            Token::Divide(token) => token.get_span(),
+            Token::Asterisk(token) => token.get_span(),
+            Token::Slash(token) => token.get_span(),
             Token::Caret(token) => token.get_span(),
             Token::Separator(token) => token.get_span(),
             Token::Arrow(token) => token.get_span(),

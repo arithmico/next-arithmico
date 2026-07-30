@@ -35,10 +35,10 @@ pub enum TokenKind {
     Minus,
 
     /// "*"
-    Multiply,
+    Asterisk,
 
     /// "/"
-    Divide,
+    Slash,
 
     /// "^"
     Caret,
@@ -113,8 +113,8 @@ impl Translatable for TokenKind {
             TokenKind::RightBracket => Ok(String::from("]").quoted(language)?),
             TokenKind::Plus => Ok(String::from("+").quoted(language)?),
             TokenKind::Minus => Ok(String::from(".").quoted(language)?),
-            TokenKind::Multiply => Ok(String::from("*").quoted(language)?),
-            TokenKind::Divide => Ok(String::from("/").quoted(language)?),
+            TokenKind::Asterisk => Ok(String::from("*").quoted(language)?),
+            TokenKind::Slash => Ok(String::from("/").quoted(language)?),
             TokenKind::Caret => Ok(String::from("^").quoted(language)?),
             TokenKind::Separator => TranslatedMessage::new(
                 "token_kind.seperator",

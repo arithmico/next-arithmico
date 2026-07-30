@@ -1,11 +1,11 @@
 use language::Language;
 
 use crate::{
-    ArrowToken, BooleanToken, CaretToken, DefineToken, DivideToken, Error,
+    ArrowToken, AsteriskToken, BooleanToken, CaretToken, DefineToken, Error,
     GreaterThanOrEqualsToken, GreaterThanToken, IdentifierToken,
     LeftBracketToken, LeftParenthesisToken, LessThanOrEqualsToken,
-    LessThanToken, MinusToken, MultiplyToken, NumberToken, PlusToken,
-    RightBracketToken, RightParenthesisToken, SeparatorToken, Span, Token,
+    LessThanToken, MinusToken, NumberToken, PlusToken, RightBracketToken,
+    RightParenthesisToken, SeparatorToken, SlashToken, Span, Token,
     cursor::LexerCursor,
 };
 
@@ -34,12 +34,12 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                 }));
             }
             '*' => {
-                tokens.push(Token::Multiply(MultiplyToken {
+                tokens.push(Token::Asterisk(AsteriskToken {
                     span: Span::new(position, position),
                 }));
             }
             '/' => {
-                tokens.push(Token::Divide(DivideToken {
+                tokens.push(Token::Slash(SlashToken {
                     span: Span::new(position, position),
                 }));
             }
@@ -305,7 +305,7 @@ mod tests {
     fn multiply() {
         assert_eq!(
             tokenize(" \n \t* \r", Default::default()).unwrap(),
-            vec![Token::Multiply(MultiplyToken {
+            vec![Token::Asterisk(AsteriskToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
@@ -324,7 +324,7 @@ mod tests {
     fn divide() {
         assert_eq!(
             tokenize(" \n \t/ \r", Default::default()).unwrap(),
-            vec![Token::Divide(DivideToken {
+            vec![Token::Slash(SlashToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
