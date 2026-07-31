@@ -52,8 +52,8 @@ fn add_sum_elements(
             // TODO: add special error variants for vectors and matrices
             if left.shape != right.shape {
                 return Err(EvaluateNodeError::incompatible_tensor_shapes(
-                    left.elements.len(),
-                    right.elements.len(),
+                    &left.shape,
+                    &right.shape,
                 ));
             }
 
@@ -120,7 +120,252 @@ mod tests {
         assert_eq!(result, Tensor::new(vec![]));
     }
 
-    // TODO: sum vector vector
-    // TODO: sum matrix matrix
-    // TODO: sum tensor tensor
+    #[test]
+    fn evaluate_vector_vector() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new(vec![
+                Number::new_node(1.0),
+                Number::new_node(2.0),
+                Number::new_node(3.0),
+            ]),
+            Tensor::new(vec![
+                Number::new_node(1.0),
+                Number::new_node(2.0),
+                Number::new_node(3.0),
+            ]),
+        ])
+        .evaluate(&context)
+        .unwrap();
+        assert_eq!(
+            result,
+            Tensor::new(vec![
+                Number::new_node(2.0),
+                Number::new_node(4.0),
+                Number::new_node(6.0),
+            ])
+        );
+    }
+
+    #[test]
+    fn evaluate_vector_vector_err_incompatible_tensor_shapes() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new(vec![
+                Number::new_node(1.0),
+                Number::new_node(2.0),
+                Number::new_node(3.0),
+            ]),
+            Tensor::new(vec![Number::new_node(1.0), Number::new_node(2.0)]),
+        ])
+        .evaluate(&context)
+        .unwrap_err();
+        assert_eq!(
+            result,
+            EvaluateNodeError::incompatible_tensor_shapes(&[3], &[2])
+        );
+    }
+
+    #[test]
+    fn evaluate_matrix_matrix() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new_with_shape(
+                vec![3, 3],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    // 2. row
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    // 3. row
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                ],
+            ),
+            Tensor::new_with_shape(
+                vec![3, 3],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    // 2. row
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    // 3. row
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                ],
+            ),
+        ])
+        .evaluate(&context)
+        .unwrap();
+
+        assert_eq!(
+            result,
+            Tensor::new_with_shape(
+                vec![3, 3],
+                vec![
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    // 2. row
+                    Number::new_node(0.0),
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                    // 3. row
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    Number::new_node(2.0),
+                ],
+            ),
+        );
+    }
+
+    #[test]
+    fn evaluate_matrix_matrix_err_incompatible_tensor_shapes() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new_with_shape(
+                vec![3, 3],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    // 2. row
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    // 3. row
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                ],
+            ),
+            Tensor::new_with_shape(
+                vec![2, 2],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                ],
+            ),
+        ])
+        .evaluate(&context)
+        .unwrap_err();
+
+        assert_eq!(
+            result,
+            EvaluateNodeError::incompatible_tensor_shapes(&[3, 3], &[2, 2])
+        );
+    }
+
+    #[test]
+    fn evaluate_tensor_tensor() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new_with_shape(
+                vec![2, 2, 2],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                ],
+            ),
+            Tensor::new_with_shape(
+                vec![2, 2, 2],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                ],
+            ),
+        ])
+        .evaluate(&context)
+        .unwrap();
+
+        assert_eq!(
+            result,
+            Tensor::new_with_shape(
+                vec![2, 2, 2],
+                vec![
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                    Number::new_node(2.0),
+                    Number::new_node(0.0),
+                ],
+            ),
+        );
+    }
+
+    #[test]
+    fn evaluate_tensor_tensor_err_incompatible_tensor_shapes() {
+        let context = Context::default();
+        let result = Sum::new(vec![
+            Tensor::new_with_shape(
+                vec![2, 2, 2],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                ],
+            ),
+            Tensor::new_with_shape(
+                vec![2, 2, 2, 2],
+                vec![
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                    Number::new_node(1.0),
+                    Number::new_node(0.0),
+                ],
+            ),
+        ])
+        .evaluate(&context)
+        .unwrap_err();
+
+        assert_eq!(
+            result,
+            EvaluateNodeError::incompatible_tensor_shapes(
+                &[2, 2, 2],
+                &[2, 2, 2, 2]
+            )
+        );
+    }
 }
