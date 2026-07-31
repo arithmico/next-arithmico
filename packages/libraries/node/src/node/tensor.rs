@@ -43,7 +43,7 @@ impl Tensor {
         dimension_offsets(&self.shape)
     }
 
-    pub fn convert_to_inner_index(&self, index: &Vec<usize>) -> Option<usize> {
+    pub fn convert_to_inner_index(&self, index: &[usize]) -> Option<usize> {
         convert_to_inner_index(&self.shape, index)
     }
 
@@ -54,7 +54,7 @@ impl Tensor {
         convert_to_outer_index(&self.shape, inner_index)
     }
 
-    pub fn get_element(&self, index: &Vec<usize>) -> Option<&Node> {
+    pub fn get_element(&self, index: &[usize]) -> Option<&Node> {
         match self.convert_to_inner_index(index) {
             Some(inner_index) => self.elements.get(inner_index),
             None => None,
@@ -138,8 +138,8 @@ pub fn convert_to_outer_index(
 }
 
 pub fn convert_to_inner_index(
-    shape: &Vec<usize>,
-    index: &Vec<usize>,
+    shape: &[usize],
+    index: &[usize],
 ) -> Option<usize> {
     if shape.len() != index.len() {
         return None;
@@ -160,7 +160,7 @@ pub fn convert_to_inner_index(
     )
 }
 
-pub fn dimension_offsets(shape: &Vec<usize>) -> Vec<usize> {
+pub fn dimension_offsets(shape: &[usize]) -> Vec<usize> {
     shape
         .iter()
         .rev()
