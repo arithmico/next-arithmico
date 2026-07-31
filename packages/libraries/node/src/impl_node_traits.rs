@@ -30,5 +30,23 @@ macro_rules! impl_node_traits {
                 crate::Node::$node(self)
             }
         }
+
+        impl crate::DowncastNode for $node {
+            fn downcast_node(
+                node: &Node,
+            ) -> Result<&Self, crate::DowncastNodeError> {
+                use crate::GetNodeType;
+                use trace::Tracable;
+
+                match node {
+                    crate::Node::$node(node) => Ok(node),
+                    node => Err(crate::DowncastNodeError {
+                        expected: <Self as crate::GetStaticNodeType>::static_node_type(),
+                        received: node.node_type(),
+                        trace: node.trace().clone()
+                    }),
+                }
+            }
+        }
     };
 }

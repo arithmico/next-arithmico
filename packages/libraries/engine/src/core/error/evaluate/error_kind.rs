@@ -17,6 +17,7 @@ pub enum EvaluateNodeErrorKind {
     InvalidParameterType,
     TooManyParameters,
     InvalidParameterValue,
+    UnexpectedNodeType,
 }
 
 impl Translatable for EvaluateNodeErrorKind {
@@ -63,6 +64,9 @@ impl Translatable for EvaluateNodeErrorKind {
             }
             EvaluateNodeErrorKind::InvalidParameterValue => {
                 "engine.evaluate.error.invalid_parameter_value.error_kind"
+            }
+            EvaluateNodeErrorKind::UnexpectedNodeType => {
+                "engine.evaluate.error.unexpected_node_type.error_kind"
             }
         };
 

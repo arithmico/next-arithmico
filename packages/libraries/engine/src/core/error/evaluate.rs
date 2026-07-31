@@ -1,7 +1,10 @@
 pub use error_kind::*;
+use node::DowncastNodeError;
 use thiserror::Error;
 use trace::Trace;
 use translate_core::TranslatedMessage;
+
+use crate::core::translation_resolver;
 
 pub mod division_by_zero;
 mod error_kind;
@@ -58,5 +61,21 @@ impl AsRef<Trace> for EvaluateNodeError {
 impl AsMut<Trace> for EvaluateNodeError {
     fn as_mut(&mut self) -> &mut Trace {
         &mut self.trace
+    }
+}
+
+impl From<DowncastNodeError> for EvaluateNodeError {
+    fn from(value: DowncastNodeError) -> Self {
+        let mut err = Self::new(
+            EvaluateNodeErrorKind::UnexpectedNodeType,
+            TranslatedMessage::new(
+                "engine.evaluate.error.unexpected_node_type",
+                translation_resolver,
+            )
+            .key("expected", value.expected.to_string())
+            .key("received", value.received.to_string()),
+        );
+        err.trace = value.trace;
+        err
     }
 }

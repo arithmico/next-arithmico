@@ -106,6 +106,15 @@ German = "Zu viele Parameter"
 English = "Invalid parameter value"
 German = "Ungültiger Parameterwert"
 
+[engine.evaluate.error.unexpected_node_type.error_kind]
+Enlish = "Unexpected value"
+German = "Unerwarteter Wert"
+
+[engine.evaluate.error.unexpected_node_type]
+Enlish = "Unexpected value expected {expected} but received {received}."
+German = "Unerwarteter Wert. Statt {expected} wurde {received} vorgefunden."
+
+
 # Invalid parameter errors
 [engine.api.error.invalid_parameter_value.negative_value]
 English = "Parameter value must be non negative."
