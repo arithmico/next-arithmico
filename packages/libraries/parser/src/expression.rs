@@ -1,9 +1,9 @@
 use lexer::{GetTokenKind, GetTokenSpan, Span, Token, TokenKind};
 use node::{
-    And, Boolean, Definition, Division, Equals, Function, FunctionCall,
-    FunctionSignature, GetNodeType, GreaterThan, GreaterThanOrEquals, LessThan,
-    LessThanOrEquals, Negate, Node, NodeType, Number, Or, Power, Product, Sum,
-    Symbol, Tensor,
+    And, Boolean, Definition, Division, Equals, Factorial, Function,
+    FunctionCall, FunctionSignature, GetNodeType, GreaterThan,
+    GreaterThanOrEquals, LessThan, LessThanOrEquals, Negate, Node, NodeType,
+    Number, Or, Power, Product, Sum, Symbol, Tensor,
 };
 use trace::{CombineHulls, Tracable, TracableMut};
 
@@ -70,6 +70,15 @@ fn parse_expression_pratt<'a>(
         let Some(operator) = cursor.next() else {
             break; // unreachable
         };
+
+        if let Token::ExclamationMark(token) = operator {
+            let mut span = token.get_span();
+            if let Some(left_span) = left.hull() {
+                span = span.hull(&left_span);
+            }
+            left = Factorial::new(left).with_span(span);
+            continue;
+        }
 
         let next_min_minding_power = match operator.token_kind() {
             // right associative operators (e. g. "^")
@@ -1214,6 +1223,20 @@ mod tests {
                 Boolean::new(true).with_span(Span::new_between(15, 18)),
             ])
             .with_span(Span::new_between(0, 18)),
+        );
+    }
+
+    #[test]
+    fn factorial() {
+        let tokens = tokenize("10!", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Factorial::new(
+                Number::new_node(10.0).with_span(Span::new_between(0, 1))
+            )
+            .with_span(Span::new_between(0, 2)),
         );
     }
 }

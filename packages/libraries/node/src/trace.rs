@@ -25,6 +25,7 @@ impl AsMut<Trace> for Node {
             Node::GreaterThanOrEquals(node) => &mut node.trace,
             Node::HostFunction(node) => &mut node.trace,
             Node::Definition(node) => &mut node.trace,
+            Node::Factorial(node) => &mut node.trace,
         }
     }
 }
@@ -52,6 +53,7 @@ impl AsRef<Trace> for Node {
             Node::GreaterThanOrEquals(node) => &node.trace,
             Node::HostFunction(node) => &node.trace,
             Node::Definition(node) => &node.trace,
+            Node::Factorial(node) => &node.trace,
         }
     }
 }

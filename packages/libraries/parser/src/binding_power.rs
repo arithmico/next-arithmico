@@ -29,6 +29,7 @@ impl GetBindingPower for TokenKind {
             TokenKind::Asterisk => Some(6),
             TokenKind::Slash => Some(7),
             TokenKind::Caret => Some(8),
+            TokenKind::ExclamationMark => Some(9),
         }
     }
 }

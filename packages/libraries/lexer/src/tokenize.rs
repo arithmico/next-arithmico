@@ -122,6 +122,13 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                     span: Span::new(position, position),
                 }));
             }
+            '!' => {
+                tokens.push(Token::ExclamationMark(
+                    crate::ExclamationMarkToken {
+                        span: Span::new(position, position),
+                    },
+                ));
+            }
             // true
             't' if let Some(span) = cursor.match_and_advance("rue") => {
                 tokens.push(Token::Boolean(BooleanToken {
@@ -233,7 +240,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{AndToken, OrToken, Position};
+    use crate::{AndToken, ExclamationMarkToken, OrToken, Position};
 
     use super::*;
 
@@ -591,6 +598,25 @@ mod tests {
         assert_eq!(
             tokenize(" \n \t] \r", Default::default()).unwrap(),
             vec![Token::RightBracket(RightBracketToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
+    fn exclamation_mark() {
+        assert_eq!(
+            tokenize(" \n \t! \r", Default::default()).unwrap(),
+            vec![Token::ExclamationMark(ExclamationMarkToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,

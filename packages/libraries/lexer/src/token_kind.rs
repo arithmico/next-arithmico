@@ -72,6 +72,9 @@ pub enum TokenKind {
 
     /// "|"
     Or,
+
+    /// "!"
+    ExclamationMark,
 }
 
 pub trait GetTokenKind {
@@ -134,6 +137,9 @@ impl Translatable for TokenKind {
             TokenKind::Equals => Ok(String::from("=").quoted(language)?),
             TokenKind::And => Ok(String::from("&").quoted(language)?),
             TokenKind::Or => Ok(String::from("|").quoted(language)?),
+            TokenKind::ExclamationMark => {
+                Ok(String::from("!").quoted(language)?)
+            }
         }
     }
 }

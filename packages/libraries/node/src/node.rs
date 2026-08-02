@@ -3,6 +3,7 @@ mod boolean;
 mod definition;
 mod division;
 mod equals;
+mod factorial;
 mod function;
 mod function_call;
 mod greater_than;
@@ -24,6 +25,7 @@ pub use boolean::*;
 pub use definition::*;
 pub use division::*;
 pub use equals::*;
+pub use factorial::*;
 pub use function::*;
 pub use function_call::*;
 pub use greater_than::*;
@@ -62,4 +64,5 @@ pub enum Node {
     GreaterThanOrEquals(GreaterThanOrEquals),
     HostFunction(HostFunction),
     Definition(Definition),
+    Factorial(Factorial),
 }
