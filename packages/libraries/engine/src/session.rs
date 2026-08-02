@@ -1,5 +1,5 @@
+use crate::DecimalPlaces;
 use crate::core::{Context, HostApi, SerializeUtils, Stack, evaluate_node};
-use crate::{DecimalFormat, DecimalPlaces};
 use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -32,12 +32,12 @@ impl Session {
     pub fn create_context(
         &self,
         decimal_places: DecimalPlaces,
-        decimal_format: DecimalFormat,
+        language: Language,
     ) -> Context {
         Context::new(
             self.stack.clone(),
             decimal_places,
-            decimal_format,
+            language,
             self.host_api.clone(),
         )
     }
@@ -48,8 +48,7 @@ impl Session {
         decimal_places: DecimalPlaces,
         language: Language,
     ) -> Result<Node, SessionError> {
-        let context =
-            self.create_context(decimal_places, DecimalFormat::from(language));
+        let context = self.create_context(decimal_places, language);
 
         let node = parse(input, language)?;
 

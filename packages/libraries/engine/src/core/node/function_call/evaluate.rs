@@ -29,7 +29,7 @@ impl EvaluateNode for FunctionCall {
                 let local_context = Context::new(
                     stack,
                     context.decimal_places.clone(),
-                    context.decimal_format.clone(),
+                    context.language.clone(),
                     context.host_api.clone(),
                 );
 
@@ -77,7 +77,7 @@ mod tests {
     };
 
     use crate::{
-        DecimalFormat, DecimalPlaces,
+        DecimalPlaces,
         core::{HostApi, HostApiModule, Language, Stack},
         function_executor_wrapper,
     };
@@ -136,7 +136,7 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -191,7 +191,7 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -251,7 +251,7 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {

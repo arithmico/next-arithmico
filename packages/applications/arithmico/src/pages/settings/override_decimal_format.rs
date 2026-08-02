@@ -1,4 +1,4 @@
-use engine::DecimalFormat;
+use engine::Language;
 use leptos::prelude::*;
 use translate::FormattedMessage;
 use ui::{
@@ -33,10 +33,10 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
                 {move || match override_decimal_format.get().decimal_format() {
                     Some(override_format) => {
                         match override_format {
-                            DecimalFormat::Comma => {
+                            Language::German => {
                                 view! { <FormattedMessage id="settings.language.german" /> }
                             }
-                            DecimalFormat::Dot => {
+                            Language::English => {
                                 view! {
                                     <FormattedMessage id="settings.language.english" />
                                 }
@@ -62,8 +62,8 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
         view! { <FormattedMessage id="settings.override_decimal_format" /> }
     })
     .option(OverrideDecimalFormat::new(), move || view! { <FormattedMessage id="settings.override_decimal_format.no" /> })
-    .option(OverrideDecimalFormat::from(DecimalFormat::Comma), move || view! { <FormattedMessage id="settings.language.german" /> })
-    .option(OverrideDecimalFormat::from(DecimalFormat::Dot), move || view! { <FormattedMessage id="settings.language.english" /> });
+    .option(OverrideDecimalFormat::from(Language::German), move || view! { <FormattedMessage id="settings.language.german" /> })
+    .option(OverrideDecimalFormat::from(Language::English), move || view! { <FormattedMessage id="settings.language.english" /> });
 
     view! {
         <Listbox
