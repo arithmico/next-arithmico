@@ -23,6 +23,7 @@ pub enum NodeType {
     GreaterThanOrEquals,
     HostFunction,
     Definition,
+    Factorial,
 }
 
 impl std::fmt::Display for NodeType {
@@ -49,6 +50,7 @@ impl std::fmt::Display for NodeType {
             NodeType::GreaterThanOrEquals => f.write_str("GreaterThanOrEquals"),
             NodeType::HostFunction => f.write_str("HostFunction"),
             NodeType::Definition => f.write_str("Definition"),
+            NodeType::Factorial => f.write_str("Factorial"),
         }
     }
 }
@@ -80,6 +82,7 @@ impl GetNodeType for Node {
             Node::GreaterThanOrEquals(_) => NodeType::GreaterThanOrEquals,
             Node::HostFunction(_) => NodeType::HostFunction,
             Node::Definition(_) => NodeType::Definition,
+            Node::Factorial(_) => NodeType::Factorial,
         }
     }
 }

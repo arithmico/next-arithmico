@@ -38,6 +38,7 @@ impl SerializeUtils for Node {
                 host_function.normalize_node(context)
             }
             Node::Definition(definition) => definition.normalize_node(context),
+            Node::Factorial(factorial) => factorial.normalize_node(context),
         }
     }
 
@@ -102,6 +103,9 @@ impl SerializeUtils for Node {
             Node::Definition(definition) => {
                 definition.child_requires_parenthesis(child, position)
             }
+            Node::Factorial(node) => {
+                node.child_requires_parenthesis(child, position)
+            }
         }
     }
 }
@@ -140,6 +144,7 @@ impl Serialize for Node {
                 host_function.serialize(context)
             }
             Node::Definition(definition) => definition.serialize(context),
+            Node::Factorial(factorial) => factorial.serialize(context),
         }
     }
 }

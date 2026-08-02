@@ -34,6 +34,7 @@ impl EvaluateNode for Node {
                 host_function.evaluate(context)
             }
             Node::Definition(definition) => definition.evaluate(context),
+            Node::Factorial(factorial) => factorial.evaluate(context),
         }
         .map(|node| node.with_optional_span(self.hull()))
         .map_err(|error| error.with_optional_new_frame(self.hull()))

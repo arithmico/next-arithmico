@@ -2,19 +2,6 @@ use node::Node;
 
 use crate::core::ForEachChild;
 
-// TODO: investigate
-/*impl Node {
-    pub fn for_each_node<F: Fn(&Node) + Copy>(&self, f: F) {
-        self.for_each_child(f);
-        f(self);
-    }
-
-    pub fn for_each_node_mut<F: Fn(&mut Node) + Copy>(&mut self, f: F) {
-        self.for_each_child_mut(f);
-        f(self);
-    }
-}*/
-
 impl ForEachChild for Node {
     fn for_each_child<F: Fn(&Node) + Copy>(&self, f: F) {
         match self {
@@ -38,6 +25,7 @@ impl ForEachChild for Node {
             Node::GreaterThanOrEquals(node) => node.for_each_child(f),
             Node::HostFunction(node) => node.for_each_child(f),
             Node::Definition(node) => node.for_each_child(f),
+            Node::Factorial(node) => node.for_each_child(f),
         }
     }
 
@@ -63,6 +51,7 @@ impl ForEachChild for Node {
             Node::GreaterThanOrEquals(node) => node.for_each_child_mut(f),
             Node::HostFunction(node) => node.for_each_child_mut(f),
             Node::Definition(node) => node.for_each_child_mut(f),
+            Node::Factorial(node) => node.for_each_child_mut(f),
         }
     }
 }

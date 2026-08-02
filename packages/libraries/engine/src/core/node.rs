@@ -3,6 +3,7 @@ mod boolean;
 mod definition;
 mod division;
 mod equals;
+mod factorial;
 mod function;
 mod function_call;
 mod greater_than;

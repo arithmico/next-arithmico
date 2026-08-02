@@ -5,6 +5,7 @@ mod boolean;
 mod caret;
 mod define;
 mod equals;
+mod exclamation_mark;
 mod greater_than;
 mod greater_than_or_equals;
 mod identifier;
@@ -28,6 +29,7 @@ pub use boolean::*;
 pub use caret::*;
 pub use define::*;
 pub use equals::*;
+pub use exclamation_mark::*;
 pub use greater_than::*;
 pub use greater_than_or_equals::*;
 pub use identifier::*;
@@ -70,6 +72,7 @@ pub enum Token {
     Equals(EqualsToken),
     And(AndToken),
     Or(OrToken),
+    ExclamationMark(ExclamationMarkToken),
 }
 
 impl ToString for Token {
@@ -101,6 +104,7 @@ impl ToString for Token {
             Token::Equals(_) => String::from("="),
             Token::And(_) => String::from("&"),
             Token::Or(_) => String::from("|"),
+            Token::ExclamationMark(_) => String::from("!"),
         }
     }
 }
@@ -130,6 +134,7 @@ impl GetTokenKind for Token {
             Token::Equals(token) => token.token_kind(),
             Token::And(token) => token.token_kind(),
             Token::Or(token) => token.token_kind(),
+            Token::ExclamationMark(token) => token.token_kind(),
         }
     }
 }
@@ -159,6 +164,7 @@ impl GetTokenSpan for Token {
             Token::Equals(token) => token.get_span(),
             Token::And(token) => token.get_span(),
             Token::Or(token) => token.get_span(),
+            Token::ExclamationMark(token) => token.get_span(),
         }
     }
 }

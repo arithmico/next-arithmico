@@ -54,7 +54,8 @@ operators = [
     "operator_less_than_number_number",
     "operator_greater_than_number_number",
     "operator_less_than_or_equals_number_number",
-    "operator_greater_than_or_equals_number_number"
+    "operator_greater_than_or_equals_number_number",
+    "operator_factorial_number",
 ]
 
 # data type features
@@ -91,6 +92,7 @@ operator_less_than_number_number = ["datatype_boolean", "datatype_number"]
 operator_greater_than_number_number = ["datatype_boolean", "datatype_number"]
 operator_less_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
 operator_greater_than_or_equals_number_number = ["datatype_boolean", "datatype_number"]
+operator_factorial_number = ["datatype_number"]
 
 # api modules
 api_modules = [
