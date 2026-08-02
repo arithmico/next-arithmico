@@ -86,9 +86,9 @@ impl Serialize for Number {
 #[cfg(test)]
 mod tests {
 
-    use crate::core::{
-        DecimalFormat, DecimalPlaces, HostApi, Stack, serialize_node,
-    };
+    use translate::Language;
+
+    use crate::core::{DecimalPlaces, HostApi, Stack, serialize_node};
 
     use super::*;
 
@@ -125,7 +125,7 @@ mod tests {
                 &Context::new(
                     Stack::new(),
                     DecimalPlaces::from(5),
-                    DecimalFormat::Comma,
+                    Language::German,
                     HostApi::empty().into()
                 )
             )

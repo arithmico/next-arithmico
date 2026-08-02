@@ -4,8 +4,8 @@ use node::{Argument, Cardinality, FunctionCall, NodeType, Symbol};
 use translate_core::TranslationError;
 
 use crate::core::{
-    Context, DecimalFormat, DecimalPlaces, HostApi, HostEndpoint, Language,
-    Stack, TranslatedString, serialize_node,
+    Context, DecimalPlaces, HostApi, HostEndpoint, Language, Stack,
+    TranslatedString, serialize_node,
 };
 
 #[derive(Debug, Clone)]
@@ -161,7 +161,7 @@ impl DocumentationItem {
                         &Context::new(
                             Stack::new(),
                             DecimalPlaces::default(),
-                            DecimalFormat::Dot,
+                            Language::English,
                             HostApi::empty().into(),
                         ),
                     )
@@ -174,7 +174,7 @@ impl DocumentationItem {
                         &Context::new(
                             Stack::new(),
                             DecimalPlaces::default(),
-                            DecimalFormat::Comma,
+                            Language::German,
                             HostApi::empty().into(),
                         ),
                     )
@@ -194,7 +194,7 @@ impl DocumentationItem {
                         &Context::new(
                             Stack::new(),
                             DecimalPlaces::default(),
-                            DecimalFormat::Dot,
+                            Language::English,
                             HostApi::empty().into(),
                         ),
                     )
@@ -207,7 +207,7 @@ impl DocumentationItem {
                         &Context::new(
                             Stack::new(),
                             DecimalPlaces::default(),
-                            DecimalFormat::Comma,
+                            Language::German,
                             HostApi::empty().into(),
                         ),
                     )

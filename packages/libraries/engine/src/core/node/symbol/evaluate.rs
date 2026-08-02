@@ -27,7 +27,7 @@ mod tests {
     use trace::TracableMut;
 
     use crate::{
-        DecimalFormat, DecimalPlaces,
+        DecimalPlaces,
         core::{HostApi, HostApiModule, Language, Stack},
     };
 
@@ -45,7 +45,7 @@ mod tests {
         let context = Context::new(
             stack,
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x").evaluate(&context).unwrap();
@@ -59,7 +59,7 @@ mod tests {
         let context = Context::new(
             stack,
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x")
@@ -92,7 +92,7 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             host_api.into(),
         );
 
@@ -120,7 +120,7 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            DecimalFormat::default(),
+            Language::default(),
             host_api.into(),
         );
 

@@ -2,11 +2,10 @@ use std::sync::Arc;
 
 use node::{HostFunction, Node};
 
-mod decimal_format;
 mod decimal_places;
 
-pub use decimal_format::*;
 pub use decimal_places::*;
+use translate::Language;
 
 use super::{HostApi, HostEndpoint, Stack};
 
@@ -14,7 +13,7 @@ use super::{HostApi, HostEndpoint, Stack};
 pub struct Context {
     pub stack: Stack,
     pub decimal_places: DecimalPlaces,
-    pub decimal_format: DecimalFormat,
+    pub language: Language,
     pub host_api: Arc<HostApi>,
 }
 
@@ -23,7 +22,7 @@ impl Default for Context {
         Self {
             stack: Stack::new(),
             decimal_places: DecimalPlaces::default(),
-            decimal_format: DecimalFormat::default(),
+            language: Language::default(),
             host_api: HostApi::empty().into(),
         }
     }
@@ -33,12 +32,12 @@ impl Context {
     pub fn new(
         stack: Stack,
         decimal_places: DecimalPlaces,
-        decimal_format: DecimalFormat,
+        language: Language,
         host_api: Arc<HostApi>,
     ) -> Context {
         Context {
             stack,
-            decimal_format,
+            language,
             decimal_places,
             host_api,
         }

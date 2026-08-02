@@ -1,8 +1,10 @@
-use crate::core::{Context, DecimalFormat};
+use translate::Language;
+
+use crate::core::Context;
 
 pub fn get_decimal_separator(context: &Context) -> String {
-    match context.decimal_format {
-        DecimalFormat::Comma => String::from(","),
-        DecimalFormat::Dot => String::from("."),
+    match context.language {
+        Language::German => String::from(","),
+        Language::English => String::from("."),
     }
 }

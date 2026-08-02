@@ -1,23 +1,23 @@
 use std::fmt::Debug;
 
-use engine::DecimalFormat;
+use engine::Language;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize, PartialEq)]
-pub struct OverrideDecimalFormat(Option<DecimalFormat>);
+pub struct OverrideDecimalFormat(Option<Language>);
 
 impl OverrideDecimalFormat {
     pub fn new() -> Self {
         Self(None)
     }
 
-    pub fn decimal_format(&self) -> Option<&DecimalFormat> {
+    pub fn decimal_format(&self) -> Option<&Language> {
         self.0.as_ref()
     }
 }
 
-impl From<DecimalFormat> for OverrideDecimalFormat {
-    fn from(value: DecimalFormat) -> Self {
+impl From<Language> for OverrideDecimalFormat {
+    fn from(value: Language) -> Self {
         Self(Some(value))
     }
 }
