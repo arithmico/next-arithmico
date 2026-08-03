@@ -135,3 +135,11 @@ German = "Parameterwert muss im offenen Intervall zwischen {lower} und {upper} l
 [engine.api.error.invalid_parameter_value.closed_interval.out_of_bounds]
 English = "Parameter value has to be in the closed interval between {lower} and {upper}."
 German = "Parameterwert muss im geschlossenem Intervall zwischen {lower} und {upper} liegen."
+
+[engine.api.error.invalid_parameter.must_be_greater_than]
+German = "Der Parameterwert muss größer als {value} sein."
+English = "The parameter value must be greater than {value}."
+
+[engine.api.error.invalid_parameter.must_be_not_equal]
+German = "Der Parameterwert darf nicht gleich {value} sein."
+English = "The parameter value must not equal {value}."
