@@ -98,7 +98,8 @@ operator_factorial_number = ["datatype_number"]
 api_modules = [
     "api_module_trigonometry",
     "api_module_physics",
-    "api_module_distributions"
+    "api_module_distributions",
+    "api_module_analysis",
 ]
 
 # trigonometry
@@ -225,3 +226,11 @@ api_endpoint_distributions_qnormal = ["api_module_loader_distributions"]
 api_endpoint_distributions_binom = ["api_module_loader_distributions"]
 api_endpoint_distributions_cbinom = ["api_module_loader_distributions"]
 api_endpoint_distributions_qbinom = ["api_module_loader_distributions"]
+
+# analysis
+api_module_analysis = [
+    "api_endpoint_analysis_exp",
+]
+
+api_module_loader_analysis = []
+api_endpoint_analysis_exp = ["api_module_loader_analysis"]
