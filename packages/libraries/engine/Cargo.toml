@@ -230,7 +230,9 @@ api_endpoint_distributions_qbinom = ["api_module_loader_distributions"]
 # analysis
 api_module_analysis = [
     "api_endpoint_analysis_exp",
+    "api_endpoint_analysis_log",
 ]
 
 api_module_loader_analysis = []
 api_endpoint_analysis_exp = ["api_module_loader_analysis"]
+api_endpoint_analysis_log = ["api_module_loader_analysis"]
