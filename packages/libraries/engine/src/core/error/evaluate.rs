@@ -8,6 +8,7 @@ use crate::core::translation_resolver;
 
 pub mod division_by_zero;
 mod error_kind;
+pub mod generic_runtime_error;
 pub mod incompatible_matrix_dimensions;
 pub mod incompatible_tensor_shapes;
 pub mod incompatible_vector_dimensions;
