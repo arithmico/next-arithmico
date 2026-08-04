@@ -1,5 +1,7 @@
 #[cfg(feature = "api_endpoint_trigonometry_acos")]
 use crate::api::trigonometry::acos::AcosEndpoint;
+#[cfg(feature = "api_endpoint_trigonometry_acosh")]
+use crate::api::trigonometry::acosh::AcoshEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_asin")]
 use crate::api::trigonometry::asin::AsinEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_asinh")]
@@ -23,6 +25,7 @@ use crate::api::trigonometry::tanh::TanhEndpoint;
 use crate::core::{HostApiModule, Language};
 
 mod acos;
+mod acosh;
 mod asin;
 mod asinh;
 mod atan;
@@ -72,6 +75,9 @@ pub fn load_trigonometry_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_trigonometry_asinh")]
     let module = module.function::<AsinhEndpoint>();
+
+    #[cfg(feature = "api_endpoint_trigonometry_acosh")]
+    let module = module.function::<AcoshEndpoint>();
 
     module.build()
 }
