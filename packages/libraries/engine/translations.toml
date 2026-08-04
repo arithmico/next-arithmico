@@ -143,3 +143,7 @@ English = "The parameter value must be greater than {value}."
 [engine.api.error.invalid_parameter.must_be_not_equal]
 German = "Der Parameterwert darf nicht gleich {value} sein."
 English = "The parameter value must not equal {value}."
+
+[engine.api.error.invalid_parameter.must_be_greater_than_or_equal]
+German = "Der Parameterwert muss größer oder gleich {value} sein."
+English = "The parameter value must be greater than or equal {value}."

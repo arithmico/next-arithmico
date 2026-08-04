@@ -115,6 +115,7 @@ api_module_trigonometry = [
     "api_endpoint_trigonometry_cosh",
     "api_endpoint_trigonometry_tanh",
     "api_endpoint_trigonometry_asinh",
+    "api_endpoint_trigonometry_acosh",
 ]
 
 api_module_loader_trigonometry = []
@@ -129,6 +130,7 @@ api_endpoint_trigonometry_sinh = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_cosh = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_tanh = ["api_module_loader_trigonometry"]
 api_endpoint_trigonometry_asinh = ["api_module_loader_trigonometry"]
+api_endpoint_trigonometry_acosh = ["api_module_loader_trigonometry"]
 
 # physics
 api_module_physics = [
