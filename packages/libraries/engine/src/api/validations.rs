@@ -10,14 +10,23 @@ pub trait NumberValidation {
         min: f64,
         max: f64,
     ) -> Result<&Self, EvaluateNodeError>;
+
     fn validate_open_interval(
         &self,
         min: f64,
         max: f64,
     ) -> Result<&Self, EvaluateNodeError>;
+
     fn validate_non_negative(&self) -> Result<&Self, EvaluateNodeError>;
+
     fn validate_integer(&self) -> Result<&Self, EvaluateNodeError>;
+
     fn validate_non_zero(&self) -> Result<&Self, EvaluateNodeError>;
+
+    // TODO: validate_less_than
+    // TODO: validate_less_than_or_equal
+    // TODO: validate_greater_than
+    // TODO: validate_greater_tahn_or_equal
 }
 
 impl NumberValidation for Number {
