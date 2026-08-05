@@ -1,6 +1,6 @@
 use engine_derive::FunctionArguments;
 use node::Number;
-use trace::{Tracable, TracableMut};
+use node_validator::NumberValidator;
 
 use crate::{
     Context,
@@ -39,32 +39,8 @@ impl FunctionEndpoint for LogEndpoint {
         LogArgs { x, base }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        if x.value <= 0.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.invalid_parameter.must_be_greater_than",
-            )
-            .key("value", 0.to_string())
-            .build()
-            .with_optional_span(x.hull()));
-        }
-
-        if base.value <= 0.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.invalid_parameter.must_be_greater_than",
-            )
-            .key("value", 0.to_string())
-            .build()
-            .with_optional_span(base.hull()));
-        }
-
-        if base.value == 1.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.invalid_parameter.must_be_not_equal",
-            )
-            .key("value", 1.to_string())
-            .build()
-            .with_optional_span(base.hull()));
-        }
+        x.validate_greater_than(0.0)?;
+        base.validate_greater_than(0.0)?.validate_not_equal(1.0)?;
 
         let result = x.value.log(base.value);
 
