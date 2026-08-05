@@ -1,8 +1,10 @@
+use std::fmt::Debug;
+
 use language::Language;
 
 use crate::TranslationError;
 
-pub trait Translatable {
+pub trait Translatable: Debug {
     fn translate(&self, language: Language)
     -> Result<String, TranslationError>;
 
@@ -14,6 +16,19 @@ pub trait Translatable {
             Language::English => {
                 Ok(format!(r#"'{}'"#, self.translate(language)?))
             }
+        }
+    }
+}
+
+impl Translatable for f64 {
+    fn translate(
+        &self,
+        language: Language,
+    ) -> Result<String, TranslationError> {
+        let serialized = self.to_string();
+        match language {
+            Language::German => Ok(serialized.replace(".", ",")),
+            Language::English => Ok(serialized),
         }
     }
 }
