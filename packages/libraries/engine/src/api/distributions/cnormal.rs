@@ -5,8 +5,8 @@ use math_utils::calculate_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
+use node_validator::NumberValidator;
 
-use crate::api::validations::NumberValidation;
 use crate::{
     Context,
     core::{EvaluateNodeError, FunctionEndpoint, Language},
@@ -55,7 +55,7 @@ impl FunctionEndpoint for CNormalEndpoint {
         CNormalArgs { x, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        sd.validate_non_negative()?.validate_non_zero()?;
+        sd.validate_greater_than(0.0)?;
 
         calculate_normal_cdf(x.value, mean.value, sd.value)
             .map_err(|_| EvaluateNodeError::runtime_error("cnormal"))

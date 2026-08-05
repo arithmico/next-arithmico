@@ -11,7 +11,6 @@ mod analysis;
 mod distributions;
 mod physics;
 mod trigonometry;
-mod validations;
 
 pub fn load_host_api() -> HostApi {
     HostApi::builder()

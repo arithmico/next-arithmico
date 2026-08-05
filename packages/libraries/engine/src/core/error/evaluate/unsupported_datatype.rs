@@ -12,7 +12,7 @@ impl EvaluateNodeError {
                 "engine.evaluate.error.unsupported_datatype",
                 translation_resolver,
             )
-            .key("node_kind", node_kind),
+            .key("node_kind", node_kind.to_string()),
         )
     }
 }

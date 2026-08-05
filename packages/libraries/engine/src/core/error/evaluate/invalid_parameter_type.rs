@@ -28,7 +28,7 @@ impl EvaluateNodeError {
                     .collect::<Vec<_>>()
                     .join(", "),
             )
-            .key("received", received),
+            .key("received", received.to_string()),
         )
     }
 }

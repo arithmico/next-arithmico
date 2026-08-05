@@ -1,3 +1,4 @@
+use translate::IntoValue;
 use translate_core::TranslatedMessage;
 
 use crate::core::translation_resolver;
@@ -5,8 +6,7 @@ use crate::core::translation_resolver;
 use super::{EvaluateNodeError, EvaluateNodeErrorKind};
 
 impl EvaluateNodeError {
-    // TODO: make T: Translatable
-    pub fn runtime_error<T: ToString>(message: T) -> Self {
+    pub fn runtime_error(message: impl IntoValue) -> Self {
         Self::new(
             EvaluateNodeErrorKind::RuntimeError,
             TranslatedMessage::new(

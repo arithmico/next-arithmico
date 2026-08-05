@@ -79,3 +79,14 @@ impl From<DowncastNodeError> for EvaluateNodeError {
         err
     }
 }
+
+impl From<node_validator::Error> for EvaluateNodeError {
+    fn from(value: node_validator::Error) -> Self {
+        let mut err = Self::new(
+            EvaluateNodeErrorKind::InvalidParameterValue,
+            value.message,
+        );
+        err.trace = value.trace;
+        err
+    }
+}

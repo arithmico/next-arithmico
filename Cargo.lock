@@ -532,6 +532,7 @@ dependencies = [
  "lexer",
  "math_utils",
  "node",
+ "node_validator",
  "parser",
  "serde",
  "thiserror 2.0.19",
@@ -1321,6 +1322,17 @@ checksum = "60993920e071b0c9b66f14e2b32740a4e27ffc82854dcd72035887f336a09a28"
 name = "node"
 version = "0.1.0"
 dependencies = [
+ "thiserror 2.0.19",
+ "trace",
+ "translate_core",
+]
+
+[[package]]
+name = "node_validator"
+version = "0.1.0"
+dependencies = [
+ "float_utils",
+ "node",
  "thiserror 2.0.19",
  "trace",
  "translate_core",
