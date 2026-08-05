@@ -13,7 +13,7 @@ impl EvaluateNodeError {
                 "engine.evaluate.error.invalid_node",
                 translation_resolver,
             )
-            .key("node_type", node_type),
+            .key("node_type", node_type.to_string()),
         )
     }
 }

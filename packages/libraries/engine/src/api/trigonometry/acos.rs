@@ -1,9 +1,9 @@
 use engine_derive::FunctionArguments;
 use node::Number;
+use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    api::validations::NumberValidation,
     core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
@@ -25,12 +25,11 @@ impl FunctionEndpoint for AcosEndpoint {
     type Arguments<'a> = AcosArgs<'a>;
 
     // TODO: unit tests
-    // TODO: handle special values
     fn executor<'a>(
         AcosArgs { x }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        x.validate_closed_interval(-1.0, 1.0)?;
+        x.validate_inside_closed_interval(-1.0, 1.0)?;
 
         let result = x.value.acos();
 

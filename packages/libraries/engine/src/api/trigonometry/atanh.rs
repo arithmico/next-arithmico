@@ -1,9 +1,9 @@
 use engine_derive::FunctionArguments;
 use node::Number;
+use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    api::validations::NumberValidation,
     core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 
@@ -37,7 +37,7 @@ impl FunctionEndpoint for AtanhEndpoint {
     ) -> Result<Self::Output, EvaluateNodeError> {
         let value = x.value;
 
-        x.validate_open_interval(-1.0, 1.0)?;
+        x.validate_inside_open_interval(-1.0, 1.0)?;
 
         let result = value.atanh();
         Ok(Number::new(result))

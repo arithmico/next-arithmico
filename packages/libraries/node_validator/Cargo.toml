@@ -1,0 +1,11 @@
+[package]
+name = "node_validator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+node = { version = "0.1.0", path = "../node" }
+trace = { version = "0.1.0", path = "../trace" }
+thiserror = { workspace = true }
+translate_core = { version = "0.1.0", path = "../translate_core" }
+float_utils = { version = "0.1.0", path = "../float_utils" }

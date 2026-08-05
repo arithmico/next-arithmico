@@ -5,8 +5,8 @@ use math_utils::calculate_quantile_of_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
+use node_validator::NumberValidator;
 
-use crate::api::validations::NumberValidation;
 use crate::{
     Context,
     core::{EvaluateNodeError, FunctionEndpoint, Language},
@@ -55,9 +55,8 @@ impl FunctionEndpoint for QNormalEndpoint {
         QNormalArgs { p, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        p.validate_open_interval(0.0, 1.0)?;
-
-        sd.validate_non_negative()?.validate_non_zero()?;
+        p.validate_inside_open_interval(0.0, 1.0)?;
+        sd.validate_greater_than(0.0)?;
 
         calculate_quantile_of_normal_cdf(p.value, mean.value, sd.value)
             .map_err(|_| EvaluateNodeError::runtime_error("qnormal"))

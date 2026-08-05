@@ -1,11 +1,11 @@
 use crate::{
     Context,
-    api::validations::NumberValidation,
     core::{EvaluateNodeError, FunctionEndpoint, Language},
 };
 use engine_derive::FunctionArguments;
 use math_utils::calculate_binomial_pmf;
 use node::Number;
+use node_validator::NumberValidator;
 
 #[derive(FunctionArguments)]
 #[name("binom")]
@@ -41,10 +41,10 @@ impl FunctionEndpoint for BinomEndpoint {
         BinomArgs { n, p, k }: Self::Arguments<'a>,
         _context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        p.validate_closed_interval(0.0, 1.0)?;
+        p.validate_inside_closed_interval(0.0, 1.0)?;
 
-        n.validate_non_negative()?.validate_integer()?;
-        k.validate_non_negative()?.validate_integer()?;
+        n.validate_positive()?.validate_integer()?;
+        k.validate_positive()?.validate_integer()?;
 
         calculate_binomial_pmf(n.value as usize, p.value, k.value as usize)
             .map_err(|_| EvaluateNodeError::runtime_error("binom"))

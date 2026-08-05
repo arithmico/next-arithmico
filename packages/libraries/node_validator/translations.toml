@@ -1,0 +1,36 @@
+[error.number.closed_interval]
+English = "Parameter value has to be in the closed interval between {min} and {max}."
+German = "Parameterwert muss im geschlossenem Intervall zwischen {min} und {max} liegen."
+
+[error.number.open_interval]
+English = "Parameter value has to be in the open interval between {min} and {max}."
+German = "Parameterwert muss im offenen Intervall zwischen {min} und {max} liegen."
+
+[error.number.integer]
+English = "{value} is not an integer."
+German = "{value} ist keine Ganzzahl."
+
+[error.number.less_than]
+English = "{value} is not less than {v}."
+German = "{value} ist nicht kleiner als {v}."
+
+[error.number.less_than_or_equal]
+English = "{value} is not less than or equal to {v}."
+German = "{value} ist nicht kleiner oder gleich {v}."
+
+[error.number.greater_than]
+English = "{value} is not greater than {v}."
+German = "{value} ist nicht größer als {v}."
+
+[error.number.greater_than_or_equal]
+English = "{value} is not greater than or equal to {v}."
+German = "{value} ist nicht größer oder gleich {v}."
+
+[error.number.equal]
+English = "{value} is not equal to {v}."
+German = "{value} ist nicht gleich {v}."
+
+[error.number.not_equal]
+English = "Value must be not equal to {v}."
+German = "Wert darf nicht gleich {v} sein."
+

@@ -12,7 +12,7 @@ impl EvaluateNodeError {
                 "engine.evaluate.error.unknown_symbol",
                 translation_resolver,
             )
-            .key("name", name),
+            .key("name", name.to_string()),
         )
     }
 }
