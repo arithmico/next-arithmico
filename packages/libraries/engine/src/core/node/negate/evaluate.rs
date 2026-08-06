@@ -1,4 +1,4 @@
-use node::{Boolean, Negate, Node, Number, Tensor};
+use node::{Boolean, IntoNode, Negate, Node, Number, Tensor};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -34,7 +34,8 @@ impl EvaluateNode for Negate {
                     })
                     .collect::<Result<Vec<_>, EvaluateNodeError>>()?;
 
-                Ok(Tensor::new_with_shape(tensor.shape.clone(), elements))
+                Ok(Tensor::new_with_shape(tensor.shape.clone(), elements)
+                    .into_node())
             }
             _ => Err(EvaluateNodeError::unsupported_operation()),
         }
@@ -96,7 +97,7 @@ mod tests {
     #[test]
     fn evaluate_negate_tensor() {
         let context = Context::default();
-        let result = Negate::new(Tensor::new(vec![
+        let result = Negate::new(Tensor::new_node(vec![
             Number::new_node(1.),
             Number::new_node(2.),
             Number::new_node(3.),
@@ -105,7 +106,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(-1.),
                 Number::new_node(-2.),
                 Number::new_node(-3.),
@@ -117,7 +118,7 @@ mod tests {
     fn evaluate_negate_tensor_with_trace() {
         let context = Context::default();
         let result = Negate::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
@@ -129,7 +130,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(-1.),
                 Number::new_node(-2.),
                 Number::new_node(-3.),

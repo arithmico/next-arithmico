@@ -79,7 +79,7 @@ mod tests {
     fn evaluate_division_tensor_number() {
         let context = Context::default();
         let result = Division::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(2.),
                 Number::new_node(4.),
                 Number::new_node(6.),
@@ -90,7 +90,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),

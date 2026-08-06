@@ -104,12 +104,12 @@ mod tests {
     fn evaluate_equals_tensor_tensor_true() {
         let context = Context::default();
         let result = Equals::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
             ]),
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
@@ -124,12 +124,12 @@ mod tests {
     fn evaluate_equals_tensor_tensor_false() {
         let context = Context::default();
         let result = Equals::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
             ]),
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(4.),
@@ -144,15 +144,15 @@ mod tests {
     fn evaluate_equals_tensor_tensor_false_shape() {
         let context = Context::default();
         let result = Equals::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
             ]),
-            Tensor::new(vec![
-                Tensor::new(vec![Number::new_node(1.)]),
-                Tensor::new(vec![Number::new_node(2.)]),
-                Tensor::new(vec![Number::new_node(3.)]),
+            Tensor::new_node(vec![
+                Tensor::new_node(vec![Number::new_node(1.)]),
+                Tensor::new_node(vec![Number::new_node(2.)]),
+                Tensor::new_node(vec![Number::new_node(3.)]),
             ]),
         )
         .evaluate(&context)
@@ -164,12 +164,12 @@ mod tests {
     fn evaluate_equals_tensor_tensor_false_incompatible_data_types() {
         let context = Context::default();
         let result = Equals::new(
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Number::new_node(3.),
             ]),
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
                 Boolean::new(true),
