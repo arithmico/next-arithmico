@@ -21,3 +21,7 @@ German = "Eine Funktionsdefinition muss einen gültigen Funktionsnamen enthalten
 [error.missing_multiply_between]
 English = "Missing \"*\" between positions {from} and {to}."
 German = "Fehlendes \"*\" zwischen den Positionen {from} und {to}."
+
+[error.missing_closing_parenthesis]
+English = "Missing closing parenthesis for '(' at position {pos}."
+German = "Fehlende schließende Klammer für \"(\" an Position {pos}."
