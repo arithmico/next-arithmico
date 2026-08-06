@@ -1,14 +1,14 @@
 mod endpoint;
 mod module;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 pub use endpoint::*;
 pub use module::*;
 
 #[derive(Debug)]
 pub struct HostApi {
-    endpoints: HashMap<String, HostEndpoint>,
+    endpoints: BTreeMap<String, HostEndpoint>,
 }
 
 impl PartialEq for HostApi {
@@ -21,7 +21,7 @@ impl PartialEq for HostApi {
 impl HostApi {
     pub fn empty() -> Self {
         Self {
-            endpoints: HashMap::new(),
+            endpoints: BTreeMap::new(),
         }
     }
 
@@ -33,13 +33,13 @@ impl HostApi {
         self.endpoints.get(name)
     }
 
-    pub fn endpoints(&self) -> &HashMap<String, HostEndpoint> {
+    pub fn endpoints(&self) -> &BTreeMap<String, HostEndpoint> {
         &self.endpoints
     }
 }
 
 pub struct HostApiBuilder {
-    endpoints: HashMap<String, HostEndpoint>,
+    endpoints: BTreeMap<String, HostEndpoint>,
 }
 
 impl Default for HostApiBuilder {
