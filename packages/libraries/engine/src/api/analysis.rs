@@ -1,5 +1,7 @@
 use translate::Language;
 
+#[cfg(feature = "api_endpoint_analysis_abs")]
+use crate::api::analysis::abs::AbsEndpoint;
 #[cfg(feature = "api_endpoint_analysis_ceil")]
 use crate::api::analysis::ceil::CeilEndpoint;
 #[cfg(feature = "api_endpoint_analysis_e")]
@@ -22,6 +24,7 @@ use crate::api::analysis::round::RoundEndpoint;
 use crate::api::analysis::sqrt::SqrtEndpoint;
 use crate::core::HostApiModule;
 
+mod abs;
 mod ceil;
 mod e;
 mod exp;
@@ -68,6 +71,9 @@ pub fn load_analysis_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_ceil")]
     let module = module.function::<CeilEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_abs")]
+    let module = module.function::<AbsEndpoint>();
 
     module.build()
 }
