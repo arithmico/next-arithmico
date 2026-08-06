@@ -2,13 +2,15 @@ use std::collections::BTreeSet;
 
 use crate::Node;
 
-/// Returns the unique symbol names contained in `node`.
-pub fn get_symbol_names(node: &Node) -> BTreeSet<String> {
-    let mut names = BTreeSet::new();
+impl Node {
+    /// Returns the unique symbol names contained in `node`.
+    pub fn get_symbol_names(&self) -> BTreeSet<String> {
+        let mut names = BTreeSet::new();
 
-    collect_symbol_names(node, &mut names);
+        collect_symbol_names(self, &mut names);
 
-    names
+        names
+    }
 }
 
 fn collect_symbol_names(node: &Node, names: &mut BTreeSet<String>) {

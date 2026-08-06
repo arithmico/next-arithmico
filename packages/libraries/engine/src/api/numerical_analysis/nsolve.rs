@@ -2,15 +2,8 @@ use core::f64;
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
-use math_utils::{
-    FindRootsError::{
-        EncloseZero, InvalidInterval, NonFiniteBoundary, NonFiniteFunctionValue,
-    },
-    find_roots,
-};
-use node::{
-    Equals, IntoNode, Negate, Node, Number, Sum, Tensor, get_symbol_names,
-};
+use math_utils::{FindRootsError, find_roots};
+use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
 use node_validator::NumberValidator;
 use trace::{Tracable, TracableMut, Trace};
 
@@ -72,7 +65,8 @@ impl FunctionEndpoint for NSolveEndpoint {
             Negate::new(*equation.right.clone()),
         ]);
 
-        let variable_names = get_symbol_names(&expression)
+        let variable_names = expression
+            .get_symbol_names()
             .into_iter()
             .filter(|name| context.lookup(name).is_none())
             .collect::<Vec<String>>();
@@ -101,45 +95,12 @@ impl FunctionEndpoint for NSolveEndpoint {
             }
         };
 
-        let roots = find_roots(&function, start.value, stop.value)
-            .map_err(|error| {
-        let eval_error = match error {
-            NonFiniteBoundary { name, value } => {
-                EvaluateNodeError::generic_runtime_error(
-                    "engine.api.error.generic_runtime_error.find_roots.non_finite_boundary",
-                )
-                .key("name", name)
-                .key("value", value)
-                .build()
-            }
-            InvalidInterval { start, end } => {
-                EvaluateNodeError::generic_runtime_error(
-                    "engine.api.error.generic_runtime_error.find_roots.invalid_interval",
-                )
-                .key("start", start)
-                .key("end", end)
-                .build()
-            }
-            NonFiniteFunctionValue { x, value } => {
-                EvaluateNodeError::generic_runtime_error(
-                    "engine.api.error.generic_runtime_error.find_roots.non_finite_function_value",
-                )
-                .key("x", x)
-                .key("value", value)
-                .build()
-            }
-            EncloseZero { a, b, .. } => {
-                EvaluateNodeError::generic_runtime_error(
-                    "engine.api.error.generic_runtime_error.find_roots.enclose_zero",
-                )
-                .key("a", a)
-                .key("b", b)
-                .build()
-            }
-        };
-
-        eval_error.with_optional_span(equation.hull())
-    })?;
+        let roots = find_roots(&function, start.value, stop.value).map_err(
+            |error| {
+                EvaluateNodeError::from(error)
+                    .with_optional_span(equation.hull())
+            },
+        )?;
 
         let results = roots
             .iter()
@@ -151,5 +112,44 @@ impl FunctionEndpoint for NSolveEndpoint {
             elements: results,
             trace: Trace::new(),
         })
+    }
+}
+
+impl From<FindRootsError> for EvaluateNodeError {
+    fn from(value: FindRootsError) -> Self {
+        match value {
+            FindRootsError::NonFiniteBoundary { name, value } => {
+                EvaluateNodeError::generic_runtime_error(
+                    "engine.api.error.generic_runtime_error.find_roots.non_finite_boundary",
+                )
+                .key("name", name)
+                .key("value", value)
+                .build()
+            }
+            FindRootsError::InvalidInterval { start, end } => {
+                EvaluateNodeError::generic_runtime_error(
+                    "engine.api.error.generic_runtime_error.find_roots.invalid_interval",
+                )
+                .key("start", start)
+                .key("end", end)
+                .build()
+            }
+            FindRootsError::NonFiniteFunctionValue { x, value } => {
+                EvaluateNodeError::generic_runtime_error(
+                    "engine.api.error.generic_runtime_error.find_roots.non_finite_function_value",
+                )
+                .key("x", x)
+                .key("value", value)
+                .build()
+            }
+            FindRootsError::EncloseZero { a, b, .. } => {
+                EvaluateNodeError::generic_runtime_error(
+                    "engine.api.error.generic_runtime_error.find_roots.enclose_zero",
+                )
+                .key("a", a)
+                .key("b", b)
+                .build()
+            }
+        }
     }
 }

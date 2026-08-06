@@ -1,9 +1,9 @@
 use crate::{
     api::{
         algebra::load_algebra_module, analysis::load_analysis_module,
-        distributions::load_distributions_module, physics::load_physics_module,
-        trigonometry::load_trigonometry_module,
+        distributions::load_distributions_module,
         numerical_analysis::load_numerical_analysis_module,
+        physics::load_physics_module, trigonometry::load_trigonometry_module,
     },
     core::HostApi,
 };

@@ -114,39 +114,6 @@ German = "Unerwarteter Wert"
 Enlish = "Unexpected value expected {expected} but received {received}."
 German = "Unerwarteter Wert. Statt {expected} wurde {received} vorgefunden."
 
-# Invalid parameter errors
-[engine.api.error.invalid_parameter_value.negative_value]
-English = "Parameter value must be non negative."
-German = "Parameterwert darf nicht negativ sein."
-
-[engine.api.error.invalid_parameter_value.zero]
-English = "Parameter value must not be 0."
-German = "Parameterwert darf nicht 0 sein."
-
-[engine.api.error.invalid_parameter_value.non_integer]
-English = "Parameter value is not an integer."
-German = "Parameterwert ist keine Ganzzahl."
-
-[engine.api.error.invalid_parameter_value.open_interval.out_of_bounds]
-English = "Parameter value has to be in the open interval between {lower} and {upper}."
-German = "Parameterwert muss im offenen Intervall zwischen {lower} und {upper} liegen."
-
-[engine.api.error.invalid_parameter_value.closed_interval.out_of_bounds]
-English = "Parameter value has to be in the closed interval between {lower} and {upper}."
-German = "Parameterwert muss im geschlossenem Intervall zwischen {lower} und {upper} liegen."
-
-[engine.api.error.invalid_parameter_value.must_be_smaller_than]
-English = "The parameter value {value} must be smaller than {upper_bound}."
-German = "Der Parameterwert {value} muss kleiner als {upper_bound} sein."
-
-[engine.api.error.invalid_parameter.must_be_greater_than]
-German = "Der Parameterwert muss größer als {value} sein."
-English = "The parameter value must be greater than {value}."
-
-[engine.api.error.invalid_parameter.must_be_not_equal]
-German = "Der Parameterwert darf nicht gleich {value} sein."
-English = "The parameter value must not equal {value}."
-
 # nsolve errors
 [engine.api.error.generic_runtime_error.find_roots.non_finite_boundary]
 English = "The interval boundary {name} must be finite, but its value is {value}."
@@ -163,3 +130,32 @@ German = "Der Ausdruck lieferte bei x = {x} den nicht endlichen Wert {value}."
 [engine.api.error.generic_runtime_error.find_roots.enclose_zero]
 English = "The zero in the interval from {a} to {b} could not be enclosed."
 German = "Die Nullstelle im Intervall von {a} bis {b} konnte nicht eingeschlossen werden."
+
+# nintegrate
+[engine.api.error.generic_runtime_error.nintegrate.invalid_tolerance]
+English = "The integration tolerance is invalid."
+German = "Die Integrationstoleranz ist ungültig."
+
+[engine.api.error.generic_runtime_error.nintegrate.subdivision_limit_reached]
+English = "The maximum number of subdivisions of the integration interval was reached."
+German = "Die maximale Anzahl an Unterteilungen des Integrationsintervalls wurde erreicht."
+
+[engine.api.error.generic_runtime_error.nintegrate.roundoff_error]
+English = "Roundoff errors prevented the numerical integration from reaching the requested accuracy."
+German = "Rundungsfehler haben verhindert, dass die numerische Integration die angeforderte Genauigkeit erreicht."
+
+[engine.api.error.generic_runtime_error.nintegrate.bad_integrand_behavior]
+English = "The function behaves irregularly at one or more points within the integration interval."
+German = "Die Funktion verhält sich an einer oder mehreren Stellen innerhalb des Integrationsintervalls irregulär."
+
+[engine.api.error.generic_runtime_error.nintegrate.extrapolation_failed]
+English = "The extrapolation used for the numerical integration did not converge."
+German = "Die für die numerische Integration verwendete Extrapolation ist nicht konvergiert."
+
+[engine.api.error.generic_runtime_error.nintegrate.probably_divergent]
+English = "The integral is probably divergent or converges too slowly."
+German = "Das Integral ist vermutlich divergent oder konvergiert zu langsam."
+
+[engine.api.error.generic_runtime_error.nintegrate.non_finite_integrand]
+English = "The function returned the non-finite value {value} at {x}."
+German = "Die Funktion lieferte bei {x} den nicht endlichen Wert {value}."

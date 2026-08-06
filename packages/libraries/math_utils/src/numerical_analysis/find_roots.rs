@@ -71,6 +71,10 @@ where
         return Err(FindRootsError::NonFiniteFunctionValue { x: a, value: fa });
     }
 
+    if fa == 0.0 {
+        push_unique(&mut roots, a);
+    }
+
     while a < end {
         let b = (a + STEP_SIZE).min(end);
         let fb = f(b);
@@ -82,9 +86,6 @@ where
             });
         }
 
-        if fa == 0.0 {
-            push_unique(&mut roots, a);
-        }
         if fb == 0.0 {
             push_unique(&mut roots, b);
         } else if fa.signum() != fb.signum() {
