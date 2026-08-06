@@ -1,5 +1,5 @@
 use lexer::{
-    ArrowToken, GetTokenKind, GetTokenSpan, IdentifierToken,
+    ArrowToken, GetTokenKind, GetTokenSpan, IdentifierToken, RightBracketToken,
     RightParenthesisToken, SeparatorToken, Span, Token, TokenKind,
 };
 use node::{
@@ -360,42 +360,25 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     {
                         cursor = next_cursor;
                         arguments.push(node);
-                        match cursor
-                            .next()
-                            .ok_or_else(|| Error::UnexpectedEndOfInput)?
-                        {
-                            Token::Separator(_) => (),
+
+                        match cursor.expect_one_of(&[
+                            TokenKind::RightParenthesis,
+                            TokenKind::Separator,
+                        ])? {
                             Token::RightParenthesis(token) => {
                                 outer_span = outer_span.hull(&token.get_span());
                                 break;
                             }
-                            token => {
-                                return Err(Error::UnexpectedToken {
-                                    expected: vec![
-                                        TokenKind::RightParenthesis,
-                                        TokenKind::Separator,
-                                    ],
-                                    actual: token.clone(),
-                                });
-                            }
+                            _ => (),
                         }
                     }
                     if arguments.is_empty() {
                         // consume right parenthesis
-                        match cursor.next() {
-                            None => {
-                                return Err(Error::UnexpectedEndOfInput);
-                            }
-                            Some(Token::RightParenthesis(token)) => {
-                                outer_span = outer_span.hull(&token.get_span());
-                            }
-                            Some(token) => {
-                                return Err(Error::UnexpectedToken {
-                                    expected: vec![TokenKind::RightParenthesis],
-                                    actual: token.clone(),
-                                });
-                            }
-                        };
+                        outer_span = outer_span.hull(
+                            &cursor
+                                .expect::<RightParenthesisToken>()?
+                                .get_span(),
+                        );
                     }
                     Ok((
                         cursor,
@@ -443,10 +426,10 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     }
 
                     // consume closing parenthesis
-                    cursor.expect_next::<RightParenthesisToken>()?;
+                    cursor.expect::<RightParenthesisToken>()?;
 
                     // consume arrow
-                    cursor.expect_next::<ArrowToken>()?;
+                    cursor.expect::<ArrowToken>()?;
 
                     // parse function expression
                     let (next_cursor, node) = parse_expression_pratt(
@@ -509,18 +492,9 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 }
                 if elements.is_empty() {
                     // consume right bracket
-                    match cursor.next() {
-                        None => return Err(Error::UnexpectedEndOfInput),
-                        Some(Token::RightBracket(token)) => {
-                            span = span.hull(&token.span);
-                        }
-                        Some(token) => {
-                            return Err(Error::UnexpectedToken {
-                                expected: vec![TokenKind::RightBracket],
-                                actual: token.clone(),
-                            });
-                        }
-                    };
+                    span = span.hull(
+                        &cursor.expect::<RightBracketToken>()?.get_span(),
+                    );
                 }
                 Ok((cursor, Tensor::new_node(elements).with_span(span)))
             }
