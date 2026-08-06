@@ -34,3 +34,14 @@ German = "{value} ist nicht gleich {v}."
 English = "Value must be not equal to {v}."
 German = "Wert darf nicht gleich {v} sein."
 
+[error.tensor.not_empty]
+English = "Tensor must not be empty."
+German = "Der Tensor darf nicht leer sein."
+
+[error.tensor.rank]
+English = "Expected a tensor of rank {expected}, but received rank {actual}."
+German = "Der Rang des Tensors sollte {expected} sein, beträgt aber tatsächlich {actual}."
+
+[error.tensor.shape]
+English = "Expected tensor dimensions {expected}, but got {actual}."
+German = "Die Dimensionen des Tensors sollten {expected} sein, sind aber tatsächlich {actual}."

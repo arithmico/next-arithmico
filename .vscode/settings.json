@@ -15,7 +15,8 @@
         "lexer",
         "node",
         "parser",
-        "engine_derive"
+        "engine_derive",
+        "node_validator"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
