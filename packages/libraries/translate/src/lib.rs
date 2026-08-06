@@ -3,6 +3,7 @@ mod formatted_message;
 mod get_translation_id;
 mod provider;
 mod translatable_object;
+mod use_language;
 mod use_translate;
 
 pub use context::*;
@@ -11,4 +12,5 @@ pub use get_translation_id::*;
 pub use provider::*;
 pub use translatable_object::*;
 pub use translate_core::*;
+pub use use_language::*;
 pub use use_translate::*;
