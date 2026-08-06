@@ -1,4 +1,7 @@
-use lexer::{GetTokenKind, GetTokenSpan, Span, Token, TokenKind};
+use lexer::{
+    ArrowToken, GetTokenKind, GetTokenSpan, IdentifierToken,
+    RightParenthesisToken, SeparatorToken, Span, Token, TokenKind,
+};
 use node::{
     And, Boolean, Definition, Division, Equals, Factorial, Function,
     FunctionCall, FunctionSignature, GetNodeType, GreaterThan,
@@ -323,6 +326,26 @@ impl RelationType {
     }
 }
 
+fn find_closing_parenthesis<'a>(mut cursor: Cursor<'a>) -> Option<Cursor<'a>> {
+    let mut inner_left_parenthesis: usize = 0;
+    while let Some(token) = cursor.next() {
+        match token.token_kind() {
+            TokenKind::LeftParenthesis => {
+                inner_left_parenthesis += 1;
+            }
+            TokenKind::RightParenthesis => {
+                if inner_left_parenthesis == 0 {
+                    return Some(cursor);
+                } else {
+                    inner_left_parenthesis -= 1;
+                }
+            }
+            _ => (),
+        }
+    }
+    None
+}
+
 fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
     match cursor.next() {
         Some(token) => match token {
@@ -401,15 +424,61 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 cursor,
                 Boolean::new(boolean_token.value).with_span(boolean_token.span),
             )),
-            Token::LeftParenthesis(_) => {
-                let (next_cursor, node) = parse_expression(cursor)?;
-                cursor = next_cursor;
-                match cursor.next().ok_or(Error::UnexpectedEndOfInput)? {
-                    Token::RightParenthesis(_) => Ok((cursor, node)),
-                    token => Err(Error::UnexpectedToken {
-                        expected: vec![TokenKind::RightParenthesis],
-                        actual: token.clone(),
-                    }),
+            Token::LeftParenthesis(token) => {
+                let Some(closing_cursor) = find_closing_parenthesis(cursor)
+                else {
+                    return Err(Error::MissingClosingParenthesis {
+                        span: token.get_span(),
+                    });
+                };
+                if closing_cursor.peek_token_kind() == Some(TokenKind::Arrow) {
+                    let mut span = token.get_span();
+                    // parse inline function declaration
+                    let mut parameters = Vec::<String>::new();
+                    // read function parameters e. g. (a, b, c)
+                    while let Some(token) = cursor.next_if::<IdentifierToken>()
+                    {
+                        parameters.push(token.name.clone());
+                        cursor.next_if::<SeparatorToken>();
+                    }
+
+                    // consume closing parenthesis
+                    cursor.expect_next::<RightParenthesisToken>()?;
+
+                    // consume arrow
+                    cursor.expect_next::<ArrowToken>()?;
+
+                    // parse function expression
+                    let (next_cursor, node) = parse_expression_pratt(
+                        cursor,
+                        TokenKind::Define.binding_power().unwrap() + 1,
+                    )?;
+                    let mut signature = FunctionSignature::new();
+                    for param in parameters {
+                        signature.add_argument(param, |arg| {
+                            arg.node_type(NodeType::Any)
+                        });
+                    }
+                    let signature = signature.add_return_type(NodeType::Any);
+                    if let Some(s) = node.hull() {
+                        span = span.hull(&s);
+                    }
+
+                    return Ok((
+                        next_cursor,
+                        Function::new(signature, node).with_span(span),
+                    ));
+                } else {
+                    // parse expression between parenthesis
+                    let (next_cursor, node) = parse_expression(cursor)?;
+                    cursor = next_cursor;
+                    match cursor.next().ok_or(Error::UnexpectedEndOfInput)? {
+                        Token::RightParenthesis(_) => Ok((cursor, node)),
+                        token => Err(Error::UnexpectedToken {
+                            expected: vec![TokenKind::RightParenthesis],
+                            actual: token.clone(),
+                        }),
+                    }
                 }
             }
             Token::LeftBracket(token) => {
@@ -1237,6 +1306,66 @@ mod tests {
                 Number::new_node(10.0).with_span(Span::new_between(0, 1))
             )
             .with_span(Span::new_between(0, 2)),
+        );
+    }
+
+    #[test]
+    fn function_no_arg() {
+        let tokens = tokenize("() -> 2", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Function::new(
+                FunctionSignature::new().add_return_type(NodeType::Any),
+                Number::new_node(2.0).with_span(Span::new_between(6, 6))
+            )
+            .with_span(Span::new_between(0, 6)),
+        );
+    }
+
+    #[test]
+    fn function_1_arg() {
+        let tokens =
+            tokenize("(x) -> x^2", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Function::new(
+                FunctionSignature::new()
+                    .argument("x", |arg| arg.node_type(NodeType::Any))
+                    .add_return_type(NodeType::Any),
+                Power::new(
+                    Symbol::new("x").with_span(Span::new_between(7, 7)),
+                    Number::new_node(2.0).with_span(Span::new_between(9, 9))
+                )
+                .with_span(Span::new_between(7, 9))
+            )
+            .with_span(Span::new_between(0, 9)),
+        );
+    }
+
+    #[test]
+    fn function_2_args() {
+        let tokens =
+            tokenize("(x, y) -> x^2", language::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap().1;
+        assert_eq!(
+            output,
+            Function::new(
+                FunctionSignature::new()
+                    .argument("x", |arg| arg.node_type(NodeType::Any))
+                    .argument("y", |arg| arg.node_type(NodeType::Any))
+                    .add_return_type(NodeType::Any),
+                Power::new(
+                    Symbol::new("x").with_span(Span::new_between(10, 10)),
+                    Number::new_node(2.0).with_span(Span::new_between(12, 12))
+                )
+                .with_span(Span::new_between(10, 12))
+            )
+            .with_span(Span::new_between(0, 12)),
         );
     }
 }

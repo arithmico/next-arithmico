@@ -25,6 +25,9 @@ pub enum Error {
     },
     InvalidFunctionArgumentDeclaration,
     InvalidFunctionName,
+    MissingClosingParenthesis {
+        span: Span,
+    },
     Lexer(lexer::Error),
 }
 
@@ -84,6 +87,14 @@ impl Translatable for Error {
             .key("from", span.from.char_index + 1)
             .key("to", span.to.char_index + 1)
             .translate(language),
+            Error::MissingClosingParenthesis { span } => {
+                TranslatedMessage::new(
+                    "error.missing_closing_parenthesis",
+                    translation_resolver,
+                )
+                .key("pos", span.from.char_index + 1)
+                .translate(language)
+            }
         }
     }
 }

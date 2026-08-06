@@ -1,4 +1,9 @@
-use lexer::{GetTokenKind, GetTokenSpan, Position, Token, TokenKind};
+use lexer::{
+    DowncastToken, GetStaticTokenKind, GetTokenKind, GetTokenSpan, Position,
+    Token, TokenKind,
+};
+
+use crate::Error;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Cursor<'a> {
@@ -25,6 +30,33 @@ impl<'a> Cursor<'a> {
         let token = self.tokens.get(self.position);
         self.position += 1;
         token
+    }
+
+    pub fn next_if<T: GetStaticTokenKind + DowncastToken>(
+        &mut self,
+    ) -> Option<&'a T> {
+        if self.peek_token_kind() == Some(T::token_kind()) {
+            self.next().map(|token| T::downcast(token)).flatten()
+        } else {
+            None
+        }
+    }
+
+    pub fn expect_next<T: GetStaticTokenKind + DowncastToken>(
+        &mut self,
+    ) -> Result<&'a T, Error> {
+        if let Some(token) = self.next() {
+            if let Some(token) = T::downcast(token) {
+                Ok(token)
+            } else {
+                Err(Error::UnexpectedToken {
+                    expected: vec![T::token_kind()],
+                    actual: token.clone(),
+                })
+            }
+        } else {
+            Err(Error::UnexpectedEndOfInput)
+        }
     }
 
     pub fn current(&self) -> Option<&'a Token> {
