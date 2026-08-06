@@ -11,8 +11,8 @@ use crate::{
 #[description(Language::German, "Berechnet den Rang eines Tensors.")]
 #[description(Language::English, "Calculates the rank of a tensor.")]
 pub struct RankArgs<'a> {
-    #[description(Language::German, "Vektor")]
-    #[description(Language::English, "vector")]
+    #[description(Language::German, "Tensor")]
+    #[description(Language::English, "tensor")]
     x: &'a Tensor,
 }
 
