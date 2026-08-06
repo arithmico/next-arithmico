@@ -10,6 +10,12 @@ impl GetStaticNodeType for Node {
     }
 }
 
+impl<T: GetStaticNodeType> GetStaticNodeType for &T {
+    fn static_node_type() -> NodeType {
+        T::static_node_type()
+    }
+}
+
 impl<T: GetStaticNodeType> GetStaticNodeType for Option<T> {
     fn static_node_type() -> NodeType {
         T::static_node_type()
