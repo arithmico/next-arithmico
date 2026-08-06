@@ -2,9 +2,12 @@ use translate::Language;
 
 #[cfg(feature = "api_endpoint_algebra_length")]
 use crate::api::algebra::length::LengthEndpoint;
+#[cfg(feature = "api_endpoint_algebra_rank")]
+use crate::api::algebra::rank::RankEndpoint;
 use crate::core::HostApiModule;
 
 mod length;
+mod rank;
 
 pub fn load_algebra_module() -> HostApiModule {
     let module = HostApiModule::builder()
@@ -14,6 +17,9 @@ pub fn load_algebra_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_algebra_length")]
     let module = module.function::<LengthEndpoint>();
+
+    #[cfg(feature = "api_endpoint_algebra_rank")]
+    let module = module.function::<RankEndpoint>();
 
     module.build()
 }
