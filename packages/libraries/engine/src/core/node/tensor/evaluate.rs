@@ -1,4 +1,4 @@
-use node::{GetNodeType, Node, Tensor};
+use node::{GetNodeType, IntoNode, Node, Tensor};
 
 use crate::core::{Context, EvaluateNode, EvaluateNodeError};
 
@@ -16,7 +16,8 @@ impl EvaluateNode for Tensor {
                 .iter()
                 .map(|element| element.evaluate(context))
                 .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
-        ))
+        )
+        .into_node())
     }
 }
 
@@ -30,48 +31,48 @@ mod tests {
     #[test]
     fn evaluate_empty_tensor() {
         let context = Context::default();
-        let result = Tensor::new(vec![]).evaluate(&context).unwrap();
-        assert_eq!(result, Tensor::new(vec![]));
+        let result = Tensor::new_node(vec![]).evaluate(&context).unwrap();
+        assert_eq!(result, Tensor::new_node(vec![]));
     }
 
     #[test]
     fn evaluate_empty_tensor_with_trace() {
         let context = Context::default();
-        let result = Tensor::new(vec![])
+        let result = Tensor::new_node(vec![])
             .with_span(Span::new_between(0, 1))
             .evaluate(&context)
             .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![]).with_span(Span::new_between(0, 1))
+            Tensor::new_node(vec![]).with_span(Span::new_between(0, 1))
         );
     }
 
     #[test]
     fn evaluate_tensor_with_numbers() {
         let context = Context::default();
-        let result = Tensor::new(vec![Number::new_node(1.)])
+        let result = Tensor::new_node(vec![Number::new_node(1.)])
             .evaluate(&context)
             .unwrap();
-        assert_eq!(result, Tensor::new(vec![Number::new_node(1.)]));
+        assert_eq!(result, Tensor::new_node(vec![Number::new_node(1.)]));
     }
 
     #[test]
     fn evaluate_tensor_with_sum() {
         let context = Context::default();
-        let result = Tensor::new(vec![Sum::new(vec![
+        let result = Tensor::new_node(vec![Sum::new(vec![
             Number::new_node(1.),
             Number::new_node(2.),
         ])])
         .evaluate(&context)
         .unwrap();
-        assert_eq!(result, Tensor::new(vec![Number::new_node(3.)]));
+        assert_eq!(result, Tensor::new_node(vec![Number::new_node(3.)]));
     }
 
     #[test]
     fn evaluate_tensor_with_sum_with_trace() {
         let context = Context::default();
-        let result = Tensor::new(vec![
+        let result = Tensor::new_node(vec![
             Sum::new(vec![
                 Number::new_node(1.).with_span(Span::new_between(1, 1)),
                 Number::new_node(2.).with_span(Span::new_between(3, 3)),
@@ -83,7 +84,7 @@ mod tests {
         .unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(3.).with_span(Span::new_between(1, 3))
             ])
             .with_span(Span::new_between(0, 4))
@@ -93,9 +94,9 @@ mod tests {
     #[test]
     fn evaluate_tensor_preserve_shape() {
         let context = Context::default();
-        let result = Tensor::new(vec![
-            Tensor::new(vec![Number::new_node(1.), Number::new_node(2.)]),
-            Tensor::new(vec![Number::new_node(3.), Number::new_node(4.)]),
+        let result = Tensor::new_node(vec![
+            Tensor::new_node(vec![Number::new_node(1.), Number::new_node(2.)]),
+            Tensor::new_node(vec![Number::new_node(3.), Number::new_node(4.)]),
         ])
         .evaluate(&context)
         .unwrap();
@@ -110,6 +111,7 @@ mod tests {
                     Number::new_node(4.)
                 ]
             )
+            .into_node()
         );
     }
 }

@@ -2,7 +2,7 @@ use std::iter::zip;
 
 use trace::Trace;
 
-use crate::{Node, impl_node_traits};
+use crate::{IntoNode, Node, impl_node_traits};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
@@ -12,13 +12,17 @@ pub struct Tensor {
 }
 
 impl Tensor {
-    pub fn new(elements: Vec<Node>) -> Node {
+    pub fn new(elements: Vec<Node>) -> Self {
         let shape = Tensor::get_shape(&elements);
         let elements = Tensor::flatten_elements(&elements, &shape);
         Tensor::new_with_shape(shape, elements)
     }
 
-    pub fn new_with_shape(shape: Vec<usize>, elements: Vec<Node>) -> Node {
+    pub fn new_node(elements: Vec<Node>) -> Node {
+        Self::new(elements).into_node()
+    }
+
+    pub fn new_with_shape(shape: Vec<usize>, elements: Vec<Node>) -> Self {
         assert!(
             shape
                 .clone()
@@ -28,11 +32,11 @@ impl Tensor {
                 == elements.len()
         );
 
-        Node::Tensor(Self {
+        Self {
             elements,
             shape,
             trace: Trace::new(),
-        })
+        }
     }
 
     pub fn get_rank(&self) -> usize {
@@ -192,9 +196,9 @@ mod tests {
     fn tensor_shape_rank2() {
         assert_eq!(
             Tensor::get_shape(&vec![
-                Tensor::new(vec![Number::new_node(1.)]),
-                Tensor::new(vec![Number::new_node(2.)]),
-                Tensor::new(vec![Number::new_node(3.)]),
+                Tensor::new_node(vec![Number::new_node(1.)]),
+                Tensor::new_node(vec![Number::new_node(2.)]),
+                Tensor::new_node(vec![Number::new_node(3.)]),
             ]),
             vec![3, 1]
         )
@@ -203,13 +207,13 @@ mod tests {
     #[test]
     fn tensor_shape_rank3() {
         assert_eq!(
-            Tensor::get_shape(&vec![Tensor::new(vec![
-                Tensor::new(vec![
+            Tensor::get_shape(&vec![Tensor::new_node(vec![
+                Tensor::new_node(vec![
                     Number::new_node(1.),
                     Number::new_node(2.),
                     Number::new_node(3.)
                 ]),
-                Tensor::new(vec![
+                Tensor::new_node(vec![
                     Number::new_node(4.),
                     Number::new_node(5.),
                     Number::new_node(6.)
@@ -222,7 +226,7 @@ mod tests {
     #[test]
     fn new_tensor_rank1() {
         assert_eq!(
-            Tensor::new(vec![Number::new_node(1.)]),
+            Tensor::new_node(vec![Number::new_node(1.)]),
             Node::Tensor(Tensor {
                 elements: vec![Number::new_node(1.)],
                 shape: vec![1],
@@ -234,10 +238,10 @@ mod tests {
     #[test]
     fn new_tensor_rank2() {
         assert_eq!(
-            Tensor::new(vec![
-                Tensor::new(vec![Number::new_node(1.)]),
-                Tensor::new(vec![Number::new_node(2.)]),
-                Tensor::new(vec![Number::new_node(3.)]),
+            Tensor::new_node(vec![
+                Tensor::new_node(vec![Number::new_node(1.)]),
+                Tensor::new_node(vec![Number::new_node(2.)]),
+                Tensor::new_node(vec![Number::new_node(3.)]),
             ]),
             Node::Tensor(Tensor {
                 elements: vec![
@@ -254,13 +258,13 @@ mod tests {
     #[test]
     fn new_tensor_rank3() {
         assert_eq!(
-            Tensor::new(vec![Tensor::new(vec![
-                Tensor::new(vec![
+            Tensor::new_node(vec![Tensor::new_node(vec![
+                Tensor::new_node(vec![
                     Number::new_node(1.),
                     Number::new_node(2.),
                     Number::new_node(3.)
                 ]),
-                Tensor::new(vec![
+                Tensor::new_node(vec![
                     Number::new_node(4.),
                     Number::new_node(5.),
                     Number::new_node(6.)

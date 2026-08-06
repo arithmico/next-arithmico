@@ -453,7 +453,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         }
                     };
                 }
-                Ok((cursor, Tensor::new(elements).with_span(span)))
+                Ok((cursor, Tensor::new_node(elements).with_span(span)))
             }
             token => Err(Error::UnexpectedToken {
                 expected: vec![
@@ -1080,7 +1080,7 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![]).with_span(Span::new_between(0, 1))
+            Tensor::new_node(vec![]).with_span(Span::new_between(0, 1))
         );
         assert!(cursor.is_eof())
     }
@@ -1092,7 +1092,7 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(2.0).with_span(Span::new_between(1, 1))
             ])
             .with_span(Span::new_between(0, 2))
@@ -1107,7 +1107,7 @@ mod tests {
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
             result,
-            Tensor::new(vec![
+            Tensor::new_node(vec![
                 Number::new_node(1.0).with_span(Span::new_between(1, 1)),
                 Number::new_node(2.0).with_span(Span::new_between(4, 4))
             ])
