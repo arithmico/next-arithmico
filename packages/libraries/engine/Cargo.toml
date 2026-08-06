@@ -250,6 +250,7 @@ api_module_analysis = [
     "api_endpoint_analysis_sqrt",
     "api_endpoint_analysis_root",
     "api_endpoint_analysis_round",
+    "api_endpoint_analysis_floor",
 ]
 
 api_module_loader_analysis = []
@@ -261,3 +262,4 @@ api_endpoint_analysis_e = ["api_module_loader_analysis"]
 api_endpoint_analysis_sqrt = ["api_module_loader_analysis"]
 api_endpoint_analysis_root = ["api_module_loader_analysis"]
 api_endpoint_analysis_round = ["api_module_loader_analysis"]
+api_endpoint_analysis_floor = ["api_module_loader_analysis"]
