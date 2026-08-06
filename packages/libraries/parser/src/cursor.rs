@@ -42,7 +42,7 @@ impl<'a> Cursor<'a> {
         }
     }
 
-    pub fn expect_next<T: GetStaticTokenKind + DowncastToken>(
+    pub fn expect<T: GetStaticTokenKind + DowncastToken>(
         &mut self,
     ) -> Result<&'a T, Error> {
         if let Some(token) = self.next() {
@@ -51,6 +51,24 @@ impl<'a> Cursor<'a> {
             } else {
                 Err(Error::UnexpectedToken {
                     expected: vec![T::token_kind()],
+                    actual: token.clone(),
+                })
+            }
+        } else {
+            Err(Error::UnexpectedEndOfInput)
+        }
+    }
+
+    pub fn expect_one_of(
+        &mut self,
+        token_kinds: &[TokenKind],
+    ) -> Result<&'a Token, Error> {
+        if let Some(token) = self.next() {
+            if token_kinds.contains(&token.token_kind()) {
+                Ok(token)
+            } else {
+                Err(Error::UnexpectedToken {
+                    expected: token_kinds.to_vec(),
                     actual: token.clone(),
                 })
             }
