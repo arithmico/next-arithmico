@@ -8,7 +8,7 @@ use crate::{
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mp
 #[derive(ConstantMetadata)]
-#[name("physics_m_p")]
+#[name("physics:m_p")]
 #[description(Language::English, "Proton mass in kg.")]
 #[description(Language::German, "Protonenmasse in kg.")]
 pub struct MPEndpoint;
@@ -23,7 +23,7 @@ impl ConstantEndpoint for MPEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mn
 #[derive(ConstantMetadata)]
-#[name("physics_m_n")]
+#[name("physics:m_n")]
 #[description(Language::English, "Neutron mass in kg.")]
 #[description(Language::German, "Neutronenmasse in kg")]
 pub struct MNEndpoint;
@@ -38,7 +38,7 @@ impl ConstantEndpoint for MNEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?me
 #[derive(ConstantMetadata)]
-#[name("physics_m_e")]
+#[name("physics:m_e")]
 #[description(Language::English, "Electron mass in kg.")]
 #[description(Language::German, "Elektronenmasse in kg")]
 pub struct MEEndpoint;
@@ -53,7 +53,7 @@ impl ConstantEndpoint for MEEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mmu
 #[derive(ConstantMetadata)]
-#[name("physics_m_mu")]
+#[name("physics:m_mu")]
 #[description(Language::English, "Muon mass in kg.")]
 #[description(Language::German, "Masse des Myons in kg.")]
 pub struct MMuEndpoint;
@@ -68,7 +68,7 @@ impl ConstantEndpoint for MMuEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?bohrrada0
 #[derive(ConstantMetadata)]
-#[name("physics_a_0")]
+#[name("physics:a_0")]
 #[description(
     Language::English,
     "Bohr radius in m denotes the radius of the hydrogen atom in the lowest energy state."
@@ -89,7 +89,7 @@ impl ConstantEndpoint for A0Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?h
 #[derive(ConstantMetadata)]
-#[name("physics_h")]
+#[name("physics:h")]
 #[description(Language::English, "Planck constant in J s.")]
 #[description(Language::German, "Planck'sches Wirkungsquantum in J s.")]
 pub struct HEndpoint;
@@ -104,7 +104,7 @@ impl ConstantEndpoint for HEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mun
 #[derive(ConstantMetadata)]
-#[name("physics_mu_N")]
+#[name("physics:mu_N")]
 #[description(
     Language::English,
     "Nuclear magneton in J/T is a constant of magnetic moment."
@@ -125,7 +125,7 @@ impl ConstantEndpoint for MuNEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mub
 #[derive(ConstantMetadata)]
-#[name("physics_mu_B")]
+#[name("physics:mu_B")]
 #[description(
     Language::English,
     "Bohr magneton in J/T the magnitude of the magnetic moment of an electron with orbital angular momentum quantum number ℓ = 1."
@@ -146,7 +146,7 @@ impl ConstantEndpoint for MuBEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?hbar
 #[derive(ConstantMetadata)]
-#[name("physics_hbar")]
+#[name("physics:hbar")]
 #[description(
     Language::English,
     "Reduced Planck constant in J s equals the Planck constant divided by 2π."
@@ -167,7 +167,7 @@ impl ConstantEndpoint for HBarEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?alph
 #[derive(ConstantMetadata)]
-#[name("physics_alpha")]
+#[name("physics:alpha")]
 #[description(
     Language::English,
     "The fine-structure constant is dimensionless and indicates the strength of the electromagnetic interaction."
@@ -188,7 +188,7 @@ impl ConstantEndpoint for AlphaEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?re
 #[derive(ConstantMetadata)]
-#[name("physics_r_e")]
+#[name("physics:r_e")]
 #[description(
     Language::English,
     "Classical electron radius in m represents the effective size of an electron in classical electrodynamics."
@@ -209,7 +209,7 @@ impl ConstantEndpoint for REEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?ecomwl
 #[derive(ConstantMetadata)]
-#[name("physics_lambda_C")]
+#[name("physics:lambda_C")]
 #[description(
     Language::English,
     "Compton wavelength in m characterizes the quantum mechanical wavelength associated with a particle."
@@ -230,7 +230,7 @@ impl ConstantEndpoint for LambdaCEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?gammap
 #[derive(ConstantMetadata)]
-#[name("physics_gamma_p")]
+#[name("physics:gamma_p")]
 #[description(
     Language::English,
     "Proton gyromagnetic ratio in s^-1 T^-1 relates the magnetic moment of a proton to its angular momentum."
@@ -251,7 +251,7 @@ impl ConstantEndpoint for GammaPEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?pcomwl
 #[derive(ConstantMetadata)]
-#[name("physics_lambda_Cp")]
+#[name("physics:lambda_Cp")]
 #[description(
     Language::English,
     "Compton wavelength of the proton in m characterizes the quantum mechanical wavelength associated with a proton."
@@ -272,7 +272,7 @@ impl ConstantEndpoint for LambdaCPEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?ncomwl
 #[derive(ConstantMetadata)]
-#[name("physics_lambda_Cn")]
+#[name("physics:lambda_Cn")]
 #[description(
     Language::English,
     "Compton wavelength of the neutron in m characterizes the quantum mechanical wavelength associated with a neutron."
@@ -293,7 +293,7 @@ impl ConstantEndpoint for LambdaCNEndpoint {
 
 // https://physics.nist.gov/cgi-bin/cuu/Value?ryd
 #[derive(ConstantMetadata)]
-#[name("physics_R_inf")]
+#[name("physics:R_inf")]
 #[description(
     Language::English,
     "The Rydberg constant in 1/m is used for the calculation of atomic spectra."
@@ -314,7 +314,7 @@ impl ConstantEndpoint for RInfEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?u
 #[derive(ConstantMetadata)]
-#[name("physics_u")]
+#[name("physics:u")]
 #[description(
     Language::English,
     "Atomic mass constant in kg is defined as one twelfth of the mass of a carbon-12 atom."
@@ -335,7 +335,7 @@ impl ConstantEndpoint for UEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mup
 #[derive(ConstantMetadata)]
-#[name("physics_mu_p")]
+#[name("physics:mu_p")]
 #[description(Language::English, "Magnetic moment of the proton in J/T.")]
 #[description(Language::German, "Magnetisches Moment des Protons in J/T.")]
 pub struct MuPEndpoint;
@@ -350,7 +350,7 @@ impl ConstantEndpoint for MuPEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?muem
 #[derive(ConstantMetadata)]
-#[name("physics_mu_e")]
+#[name("physics:mu_e")]
 #[description(Language::English, "Magnetic moment of the electron in J/T.")]
 #[description(Language::German, "Magnetisches Moment des Elektrons in J/T.")]
 pub struct MuEEndpoint;
@@ -365,7 +365,7 @@ impl ConstantEndpoint for MuEEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?munn
 #[derive(ConstantMetadata)]
-#[name("physics_mu_n")]
+#[name("physics:mu_n")]
 #[description(Language::English, "Magnetic moment of the neutron in J/T.")]
 #[description(Language::German, "Magnetisches Moment des Neutrons in J/T.")]
 pub struct MuNNEndpoint;
@@ -380,7 +380,7 @@ impl ConstantEndpoint for MuNNEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mumum
 #[derive(ConstantMetadata)]
-#[name("physics_mu_mu")]
+#[name("physics:mu_mu")]
 #[description(Language::English, "Magnetic moment of the muon in J/T.")]
 #[description(Language::German, "Magnetisches Moment des Myons in J/T.")]
 pub struct MuMuEndpoint;
@@ -395,7 +395,7 @@ impl ConstantEndpoint for MuMuEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?f
 #[derive(ConstantMetadata)]
-#[name("physics_F")]
+#[name("physics:F")]
 #[description(
     Language::English,
     "The Faraday constant in C/mol is the electric charge of one mole of electrons."
@@ -416,7 +416,7 @@ impl ConstantEndpoint for FEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?e
 #[derive(ConstantMetadata)]
-#[name("physics_e")]
+#[name("physics:e")]
 #[description(
     Language::English,
     "The elementary charge in Colomb of an electron."
@@ -437,7 +437,7 @@ impl ConstantEndpoint for EEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?na
 #[derive(ConstantMetadata)]
-#[name("physics_N_A")]
+#[name("physics:N_A")]
 #[description(
     Language::English,
     "The Avogadro constant in 1/mol indicates how many particles are contained in one mole."
@@ -458,7 +458,7 @@ impl ConstantEndpoint for NAEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?k
 #[derive(ConstantMetadata)]
-#[name("physics_k")]
+#[name("physics:k")]
 #[description(
     Language::English,
     "The Boltzmann constant in J/K indicates the scaling between energy and temperature."
@@ -479,7 +479,7 @@ impl ConstantEndpoint for KEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mvolstd
 #[derive(ConstantMetadata)]
-#[name("physics_V_m")]
+#[name("physics:V_m")]
 #[description(
     Language::English,
     "Molar volume of an ideal gas in m^3/mol at standard conditions (273.15 K, 101.325 kPa)."
@@ -500,7 +500,7 @@ impl ConstantEndpoint for VMEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?r
 #[derive(ConstantMetadata)]
-#[name("physics_R")]
+#[name("physics:R")]
 #[description(
     Language::English,
     "The molar gas constant in J/(mol K) occurs in the thermal equation of state of ideal gases."
@@ -521,7 +521,7 @@ impl ConstantEndpoint for REndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?c
 #[derive(ConstantMetadata)]
-#[name("physics_c")]
+#[name("physics:c")]
 #[description(Language::English, "Speed of light in m/s in vacuum.")]
 #[description(Language::German, "Lichtgeschwindigkeit in m/s in Vakuum.")]
 pub struct CEndpoint;
@@ -536,7 +536,7 @@ impl ConstantEndpoint for CEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?c11strc
 #[derive(ConstantMetadata)]
-#[name("physics_c_1")]
+#[name("physics:c_1")]
 #[description(
     Language::English,
     "First radiation constant in W m^2 used in Planck's law of black-body radiation."
@@ -557,7 +557,7 @@ impl ConstantEndpoint for C1Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?c22ndrc
 #[derive(ConstantMetadata)]
-#[name("physics_c_2")]
+#[name("physics:c_2")]
 #[description(
     Language::English,
     "Second radiation constant in m K used in Planck's law of black-body radiation."
@@ -578,7 +578,7 @@ impl ConstantEndpoint for C2Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?sigma
 #[derive(ConstantMetadata)]
-#[name("physics_sigma")]
+#[name("physics:sigma")]
 #[description(
     Language::English,
     "Stefan-Boltzmann constant in W/(m^2 K^4) used to calculate black-body radiation power."
@@ -599,7 +599,7 @@ impl ConstantEndpoint for SigmaEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?ep0
 #[derive(ConstantMetadata)]
-#[name("physics_epsilon_0")]
+#[name("physics:epsilon_0")]
 #[description(
     Language::English,
     "The vacuum electric permittivity in (A s)/(V m) gives the ratio of electric flux density to electric field strength in vacuum."
@@ -620,7 +620,7 @@ impl ConstantEndpoint for Epsilon0Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mu0
 #[derive(ConstantMetadata)]
-#[name("physics_mu_0")]
+#[name("physics:mu_0")]
 #[description(
     Language::English,
     "The vacuum magnetic permeability in N/(A^2) gives the ratio of the magnetic flux density to the magnetic field strength in vacuum."
@@ -641,7 +641,7 @@ impl ConstantEndpoint for Mu0Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?flxquhs2e
 #[derive(ConstantMetadata)]
-#[name("physics_Phi_0")]
+#[name("physics:Phi_0")]
 #[description(
     Language::English,
     "Magnetic flux quantum in Wb, the quantum of magnetic flux in superconductivity."
@@ -662,7 +662,7 @@ impl ConstantEndpoint for Phi0Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?gn
 #[derive(ConstantMetadata)]
-#[name("physics_g")]
+#[name("physics:g")]
 #[description(
     Language::English,
     "Standard acceleration due to gravity on Earth in m/s^2."
@@ -683,7 +683,7 @@ impl ConstantEndpoint for GNEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?conqu2e2sh
 #[derive(ConstantMetadata)]
-#[name("physics_G_0")]
+#[name("physics:G_0")]
 #[description(
     Language::English,
     "Conductance quantum in S, the fundamental unit of electrical conductance."
@@ -704,7 +704,7 @@ impl ConstantEndpoint for G0Endpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?z0
 #[derive(ConstantMetadata)]
-#[name("physics_Z_0")]
+#[name("physics:Z_0")]
 #[description(
     Language::English,
     "Characteristic impedance of vacuum in ohms, relating electric and magnetic fields of electromagnetic waves."
@@ -724,7 +724,7 @@ impl ConstantEndpoint for Z0Endpoint {
 }
 
 #[derive(ConstantMetadata)]
-#[name("physics_t")]
+#[name("physics:t")]
 #[description(
     Language::English,
     "Standard temperature in K (0 °C), commonly used in standard conditions (STP)."
@@ -745,7 +745,7 @@ impl ConstantEndpoint for TEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?bg
 #[derive(ConstantMetadata)]
-#[name("physics_G")]
+#[name("physics:G")]
 #[description(
     Language::English,
     "The Newtonian constant of gravitation in m^3/(kg s^2) gives the strength of the gravitational force between two bodies as a function of their distance and masses."
@@ -766,7 +766,7 @@ impl ConstantEndpoint for GEndpoint {
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?stdatm
 #[derive(ConstantMetadata)]
-#[name("physics_atm")]
+#[name("physics:atm")]
 #[description(
     Language::English,
     "Standard atmospheric pressure in Pa used as a reference pressure."
