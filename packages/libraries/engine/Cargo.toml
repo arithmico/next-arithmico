@@ -252,6 +252,7 @@ api_module_analysis = [
     "api_endpoint_analysis_round",
     "api_endpoint_analysis_floor",
     "api_endpoint_analysis_ceil",
+    "api_endpoint_analysis_abs",
 ]
 
 api_module_loader_analysis = []
@@ -265,3 +266,4 @@ api_endpoint_analysis_root = ["api_module_loader_analysis"]
 api_endpoint_analysis_round = ["api_module_loader_analysis"]
 api_endpoint_analysis_floor = ["api_module_loader_analysis"]
 api_endpoint_analysis_ceil = ["api_module_loader_analysis"]
+api_endpoint_analysis_abs = ["api_module_loader_analysis"]
