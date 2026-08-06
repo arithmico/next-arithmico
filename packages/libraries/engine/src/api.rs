@@ -1,12 +1,13 @@
 use crate::{
     api::{
-        analysis::load_analysis_module,
+        algebra::load_algebra_module, analysis::load_analysis_module,
         distributions::load_distributions_module, physics::load_physics_module,
+        trigonometry::load_trigonometry_module,
     },
     core::HostApi,
 };
-use trigonometry::load_trigonometry_module;
 
+mod algebra;
 mod analysis;
 mod distributions;
 mod physics;
@@ -29,6 +30,10 @@ pub fn load_host_api() -> HostApi {
         .module(
             cfg!(feature = "api_module_loader_analysis"),
             load_analysis_module,
+        )
+        .module(
+            cfg!(feature = "api_module_loader_algebra"),
+            load_algebra_module,
         )
         .build()
 }
