@@ -12,6 +12,8 @@ use crate::api::analysis::ln::LnEndpoint;
 use crate::api::analysis::log::LogEndpoint;
 #[cfg(feature = "api_endpoint_analysis_root")]
 use crate::api::analysis::root::RootEndpoint;
+#[cfg(feature = "api_endpoint_analysis_round")]
+use crate::api::analysis::round::RoundEndpoint;
 #[cfg(feature = "api_endpoint_analysis_sqrt")]
 use crate::api::analysis::sqrt::SqrtEndpoint;
 use crate::core::HostApiModule;
@@ -22,6 +24,7 @@ mod lg;
 mod ln;
 mod log;
 mod root;
+mod round;
 mod sqrt;
 
 pub fn load_analysis_module() -> HostApiModule {
@@ -50,6 +53,9 @@ pub fn load_analysis_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_root")]
     let module = module.function::<RootEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_round")]
+    let module = module.function::<RoundEndpoint>();
 
     module.build()
 }
