@@ -277,8 +277,10 @@ api_endpoint_analysis_max = ["api_module_loader_analysis"]
 api_module_algebra = [
     "api_endpoint_algebra_length",
     "api_endpoint_algebra_rank",
+    "api_endpoint_algebra_dims",
 ]
 
 api_module_loader_algebra = []
 api_endpoint_algebra_length = ["api_module_loader_algebra"]
 api_endpoint_algebra_rank = ["api_module_loader_algebra"]
+api_endpoint_algebra_dims = ["api_module_loader_algebra"]
