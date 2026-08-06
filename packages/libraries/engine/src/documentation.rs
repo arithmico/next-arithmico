@@ -226,8 +226,8 @@ pub struct DocumentationModule {
 }
 
 impl DocumentationModule {
-    pub fn name(&self, language: &Language) -> Option<&String> {
-        self.name.get(language)
+    pub fn name(&self, language: Language) -> Option<&String> {
+        self.name.get(&language)
     }
 
     pub fn items(&self) -> &[DocumentationItem] {
