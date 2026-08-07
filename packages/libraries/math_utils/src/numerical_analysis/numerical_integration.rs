@@ -35,8 +35,8 @@ pub fn calculate_numerical_integral<F>(
 where
     F: Fn(f64) -> f64,
 {
-    const ABSOLUTE_TOLERANCE: f64 = 1.0e-14;
-    const RELATIVE_TOLERANCE: f64 = 1.0e-14;
+    const ABSOLUTE_TOLERANCE: f64 = 1.0e-12;
+    const RELATIVE_TOLERANCE: f64 = 1.0e-12;
     const SUBDIVISION_LIMIT: usize = 100;
 
     let non_finite_value = Cell::new(None);
