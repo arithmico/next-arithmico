@@ -3,15 +3,67 @@ use translate_core::TranslatedMessage;
 
 use crate::{Error, translations::translation_resolver};
 
+/// A trait for validating structural properties of a tensor.
+///
+/// All methods return `Result<&Self, Error>`, which allows for fluent
+/// method chaining when applying multiple validation checks in a row.
 pub trait TensorValidator {
+    /// Validates that the tensor contains at least one element.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the tensor is empty (e.g., has a size of 0).
     fn validate_not_empty(&self) -> Result<&Self, Error>;
 
+    /// Validates that the tensor has the specified rank (number of dimensions).
+    ///
+    /// # Arguments
+    ///
+    /// * `rank` - The expected number of dimensions the tensor should have.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the tensor's actual rank does not match the provided `rank`.
     fn validate_rank(&self, rank: usize) -> Result<&Self, Error>;
 
+    /// Validates that the tensor's shape exactly matches the given shape.
+    ///
+    /// # Arguments
+    ///
+    /// * `shape` - A slice representing the expected sizes of each dimension.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the tensor's shape does not strictly match the
+    /// provided `shape` slice in both rank and dimension sizes.
     fn validate_shape(&self, shape: &[usize]) -> Result<&Self, Error>;
 
+    /// Validates that this tensor has the exact same shape as another tensor.
+    ///
+    /// # Arguments
+    ///
+    /// * `other` - A reference to another tensor to compare shapes against.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the shape of `self` does not match the shape of `other`.
     fn validate_equal_shapes(&self, other: &Self) -> Result<&Self, Error>;
 
+    /// Validates that the tensor is a vector of the specified size.
+    ///
+    /// This method asserts two properties:
+    /// 1. The tensor is a vector (i.e., it has a rank of 1).
+    /// 2. The length (or size) of this vector matches the provided `dimension`
+    ///    (e.g., providing `3` ensures the tensor is a 3-element vector).
+    ///
+    /// # Arguments
+    ///
+    /// * `dimension` - The expected size (number of elements) of the vector.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the tensor's rank is not exactly 1, or if the
+    /// size of the vector does not match the specified `dimension`.
     fn validate_vector_dimension(
         &self,
         dimension: usize,
