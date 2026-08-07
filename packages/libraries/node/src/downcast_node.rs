@@ -20,3 +20,13 @@ impl Node {
         T::downcast_node(self)
     }
 }
+
+pub trait DowncastNodeVec {
+    fn downcast<T: DowncastNode>(&self) -> Result<Vec<&T>, DowncastNodeError>;
+}
+
+impl DowncastNodeVec for Vec<Node> {
+    fn downcast<T: DowncastNode>(&self) -> Result<Vec<&T>, DowncastNodeError> {
+        self.iter().map(|node| T::downcast_node(node)).collect()
+    }
+}
