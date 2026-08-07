@@ -1,9 +1,5 @@
 use thiserror::Error;
 
-use crate::numerical_analysis::enclose_zero::EnclosingZeroError::{
-    AGreaterOrEqualThanB, InfiniteIntervalBoundaries, IntervalNotEnclosingZero,
-};
-
 #[derive(Error, Debug)]
 pub enum EnclosingZeroError {
     #[error("The interval boundaries must be finite.")]
@@ -26,17 +22,17 @@ where
     F: Fn(f64) -> f64,
 {
     if !a.is_finite() || !b.is_finite() {
-        return Err(InfiniteIntervalBoundaries);
+        return Err(EnclosingZeroError::InfiniteIntervalBoundaries);
     }
     if a >= b {
-        return Err(AGreaterOrEqualThanB);
+        return Err(EnclosingZeroError::AGreaterOrEqualThanB);
     }
 
     let fa = f(a);
     let fb = f(b);
 
     if !fa.is_finite() || !fb.is_finite() {
-        return Err(InfiniteIntervalBoundaries);
+        return Err(EnclosingZeroError::InfiniteIntervalBoundaries);
     }
 
     if fa == 0.0 {
@@ -47,7 +43,7 @@ where
     }
 
     if fa.signum() == fb.signum() {
-        return Err(IntervalNotEnclosingZero);
+        return Err(EnclosingZeroError::IntervalNotEnclosingZero);
     }
 
     let root = rroot(f, a, b, 1000, rmp()).root;

@@ -42,7 +42,7 @@ pub fn find_roots<F>(
     end: f64,
 ) -> Result<Vec<f64>, FindRootsError>
 where
-    F: Fn(f64) -> f64,
+    F: Fn(f64) -> Option<f64>,
 {
     const STEP_SIZE: f64 = 0.25;
 
@@ -64,40 +64,41 @@ where
     }
 
     let mut roots = Vec::new();
-    let mut a = start;
-    let mut fa = f(a);
+    let mut b = start;
+    let mut previous: Option<(f64, f64)> = None;
 
-    if !fa.is_finite() {
-        return Err(FindRootsError::NonFiniteFunctionValue { x: a, value: fa });
-    }
+    while b < end {
+        match f(b) {
+            Some(fb) if fb.is_finite() => {
+                if fb == 0.0 {
+                    push_unique(&mut roots, b);
+                }
 
-    if fa == 0.0 {
-        push_unique(&mut roots, a);
-    }
+                if let Some((a, fa)) = previous {
+                    if fa.signum() != fb.signum() {
+                        let enclosed_function =
+                            |x: f64| f(x).unwrap_or(f64::NAN);
 
-    while a < end {
-        let b = (a + STEP_SIZE).min(end);
-        let fb = f(b);
+                        let root = enclose_zero(&enclosed_function, a, b)
+                            .map_err(|source| FindRootsError::EncloseZero {
+                                a,
+                                b,
+                                source,
+                            })?;
 
-        if !fb.is_finite() {
-            return Err(FindRootsError::NonFiniteFunctionValue {
-                x: b,
-                value: fb,
-            });
+                        push_unique(&mut roots, root);
+                    }
+                }
+
+                previous = Some((b, fb));
+            }
+
+            _ => {
+                previous = None;
+            }
         }
 
-        if fb == 0.0 {
-            push_unique(&mut roots, b);
-        } else if fa.signum() != fb.signum() {
-            let root = enclose_zero(f, a, b).map_err(|source| {
-                FindRootsError::EncloseZero { a, b, source }
-            })?;
-
-            push_unique(&mut roots, root);
-        }
-
-        a = b;
-        fa = fb;
+        b = b + STEP_SIZE;
     }
 
     Ok(roots)
@@ -158,7 +159,7 @@ mod tests {
     #[test]
     fn finds_zeros_of_sine_between_minus_six_and_six_pi()
     -> Result<(), FindRootsError> {
-        let f = |x: f64| x.sin();
+        let f = |x: f64| Some(x.sin());
 
         let roots = find_roots(&f, -6.5 * PI, 6.5 * PI)?
             .into_iter()
@@ -184,11 +185,14 @@ mod tests {
             let half_turns = degrees / 180.0;
             let nearest_integer = half_turns.round();
 
-            if (half_turns - nearest_integer).abs() <= f64::EPSILON * 4.0 {
-                0.0
-            } else {
-                degrees.to_radians().sin()
-            }
+            let result =
+                if (half_turns - nearest_integer).abs() <= f64::EPSILON * 4.0 {
+                    0.0
+                } else {
+                    degrees.to_radians().sin()
+                };
+
+            Some(result)
         };
 
         let roots = find_roots(&f, -180.0, -1.0)?;
@@ -201,23 +205,16 @@ mod tests {
         Ok(())
     }
 
-    /// f(x) = 1 / x in \[-10.0, 10.0\]
+    /// f(x) = 1 / x in [-10.0, 10.0]
     #[test]
     fn reciprocal_has_no_zero() -> Result<(), FindRootsError> {
-        let f = |x: f64| 1.0 / x;
+        let f = |x: f64| {
+            if x == 0.0 { None } else { Some(1.0 / x) }
+        };
 
-        let error = find_roots(&f, -10.0, 10.0)
-            .expect_err("1/x is not finite at x = 0");
+        let roots = find_roots(&f, -10.0, 10.0)?;
 
-        if let FindRootsError::NonFiniteFunctionValue { x, value } = error {
-            assert_eq!(x, 0.0);
-            assert!(
-                value.is_infinite(),
-                "expected an infinite function value, got {value}"
-            );
-        } else {
-            panic!("expected NonFiniteFunctionValue, got {error:?}");
-        }
+        assert!(roots.is_empty(), "expected no roots for 1/x, got {roots:?}");
 
         Ok(())
     }
@@ -225,7 +222,7 @@ mod tests {
     /// f(x) = x^3 - 4 * x^2 + 3 in \[-2, 5\]
     #[test]
     fn finds_roots_of_first_cubic_polynomial() -> Result<(), FindRootsError> {
-        let f = |x: f64| x.powi(3) - 4.0 * x.powi(2) + 3.0;
+        let f = |x: f64| Some(x.powi(3) - 4.0 * x.powi(2) + 3.0);
 
         let roots = find_roots(&f, -2.0, 5.0)?;
 
@@ -242,7 +239,7 @@ mod tests {
     #[test]
     fn finds_both_real_roots_of_even_power_equation()
     -> Result<(), FindRootsError> {
-        let f = |x: f64| x.powi(34) - 1234.323_23;
+        let f = |x: f64| Some(x.powi(34) - 1234.323_23);
 
         let roots = find_roots(&f, -2.0, 2.0)?;
 
@@ -258,7 +255,7 @@ mod tests {
     /// f(x) = (1 + n) * n / 2 - 34 in \[-10.0, 10.0\]
     #[test]
     fn solves_triangular_number_equation() -> Result<(), FindRootsError> {
-        let f = |n: f64| (1.0 + n) * n / 2.0 - 34.0;
+        let f = |n: f64| Some((1.0 + n) * n / 2.0 - 34.0);
 
         let roots = find_roots(&f, -10.0, 10.0)?;
 
@@ -275,7 +272,7 @@ mod tests {
     #[test]
     fn finds_integer_roots_of_second_cubic_polynomial()
     -> Result<(), FindRootsError> {
-        let f = |x: f64| x.powi(3) + x.powi(2) - 17.0 * x + 15.0;
+        let f = |x: f64| Some(x.powi(3) + x.powi(2) - 17.0 * x + 15.0);
 
         let roots = find_roots(&f, -6.0, 4.0)?;
 
@@ -287,7 +284,9 @@ mod tests {
     /// f(x) = cbrt(x) in \[-2.0, 2.0\]
     #[test]
     fn finds_zero_of_cube_root_function() -> Result<(), FindRootsError> {
-        let f = |x: f64| x.cbrt();
+        let f = |x: f64| {
+            if x < 0.0 { None } else { Some(x.cbrt()) }
+        };
 
         let roots = find_roots(&f, -2.0, 2.0)?;
 
@@ -303,8 +302,11 @@ mod tests {
             let x_25_over_4 = x.powf(25.0 / 4.0);
             let x_1_over_4 = x.powf(1.0 / 4.0);
 
-            500.0 * (x_25_over_4 - 1.0) / (x_1_over_4 * (1.0 / x_25_over_4))
-                - 10_000.0
+            Some(
+                500.0 * (x_25_over_4 - 1.0)
+                    / (x_1_over_4 * (1.0 / x_25_over_4))
+                    - 10_000.0,
+            )
         };
 
         let roots = find_roots(&f, 1.0, 2.0)?;
@@ -324,7 +326,7 @@ mod tests {
             let geometric_sum: f64 =
                 (0..25).map(|exponent| y.powi(exponent)).sum();
 
-            500.0 * geometric_sum / x_25_over_4 - 10_000.0
+            Some(500.0 * geometric_sum / x_25_over_4 - 10_000.0)
         };
 
         let roots = find_roots(&f, 1.0, 2.0)?;
@@ -345,12 +347,25 @@ mod tests {
 
             let discount_factor = 1.0 / RATE.powi(PERIODS - 1);
 
-            x * annuity_factor * discount_factor - 250_000.0
+            Some(x * annuity_factor * discount_factor - 250_000.0)
         };
 
         let roots = find_roots(&f, 10_000.0, 30_000.0)?;
 
         assert_roots_close(roots, &[1.932356194934123e4], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    #[test]
+    fn skips_values_outside_function_domain() -> Result<(), FindRootsError> {
+        let f = |x: f64| {
+            if x < 0.0 { None } else { Some(x.sqrt() - 2.0) }
+        };
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[4.0], ROOT_TOLERANCE);
 
         Ok(())
     }
