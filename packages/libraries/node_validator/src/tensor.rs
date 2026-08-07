@@ -9,6 +9,8 @@ pub trait TensorValidator {
     fn validate_rank(&self, rank: usize) -> Result<&Self, Error>;
 
     fn validate_shape(&self, shape: &[usize]) -> Result<&Self, Error>;
+
+    fn validate_equal_shapes(&self, other: &Self) -> Result<&Self, Error>;
 }
 
 impl TensorValidator for Tensor {
@@ -44,6 +46,19 @@ impl TensorValidator for Tensor {
             )
             .key("expected", serialize_shape(shape))
             .key("actual", serialize_shape(&self.shape));
+            return Err(Error::new(self, message));
+        }
+        Ok(self)
+    }
+
+    fn validate_equal_shapes(&self, other: &Self) -> Result<&Self, Error> {
+        if self.shape != other.shape {
+            let message = TranslatedMessage::new(
+                "error.tensor.equal_shape",
+                translation_resolver,
+            )
+            .key("left", serialize_shape(&self.shape))
+            .key("right", serialize_shape(&other.shape));
             return Err(Error::new(self, message));
         }
         Ok(self)
