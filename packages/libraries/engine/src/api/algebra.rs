@@ -6,6 +6,8 @@ use crate::api::algebra::cross::CrossEndpoint;
 use crate::api::algebra::dims::DimsEndpoint;
 #[cfg(feature = "api_endpoint_algebra_length")]
 use crate::api::algebra::length::LengthEndpoint;
+#[cfg(feature = "api_endpoint_algebra_matrix_id")]
+use crate::api::algebra::matrix_id::MatrixIdEndpoint;
 #[cfg(feature = "api_endpoint_algebra_rank")]
 use crate::api::algebra::rank::RankEndpoint;
 use crate::core::HostApiModule;
@@ -13,6 +15,7 @@ use crate::core::HostApiModule;
 mod cross;
 mod dims;
 mod length;
+mod matrix_id;
 mod rank;
 
 pub fn load_algebra_module() -> HostApiModule {
@@ -32,6 +35,9 @@ pub fn load_algebra_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_algebra_cross")]
     let module = module.function::<CrossEndpoint>();
+
+    #[cfg(feature = "api_endpoint_algebra_matrix_id")]
+    let module = module.function::<MatrixIdEndpoint>();
 
     module.build()
 }
