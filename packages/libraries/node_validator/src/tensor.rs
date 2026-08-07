@@ -11,6 +11,11 @@ pub trait TensorValidator {
     fn validate_shape(&self, shape: &[usize]) -> Result<&Self, Error>;
 
     fn validate_equal_shapes(&self, other: &Self) -> Result<&Self, Error>;
+
+    fn validate_vector_dimension(
+        &self,
+        dimension: usize,
+    ) -> Result<&Self, Error>;
 }
 
 impl TensorValidator for Tensor {
@@ -62,6 +67,23 @@ impl TensorValidator for Tensor {
             return Err(Error::new(self, message));
         }
         Ok(self)
+    }
+
+    fn validate_vector_dimension(
+        &self,
+        dimension: usize,
+    ) -> Result<&Self, Error> {
+        match self.shape[..] {
+            [dim] if dim == dimension => Ok(self),
+            _ => {
+                let message = TranslatedMessage::new(
+                    "error.tensor.vector_dimension",
+                    translation_resolver,
+                )
+                .key("dim", dimension);
+                Err(Error::new(self, message))
+            }
+        }
     }
 }
 
