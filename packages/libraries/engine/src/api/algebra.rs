@@ -17,7 +17,7 @@ mod rank;
 
 pub fn load_algebra_module() -> HostApiModule {
     let module = HostApiModule::builder()
-        .id("analysis")
+        .id("algebra")
         .name(Language::English, "Algebra")
         .name(Language::German, "Algebra");
 
