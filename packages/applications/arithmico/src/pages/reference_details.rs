@@ -2,7 +2,11 @@ use engine::{DocumentationItem, DocumentationItemType, Serialize};
 use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
 use translate::FormattedMessage;
-use ui::{common::page_title::PageTitle, container::page_header::PageHeader};
+use ui::{
+    common::breadcrumbs::{Breadcrumbs, BreadcrumbsItem},
+    container::page_header::PageHeader,
+    icon::chevron_right_icon::ChevronRightIcon,
+};
 use web_state::WebState;
 
 use crate::{components::PageWithSidebar, state::State};
@@ -31,22 +35,37 @@ pub fn ReferenceDetailsPage() -> impl IntoView {
 fn Inner(endpoint_name: String) -> impl IntoView {
     let state = State::expect_state();
     let item = state.select({
+        let endpoint_name = endpoint_name.clone();
         move |state| state.session.documentation().find_endpoint(&endpoint_name)
     });
 
     view! {
         <PageWithSidebar class="reference-details">
-            {move || match item.get() {
-                Some(item) => view! { <ItemSection item=item /> }.into_any(),
-                None => view! { <h1>Not Found</h1> }.into_any(),
-            }}
+            {
+                let endpoint_name = endpoint_name.clone();
+                move || match item.get() {
+                    Some(item) => {
+                        view! {
+                            <ItemSection
+                                item=item
+                                endpoint_name=endpoint_name.clone()
+                            />
+                        }
+                            .into_any()
+                    }
+                    None => view! { <h1>Not Found</h1> }.into_any(),
+                }
+            }
 
         </PageWithSidebar>
     }
 }
 
 #[component]
-fn ItemSection(item: DocumentationItem) -> impl IntoView {
+fn ItemSection(
+    item: DocumentationItem,
+    endpoint_name: String,
+) -> impl IntoView {
     let state = State::expect_state();
     let language = state.select(|state| state.settings.get_language());
     let context = state.select(|state| state.create_engine_context());
@@ -60,7 +79,18 @@ fn ItemSection(item: DocumentationItem) -> impl IntoView {
     });
     view! {
         <PageHeader>
-            <PageTitle>{synopsis}</PageTitle>
+            <Breadcrumbs>
+                <BreadcrumbsItem href="/reference">
+                    <FormattedMessage id="reference.title" />
+                </BreadcrumbsItem>
+                <ChevronRightIcon />
+                <BreadcrumbsItem
+                    href=format!("/reference/{}", endpoint_name)
+                    current=true
+                >
+                    {synopsis}
+                </BreadcrumbsItem>
+            </Breadcrumbs>
         </PageHeader>
         <p>{description}</p>
         {match item.get_documentation_type() {
