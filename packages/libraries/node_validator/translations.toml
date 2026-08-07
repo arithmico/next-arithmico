@@ -45,3 +45,7 @@ German = "Der Rang des Tensors sollte {expected} sein, beträgt aber tatsächlic
 [error.tensor.shape]
 English = "Expected tensor dimensions {expected}, but got {actual}."
 German = "Die Dimensionen des Tensors sollten {expected} sein, sind aber tatsächlich {actual}."
+
+[error.tensor.equal_shape]
+English = "Expected tensors to have equal dimensions, but got dimensions {left} and {right}."
+German = "Erwartet wurden Tensoren mit identischen Dimensionen, stattdessen haben sie die Dimensionen {left} und {right}."
