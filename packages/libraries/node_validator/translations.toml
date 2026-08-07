@@ -49,3 +49,7 @@ German = "Die Dimensionen des Tensors sollten {expected} sein, sind aber tatsäc
 [error.tensor.equal_shape]
 English = "Expected tensors to have equal dimensions, but got dimensions {left} and {right}."
 German = "Erwartet wurden Tensoren mit identischen Dimensionen, stattdessen haben sie die Dimensionen {left} und {right}."
+
+[error.tensor.vector_dimension]
+English = "The vector is expected to have {dim} dimensions."
+German = "Der Vektor muss {dim} dimensionen haben."
