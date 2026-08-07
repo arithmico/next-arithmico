@@ -1,5 +1,7 @@
 use translate::Language;
 
+#[cfg(feature = "api_endpoint_algebra_cross")]
+use crate::api::algebra::cross::CrossEndpoint;
 #[cfg(feature = "api_endpoint_algebra_dims")]
 use crate::api::algebra::dims::DimsEndpoint;
 #[cfg(feature = "api_endpoint_algebra_length")]
@@ -8,6 +10,7 @@ use crate::api::algebra::length::LengthEndpoint;
 use crate::api::algebra::rank::RankEndpoint;
 use crate::core::HostApiModule;
 
+mod cross;
 mod dims;
 mod length;
 mod rank;
@@ -26,6 +29,9 @@ pub fn load_algebra_module() -> HostApiModule {
 
     #[cfg(feature = "api_endpoint_algebra_dims")]
     let module = module.function::<DimsEndpoint>();
+
+    #[cfg(feature = "api_endpoint_algebra_cross")]
+    let module = module.function::<CrossEndpoint>();
 
     module.build()
 }
