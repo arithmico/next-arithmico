@@ -4,7 +4,7 @@ mod documentation;
 mod macros;
 mod session;
 
-pub use core::{Context, Language, NodeConverter, node::*};
+pub use core::{AngleUnit, Context, Language, NodeConverter, node::*};
 pub use documentation::{
     Documentation, DocumentationItem, DocumentationItemType,
     DocumentationModule,

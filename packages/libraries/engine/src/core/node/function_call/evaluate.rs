@@ -29,7 +29,8 @@ impl EvaluateNode for FunctionCall {
                 let local_context = Context::new(
                     stack,
                     context.decimal_places.clone(),
-                    context.language.clone(),
+                    context.angle_unit,
+                    context.language,
                     context.host_api.clone(),
                 );
 
@@ -136,7 +137,8 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -191,7 +193,8 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
@@ -251,7 +254,8 @@ mod tests {
         let context = Context::new(
             Stack::new(),
             DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
             Arc::new(
                 HostApi::builder()
                     .module(true, || {
