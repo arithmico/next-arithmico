@@ -2,9 +2,7 @@ use std::sync::Arc;
 
 use node::{HostFunction, Node};
 
-mod decimal_places;
-
-pub use decimal_places::*;
+use serializer::DecimalPlaces;
 use translate::Language;
 
 use super::{HostApi, HostEndpoint, Stack};

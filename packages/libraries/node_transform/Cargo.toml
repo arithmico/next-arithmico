@@ -1,0 +1,8 @@
+[package]
+name = "node_transform"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+node = { version = "0.1.0", path = "../node" }
+trace = { version = "0.1.0", path = "../trace" }

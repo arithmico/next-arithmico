@@ -75,9 +75,9 @@ mod tests {
     use node::{
         Boolean, Function, FunctionSignature, NodeType, Number, Power, Symbol,
     };
+    use serializer::DecimalPlaces;
 
     use crate::{
-        DecimalPlaces,
         core::{HostApi, HostApiModule, Language, Stack},
         function_executor_wrapper,
     };

@@ -1,4 +1,8 @@
-use engine::{DocumentationItem, DocumentationItemType, Serialize};
+use std::collections::HashMap;
+
+use engine::{
+    DocumentationItem, DocumentationItemType, SerializeNode, SerializeOptions,
+};
 use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
 use translate::FormattedMessage;
@@ -68,7 +72,7 @@ fn ItemSection(
 ) -> impl IntoView {
     let state = State::expect_state();
     let language = state.select(|state| state.settings.get_language());
-    let context = state.select(|state| state.create_engine_context());
+    let decimal_format = state.select(|state| state.get_decimal_format());
     let synopsis = Signal::derive({
         let item = item.clone();
         move || item.get_synopsis(&language.read()).cloned()
@@ -121,7 +125,7 @@ fn ItemSection(
                                 .get_parameters()
                                 .iter()
                                 .cloned()
-                                .map(|param| {
+                                .map(move |param| {
                                     view! {
                                         <tr>
                                             <td>{param.get_name().clone()}</td>
@@ -136,7 +140,53 @@ fn ItemSection(
                                             <td>
                                                 {
                                                     let param = param.clone();
-                                                    move || param.get_requirement().serialize(&context.get())
+                                                    move || {
+                                                        let decimal_format = decimal_format.get();
+                                                        match param.get_requirement() {
+                                                            node::Cardinality::Required => {
+                                                                view! {
+                                                                    <FormattedMessage id="engine.cardinality.required" />
+                                                                }
+                                                                    .into_any()
+                                                            }
+                                                            node::Cardinality::Optional => {
+                                                                view! {
+                                                                    <FormattedMessage id="engine.cardinality.optional" />
+                                                                }
+                                                                    .into_any()
+                                                            }
+                                                            node::Cardinality::OptionalWithDefault { default } => {
+                                                                let mut keys = HashMap::new();
+                                                                keys.insert(
+                                                                    "default".to_string(),
+                                                                    default
+                                                                        .serialize(
+                                                                            SerializeOptions::new(decimal_format, Default::default()),
+                                                                        )
+                                                                        .unwrap_or_else(|_| String::from("Serialization failed")),
+                                                                );
+                                                                view! {
+                                                                    <FormattedMessage
+                                                                        id="engine.cardinality.default"
+                                                                        keys=Signal::derive(move || keys.clone())
+                                                                    />
+                                                                }
+                                                                    .into_any()
+                                                            }
+                                                            node::Cardinality::Multiple { min, max } => {
+                                                                let mut keys = HashMap::new();
+                                                                keys.insert("min".to_string(), min.to_string());
+                                                                let id = match max {
+                                                                    Some(max) => {
+                                                                        keys.insert("max".to_string(), max.to_string());
+                                                                        "engine.cardinality.range"
+                                                                    }
+                                                                    None => "engine.cardinality.range.open",
+                                                                };
+                                                                view! { <FormattedMessage id=id /> }.into_any()
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             </td>
                                             <td>

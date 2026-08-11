@@ -1,5 +1,4 @@
-use crate::DecimalPlaces;
-use crate::core::{Context, HostApi, SerializeUtils, Stack, evaluate_node};
+use crate::core::{Context, HostApi, Stack, evaluate_node};
 use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -8,6 +7,7 @@ pub use entry::SessionEntry;
 pub use error::*;
 use node::Node;
 use parser::parse;
+use serializer::DecimalPlaces;
 use translate::Language;
 
 mod entry;
@@ -52,8 +52,7 @@ impl Session {
 
         let node = parse(input, language)?;
 
-        let evaluatd_node =
-            evaluate_node(&node, &context)?.normalize_node(&context)?;
+        let evaluatd_node = evaluate_node(&node, &context)?;
 
         let output = if let Node::Definition(node) = &evaluatd_node {
             self.stack.insert(&node.symbol, *node.expression.clone());

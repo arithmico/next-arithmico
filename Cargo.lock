@@ -535,6 +535,7 @@ dependencies = [
  "node_validator",
  "parser",
  "serde",
+ "serializer",
  "thiserror 2.0.19",
  "trace",
  "translate",
@@ -1328,6 +1329,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "node_transform"
+version = "0.1.0"
+dependencies = [
+ "node",
+ "trace",
+]
+
+[[package]]
 name = "node_validator"
 version = "0.1.0"
 dependencies = [
@@ -1767,6 +1776,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6662b5879511e06e8999a8a235d848113e942c9124f211511b16466ee2995f26"
 dependencies = [
  "serde_core",
+]
+
+[[package]]
+name = "serializer"
+version = "0.1.0"
+dependencies = [
+ "language",
+ "node",
+ "node_transform",
+ "serde",
+ "thiserror 2.0.19",
+ "trace",
 ]
 
 [[package]]

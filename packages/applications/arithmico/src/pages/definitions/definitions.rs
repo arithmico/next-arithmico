@@ -1,4 +1,4 @@
-use engine::{Context, Serialize, SerializeNodeError};
+use engine::{SerializeError, SerializeNode, SerializeOptions};
 use leptos::prelude::*;
 use node::{FunctionCall, Node, Symbol};
 use web_state::WebState;
@@ -20,7 +20,7 @@ pub fn Definitions() -> impl IntoView {
                     .into_iter()
                     .map(|
                         (key, value),
-                    | -> Result<(String, String), SerializeNodeError> {
+                    | -> Result<(String, String), SerializeError> {
                         let (key_node, value_node) = if let Node::Function(node) = value {
                             let key_node = FunctionCall::new(
                                 Symbol::new(&key),
@@ -36,15 +36,17 @@ pub fn Definitions() -> impl IntoView {
                         } else {
                             (Symbol::new(&key), value)
                         };
-                        let mut context = Context::default();
-                        context.decimal_places = settings.decimal_places;
-                        context.language = settings
+                        let decimal_places = settings.decimal_places;
+                        let language = settings
                             .override_decimal_format
                             .decimal_format()
-                            .unwrap_or(&settings.get_language())
-                            .clone();
-                        let key_string = key_node.serialize(&context)?;
-                        let value_string = value_node.serialize(&context)?;
+                            .unwrap_or(settings.get_language());
+                        let options = SerializeOptions::new(
+                            language,
+                            decimal_places,
+                        );
+                        let key_string = key_node.serialize(options)?;
+                        let value_string = value_node.serialize(options)?;
                         Ok((key_string, value_string))
                     })
                     .map(|entry: Result<(String, String), _>| {

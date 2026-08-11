@@ -4,7 +4,6 @@ mod evaluate;
 mod host_api;
 pub mod node;
 mod operations;
-mod serialize;
 mod stack;
 mod translation_provider;
 
@@ -13,7 +12,6 @@ pub use error::*;
 pub use evaluate::*;
 pub use host_api::*;
 pub use operations::*;
-pub use serialize::*;
 pub use stack::*;
 pub use translate_core::Language;
 pub use translation_provider::*;

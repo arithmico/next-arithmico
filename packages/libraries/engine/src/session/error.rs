@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::core::{EvaluateNodeError, SerializeNodeError};
+use crate::core::EvaluateNodeError;
 
 #[derive(Error, Debug, Clone)]
 pub enum SessionError {
@@ -8,7 +8,7 @@ pub enum SessionError {
     ParseNodeError(#[from] parser::Error),
 
     #[error("SerializationError: {0:?}")]
-    SerializeNodeError(#[from] SerializeNodeError),
+    SerializeNodeError(#[from] serializer::Error),
 
     #[error("RuntimeError: {0:?}")]
     EvaluateNodeError(#[from] EvaluateNodeError),

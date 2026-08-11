@@ -1,6 +1,8 @@
 use leptos::prelude::*;
 
-use engine::{Context, NodeConverter, Serialize, SessionError};
+use engine::{
+    Context, NodeConverter, SerializeNode, SerializeOptions, SessionError,
+};
 use node::Node;
 
 use crate::components::CalculatorErrorOutput;
@@ -52,6 +54,10 @@ impl NodeToStringConverter {
 
 impl NodeConverter<AnyView> for NodeToStringConverter {
     fn convert_node(&self, node: &Node) -> AnyView {
-        node.serialize(&self.context).into_any()
+        node.serialize(SerializeOptions::new(
+            self.context.language,
+            self.context.decimal_places,
+        ))
+        .into_any()
     }
 }

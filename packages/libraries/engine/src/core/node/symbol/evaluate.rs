@@ -23,13 +23,11 @@ mod tests {
     use super::*;
     use lexer::Span;
     use node::Number;
+    use serializer::DecimalPlaces;
     use std::sync::Arc;
     use trace::TracableMut;
 
-    use crate::{
-        DecimalPlaces,
-        core::{HostApi, HostApiModule, Language, Stack},
-    };
+    use crate::core::{HostApi, HostApiModule, Language, Stack};
 
     #[test]
     fn evaluate_unknown_symbol() {

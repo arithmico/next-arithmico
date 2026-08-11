@@ -1,12 +1,10 @@
 use std::collections::HashMap;
 
 use node::{Argument, Cardinality, FunctionCall, NodeType, Symbol};
+use serializer::SerializeNode;
 use translate_core::TranslationError;
 
-use crate::core::{
-    Context, DecimalPlaces, HostApi, HostEndpoint, Language, Stack,
-    TranslatedString, serialize_node,
-};
+use crate::core::{HostApi, HostEndpoint, Language, TranslatedString};
 
 #[derive(Debug, Clone)]
 pub struct ParameterDocumentationItem {
@@ -156,29 +154,25 @@ impl DocumentationItem {
                 );
                 item.synopsis.insert(
                     Language::English,
-                    serialize_node(
-                        &synopsis_expression,
-                        &Context::new(
-                            Stack::new(),
-                            DecimalPlaces::default(),
+                    synopsis_expression
+                        .serialize(serializer::Options::new(
                             Language::English,
-                            HostApi::empty().into(),
-                        ),
-                    )
-                    .expect("serialized"),
+                            Default::default(),
+                        ))
+                        .unwrap_or_else(|_| {
+                            String::from("Serialization failed")
+                        }),
                 );
                 item.synopsis.insert(
                     Language::German,
-                    serialize_node(
-                        &synopsis_expression,
-                        &Context::new(
-                            Stack::new(),
-                            DecimalPlaces::default(),
+                    synopsis_expression
+                        .serialize(serializer::Options::new(
                             Language::German,
-                            HostApi::empty().into(),
-                        ),
-                    )
-                    .expect("serialized"),
+                            Default::default(),
+                        ))
+                        .unwrap_or_else(|_| {
+                            String::from("Serialization failed")
+                        }),
                 );
                 item
             }
@@ -189,29 +183,25 @@ impl DocumentationItem {
                 let synopsis_expression = Symbol::new(name);
                 item.synopsis.insert(
                     Language::English,
-                    serialize_node(
-                        &synopsis_expression,
-                        &Context::new(
-                            Stack::new(),
-                            DecimalPlaces::default(),
+                    synopsis_expression
+                        .serialize(serializer::Options::new(
                             Language::English,
-                            HostApi::empty().into(),
-                        ),
-                    )
-                    .expect("serialized"),
+                            Default::default(),
+                        ))
+                        .unwrap_or_else(|_| {
+                            String::from("Serialization failed")
+                        }),
                 );
                 item.synopsis.insert(
                     Language::German,
-                    serialize_node(
-                        &synopsis_expression,
-                        &Context::new(
-                            Stack::new(),
-                            DecimalPlaces::default(),
+                    synopsis_expression
+                        .serialize(serializer::Options::new(
                             Language::German,
-                            HostApi::empty().into(),
-                        ),
-                    )
-                    .expect("serialized"),
+                            Default::default(),
+                        ))
+                        .unwrap_or_else(|_| {
+                            String::from("Serialization failed")
+                        }),
                 );
                 item
             }

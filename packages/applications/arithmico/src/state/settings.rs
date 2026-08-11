@@ -59,7 +59,7 @@ impl Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            decimal_places: DecimalPlaces::from(5),
+            decimal_places: DecimalPlaces::default(),
             language: LanguageValue::System,
             override_decimal_format: OverrideDecimalFormat::new(),
             theme: Theme::System,
