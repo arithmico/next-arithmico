@@ -21,7 +21,6 @@ mod symbol;
 mod tensor;
 
 mod evaluate;
-mod serialize;
 
 pub use function_call::{
     ArgumentMapping, FromArgumentMapping, FunctionArguments,

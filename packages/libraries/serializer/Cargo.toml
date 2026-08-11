@@ -1,0 +1,12 @@
+[package]
+name = "serializer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+language = { version = "0.1.0", path = "../language" }
+node = { version = "0.1.0", path = "../node" }
+trace = { version = "0.1.0", path = "../trace" }
+thiserror.workspace = true
+node_transform = { version = "0.1.0", path = "../node_transform" }
+serde = { workspace = true, features = ["derive"] }

@@ -92,6 +92,7 @@ impl Argument {
         self
     }
 
+    // TODO: return reference
     pub fn get_name(&self) -> String {
         self.name.clone()
     }

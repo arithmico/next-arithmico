@@ -18,12 +18,7 @@ impl EvaluateAction {
 impl WebStateAction<State> for EvaluateAction {
     fn apply(&self, state: &mut State) {
         let decimal_places = state.settings.decimal_places;
-        let decimal_format = state
-            .settings
-            .override_decimal_format
-            .decimal_format()
-            .cloned()
-            .unwrap_or_else(|| (state.settings.get_language()).into());
+        let decimal_format = state.get_decimal_format();
 
         state
             .session
