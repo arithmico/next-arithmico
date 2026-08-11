@@ -26,9 +26,9 @@ impl FunctionEndpoint for TanEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         TanArgs { x }: Self::Arguments<'a>,
-        _context: &crate::Context,
+        context: &crate::Context,
     ) -> Result<Number, crate::core::EvaluateNodeError> {
-        let value = x.value;
+        let value = context.angle_unit.to_radians(x.value);
 
         if value.is_close_to_multiple_of(PI) {
             return Ok(Number::new(0.));

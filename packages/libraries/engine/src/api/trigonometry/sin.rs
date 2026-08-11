@@ -29,9 +29,9 @@ impl FunctionEndpoint for SinEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         SinArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
-        let value = x.value;
+        let value = context.angle_unit.to_radians(x.value);
 
         if value.is_close_to_multiple_of(PI) {
             return Ok(Number::new(0.0));

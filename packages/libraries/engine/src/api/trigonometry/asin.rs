@@ -27,11 +27,11 @@ impl FunctionEndpoint for AsinEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         AsinArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
         x.validate_inside_closed_interval(-1.0, 1.0)?;
 
-        let result = x.value.asin();
+        let result = context.angle_unit.from_radians(x.value.asin());
 
         Ok(Number::new(result))
     }

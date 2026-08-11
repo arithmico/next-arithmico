@@ -1,3 +1,5 @@
+use std::f64::consts::PI;
+
 #[cfg(feature = "api_endpoint_trigonometry_acos")]
 use crate::api::trigonometry::acos::AcosEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_acosh")]
@@ -24,7 +26,10 @@ use crate::api::trigonometry::sinh::SinhEndpoint;
 use crate::api::trigonometry::tan::TanEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_tanh")]
 use crate::api::trigonometry::tanh::TanhEndpoint;
-use crate::core::{HostApiModule, Language};
+use crate::{
+    AngleUnit,
+    core::{HostApiModule, Language},
+};
 
 mod acos;
 mod acosh;
@@ -86,4 +91,20 @@ pub fn load_trigonometry_module() -> HostApiModule {
     let module = module.function::<AtanhEndpoint>();
 
     module.build()
+}
+
+impl AngleUnit {
+    pub(crate) fn to_radians(&self, value: f64) -> f64 {
+        match self {
+            AngleUnit::Radian => value,
+            AngleUnit::Degree => value * PI / 180.0,
+        }
+    }
+
+    pub(crate) fn from_radians(&self, value: f64) -> f64 {
+        match self {
+            AngleUnit::Radian => value,
+            AngleUnit::Degree => value * 180.0 / PI,
+        }
+    }
 }
