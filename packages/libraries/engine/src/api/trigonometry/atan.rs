@@ -26,10 +26,10 @@ impl FunctionEndpoint for AtanEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         AtanArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        context: &Context,
     ) -> Result<Self::Output, EvaluateNodeError> {
         let value = x.value;
-        let result = value.atan();
+        let result = context.angle_unit.from_radians(value.atan());
         Ok(Number::new(result))
     }
 }

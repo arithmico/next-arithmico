@@ -2,7 +2,7 @@ use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{AngleUnit, Context, Language, Session, SessionError};
+use engine::{Context, Language, Session, SessionError};
 use node::Node;
 use trace::Trace;
 use web_state::WebState;
@@ -35,13 +35,11 @@ impl State {
 
     pub fn create_engine_context(&self) -> Context {
         let decimal_places = self.settings.decimal_places;
-        let decimal_format = self.get_decimal_format();
+        let language = self.get_decimal_format();
+        let angle_unit = self.settings.angle_unit;
 
-        self.session.create_context(
-            decimal_places,
-            decimal_format,
-            AngleUnit::default(),
-        )
+        self.session
+            .create_context(decimal_places, language, angle_unit)
     }
 
     pub fn get_decimal_format(&self) -> Language {
