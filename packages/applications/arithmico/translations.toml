@@ -102,6 +102,18 @@ German = "Dunkel"
 English = "System"
 German = "Systemeinstellung"
 
+[settings.angle_unit]
+English = "Angle unit"
+German = "Winkelmaß"
+
+[settings.angle_unit.radian]
+English = "Radians"
+German = "Bogenmaß"
+
+[settings.angle_unit.degree]
+English = "Degrees"
+German = "Gradmaß"
+
 [settings.section.misc]
 English = "Miscellaneous"
 German = "Verschiedenes"

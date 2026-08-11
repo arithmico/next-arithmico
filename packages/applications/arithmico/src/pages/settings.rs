@@ -8,13 +8,14 @@ use web_state::WebState;
 use crate::{
     components::*,
     pages::settings::{
-        language::LanguageSetting,
+        angle_unit::AngleUnitSetting, language::LanguageSetting,
         override_decimal_format::OverrideDecimalFormatSetting,
         theme::ThemeSetting,
     },
     state::{ResetSettingsAction, State},
 };
 
+mod angle_unit;
 mod decimal_places;
 mod language;
 mod override_decimal_format;
@@ -39,6 +40,7 @@ pub fn SettingsPage() -> impl IntoView {
             <SettingsSection title="settings.section.calculator">
                 <OverrideDecimalFormatSetting />
                 <DecimalPlacesSetting />
+                <AngleUnitSetting />
             </SettingsSection>
 
             <SettingsSection title="settings.section.misc">
