@@ -183,7 +183,13 @@ fn ItemSection(
                                                                     }
                                                                     None => "engine.cardinality.range.open",
                                                                 };
-                                                                view! { <FormattedMessage id=id /> }.into_any()
+                                                                view! {
+                                                                    <FormattedMessage
+                                                                        id=id
+                                                                        keys=Signal::derive(move || keys.clone())
+                                                                    />
+                                                                }
+                                                                    .into_any()
                                                             }
                                                         }
                                                     }
