@@ -1,4 +1,4 @@
-use engine::SessionError;
+use engine::{AngleUnit, SessionError};
 use web_state::WebStateAction;
 
 use crate::state::State;
@@ -20,9 +20,12 @@ impl WebStateAction<State> for EvaluateAction {
         let decimal_places = state.settings.decimal_places;
         let decimal_format = state.get_decimal_format();
 
-        state
-            .session
-            .push(&self.input, decimal_places, decimal_format.into());
+        state.session.push(
+            &self.input,
+            decimal_places,
+            decimal_format,
+            AngleUnit::default(),
+        );
         state.current_output = state
             .session
             .last_entry()

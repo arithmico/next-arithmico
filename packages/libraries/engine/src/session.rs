@@ -1,4 +1,4 @@
-use crate::core::{Context, HostApi, Stack, evaluate_node};
+use crate::core::{AngleUnit, Context, HostApi, Stack, evaluate_node};
 use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -33,10 +33,12 @@ impl Session {
         &self,
         decimal_places: DecimalPlaces,
         language: Language,
+        angle_unit: AngleUnit,
     ) -> Context {
         Context::new(
             self.stack.clone(),
             decimal_places,
+            angle_unit,
             language,
             self.host_api.clone(),
         )
@@ -47,8 +49,9 @@ impl Session {
         input: &str,
         decimal_places: DecimalPlaces,
         language: Language,
+        angle_unit: AngleUnit,
     ) -> Result<Node, SessionError> {
-        let context = self.create_context(decimal_places, language);
+        let context = self.create_context(decimal_places, language, angle_unit);
 
         let node = parse(input, language)?;
 
@@ -69,8 +72,10 @@ impl Session {
         input: &str,
         decimal_places: DecimalPlaces,
         language: Language,
+        angle_unit: AngleUnit,
     ) {
-        let output = self.evaluate_input(input, decimal_places, language);
+        let output =
+            self.evaluate_input(input, decimal_places, language, angle_unit);
 
         self.entries.push(SessionEntry {
             input: input.to_string(),

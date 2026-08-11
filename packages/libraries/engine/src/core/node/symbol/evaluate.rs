@@ -23,7 +23,6 @@ mod tests {
     use super::*;
     use lexer::Span;
     use node::Number;
-    use serializer::DecimalPlaces;
     use std::sync::Arc;
     use trace::TracableMut;
 
@@ -42,8 +41,9 @@ mod tests {
         stack.insert("x", Number::new_node(42.));
         let context = Context::new(
             stack,
-            DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
+            Default::default(),
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x").evaluate(&context).unwrap();
@@ -56,8 +56,9 @@ mod tests {
         stack.insert("x", Number::new_node(42.));
         let context = Context::new(
             stack,
-            DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
+            Default::default(),
             Arc::new(HostApi::empty()),
         );
         let result = Symbol::new("x")
@@ -89,8 +90,9 @@ mod tests {
 
         let context = Context::new(
             Stack::new(),
-            DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
+            Default::default(),
             host_api.into(),
         );
 
@@ -117,8 +119,9 @@ mod tests {
 
         let context = Context::new(
             Stack::new(),
-            DecimalPlaces::default(),
-            Language::default(),
+            Default::default(),
+            Default::default(),
+            Default::default(),
             host_api.into(),
         );
 
