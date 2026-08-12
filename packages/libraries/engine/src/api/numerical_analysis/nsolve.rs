@@ -2,6 +2,7 @@ use core::f64;
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use math_utils::find_roots;
 use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
 use node_validator::NumberValidator;
@@ -9,7 +10,7 @@ use trace::{Tracable, TracableMut};
 
 use crate::{
     Context,
-    core::{EvaluateNode, EvaluateNodeError, FunctionEndpoint, Language},
+    core::{EvaluateNode, FunctionEndpoint, Language},
 };
 
 static DEFAULT_START: LazyLock<Node> =
@@ -58,8 +59,10 @@ impl FunctionEndpoint for NSolveEndpoint {
             stop,
         }: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        start.validate_less_than(stop.value)?;
+    ) -> Result<Self::Output, Error> {
+        start
+            .validate_less_than(stop.value)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let expression = Sum::new(vec![
             *equation.left.clone(),
@@ -74,11 +77,11 @@ impl FunctionEndpoint for NSolveEndpoint {
 
         let variable_count = variable_names.len();
         if variable_count > 1 {
-            return Err(EvaluateNodeError::too_many_parameters(variable_count)
+            return Err(Error::too_many_parameters(variable_count)
                 .with_optional_span(equation.hull()));
         }
         if variable_count < 1 {
-            return Err(EvaluateNodeError::missing_parameter("")
+            return Err(Error::missing_parameter("")
                 .with_optional_span(equation.hull()));
         }
 
@@ -98,12 +101,8 @@ impl FunctionEndpoint for NSolveEndpoint {
             }
         };
 
-        let roots = find_roots(&function, start.value, stop.value).map_err(
-            |error| {
-                EvaluateNodeError::from(error)
-                    .with_optional_span(equation.hull())
-            },
-        )?;
+        let roots = find_roots(&function, start.value, stop.value)
+            .map_to_error_kind(ErrorKind::RuntimeError)?;
 
         let results = roots
             .iter()

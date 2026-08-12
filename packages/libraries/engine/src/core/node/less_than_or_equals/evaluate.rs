@@ -1,9 +1,10 @@
+use evaluator::Error;
 use node::{Boolean, LessThanOrEquals, Node};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for LessThanOrEquals {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
 
@@ -11,7 +12,7 @@ impl EvaluateNode for LessThanOrEquals {
             (Node::Number(left), Node::Number(right)) => {
                 Ok(Boolean::new(left.value <= right.value))
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(Error::unsupported_operation()),
         }
     }
 }

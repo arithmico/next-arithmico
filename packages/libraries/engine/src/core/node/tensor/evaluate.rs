@@ -1,13 +1,12 @@
+use evaluator::Error;
 use node::{GetNodeType, IntoNode, Node, Tensor};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Tensor {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         if !cfg!(feature = "datatype_tensor") {
-            return Err(EvaluateNodeError::unsupported_datatype(
-                self.node_type(),
-            ));
+            return Err(Error::unsupported_datatype(self.node_type()));
         }
 
         Ok(Tensor::new_with_shape(
@@ -15,7 +14,7 @@ impl EvaluateNode for Tensor {
             self.elements
                 .iter()
                 .map(|element| element.evaluate(context))
-                .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
+                .collect::<Result<Vec<_>, Error>>()?,
         )
         .into_node())
     }

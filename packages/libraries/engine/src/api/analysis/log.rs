@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -38,9 +39,13 @@ impl FunctionEndpoint for LogEndpoint {
     fn executor<'a>(
         LogArgs { x, base }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        x.validate_greater_than(0.0)?;
-        base.validate_greater_than(0.0)?.validate_not_equal(1.0)?;
+    ) -> Result<Self::Output, Error> {
+        x.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+        base.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_not_equal(1.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let result = x.value.log(base.value);
 

@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 thiserror = { workspace = true }
+translate_core = { version = "0.1.0", path = "../translate_core" }

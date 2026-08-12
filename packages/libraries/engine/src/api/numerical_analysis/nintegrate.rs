@@ -3,13 +3,14 @@ use std::cell::RefCell;
 
 use engine_derive::FunctionArguments;
 
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use math_utils::calculate_numerical_integral;
 use node::{Function, IntoNode, Node, Number};
 use trace::{Tracable, TracableMut};
 
 use crate::{
     Context,
-    core::{EvaluateNode, EvaluateNodeError, FunctionEndpoint, Language},
+    core::{EvaluateNode, FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -46,22 +47,21 @@ impl FunctionEndpoint for NIntegrateEndpoint {
     fn executor<'a>(
         NIntegrateArgs { f, start, stop }: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let arguments = f.signature.arguments();
         let arguments_count = arguments.len();
 
         if arguments_count > 1 {
-            return Err(EvaluateNodeError::too_many_parameters(
-                arguments_count,
-            )
-            .with_optional_span(f.hull()));
-        }
-        if arguments_count < 1 {
-            return Err(EvaluateNodeError::missing_parameter("")
+            return Err(Error::too_many_parameters(arguments_count)
                 .with_optional_span(f.hull()));
         }
+        if arguments_count < 1 {
+            return Err(
+                Error::missing_parameter("").with_optional_span(f.hull())
+            );
+        }
 
-        let evaluation_error = RefCell::new(None::<EvaluateNodeError>);
+        let evaluation_error = RefCell::new(None::<Error>);
 
         let function = |x: f64| -> f64 {
             let argument_name = &arguments[0].get_name();
@@ -92,10 +92,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
         }
 
         result
-            .map_err(|error| {
-                EvaluateNodeError::from(error)
-                    .with_optional_span(f.expression.hull())
-            })
+            .map_to_error_kind(ErrorKind::RuntimeError)
             .map(|result| Number::new(result))
     }
 }

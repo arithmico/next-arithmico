@@ -1,10 +1,11 @@
+use evaluator::Error;
 use node::{Node, Number, Power};
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Power {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let base = self.base.evaluate(context)?;
         let exponent = self.exponent.evaluate(context)?;
 
@@ -22,7 +23,7 @@ impl EvaluateNode for Power {
 
                 Ok(Number::new_node(base.value.powf(exponent.value)))
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()
+            _ => Err(Error::unsupported_operation()
                 .with_optional_span(base.hull())
                 .with_optional_span(exponent.hull())),
         }

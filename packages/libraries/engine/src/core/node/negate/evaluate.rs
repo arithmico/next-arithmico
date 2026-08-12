@@ -1,29 +1,30 @@
+use evaluator::Error;
 use node::{Boolean, IntoNode, Negate, Node, Number, Tensor};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Negate {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let value = self.value.evaluate(context)?;
 
         match value {
             Node::Number(number) => {
                 if !cfg!(feature = "operator_negate_number") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 Ok(Number::new_node(-number.value))
             }
             Node::Boolean(boolean) => {
                 if !cfg!(feature = "operator_negate_boolean") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 Ok(Boolean::new(!boolean.value))
             }
             Node::Tensor(tensor) => {
                 if !cfg!(feature = "operator_negate_tensor") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 let elements = tensor
@@ -32,12 +33,12 @@ impl EvaluateNode for Negate {
                     .map(|element| {
                         Negate::new(element.clone()).evaluate(context)
                     })
-                    .collect::<Result<Vec<_>, EvaluateNodeError>>()?;
+                    .collect::<Result<Vec<_>, Error>>()?;
 
                 Ok(Tensor::new_with_shape(tensor.shape.clone(), elements)
                     .into_node())
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(Error::unsupported_operation()),
         }
     }
 }

@@ -1,13 +1,13 @@
+use evaluator::Error;
 use node::{FunctionCall, Node};
 use trace::{Tracable, TracableMut};
 
 use crate::core::{
-    Context, EvaluateNode, EvaluateNodeError, HostEndpoint,
-    map_function_parameters,
+    Context, EvaluateNode, HostEndpoint, map_function_parameters,
 };
 
 impl EvaluateNode for FunctionCall {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let target = self.target.evaluate(context)?;
 
         match target {
@@ -40,9 +40,7 @@ impl EvaluateNode for FunctionCall {
                 let Some(endpoint) =
                     context.host_api.endpoint(&host_function.name)
                 else {
-                    return Err(EvaluateNodeError::unknown_symbol(
-                        host_function.name,
-                    ));
+                    return Err(Error::unknown_symbol(host_function.name));
                 };
 
                 let HostEndpoint::Function {
@@ -51,7 +49,7 @@ impl EvaluateNode for FunctionCall {
                     ..
                 } = endpoint
                 else {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 };
 
                 let mapping = map_function_parameters(
@@ -62,8 +60,10 @@ impl EvaluateNode for FunctionCall {
 
                 executor(&mapping, context)
             }
-            node => Err(EvaluateNodeError::unsupported_operation()
-                .with_optional_span(node.hull())),
+            node => {
+                Err(Error::unsupported_operation()
+                    .with_optional_span(node.hull()))
+            }
         }
     }
 }
@@ -72,16 +72,13 @@ impl EvaluateNode for FunctionCall {
 mod tests {
     use std::sync::Arc;
 
-    use engine_derive::FromArgumentMapping;
+    use engine_derive::FunctionArguments;
     use node::{
         Boolean, Function, FunctionSignature, NodeType, Number, Power, Symbol,
     };
     use serializer::DecimalPlaces;
 
-    use crate::{
-        core::{HostApi, HostApiModule, Language, Stack},
-        function_executor_wrapper,
-    };
+    use crate::core::{HostApi, HostApiModule, Language, Stack};
 
     use super::*;
 
@@ -98,7 +95,7 @@ mod tests {
             vec![],
         )
         .evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::missing_parameter("x")));
+        assert_eq!(result, Err(Error::missing_parameter("x")));
     }
 
     #[test]
@@ -118,10 +115,10 @@ mod tests {
         assert_eq!(result, Number::new_node(2.));
     }
 
-    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call() {
-        #[derive(FromArgumentMapping)]
+        #[derive(FunctionArguments)]
+        #[name("test")]
         struct TestArgs<'a> {
             x: &'a Number,
         }
@@ -129,7 +126,7 @@ mod tests {
         fn test_executor(
             TestArgs { x }: TestArgs,
             context: &Context,
-        ) -> Result<Node, EvaluateNodeError> {
+        ) -> Result<Node, Error> {
             Power::new(Number::new_node(x.value), Number::new_node(2.))
                 .evaluate(context)
         }
@@ -157,10 +154,12 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(function_executor_wrapper!(
-                                        TestArgs,
-                                        test_executor
-                                    ))
+                                    .executor(|argument, context| {
+                                        use super::super::FunctionArguments;
+                                        let args =
+                                            TestArgs::from_mapping(&argument)?;
+                                        test_executor(args, context)
+                                    })
                             }])
                             .build()
                     })
@@ -174,10 +173,10 @@ mod tests {
         assert_eq!(result, Number::new_node(4.));
     }
 
-    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call_invalid_number_of_arguments() {
-        #[derive(FromArgumentMapping)]
+        #[derive(FunctionArguments)]
+        #[name("test")]
         struct TestArgs<'a> {
             x: &'a Number,
         }
@@ -185,7 +184,7 @@ mod tests {
         fn test_executor(
             TestArgs { x }: TestArgs,
             context: &Context,
-        ) -> Result<Node, EvaluateNodeError> {
+        ) -> Result<Node, Error> {
             Power::new(Number::new_node(x.value), Number::new_node(2.))
                 .evaluate(context)
         }
@@ -213,10 +212,12 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(function_executor_wrapper!(
-                                        TestArgs,
-                                        test_executor
-                                    ))
+                                    .executor(|argument, context| {
+                                        use super::super::FunctionArguments;
+                                        let args =
+                                            TestArgs::from_mapping(&argument)?;
+                                        test_executor(args, context)
+                                    })
                             }])
                             .build()
                     })
@@ -225,13 +226,13 @@ mod tests {
         );
         let result =
             FunctionCall::new(Symbol::new("f"), vec![]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::missing_parameter("x")));
+        assert_eq!(result, Err(Error::missing_parameter("x")));
     }
 
-    // TODO: use new #[derive(FunctionArguments)] api
     #[test]
     fn evaluate_host_function_call_with_advanced_arguments() {
-        #[derive(FromArgumentMapping)]
+        #[derive(FunctionArguments)]
+        #[name("test")]
         struct TestArgs<'a> {
             a: &'a Number,
             b: Option<&'a Boolean>,
@@ -241,7 +242,7 @@ mod tests {
         fn test_executor(
             TestArgs { a, b, c }: TestArgs,
             context: &Context,
-        ) -> Result<Node, EvaluateNodeError> {
+        ) -> Result<Node, Error> {
             let result = if let Some(_) = b {
                 Number::new_node(a.value)
             } else {
@@ -284,10 +285,12 @@ mod tests {
                                             })
                                             .add_return_type(NodeType::Any),
                                     )
-                                    .executor(function_executor_wrapper!(
-                                        TestArgs,
-                                        test_executor
-                                    ))
+                                    .executor(|argument, context| {
+                                        use super::super::FunctionArguments;
+                                        let args =
+                                            TestArgs::from_mapping(&argument)?;
+                                        test_executor(args, context)
+                                    })
                             }])
                             .build()
                     })

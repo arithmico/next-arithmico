@@ -2,6 +2,9 @@ use core::f64;
 use std::{cell::Cell, usize};
 
 use thiserror::Error;
+use translate_core::{Translatable, TranslatedMessage};
+
+use crate::translation_provider::translation_resolver;
 
 #[derive(Debug, Error)]
 pub enum IntegrationError {
@@ -19,6 +22,51 @@ pub enum IntegrationError {
     ProbablyDivergent,
     #[error("the integrand returned a non-finite value at x = {x}: {value}")]
     NonFiniteIntegrand { x: f64, value: f64 },
+}
+
+impl Translatable for IntegrationError {
+    fn translate(
+        &self,
+        language: translate_core::Language,
+    ) -> Result<String, translate_core::TranslationError> {
+        match self {
+            IntegrationError::InvalidTolerance => TranslatedMessage::new(
+                "numerical_integration.invalid_tolerance",
+                translation_resolver,
+            ),
+            IntegrationError::SubdivisionLimitReached => {
+                TranslatedMessage::new(
+                    "numerical_integration.subdivision_limit_reached",
+                    translation_resolver,
+                )
+            }
+            IntegrationError::RoundoffError => TranslatedMessage::new(
+                "numerical_integration.roundoff_error",
+                translation_resolver,
+            ),
+            IntegrationError::BadIntegrandBehavior => TranslatedMessage::new(
+                "numerical_integration.bad_integrand_behavior",
+                translation_resolver,
+            ),
+            IntegrationError::ExtrapolationFailed => TranslatedMessage::new(
+                "numerical_integration.extrapolation_failed",
+                translation_resolver,
+            ),
+            IntegrationError::ProbablyDivergent => TranslatedMessage::new(
+                "numerical_integration.probably_divergent",
+                translation_resolver,
+            ),
+            IntegrationError::NonFiniteIntegrand { x, value } => {
+                TranslatedMessage::new(
+                    "numerical_integration.non_finite_integrand",
+                    translation_resolver,
+                )
+                .key("x", x)
+                .key("value", value)
+            }
+        }
+        .translate(language)
+    }
 }
 
 /// Numerically approximates the definite integral of `f` over the interval

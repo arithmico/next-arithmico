@@ -1,6 +1,9 @@
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
+use evaluator::Error;
+use evaluator::ErrorKind;
+use evaluator::MapToEvaluatorError;
 use math_utils::calculate_normal_pdf;
 use node::IntoNode;
 use node::Node;
@@ -9,7 +12,7 @@ use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 static DEFAULT_MEAN: LazyLock<Node> =
@@ -54,11 +57,12 @@ impl FunctionEndpoint for NormalEndpoint {
     fn executor<'a>(
         NormalArgs { x, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        sd.validate_greater_than(0.0)?;
+    ) -> Result<Self::Output, Error> {
+        sd.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         calculate_normal_pdf(x.value, mean.value, sd.value)
-            .map_err(|_| EvaluateNodeError::runtime_error("normal"))
+            .map_err(|_| Error::runtime_error("normal"))
             .map(|result| Number::new(result))
     }
 }

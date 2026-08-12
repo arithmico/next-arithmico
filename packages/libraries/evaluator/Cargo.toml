@@ -7,3 +7,4 @@ edition = "2024"
 node = { version = "0.1.0", path = "../node" }
 trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true
+translate = { version = "0.1.0", path = "../translate" }

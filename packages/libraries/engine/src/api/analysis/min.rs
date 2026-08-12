@@ -1,9 +1,10 @@
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use node::Number;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -33,9 +34,9 @@ impl FunctionEndpoint for MinEndpoint {
     fn executor<'a>(
         MinArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let value = match &x[..] {
-            [] => return Err(EvaluateNodeError::missing_parameter("x")),
+            [] => return Err(Error::missing_parameter("x")),
             [item] => item.value,
             [item, rest @ ..] => {
                 rest.iter().fold(item.value, |acc, v| acc.min(v.value))

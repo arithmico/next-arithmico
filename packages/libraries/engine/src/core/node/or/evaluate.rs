@@ -1,12 +1,13 @@
+use evaluator::Error;
 use node::{Boolean, GetNodeType, Node, Or};
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Or {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node(self.node_type()));
+            return Err(Error::invalid_node(self.node_type()));
         }
 
         let mut elements = self
@@ -23,10 +24,7 @@ impl EvaluateNode for Or {
     }
 }
 
-fn combine_or_elements(
-    left: &Node,
-    right: &Node,
-) -> Result<Node, EvaluateNodeError> {
+fn combine_or_elements(left: &Node, right: &Node) -> Result<Node, Error> {
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right))
             if cfg!(feature = "operator_or_boolean_boolean") =>
@@ -35,7 +33,7 @@ fn combine_or_elements(
                 .with_optional_span(left.hull())
                 .with_optional_span(right.hull()))
         }
-        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+        (left, right) => Err(Error::unsupported_operation()
             .with_optional_span(left.hull())
             .with_optional_span(right.hull())),
     }
@@ -52,7 +50,7 @@ mod tests {
     fn evaluate_invalid_or() {
         let context = Context::default();
         let result = Or::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Or)));
+        assert_eq!(result, Err(Error::invalid_node(NodeType::Or)));
     }
 
     #[test]

@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -32,11 +33,16 @@ impl FunctionEndpoint for RootEndpoint {
     fn executor<'a>(
         RootArgs { x, n }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        n.validate_greater_than_or_equal(0.0)?.validate_integer()?;
+    ) -> Result<Self::Output, Error> {
+        n.validate_greater_than_or_equal(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_integer()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let value = if n.value.rem_euclid(2.0) == 0.0 {
-            x.validate_positive()?;
+            x.validate_positive()
+                .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+
             x.value.powf(1.0 / n.value.abs())
         } else {
             x.value.signum() * x.value.abs().powf(1.0 / n.value.abs())

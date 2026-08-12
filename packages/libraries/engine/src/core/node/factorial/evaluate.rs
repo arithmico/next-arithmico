@@ -1,12 +1,13 @@
 use std::collections::VecDeque;
 
+use evaluator::Error;
 use float_utils::F64Extension;
 use node::{Factorial, Node, Number};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Factorial {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let value = self.value.evaluate(context)?;
 
         match value {
@@ -14,10 +15,10 @@ impl EvaluateNode for Factorial {
                 if cfg!(feature = "operator_factorial_number") =>
             {
                 if !number.value.is_integer() {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
                 if number.value < 0.0 {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
                 if number.value.is_close_to_zero() {
                     return Ok(Number::new_node(1.0));
@@ -39,7 +40,7 @@ impl EvaluateNode for Factorial {
                     }
                 }
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(Error::unsupported_operation()),
         }
     }
 }
@@ -54,7 +55,7 @@ mod tests {
         let result = Factorial::new(Number::new_node(0.5))
             .evaluate(&context)
             .unwrap_err();
-        assert_eq!(result, EvaluateNodeError::unsupported_operation());
+        assert_eq!(result, Error::unsupported_operation());
     }
 
     #[test]
@@ -63,7 +64,7 @@ mod tests {
         let result = Factorial::new(Number::new_node(-1.0))
             .evaluate(&context)
             .unwrap_err();
-        assert_eq!(result, EvaluateNodeError::unsupported_operation());
+        assert_eq!(result, Error::unsupported_operation());
     }
 
     #[test]

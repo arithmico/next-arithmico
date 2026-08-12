@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -34,10 +35,11 @@ impl FunctionEndpoint for AtanhEndpoint {
     fn executor<'a>(
         AtanhArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let value = x.value;
 
-        x.validate_inside_open_interval(-1.0, 1.0)?;
+        x.validate_inside_open_interval(-1.0, 1.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let result = value.atanh();
         Ok(Number::new(result))

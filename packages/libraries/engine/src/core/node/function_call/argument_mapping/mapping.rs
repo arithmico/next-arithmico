@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::{DowncastNode, Node};
 use trace::{Tracable, TracableMut};
-
-use crate::core::EvaluateNodeError;
 
 use super::entry::ArgumentMappingEntry;
 
@@ -45,73 +44,71 @@ impl ArgumentMapping {
     fn get_parameter_entry(
         &self,
         name: &str,
-    ) -> Result<&ArgumentMappingEntry, EvaluateNodeError> {
+    ) -> Result<&ArgumentMappingEntry, Error> {
         self.map
             .get(name)
-            .ok_or(EvaluateNodeError::runtime_error("argument not found"))
+            .ok_or(Error::runtime_error("argument not found"))
     }
 
-    pub fn get_node(&self, name: &str) -> Result<Node, EvaluateNodeError> {
+    pub fn get_node(&self, name: &str) -> Result<Node, Error> {
         match self.get_parameter_entry(name)? {
             ArgumentMappingEntry::Value(node) => Ok(node.clone()),
-            _ => {
-                Err(EvaluateNodeError::runtime_error("invalid parameter class"))
-            }
+            _ => Err(Error::runtime_error("invalid parameter class")),
         }
     }
 
-    pub fn required<T>(&self, name: &str) -> Result<&T, EvaluateNodeError>
+    pub fn required<T>(&self, name: &str) -> Result<&T, Error>
     where
         T: DowncastNode,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentMappingEntry::Value(node) => Ok(node.downcast::<T>()?),
+            ArgumentMappingEntry::Value(node) => Ok(node
+                .downcast::<T>()
+                .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
             ArgumentMappingEntry::None => {
-                Err(EvaluateNodeError::missing_parameter(
-                    "required argument missing",
-                ))
+                Err(Error::missing_parameter("required argument missing"))
             }
             ArgumentMappingEntry::ValueList(nodes) => {
-                Err(EvaluateNodeError::too_many_parameters(nodes.len()))
+                Err(Error::too_many_parameters(nodes.len()))
             }
         }
     }
 
-    pub fn optional<T>(
-        &self,
-        name: &str,
-    ) -> Result<Option<&T>, EvaluateNodeError>
+    pub fn optional<T>(&self, name: &str) -> Result<Option<&T>, Error>
     where
         T: DowncastNode,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentMappingEntry::Value(node) => {
-                Ok(Some(node.downcast::<T>()?))
-            }
+            ArgumentMappingEntry::Value(node) => Ok(Some(
+                node.downcast::<T>()
+                    .map_to_error_kind(ErrorKind::UnexpectedNodeType)?,
+            )),
             ArgumentMappingEntry::None => Ok(None),
             ArgumentMappingEntry::ValueList(nodes) => {
-                Err(EvaluateNodeError::too_many_parameters(nodes.len()))
+                Err(Error::too_many_parameters(nodes.len()))
             }
         }
     }
 
-    pub fn multiple<T>(&self, name: &str) -> Result<Vec<&T>, EvaluateNodeError>
+    pub fn multiple<T>(&self, name: &str) -> Result<Vec<&T>, Error>
     where
         T: DowncastNode,
     {
         match self.get_parameter_entry(name)? {
             ArgumentMappingEntry::ValueList(nodes) => nodes
                 .iter()
-                .map(|node| -> Result<&T, EvaluateNodeError> {
-                    Ok(node.downcast::<T>()?)
+                .map(|node| -> Result<&T, Error> {
+                    Ok(node
+                        .downcast::<T>()
+                        .map_to_error_kind(ErrorKind::UnexpectedNodeType)?)
                 })
                 .collect(),
             ArgumentMappingEntry::Value(node) => {
-                Err(EvaluateNodeError::runtime_error("argument is not a list")
+                Err(Error::runtime_error("argument is not a list")
                     .with_optional_span(node.hull()))
             }
             ArgumentMappingEntry::None => {
-                Err(EvaluateNodeError::runtime_error("argument list missing"))
+                Err(Error::runtime_error("argument list missing"))
             }
         }
     }
@@ -120,15 +117,19 @@ impl ArgumentMapping {
         &'a self,
         name: &'a str,
         default: &'a Node,
-    ) -> Result<&'a T, EvaluateNodeError>
+    ) -> Result<&'a T, Error>
     where
         T: DowncastNode,
     {
         match self.get_parameter_entry(name)? {
-            ArgumentMappingEntry::Value(node) => Ok(node.downcast::<T>()?),
-            ArgumentMappingEntry::None => Ok(default.downcast::<T>()?),
+            ArgumentMappingEntry::Value(node) => Ok(node
+                .downcast::<T>()
+                .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
+            ArgumentMappingEntry::None => Ok(default
+                .downcast::<T>()
+                .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
             ArgumentMappingEntry::ValueList(nodes) => {
-                Err(EvaluateNodeError::too_many_parameters(nodes.len()))
+                Err(Error::too_many_parameters(nodes.len()))
             }
         }
     }

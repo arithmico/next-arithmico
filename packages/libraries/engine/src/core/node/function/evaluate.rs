@@ -1,13 +1,12 @@
+use evaluator::Error;
 use node::{Function, GetNodeType, Node};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Function {
-    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, Error> {
         if !cfg!(feature = "datatype_function") {
-            return Err(EvaluateNodeError::unsupported_datatype(
-                self.node_type(),
-            ));
+            return Err(Error::unsupported_datatype(self.node_type()));
         }
 
         Ok(Node::Function(self.clone()))

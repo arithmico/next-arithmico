@@ -1,12 +1,13 @@
+use evaluator::Error;
 use node::{And, Boolean, GetNodeType, Node};
 use trace::{CombineHulls, Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for And {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node(self.node_type()));
+            return Err(Error::invalid_node(self.node_type()));
         }
 
         self.elements
@@ -18,10 +19,7 @@ impl EvaluateNode for And {
     }
 }
 
-fn combine_and_elements(
-    left: &Node,
-    right: &Node,
-) -> Result<Node, EvaluateNodeError> {
+fn combine_and_elements(left: &Node, right: &Node) -> Result<Node, Error> {
     match (left, right) {
         (Node::Boolean(left), Node::Boolean(right))
             if cfg!(feature = "operator_and_boolean_boolean") =>
@@ -32,7 +30,7 @@ fn combine_and_elements(
                     .with_optional_span(span),
             )
         }
-        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+        (left, right) => Err(Error::unsupported_operation()
             .with_optional_span(left.hull())
             .with_optional_span(right.hull())),
     }
@@ -49,7 +47,7 @@ mod tests {
     fn evaluate_invalid_and() {
         let context = Context::default();
         let result = And::new(vec![Boolean::new(true)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::And)));
+        assert_eq!(result, Err(Error::invalid_node(NodeType::And)));
     }
 
     #[test]

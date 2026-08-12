@@ -1,13 +1,12 @@
+use evaluator::Error;
 use node::{GetNodeType, Node, Number};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Number {
-    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, Error> {
         if !cfg!(feature = "datatype_number") {
-            return Err(EvaluateNodeError::unsupported_datatype(
-                self.node_type(),
-            ));
+            return Err(Error::unsupported_datatype(self.node_type()));
         }
 
         Ok(Number::new_node(self.value))

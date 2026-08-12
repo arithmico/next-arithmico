@@ -1,0 +1,45 @@
+# numerical integration
+[numerical_integration.invalid_tolerance]
+English = "The integration tolerance is invalid."
+German = "Die Integrationstoleranz ist ungültig."
+
+[numerical_integration.subdivision_limit_reached]
+English = "The maximum number of subdivisions of the integration interval was reached."
+German = "Die maximale Anzahl an Unterteilungen des Integrationsintervalls wurde erreicht."
+
+[numerical_integration.roundoff_error]
+English = "Roundoff errors prevented the numerical integration from reaching the requested accuracy."
+German = "Rundungsfehler haben verhindert, dass die numerische Integration die angeforderte Genauigkeit erreicht."
+
+[numerical_integration.bad_integrand_behavior]
+English = "The function behaves irregularly at one or more points within the integration interval."
+German = "Die Funktion verhält sich an einer oder mehreren Stellen innerhalb des Integrationsintervalls irregulär."
+
+[numerical_integration.extrapolation_failed]
+English = "The extrapolation used for the numerical integration did not converge."
+German = "Die für die numerische Integration verwendete Extrapolation ist nicht konvergiert."
+
+[numerical_integration.probably_divergent]
+English = "The integral is probably divergent or converges too slowly."
+German = "Das Integral ist vermutlich divergent oder konvergiert zu langsam."
+
+[numerical_integration.non_finite_integrand]
+English = "The function returned the non-finite value {value} at {x}."
+German = "Die Funktion lieferte bei {x} den nicht endlichen Wert {value}."
+
+# find roots
+[find_roots.non_finite_boundary]
+English = "The interval boundary {name} must be finite, but its value is {value}."
+German = "Die Intervallgrenze {name} muss endlich sein, hat aber den Wert {value}."
+
+[find_roots.invalid_interval]
+English = "The start of the search interval ({start}) must be smaller than its end ({end})."
+German = "Der Start des Suchintervalls ({start}) muss kleiner als dessen Ende ({end}) sein."
+
+[find_roots.non_finite_function_value]
+English = "The expression returned the non-finite value {value} at x = {x}."
+German = "Der Ausdruck lieferte bei x = {x} den nicht endlichen Wert {value}."
+
+[find_roots.enclose_zero]
+English = "The zero in the interval from {a} to {b} could not be enclosed."
+German = "Die Nullstelle im Intervall von {a} bis {b} konnte nicht eingeschlossen werden."

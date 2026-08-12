@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
-use trace::{Tracable, TracableMut};
+use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -34,18 +35,11 @@ impl FunctionEndpoint for AcoshEndpoint {
     fn executor<'a>(
         AcoshArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        let value = x.value;
+    ) -> Result<Self::Output, Error> {
+        x.validate_greater_than_or_equal(1.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
-        if value < 1.0 {
-            return Err(EvaluateNodeError::invalid_parameter_value(
-                "engine.api.error.invalid_parameter.must_be_greater_than_or_equal",
-            )
-                .key("value", 1.to_string())
-                .build()
-                .with_optional_span(x.hull())
-            );
-        }
+        let value = x.value;
 
         Ok(Number::new(value.acosh()))
     }
