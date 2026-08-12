@@ -64,7 +64,7 @@ impl Default for Settings {
             language: LanguageValue::System,
             override_decimal_format: OverrideDecimalFormat::new(),
             theme: Theme::System,
-            angle_unit: Default::default(),
+            angle_unit: AngleUnit::Degree,
         }
     }
 }
