@@ -53,3 +53,23 @@ German = "Erwartet wurden Tensoren mit identischen Dimensionen, stattdessen habe
 [error.tensor.vector_dimension]
 English = "The vector is expected to have {dim} dimensions."
 German = "Der Vektor muss {dim} dimensionen haben."
+
+[error.node.too_few_variables]
+English = "The expression contains too few unknown variables. Expected {expected}, but found {actual}."
+German = "Der Ausdruck enthält zu wenige unbekannte Variablen. Erwartet wurden {expected}, gefunden wurden {actual}."
+
+[error.node.too_many_variables]
+English = "The expression contains too many unknown variables. Expected {expected}, but found {actual}."
+German = "Der Ausdruck enthält zu viele unbekannte Variablen. Erwartet wurden {expected}, gefunden wurden {actual}."
+
+[error.function.too_few_arguments]
+English = "The function has too few arguments. Expected {expected}, but found {actual}."
+German = "Die Funktion hat zu wenige Argumente. Erwartet wurden {expected}, gefunden wurden {actual}."
+
+[error.function.too_many_arguments]
+English = "The function has too many arguments. Expected {expected}, but found {actual}."
+German = "Die Funktion hat zu viele Argumente. Erwartet wurden {expected}, gefunden wurden {actual}."
+
+[error.function.argument_symbol_mismatch]
+English = "The function argument \"{argument}\" does not match the unknown variable \"{symbol}\"."
+German = "Das Funktionsargument \"{argument}\" stimmt nicht mit der unbekannten Variable \"{symbol}\" überein."

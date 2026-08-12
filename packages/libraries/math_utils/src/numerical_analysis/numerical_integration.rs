@@ -728,6 +728,7 @@ where
         if ier == 5 {
             break 'main_loop MainLoopExit::EnterFinalSelection;
         }
+
         maxerr = iord[0];
         errmax = elist[maxerr];
         nrmax = 0;
@@ -741,54 +742,54 @@ where
         UseGlobalSum,
         /// label 110
         KeepExtrapolatedAndTestDivergence,
-        /// 130
+        /// label 130
         KeepExtrapolatedWithoutDivergenceTest,
     }
 
     // set final result and error estimate.
-    let final_action = if let MainLoopExit::EnterFinalSelection = main_loop_exit
-    {
-        if abserr == oflow {
-            FinalAction::UseGlobalSum
-        } else {
-            if ier + ierro == 0 {
-                // 110
-                FinalAction::KeepExtrapolatedAndTestDivergence
+    let final_action = match main_loop_exit {
+        MainLoopExit::UseGlobalSum => FinalAction::UseGlobalSum,
+
+        MainLoopExit::EnterFinalSelection => {
+            if abserr == oflow {
+                FinalAction::UseGlobalSum
             } else {
-                if ierro == 3 {
-                    abserr = abserr + correc;
-                }
-                if ier == 0 {
-                    ier = 3;
-                }
+                if ier + ierro == 0 {
+                    // 110
+                    FinalAction::KeepExtrapolatedAndTestDivergence
+                } else {
+                    if ierro == 3 {
+                        abserr = abserr + correc;
+                    }
+                    if ier == 0 {
+                        ier = 3;
+                    }
 
-                if result != 0.0 && area != 0.0 {
-                    // 105
-                    let extrapolated_relative_error = abserr / result.abs();
-                    let global_relative_error = errsum / area.abs();
+                    if result != 0.0 && area != 0.0 {
+                        // 105
+                        let extrapolated_relative_error = abserr / result.abs();
+                        let global_relative_error = errsum / area.abs();
 
-                    if extrapolated_relative_error > global_relative_error {
+                        if extrapolated_relative_error > global_relative_error {
+                            // 115
+                            FinalAction::UseGlobalSum
+                        } else {
+                            // 110
+                            FinalAction::KeepExtrapolatedAndTestDivergence
+                        }
+                    } else if abserr > errsum {
                         // 115
                         FinalAction::UseGlobalSum
+                    } else if area == 0.0 {
+                        // 130
+                        FinalAction::KeepExtrapolatedWithoutDivergenceTest
                     } else {
                         // 110
                         FinalAction::KeepExtrapolatedAndTestDivergence
                     }
-                } else if abserr > errsum {
-                    // 115
-                    FinalAction::UseGlobalSum
-                } else if area == 0.0 {
-                    // 130
-                    FinalAction::KeepExtrapolatedWithoutDivergenceTest
-                } else {
-                    // 110
-                    FinalAction::KeepExtrapolatedAndTestDivergence
                 }
             }
         }
-    } else {
-        // 115 from main loop exit
-        FinalAction::UseGlobalSum
     };
 
     // test on divergence.

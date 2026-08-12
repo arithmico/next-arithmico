@@ -1,11 +1,12 @@
 use core::f64;
-use std::cell::RefCell;
+use std::{cell::RefCell, collections::HashSet};
 
 use engine_derive::FunctionArguments;
 
 use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use math_utils::calculate_numerical_integral;
 use node::{Function, IntoNode, Node, Number};
+use node_validator::{FunctionValidator, NodeValidator};
 use trace::{Tracable, TracableMut};
 
 use crate::{
@@ -48,28 +49,38 @@ impl FunctionEndpoint for NIntegrateEndpoint {
         NIntegrateArgs { f, start, stop }: Self::Arguments<'a>,
         context: &Context,
     ) -> Result<Self::Output, Error> {
-        let arguments = f.signature.arguments();
-        let arguments_count = arguments.len();
+        f.validate_one_argument()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
-        if arguments_count > 1 {
-            return Err(Error::too_many_parameters(arguments_count)
-                .with_optional_span(f.hull()));
-        }
-        if arguments_count < 1 {
-            return Err(
-                Error::missing_parameter("").with_optional_span(f.hull())
-            );
-        }
+        let symbol_names = f.expression.get_symbol_names();
+
+        let known_symbols = symbol_names
+            .iter()
+            .filter(|name| context.lookup(name).is_some())
+            .map(|name| name.to_string())
+            .collect::<HashSet<_>>();
+
+        f.expression
+            .validate_one_unknown_symbol(&known_symbols)
+            .map_to_error_kind(ErrorKind::RuntimeError)?;
+
+        let unknown_symbol = symbol_names
+            .iter()
+            .find(|name| !known_symbols.contains(*name))
+            .expect("unknown symbol count was validated");
+
+        f.validate_argument_matches_unknown_symbol(unknown_symbol)
+            .map_to_error_kind(ErrorKind::RuntimeError)?;
 
         let evaluation_error = RefCell::new(None::<Error>);
 
         let function = |x: f64| -> f64 {
-            let argument_name = &arguments[0].get_name();
             let mut local_context = context.clone();
 
-            local_context
-                .stack
-                .insert(argument_name, Number::new(x).into_node());
+            local_context.stack.insert(
+                &unknown_symbol.to_string(),
+                Number::new(x).into_node(),
+            );
 
             match f.expression.evaluate(&local_context) {
                 Ok(Node::Number(value)) => value.value,
