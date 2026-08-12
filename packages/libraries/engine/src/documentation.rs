@@ -50,7 +50,7 @@ impl ParameterDocumentationItem {
 impl From<&Argument> for ParameterDocumentationItem {
     fn from(argument: &Argument) -> Self {
         let mut item = ParameterDocumentationItem::new();
-        item.name = argument.get_name();
+        item.name = argument.get_name().to_string();
         item.parameter_types = argument
             .get_options()
             .node_types()

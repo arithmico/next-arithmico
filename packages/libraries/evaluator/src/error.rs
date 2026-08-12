@@ -125,7 +125,7 @@ impl Error {
     }
 
     pub fn invalid_parameter_type(
-        name: String,
+        name: &str,
         expected: HashSet<NodeType>,
         received: NodeType,
     ) -> Self {
@@ -149,7 +149,7 @@ impl Error {
     }
 
     pub fn invalid_repeatable_parameter_count(
-        name: String,
+        name: &str,
         min: usize,
         max: Option<usize>,
         received: usize,

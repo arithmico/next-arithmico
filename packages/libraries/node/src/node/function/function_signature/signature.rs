@@ -62,7 +62,11 @@ impl FunctionSignature {
     pub fn argument_names(&self) -> Vec<String> {
         self.arguments()
             .iter()
-            .map(|argument| argument.get_name())
+            .map(|argument| argument.get_name().to_string())
             .collect()
+    }
+
+    pub fn has_argument(&self, name: &str) -> bool {
+        self.arguments.iter().any(|arg| arg.get_name() == name)
     }
 }

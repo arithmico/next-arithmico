@@ -92,9 +92,8 @@ impl Argument {
         self
     }
 
-    // TODO: return reference
-    pub fn get_name(&self) -> String {
-        self.name.clone()
+    pub fn get_name(&self) -> &str {
+        &self.name
     }
 
     pub fn get_description(&self) -> TranslationTemplate {

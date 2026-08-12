@@ -24,6 +24,9 @@ pub enum Error {
         span: Span,
     },
     InvalidFunctionArgumentDeclaration,
+    DuplicateFunctionArgumentName {
+        name: String,
+    },
     InvalidFunctionName,
     MissingClosingParenthesis {
         span: Span,
@@ -93,6 +96,14 @@ impl Translatable for Error {
                     translation_resolver,
                 )
                 .key("pos", span.from.char_index + 1)
+                .translate(language)
+            }
+            Error::DuplicateFunctionArgumentName { name } => {
+                TranslatedMessage::new(
+                    "error.duplicate_function_argument_name",
+                    translation_resolver,
+                )
+                .key("name", name)
                 .translate(language)
             }
         }
