@@ -147,6 +147,13 @@ fn parse_expression_pratt<'a>(
                     let mut signature = FunctionSignature::new();
                     for argument in &function_call.arguments {
                         if let Node::Symbol(symbol) = argument {
+                            if signature.has_argument(&symbol.name) {
+                                return Err(
+                                    Error::DuplicateFunctionArgumentName {
+                                        name: symbol.name.clone(),
+                                    },
+                                );
+                            }
                             signature.add_argument(&symbol.name, |argument| {
                                 argument.node_type(NodeType::Any)
                             });
@@ -438,6 +445,11 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     )?;
                     let mut signature = FunctionSignature::new();
                     for param in parameters {
+                        if signature.has_argument(&param) {
+                            return Err(Error::DuplicateFunctionArgumentName {
+                                name: param,
+                            });
+                        }
                         signature.add_argument(param, |arg| {
                             arg.node_type(NodeType::Any)
                         });
@@ -577,8 +589,7 @@ mod tests {
 
     #[test]
     fn sum_number_x3() {
-        let tokens =
-            tokenize("1 + 2 + 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 + 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -623,8 +634,7 @@ mod tests {
     }
     #[test]
     fn sum_number_number_negate_number() {
-        let tokens =
-            tokenize("1 - 2 + 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 - 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -656,8 +666,7 @@ mod tests {
 
     #[test]
     fn product_number_x3() {
-        let tokens =
-            tokenize("1 * 2 * 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 * 2 * 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -672,8 +681,7 @@ mod tests {
 
     #[test]
     fn sum_product() {
-        let tokens =
-            tokenize("1 + 2 * 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 + 2 * 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -691,8 +699,7 @@ mod tests {
 
     #[test]
     fn product_sum() {
-        let tokens =
-            tokenize("1 * 2 + 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 * 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -724,8 +731,7 @@ mod tests {
 
     #[test]
     fn division_number_x3() {
-        let tokens =
-            tokenize("1 / 2 / 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 / 2 / 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -743,8 +749,7 @@ mod tests {
 
     #[test]
     fn product_division() {
-        let tokens =
-            tokenize("1 * 2 / 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 * 2 / 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -800,8 +805,7 @@ mod tests {
 
     #[test]
     fn power_number_x3() {
-        let tokens =
-            tokenize("1 ^ 2 ^ 3", common::Language::English).unwrap();
+        let tokens = tokenize("1 ^ 2 ^ 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -850,8 +854,7 @@ mod tests {
 
     #[test]
     fn define_function() {
-        let tokens =
-            tokenize("f(x) := x", common::Language::English).unwrap();
+        let tokens = tokenize("f(x) := x", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -941,8 +944,7 @@ mod tests {
 
     #[test]
     fn relation_chain_x2() {
-        let tokens =
-            tokenize("a < b < c", common::Language::English).unwrap();
+        let tokens = tokenize("a < b < c", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1178,8 +1180,7 @@ mod tests {
     #[test]
     fn or_boolean_x3() {
         let tokens =
-            tokenize("true | false | true", common::Language::English)
-                .unwrap();
+            tokenize("true | false | true", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1212,8 +1213,7 @@ mod tests {
     #[test]
     fn and_boolean_x3() {
         let tokens =
-            tokenize("true & false & true", common::Language::English)
-                .unwrap();
+            tokenize("true & false & true", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1230,8 +1230,7 @@ mod tests {
     #[test]
     fn or_and() {
         let tokens =
-            tokenize("true | false & true", common::Language::English)
-                .unwrap();
+            tokenize("true | false & true", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1251,8 +1250,7 @@ mod tests {
     #[test]
     fn and_or() {
         let tokens =
-            tokenize("true & false | true", common::Language::English)
-                .unwrap();
+            tokenize("true & false | true", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1300,8 +1298,7 @@ mod tests {
 
     #[test]
     fn function_1_arg() {
-        let tokens =
-            tokenize("(x) -> x^2", common::Language::English).unwrap();
+        let tokens = tokenize("(x) -> x^2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(

@@ -20,7 +20,7 @@ pub fn map_function_parameters(
         let options = argument.get_options();
         let name = argument.get_name();
         if parameters.is_empty() {
-            let name = name.clone();
+            let name = name;
             match options.cardinality() {
                 Cardinality::Required => {
                     return Err(Error::missing_parameter(name));
@@ -42,7 +42,7 @@ pub fn map_function_parameters(
             }
         }
         while let Some(node) = parameters.front().cloned() {
-            let name = name.clone();
+            let name = name;
             let node = match options.preprocess() {
                 Preprocess::None => node,
                 Preprocess::Evaluate => node.evaluate(context)?,
@@ -113,10 +113,7 @@ pub fn map_function_parameters(
                             if matched >= max.unwrap_or(usize::MAX) {
                                 return Err(
                                     Error::invalid_repeatable_parameter_count(
-                                        name.clone(),
-                                        min,
-                                        max,
-                                        matched,
+                                        name, min, max, matched,
                                     )
                                     .with_optional_span(node.hull()),
                                 );
@@ -126,7 +123,7 @@ pub fn map_function_parameters(
                         }
                         matched += 1;
                     }
-                    mapping.insert_value_list(name.clone(), values);
+                    mapping.insert_value_list(name, values);
                     continue 'outer;
                 }
             }

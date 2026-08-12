@@ -25,3 +25,7 @@ German = "Fehlendes \"*\" zwischen den Positionen {from} und {to}."
 [error.missing_closing_parenthesis]
 English = "Missing closing parenthesis for '(' at position {pos}."
 German = "Fehlende schließende Klammer für \"(\" an Position {pos}."
+
+[error.duplicate_function_argument_name]
+English = "Duplicate function argument name {name}."
+German = "Doppelter Funktionsargumentname {name}."
