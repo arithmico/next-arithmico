@@ -1,5 +1,3 @@
-use std::f64::consts::PI;
-
 #[cfg(feature = "api_endpoint_trigonometry_acos")]
 use crate::api::trigonometry::acos::AcosEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_acosh")]
@@ -97,14 +95,14 @@ impl AngleUnit {
     pub(crate) fn to_radians(&self, value: f64) -> f64 {
         match self {
             AngleUnit::Radian => value,
-            AngleUnit::Degree => value * PI / 180.0,
+            AngleUnit::Degree => value.to_radians(),
         }
     }
 
     pub(crate) fn from_radians(&self, value: f64) -> f64 {
         match self {
             AngleUnit::Radian => value,
-            AngleUnit::Degree => value * 180.0 / PI,
+            AngleUnit::Degree => value.to_degrees(),
         }
     }
 }
