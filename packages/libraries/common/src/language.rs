@@ -1,8 +1,11 @@
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 
-#[derive(Debug, Clone, Copy, PartialEq, Hash, Eq, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Hash, Eq, Serialize, Deserialize, EnumIter,
+)]
 pub enum Language {
     German,
     English,

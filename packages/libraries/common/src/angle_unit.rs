@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
+use strum::EnumIter;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, EnumIter)]
 pub enum AngleUnit {
     Radian,
     Degree,
