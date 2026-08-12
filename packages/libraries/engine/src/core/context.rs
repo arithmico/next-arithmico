@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use node::{HostFunction, Node};
 
-use serde::{Deserialize, Serialize};
+use common::AngleUnit;
 use serializer::DecimalPlaces;
 use translate::Language;
 
@@ -15,18 +15,6 @@ pub struct Context {
     pub angle_unit: AngleUnit,
     pub language: Language,
     pub host_api: Arc<HostApi>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum AngleUnit {
-    Radian,
-    Degree,
-}
-
-impl Default for AngleUnit {
-    fn default() -> Self {
-        Self::Radian
-    }
 }
 
 impl Default for Context {

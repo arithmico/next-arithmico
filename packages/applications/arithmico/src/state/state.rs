@@ -1,8 +1,9 @@
+use common::Language;
 use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{Context, Language, Session, SessionError};
+use engine::{Context, Session, SessionError};
 use node::Node;
 use trace::Trace;
 use web_state::WebState;

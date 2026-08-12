@@ -1,6 +1,7 @@
 use std::fmt::Debug;
 
-use engine::{AngleUnit, DecimalPlaces, Language};
+use common::{AngleUnit, Language};
+use engine::DecimalPlaces;
 use gloo_storage::{LocalStorage, Storage};
 use leptos::prelude::window;
 use override_decimal_format::OverrideDecimalFormat;

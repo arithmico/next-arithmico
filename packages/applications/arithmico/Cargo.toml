@@ -34,6 +34,7 @@ web_state = { path = "../../libraries/web_state" }
 toml = "1.1.2"
 chrono = "0.4.45"
 node = { version = "0.1.0", path = "../../libraries/node" }
+common = { version = "0.1.0", path = "../../libraries/common" }
 
 [build-dependencies]
 chrono = "0.4.45"

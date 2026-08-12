@@ -101,6 +101,7 @@ name = "arithmico"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "common",
  "console_error_panic_hook",
  "editor",
  "editor_core",
@@ -534,6 +535,7 @@ dependencies = [
 name = "engine"
 version = "0.1.0"
 dependencies = [
+ "common",
  "engine_derive",
  "float_utils",
  "lexer",
