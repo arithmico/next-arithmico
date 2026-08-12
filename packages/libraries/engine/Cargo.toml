@@ -16,6 +16,7 @@ math_utils = { path = "../math_utils" }
 parser = { version = "0.1.0", path = "../parser" }
 node_validator = { version = "0.1.0", path = "../node_validator" }
 serializer = { version = "0.1.0", path = "../serializer" }
+common = { version = "0.1.0", path = "../common" }
 
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }

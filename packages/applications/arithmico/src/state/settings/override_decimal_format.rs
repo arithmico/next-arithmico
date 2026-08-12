@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use engine::Language;
+use common::Language;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize, PartialEq)]

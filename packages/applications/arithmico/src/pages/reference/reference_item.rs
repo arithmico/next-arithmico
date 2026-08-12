@@ -1,4 +1,5 @@
-use engine::{DocumentationItem, Language};
+use common::Language;
+use engine::DocumentationItem;
 use leptos::prelude::*;
 use leptos_router::{components::A, hooks::use_navigate};
 use translate::FormattedMessage;
