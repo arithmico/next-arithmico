@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
-use common::Language;
+use common::{IntoEnumIterator, Language};
 
-use crate::TranslationError;
+use crate::{RenderedTranslatedMessage, TranslationError};
 
 pub trait Translatable: Debug {
     fn translate(&self, language: Language)
@@ -17,6 +17,14 @@ pub trait Translatable: Debug {
                 Ok(format!(r#"'{}'"#, self.translate(language)?))
             }
         }
+    }
+
+    fn render(&self) -> RenderedTranslatedMessage {
+        let mut message = RenderedTranslatedMessage::new();
+        for language in Language::iter() {
+            message.add_message(language, self.translate(language));
+        }
+        message
     }
 }
 

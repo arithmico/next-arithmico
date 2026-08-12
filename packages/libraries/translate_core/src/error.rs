@@ -1,11 +1,11 @@
 use common::Language;
 use thiserror::Error;
 
-#[derive(Clone, Debug, Error)]
+#[derive(Clone, Debug, Error, PartialEq)]
 pub enum TranslationError {
     #[error("Missing translation key: {0}")]
     MissingKey(String),
 
-    #[error("Missing translation template for language {0:?}")]
-    MissingTranslationTemplate(Language),
+    #[error("Missing translation for language {0:?}")]
+    MissingTranslation(Language),
 }

@@ -40,7 +40,7 @@ impl TranslationTemplate {
         if let Some(template) = self.templates.get(&language) {
             Ok(template)
         } else {
-            Err(TranslationError::MissingTranslationTemplate(language))
+            Err(TranslationError::MissingTranslation(language))
         }
     }
 
