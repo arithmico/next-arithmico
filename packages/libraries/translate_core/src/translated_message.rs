@@ -92,9 +92,9 @@ impl Translatable for TranslatedMessage {
         language: Language,
     ) -> Result<String, TranslationError> {
         let provider = (self.provider_resolver)();
-        let template = provider.get_template(&self.template_id).ok_or(
-            TranslationError::MissingTranslationTemplate(language.clone()),
-        )?;
+        let template = provider
+            .get_template(&self.template_id)
+            .ok_or(TranslationError::MissingTranslation(language.clone()))?;
         let mut keys = HashMap::new();
         for (key, value) in &self.keys {
             let value = match value {
