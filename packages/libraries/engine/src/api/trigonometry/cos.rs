@@ -1,12 +1,13 @@
 use std::f64::consts::PI;
 
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use float_utils::F64Extension;
 use node::Number;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -30,7 +31,7 @@ impl FunctionEndpoint for CosEndpoint {
     fn executor<'a>(
         CosArgs { x }: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let value = context.angle_unit.to_radians(x.value);
 
         if value.is_close_to_multiple_of(2.0 * PI) {

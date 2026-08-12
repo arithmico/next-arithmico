@@ -1,9 +1,10 @@
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use node::Number;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -27,7 +28,7 @@ impl FunctionEndpoint for CoshEndpoint {
     fn executor<'a>(
         CoshArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let value = x.value;
 
         Ok(Number::new(value.cosh()))

@@ -22,6 +22,4 @@ mod tensor;
 
 mod evaluate;
 
-pub use function_call::{
-    ArgumentMapping, FromArgumentMapping, FunctionArguments,
-};
+pub use function_call::{ArgumentMapping, FunctionArguments};

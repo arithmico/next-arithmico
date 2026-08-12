@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::{DowncastNodeVec, Number, Tensor};
 use node_validator::TensorValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -35,11 +36,23 @@ impl FunctionEndpoint for CrossEndpoint {
     fn executor<'a>(
         CrossArgs { a, b }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        a.validate_rank(1)?.validate_vector_dimension(3)?;
-        b.validate_rank(1)?.validate_vector_dimension(3)?;
-        let a = a.elements.downcast::<Number>()?;
-        let b = b.elements.downcast::<Number>()?;
+    ) -> Result<Self::Output, Error> {
+        a.validate_rank(1)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_vector_dimension(3)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+        b.validate_rank(1)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_vector_dimension(3)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+        let a = a
+            .elements
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+        let b = b
+            .elements
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let output = match (&a[..], &b[..]) {
             ([a1, a2, a3], [b1, b2, b3]) => vec![

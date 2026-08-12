@@ -1,9 +1,10 @@
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use node::Number;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -27,7 +28,7 @@ impl FunctionEndpoint for AtanEndpoint {
     fn executor<'a>(
         AtanArgs { x }: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let value = x.value;
         let result = context.angle_unit.from_radians(value.atan());
         Ok(Number::new(result))

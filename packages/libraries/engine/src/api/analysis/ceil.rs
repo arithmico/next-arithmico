@@ -1,9 +1,10 @@
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use node::Number;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -33,7 +34,7 @@ impl FunctionEndpoint for CeilEndpoint {
     fn executor<'a>(
         CeilArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
+    ) -> Result<Self::Output, Error> {
         let result = x.value.ceil();
 
         Ok(Number::new(result))

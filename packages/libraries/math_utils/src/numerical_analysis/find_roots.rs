@@ -1,7 +1,9 @@
 use thiserror::Error;
+use translate_core::{Translatable, TranslatedMessage};
 
-use crate::numerical_analysis::enclose_zero::{
-    EnclosingZeroError, enclose_zero,
+use crate::{
+    numerical_analysis::enclose_zero::{EnclosingZeroError, enclose_zero},
+    translation_provider::translation_resolver,
 };
 
 #[derive(Debug, Error)]
@@ -21,6 +23,48 @@ pub enum FindRootsError {
         #[source]
         source: EnclosingZeroError,
     },
+}
+
+impl Translatable for FindRootsError {
+    fn translate(
+        &self,
+        language: translate_core::Language,
+    ) -> Result<String, translate_core::TranslationError> {
+        match self {
+            FindRootsError::NonFiniteBoundary { name, value } => {
+                TranslatedMessage::new(
+                    "engine.api.error.generic_runtime_error.find_roots.non_finite_boundary",
+                    translation_resolver
+                )
+                .key("name", name)
+                .key("value", value)
+            }
+            FindRootsError::InvalidInterval { start, end } => {
+                TranslatedMessage::new(
+                    "engine.api.error.generic_runtime_error.find_roots.invalid_interval",
+                    translation_resolver,
+                )
+                .key("start", start)
+                .key("end", end)
+            }
+            FindRootsError::NonFiniteFunctionValue { x, value } => {
+                TranslatedMessage::new(
+                "engine.api.error.generic_runtime_error.find_roots.non_finite_function_value",
+                    translation_resolver,
+                )
+                .key("x", x)
+                .key("value", value)
+            }
+            FindRootsError::EncloseZero { a, b, .. } => {
+                TranslatedMessage::new(
+                "engine.api.error.generic_runtime_error.find_roots.enclose_zero",
+                    translation_resolver,
+                )
+                .key("a", a)
+                .key("b", b)
+            }
+        }.translate(language)
+    }
 }
 
 /// Finds all detectable zeros of `f` in the interval `[start, end]`.

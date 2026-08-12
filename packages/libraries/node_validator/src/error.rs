@@ -1,6 +1,6 @@
 use thiserror::Error;
 use trace::{Tracable, Trace};
-use translate_core::TranslatedMessage;
+use translate_core::{Translatable, TranslatedMessage};
 
 #[derive(Debug, Clone, Error)]
 #[error("ValidationError")]
@@ -15,5 +15,14 @@ impl Error {
             trace: node.trace().clone(),
             message,
         }
+    }
+}
+
+impl Translatable for Error {
+    fn translate(
+        &self,
+        language: translate_core::Language,
+    ) -> Result<String, translate_core::TranslationError> {
+        self.message.translate(language)
     }
 }

@@ -538,6 +538,7 @@ version = "0.1.0"
 dependencies = [
  "common",
  "engine_derive",
+ "evaluator",
  "float_utils",
  "lexer",
  "math_utils",
@@ -1318,6 +1319,7 @@ name = "math_utils"
 version = "0.1.0"
 dependencies = [
  "thiserror 2.0.20",
+ "translate_core",
 ]
 
 [[package]]

@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -28,8 +29,9 @@ impl FunctionEndpoint for SqrtEndpoint {
     fn executor<'a>(
         SqrtArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        x.validate_greater_than_or_equal(0.0)?;
+    ) -> Result<Self::Output, Error> {
+        x.validate_greater_than_or_equal(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let result = x.value.sqrt();
 

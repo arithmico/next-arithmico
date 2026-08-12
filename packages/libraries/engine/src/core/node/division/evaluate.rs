@@ -1,9 +1,10 @@
+use evaluator::Error;
 use node::{Division, Node, Number, Tensor};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Division {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let dividend = self.dividend.evaluate(context)?;
         let divisor = self.divisor.evaluate(context)?;
 
@@ -14,7 +15,7 @@ impl EvaluateNode for Division {
             (Node::Tensor(dividend), Node::Number(divisor)) => {
                 divide_tensor_by_number(&dividend, &divisor, context)
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(Error::unsupported_operation()),
         }
     }
 }
@@ -22,13 +23,13 @@ impl EvaluateNode for Division {
 fn divide_number_by_number(
     dividend: &Number,
     divisor: &Number,
-) -> Result<Node, EvaluateNodeError> {
+) -> Result<Node, Error> {
     if !cfg!(feature = "operator_division_number_number") {
-        return Err(EvaluateNodeError::unsupported_operation());
+        return Err(Error::unsupported_operation());
     }
 
     if divisor.value == 0. {
-        return Err(EvaluateNodeError::division_by_zero());
+        return Err(Error::division_by_zero());
     }
 
     Ok(Number::new_node(dividend.value / divisor.value))
@@ -38,9 +39,9 @@ fn divide_tensor_by_number(
     dividend: &Tensor,
     divisor: &Number,
     context: &Context,
-) -> Result<Node, EvaluateNodeError> {
+) -> Result<Node, Error> {
     if !cfg!(feature = "operator_division_tensor_number") {
-        return Err(EvaluateNodeError::unsupported_operation());
+        return Err(Error::unsupported_operation());
     }
 
     let elements = dividend
@@ -63,7 +64,7 @@ mod tests {
         let context = Context::default();
         let result = Division::new(Number::new_node(8.), Number::new_node(0.))
             .evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::division_by_zero()));
+        assert_eq!(result, Err(Error::division_by_zero()));
     }
 
     #[test]

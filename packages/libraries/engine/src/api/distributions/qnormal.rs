@@ -1,6 +1,9 @@
 use std::sync::LazyLock;
 
 use engine_derive::FunctionArguments;
+use evaluator::Error;
+use evaluator::ErrorKind;
+use evaluator::MapToEvaluatorError;
 use math_utils::calculate_quantile_of_normal_cdf;
 use node::IntoNode;
 use node::Node;
@@ -9,7 +12,7 @@ use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 static DEFAULT_MEAN: LazyLock<Node> =
@@ -54,12 +57,14 @@ impl FunctionEndpoint for QNormalEndpoint {
     fn executor<'a>(
         QNormalArgs { p, mean, sd }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        p.validate_inside_open_interval(0.0, 1.0)?;
-        sd.validate_greater_than(0.0)?;
+    ) -> Result<Self::Output, Error> {
+        p.validate_inside_open_interval(0.0, 1.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+        sd.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         calculate_quantile_of_normal_cdf(p.value, mean.value, sd.value)
-            .map_err(|_| EvaluateNodeError::runtime_error("qnormal"))
+            .map_err(|_| Error::runtime_error("qnormal"))
             .map(|result| Number::new(result))
     }
 }

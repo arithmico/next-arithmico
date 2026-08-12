@@ -1,10 +1,11 @@
+use evaluator::Error;
 use node::Node;
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Node {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         match self {
             Node::Boolean(boolean) => boolean.evaluate(context),
             Node::Sum(sum) => sum.evaluate(context),

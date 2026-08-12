@@ -1,13 +1,14 @@
+use evaluator::Error;
 use node::{GetNodeType, IntoNode, Node, Number, Sum, Tensor};
 use std::iter::zip;
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Sum {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         if self.elements.len() < 2 {
-            return Err(EvaluateNodeError::invalid_node(self.node_type()));
+            return Err(Error::invalid_node(self.node_type()));
         }
 
         let mut elements = self
@@ -29,11 +30,11 @@ fn add_sum_elements(
     left: &Node,
     right: &Node,
     context: &Context,
-) -> Result<Node, EvaluateNodeError> {
+) -> Result<Node, Error> {
     match (left, right) {
         (Node::Number(left), Node::Number(right)) => {
             if !cfg!(feature = "operator_sum_number_number") {
-                return Err(EvaluateNodeError::unsupported_operation());
+                return Err(Error::unsupported_operation());
             }
 
             Ok(Number::new_node(left.value + right.value))
@@ -51,7 +52,7 @@ fn add_sum_elements(
         {
             // TODO: add special error variants for vectors and matrices
             if left.shape != right.shape {
-                return Err(EvaluateNodeError::incompatible_tensor_shapes(
+                return Err(Error::incompatible_tensor_shapes(
                     &left.shape,
                     &right.shape,
                 ));
@@ -66,11 +67,11 @@ fn add_sum_elements(
                             .with_optional_span(right.hull())
                             .evaluate(context)
                     })
-                    .collect::<Result<Vec<_>, EvaluateNodeError>>()?,
+                    .collect::<Result<Vec<_>, Error>>()?,
             )
             .into_node())
         }
-        (left, right) => Err(EvaluateNodeError::unsupported_operation()
+        (left, right) => Err(Error::unsupported_operation()
             .with_optional_span(left.hull())
             .with_optional_span(right.hull())),
     }
@@ -87,7 +88,7 @@ mod tests {
     fn evaluate_invalid_sum() {
         let context = Context::default();
         let result = Sum::new(vec![Number::new_node(1.)]).evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::invalid_node(NodeType::Sum)));
+        assert_eq!(result, Err(Error::invalid_node(NodeType::Sum)));
     }
 
     #[test]
@@ -165,10 +166,7 @@ mod tests {
         ])
         .evaluate(&context)
         .unwrap_err();
-        assert_eq!(
-            result,
-            EvaluateNodeError::incompatible_tensor_shapes(&[3], &[2])
-        );
+        assert_eq!(result, Error::incompatible_tensor_shapes(&[3], &[2]));
     }
 
     #[test]
@@ -270,10 +268,7 @@ mod tests {
         .evaluate(&context)
         .unwrap_err();
 
-        assert_eq!(
-            result,
-            EvaluateNodeError::incompatible_tensor_shapes(&[3, 3], &[2, 2])
-        );
+        assert_eq!(result, Error::incompatible_tensor_shapes(&[3, 3], &[2, 2]));
     }
 
     #[test]
@@ -377,10 +372,7 @@ mod tests {
 
         assert_eq!(
             result,
-            EvaluateNodeError::incompatible_tensor_shapes(
-                &[2, 2, 2],
-                &[2, 2, 2, 2]
-            )
+            Error::incompatible_tensor_shapes(&[2, 2, 2], &[2, 2, 2, 2])
         );
     }
 }

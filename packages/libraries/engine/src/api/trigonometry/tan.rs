@@ -1,6 +1,7 @@
 use std::f64::consts::PI;
 
 use engine_derive::FunctionArguments;
+use evaluator::Error;
 use float_utils::F64Extension;
 use node::Number;
 use translate_core::Language;
@@ -27,7 +28,7 @@ impl FunctionEndpoint for TanEndpoint {
     fn executor<'a>(
         TanArgs { x }: Self::Arguments<'a>,
         context: &crate::Context,
-    ) -> Result<Number, crate::core::EvaluateNodeError> {
+    ) -> Result<Number, Error> {
         let value = context.angle_unit.to_radians(x.value);
 
         if value.is_close_to_multiple_of(PI) {

@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::Number;
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -28,8 +29,9 @@ impl FunctionEndpoint for AsinEndpoint {
     fn executor<'a>(
         AsinArgs { x }: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        x.validate_inside_closed_interval(-1.0, 1.0)?;
+    ) -> Result<Self::Output, Error> {
+        x.validate_inside_closed_interval(-1.0, 1.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let result = context.angle_unit.from_radians(x.value.asin());
 

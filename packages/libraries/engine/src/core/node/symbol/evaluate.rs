@@ -1,19 +1,17 @@
+use evaluator::Error;
 use node::{GetNodeType, Node, Symbol};
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Symbol {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         if !cfg!(feature = "datatype_symbol") {
-            return Err(EvaluateNodeError::unsupported_datatype(
-                self.node_type(),
-            ));
+            return Err(Error::unsupported_datatype(self.node_type()));
         }
 
         context.lookup(&self.name).ok_or_else(|| {
-            EvaluateNodeError::unknown_symbol(&self.name)
-                .with_optional_span(self.hull())
+            Error::unknown_symbol(&self.name).with_optional_span(self.hull())
         })
     }
 }
@@ -32,7 +30,7 @@ mod tests {
     fn evaluate_unknown_symbol() {
         let context = Context::default();
         let result = Symbol::new("x").evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::unknown_symbol("x")));
+        assert_eq!(result, Err(Error::unknown_symbol("x")));
     }
 
     #[test]

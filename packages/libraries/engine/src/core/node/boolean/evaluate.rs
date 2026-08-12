@@ -1,14 +1,13 @@
+use evaluator::Error;
 use node::{Boolean, GetNodeType, Node};
 use trace::{Tracable, TracableMut};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Boolean {
-    fn evaluate(&self, _context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, _context: &Context) -> Result<Node, Error> {
         if !cfg!(feature = "datatype_boolean") {
-            return Err(EvaluateNodeError::unsupported_datatype(
-                self.node_type(),
-            ));
+            return Err(Error::unsupported_datatype(self.node_type()));
         }
 
         Ok(Boolean::new(self.value).with_optional_span(self.hull()))

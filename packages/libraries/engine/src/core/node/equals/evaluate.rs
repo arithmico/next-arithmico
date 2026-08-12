@@ -1,48 +1,46 @@
 use std::iter::zip;
 
+use evaluator::Error;
 use node::{Boolean, Equals, Node};
 
-use crate::core::{Context, EvaluateNode, EvaluateNodeError};
+use crate::core::{Context, EvaluateNode};
 
 impl EvaluateNode for Equals {
-    fn evaluate(&self, context: &Context) -> Result<Node, EvaluateNodeError> {
+    fn evaluate(&self, context: &Context) -> Result<Node, Error> {
         let left = self.left.evaluate(context)?;
         let right = self.right.evaluate(context)?;
 
         match (left, right) {
             (Node::Number(left), Node::Number(right)) => {
                 if !cfg!(feature = "operator_equals_number_number") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Boolean(left), Node::Boolean(right)) => {
                 if !cfg!(feature = "operator_equals_boolean_boolean") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 Ok(Boolean::new(left.value == right.value))
             }
             (Node::Tensor(left), Node::Tensor(right)) => {
                 if !cfg!(feature = "operator_equals_tensor_tensor") {
-                    return Err(EvaluateNodeError::unsupported_operation());
+                    return Err(Error::unsupported_operation());
                 }
 
                 if left.shape != right.shape {
                     return Ok(Boolean::new(false));
                 }
 
-                let comparison_result: Result<bool, EvaluateNodeError> =
+                let comparison_result: Result<bool, Error> =
                     zip(left.elements.into_iter(), right.elements.into_iter())
                         .map(|(left, right)| {
                             Equals::new(left, right).evaluate(context).map(
-                                |element| {
-                                    match element { Node::Boolean(element) => {
-                            Ok(element.value)
-                        } _ => {
-                            Err(EvaluateNodeError::unsupported_operation())
-                        }}
+                                |element| match element {
+                                    Node::Boolean(element) => Ok(element.value),
+                                    _ => Err(Error::unsupported_operation()),
                                 },
                             )
                         })
@@ -53,7 +51,7 @@ impl EvaluateNode for Equals {
 
                 Ok(Boolean::new(comparison_result?))
             }
-            _ => Err(EvaluateNodeError::unsupported_operation()),
+            _ => Err(Error::unsupported_operation()),
         }
     }
 }
@@ -176,6 +174,6 @@ mod tests {
             ]),
         )
         .evaluate(&context);
-        assert_eq!(result, Err(EvaluateNodeError::unsupported_operation()));
+        assert_eq!(result, Err(Error::unsupported_operation()));
     }
 }

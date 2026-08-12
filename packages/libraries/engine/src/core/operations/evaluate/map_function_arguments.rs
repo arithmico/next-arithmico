@@ -1,12 +1,10 @@
 use std::collections::VecDeque;
 
+use evaluator::Error;
 use node::{Cardinality, FunctionSignature, GetNodeType, Node, Preprocess};
 use trace::{CombineHulls, Tracable, TracableMut};
 
-use crate::{
-    ArgumentMapping,
-    core::{Context, EvaluateNodeError},
-};
+use crate::{ArgumentMapping, core::Context};
 
 use super::EvaluateNode;
 
@@ -14,7 +12,7 @@ pub fn map_function_parameters(
     signature: &FunctionSignature,
     parameters: &Vec<Node>,
     context: &Context,
-) -> Result<ArgumentMapping, EvaluateNodeError> {
+) -> Result<ArgumentMapping, Error> {
     let mut parameters = VecDeque::from(parameters.clone());
     let mut mapping = ArgumentMapping::new();
     'outer: for argument in signature.arguments() {
@@ -25,7 +23,7 @@ pub fn map_function_parameters(
             let name = name.clone();
             match options.cardinality() {
                 Cardinality::Required => {
-                    return Err(EvaluateNodeError::missing_parameter(name));
+                    return Err(Error::missing_parameter(name));
                 }
                 Cardinality::Optional => {
                     mapping.insert_none(name);
@@ -36,8 +34,9 @@ pub fn map_function_parameters(
                 }
                 Cardinality::Multiple { min, max } => {
                     if min > matched {
-                        return Err(EvaluateNodeError::invalid_repeatable_parameter_count(
-                            name, min, max, matched));
+                        return Err(Error::invalid_repeatable_parameter_count(
+                            name, min, max, matched,
+                        ));
                     }
                 }
             }
@@ -55,7 +54,7 @@ pub fn map_function_parameters(
                         parameters.pop_front();
                         continue 'outer;
                     } else {
-                        return Err(EvaluateNodeError::invalid_parameter_type(
+                        return Err(Error::invalid_parameter_type(
                             name,
                             options.node_types(),
                             node.node_type(),
@@ -93,24 +92,34 @@ pub fn map_function_parameters(
                         };
 
                         if matched > max.unwrap_or(matched) {
-                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_optional_span(node.hull()));
+                            return Err(
+                                Error::invalid_repeatable_parameter_count(
+                                    name, min, max, matched,
+                                )
+                                .with_optional_span(node.hull()),
+                            );
                         }
                         if !argument.has_node_type(node.node_type()) {
                             if matched >= min {
                                 continue 'outer;
                             }
-                            return Err(EvaluateNodeError::invalid_repeatable_parameter_count(name, min, max, matched).with_optional_span(node.hull()));
+                            return Err(
+                                Error::invalid_repeatable_parameter_count(
+                                    name, min, max, matched,
+                                )
+                                .with_optional_span(node.hull()),
+                            );
                         } else {
                             if matched >= max.unwrap_or(usize::MAX) {
                                 return Err(
-                EvaluateNodeError::invalid_repeatable_parameter_count(
-                    name.clone(),
-                    min,
-                    max,
-                    matched,
-                )
-                .with_optional_span(node.hull()),
-            );
+                                    Error::invalid_repeatable_parameter_count(
+                                        name.clone(),
+                                        min,
+                                        max,
+                                        matched,
+                                    )
+                                    .with_optional_span(node.hull()),
+                                );
                             }
                             values.push(node);
                             parameters.pop_front();
@@ -125,7 +134,7 @@ pub fn map_function_parameters(
     }
 
     if !parameters.is_empty() {
-        return Err(EvaluateNodeError::too_many_parameters(parameters.len())
+        return Err(Error::too_many_parameters(parameters.len())
             .with_optional_span(
                 parameters.into_iter().collect::<Vec<_>>().combine_hulls(),
             ));

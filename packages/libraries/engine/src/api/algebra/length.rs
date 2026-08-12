@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
-use node::{Number, Tensor};
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use node::{DowncastNodeVec, Number, Tensor};
 use node_validator::TensorValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -34,14 +35,16 @@ impl FunctionEndpoint for LengthEndpoint {
     fn executor<'a>(
         LengthArgs { x }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        x.validate_not_empty()?.validate_rank(1)?;
+    ) -> Result<Self::Output, Error> {
+        x.validate_not_empty()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_rank(1)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let value = x
             .elements
-            .iter()
-            .map(|element| element.downcast::<Number>())
-            .collect::<Result<Vec<_>, _>>()?
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .iter()
             .fold(0.0, |acc, v| acc + v.value.powi(2))
             .sqrt();

@@ -1,0 +1,3 @@
+[error.unexpected_node_type]
+Enlish = "Unexpected value expected {expected} but received {received}."
+German = "Unerwarteter Wert. Statt {expected} wurde {received} vorgefunden."

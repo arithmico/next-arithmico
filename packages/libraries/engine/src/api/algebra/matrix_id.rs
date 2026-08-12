@@ -1,10 +1,11 @@
 use engine_derive::FunctionArguments;
+use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use node::{Node, Number, Tensor};
 use node_validator::NumberValidator;
 
 use crate::{
     Context,
-    core::{EvaluateNodeError, FunctionEndpoint, Language},
+    core::{FunctionEndpoint, Language},
 };
 
 #[derive(FunctionArguments)]
@@ -28,8 +29,12 @@ impl FunctionEndpoint for MatrixIdEndpoint {
     fn executor<'a>(
         MatrixIdArgs { n }: Self::Arguments<'a>,
         _context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError> {
-        n.validate_greater_than(0.0)?.validate_integer()?;
+    ) -> Result<Self::Output, Error> {
+        n.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
+            .validate_integer()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
+
         let n = n.value as usize;
         let mut elements = Vec::<Node>::with_capacity(n);
         for i in 0..n {

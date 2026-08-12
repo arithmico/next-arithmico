@@ -1,7 +1,6 @@
 mod api;
 mod core;
 mod documentation;
-mod macros;
 mod session;
 
 pub use core::{Context, NodeConverter, node::*};

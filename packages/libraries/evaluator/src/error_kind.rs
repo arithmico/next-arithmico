@@ -1,9 +1,9 @@
-use translate_core::{Translatable, TranslatedMessage};
+use translate::{Language, Translatable, TranslatedMessage, TranslationError};
 
-use crate::core::translation_resolver;
+use crate::translation_provider::translation_resolver;
 
 #[derive(Debug, PartialEq, Clone)]
-pub enum EvaluateNodeErrorKind {
+pub enum ErrorKind {
     UnsupportedOperation,
     UnsupportedDataType,
     UnknownSymbol,
@@ -20,52 +20,52 @@ pub enum EvaluateNodeErrorKind {
     UnexpectedNodeType,
 }
 
-impl Translatable for EvaluateNodeErrorKind {
+impl Translatable for ErrorKind {
     fn translate(
         &self,
-        language: translate_core::Language,
-    ) -> Result<String, translate_core::TranslationError> {
+        language: Language,
+    ) -> Result<String, TranslationError> {
         let translation_id = match self {
-            EvaluateNodeErrorKind::UnsupportedOperation => {
+            ErrorKind::UnsupportedOperation => {
                 "engine.evaluate.error.unsupported_operation.error_kind"
             }
-            EvaluateNodeErrorKind::UnsupportedDataType => {
+            ErrorKind::UnsupportedDataType => {
                 "engine.evaluate.error.unsupported_datatype.error_kind"
             }
-            EvaluateNodeErrorKind::UnknownSymbol => {
+            ErrorKind::UnknownSymbol => {
                 "engine.evaluate.error.unknown_symbol.error_kind"
             }
-            EvaluateNodeErrorKind::RuntimeError => {
+            ErrorKind::RuntimeError => {
                 "engine.evaluate.error.runtime_error.error_kind"
             }
-            EvaluateNodeErrorKind::InvalidNode => {
+            ErrorKind::InvalidNode => {
                 "engine.evaluate.error.invalid_node.error_kind"
             }
-            EvaluateNodeErrorKind::IncompatibleVectorDimensions => {
+            ErrorKind::IncompatibleVectorDimensions => {
                 "engine.evaluate.error.incompatible_vector_dimensions.error_kind"
             }
-            EvaluateNodeErrorKind::IncompatibleMatrixDimensions => {
+            ErrorKind::IncompatibleMatrixDimensions => {
                 "engine.evaluate.error.incompatible_matrix_dimensions.error_kind"
             }
-            EvaluateNodeErrorKind::DivisionByZero => {
+            ErrorKind::DivisionByZero => {
                 "engine.evaluate.error.division_by_zero.error_kind"
             }
-            EvaluateNodeErrorKind::MissingParameter => {
+            ErrorKind::MissingParameter => {
                 "engine.evaluate.error.missing_parameter.error_kind"
             }
-            EvaluateNodeErrorKind::InvalidRepeatableParameterCount => {
+            ErrorKind::InvalidRepeatableParameterCount => {
                 "engine.evaluate.error.invalid_repeatable_parameter_count.error_kind"
             }
-            EvaluateNodeErrorKind::InvalidParameterType => {
+            ErrorKind::InvalidParameterType => {
                 "engine.evaluate.error.invalid_parameter_type.error_kind"
             }
-            EvaluateNodeErrorKind::TooManyParameters => {
+            ErrorKind::TooManyParameters => {
                 "engine.evaluate.error.too_many_parameters.error_kind"
             }
-            EvaluateNodeErrorKind::InvalidParameterValue => {
+            ErrorKind::InvalidParameterValue => {
                 "engine.evaluate.error.invalid_parameter_value.error_kind"
             }
-            EvaluateNodeErrorKind::UnexpectedNodeType => {
+            ErrorKind::UnexpectedNodeType => {
                 "engine.evaluate.error.unexpected_node_type.error_kind"
             }
         };

@@ -1,14 +1,13 @@
 use std::collections::HashMap;
 
+use evaluator::Error;
 use node::{FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType};
 use translate_core::Language;
 
-use crate::{
-    ArgumentMapping, Context, FunctionArguments, core::EvaluateNodeError,
-};
+use crate::{ArgumentMapping, Context, FunctionArguments};
 
 pub type FunctionExecutor =
-    fn(&ArgumentMapping, &Context) -> Result<Node, EvaluateNodeError>;
+    fn(&ArgumentMapping, &Context) -> Result<Node, Error>;
 
 pub type ConstantExecutor = fn(&Context) -> Node;
 
@@ -126,7 +125,7 @@ pub trait FunctionEndpoint {
     fn executor<'a>(
         args: Self::Arguments<'a>,
         context: &Context,
-    ) -> Result<Self::Output, EvaluateNodeError>;
+    ) -> Result<Self::Output, Error>;
 
     #[doc(hidden)]
     fn name() -> &'static str {
@@ -142,7 +141,7 @@ pub trait FunctionEndpoint {
     fn call(
         arguments: &ArgumentMapping,
         context: &Context,
-    ) -> Result<Node, EvaluateNodeError> {
+    ) -> Result<Node, Error> {
         Ok(
             Self::executor(Self::Arguments::from_mapping(arguments)?, context)?
                 .into_node(),

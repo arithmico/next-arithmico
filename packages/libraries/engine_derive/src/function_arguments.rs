@@ -271,7 +271,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         impl<'a> crate::FunctionArguments<'a> for #struct_name<'a> {
             fn from_mapping(
                 arguments: &'a crate::ArgumentMapping,
-            ) -> Result<Self, crate::core::EvaluateNodeError> {
+            ) -> Result<Self, evaluator::Error> {
                 Ok(#struct_name {
                     #(#field_mapping,)*
                 })
