@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 use thiserror::Error;
 use translate_core::{Translatable, TranslatedMessage, TranslationError};
 

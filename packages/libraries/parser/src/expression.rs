@@ -521,7 +521,7 @@ mod tests {
 
     #[test]
     fn symbol() {
-        let tokens = tokenize("foo", language::Language::English).unwrap();
+        let tokens = tokenize("foo", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -531,7 +531,7 @@ mod tests {
 
     #[test]
     fn number() {
-        let tokens = tokenize("1", language::Language::English).unwrap();
+        let tokens = tokenize("1", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -542,7 +542,7 @@ mod tests {
 
     #[test]
     fn boolean_true() {
-        let tokens = tokenize("true", language::Language::English).unwrap();
+        let tokens = tokenize("true", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -553,7 +553,7 @@ mod tests {
 
     #[test]
     fn boolean_false() {
-        let tokens = tokenize("false", language::Language::English).unwrap();
+        let tokens = tokenize("false", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -563,7 +563,7 @@ mod tests {
 
     #[test]
     fn sum_number_x2() {
-        let tokens = tokenize("1 + 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 + 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -578,7 +578,7 @@ mod tests {
     #[test]
     fn sum_number_x3() {
         let tokens =
-            tokenize("1 + 2 + 3", language::Language::English).unwrap();
+            tokenize("1 + 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -593,7 +593,7 @@ mod tests {
 
     #[test]
     fn single_negate() {
-        let tokens = tokenize("-3", language::Language::English).unwrap();
+        let tokens = tokenize("-3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -606,7 +606,7 @@ mod tests {
 
     #[test]
     fn sum_number_negate_number() {
-        let tokens = tokenize("1 - 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 - 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -624,7 +624,7 @@ mod tests {
     #[test]
     fn sum_number_number_negate_number() {
         let tokens =
-            tokenize("1 - 2 + 3", language::Language::English).unwrap();
+            tokenize("1 - 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -642,7 +642,7 @@ mod tests {
 
     #[test]
     fn product_number_x2() {
-        let tokens = tokenize("1 * 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 * 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -657,7 +657,7 @@ mod tests {
     #[test]
     fn product_number_x3() {
         let tokens =
-            tokenize("1 * 2 * 3", language::Language::English).unwrap();
+            tokenize("1 * 2 * 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -673,7 +673,7 @@ mod tests {
     #[test]
     fn sum_product() {
         let tokens =
-            tokenize("1 + 2 * 3", language::Language::English).unwrap();
+            tokenize("1 + 2 * 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -692,7 +692,7 @@ mod tests {
     #[test]
     fn product_sum() {
         let tokens =
-            tokenize("1 * 2 + 3", language::Language::English).unwrap();
+            tokenize("1 * 2 + 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -710,7 +710,7 @@ mod tests {
 
     #[test]
     fn division_number_x2() {
-        let tokens = tokenize("1 / 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 / 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -725,7 +725,7 @@ mod tests {
     #[test]
     fn division_number_x3() {
         let tokens =
-            tokenize("1 / 2 / 3", language::Language::English).unwrap();
+            tokenize("1 / 2 / 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -744,7 +744,7 @@ mod tests {
     #[test]
     fn product_division() {
         let tokens =
-            tokenize("1 * 2 / 3", language::Language::English).unwrap();
+            tokenize("1 * 2 / 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -763,7 +763,7 @@ mod tests {
     #[test]
     fn product_sum_sum() {
         let tokens =
-            tokenize("(1 + 2) * (3 + 4)", language::Language::English).unwrap();
+            tokenize("(1 + 2) * (3 + 4)", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -786,7 +786,7 @@ mod tests {
 
     #[test]
     fn power_number_x2() {
-        let tokens = tokenize("1 ^ 2", language::Language::English).unwrap();
+        let tokens = tokenize("1 ^ 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -801,7 +801,7 @@ mod tests {
     #[test]
     fn power_number_x3() {
         let tokens =
-            tokenize("1 ^ 2 ^ 3", language::Language::English).unwrap();
+            tokenize("1 ^ 2 ^ 3", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -819,7 +819,7 @@ mod tests {
 
     #[test]
     fn define_symbol() {
-        let tokens = tokenize("a := 2", language::Language::English).unwrap();
+        let tokens = tokenize("a := 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         dbg!(&output);
@@ -835,7 +835,7 @@ mod tests {
 
     #[test]
     fn function_call() {
-        let tokens = tokenize("f(x)", language::Language::English).unwrap();
+        let tokens = tokenize("f(x)", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -851,7 +851,7 @@ mod tests {
     #[test]
     fn define_function() {
         let tokens =
-            tokenize("f(x) := x", language::Language::English).unwrap();
+            tokenize("f(x) := x", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -871,7 +871,7 @@ mod tests {
 
     #[test]
     fn equals() {
-        let tokens = tokenize("a = 2", language::Language::English).unwrap();
+        let tokens = tokenize("a = 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -885,7 +885,7 @@ mod tests {
 
     #[test]
     fn less_than() {
-        let tokens = tokenize("a < 2", language::Language::English).unwrap();
+        let tokens = tokenize("a < 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -899,7 +899,7 @@ mod tests {
 
     #[test]
     fn less_than_or_equals() {
-        let tokens = tokenize("a <= 2", language::Language::English).unwrap();
+        let tokens = tokenize("a <= 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -913,7 +913,7 @@ mod tests {
 
     #[test]
     fn greater_than() {
-        let tokens = tokenize("a > 2", language::Language::English).unwrap();
+        let tokens = tokenize("a > 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -927,7 +927,7 @@ mod tests {
 
     #[test]
     fn greater_than_or_equals() {
-        let tokens = tokenize("a >= 2", language::Language::English).unwrap();
+        let tokens = tokenize("a >= 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
@@ -942,7 +942,7 @@ mod tests {
     #[test]
     fn relation_chain_x2() {
         let tokens =
-            tokenize("a < b < c", language::Language::English).unwrap();
+            tokenize("a < b < c", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -966,7 +966,7 @@ mod tests {
     #[test]
     fn relation_chain_x5() {
         let tokens =
-            tokenize("a < b <= c = d >= e > f", language::Language::English)
+            tokenize("a < b <= c = d >= e > f", common::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, output) = parse_expression(cursor).unwrap();
@@ -1006,7 +1006,7 @@ mod tests {
 
     #[test]
     fn function_call_no_args() {
-        let tokens = tokenize("f()", language::Language::English).unwrap();
+        let tokens = tokenize("f()", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, output) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1022,7 +1022,7 @@ mod tests {
 
     #[test]
     fn function_call_single_arg() {
-        let tokens = tokenize("f(x)", language::Language::English).unwrap();
+        let tokens = tokenize("f(x)", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1038,7 +1038,7 @@ mod tests {
 
     #[test]
     fn function_call_single_2_args() {
-        let tokens = tokenize("f(x, y)", language::Language::English).unwrap();
+        let tokens = tokenize("f(x, y)", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1057,7 +1057,7 @@ mod tests {
 
     #[test]
     fn function_call_err_missing_right_parenthesis() {
-        let tokens = tokenize("f(x, y", language::Language::English).unwrap();
+        let tokens = tokenize("f(x, y", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(err, Error::UnexpectedEndOfInput);
@@ -1065,7 +1065,7 @@ mod tests {
 
     #[test]
     fn function_call_err_unexpected_token() {
-        let tokens = tokenize("f(x]", language::Language::English).unwrap();
+        let tokens = tokenize("f(x]", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(
@@ -1094,7 +1094,7 @@ mod tests {
     #[test]
     fn sum_function_call_x2() {
         let tokens =
-            tokenize("f(x) + f(y)", language::Language::English).unwrap();
+            tokenize("f(x) + f(y)", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1118,7 +1118,7 @@ mod tests {
 
     #[test]
     fn tensor_no_elements() {
-        let tokens = tokenize("[]", language::Language::English).unwrap();
+        let tokens = tokenize("[]", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1130,7 +1130,7 @@ mod tests {
 
     #[test]
     fn tensor_1_element() {
-        let tokens = tokenize("[2]", language::Language::English).unwrap();
+        let tokens = tokenize("[2]", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1145,7 +1145,7 @@ mod tests {
 
     #[test]
     fn tensor_2_element() {
-        let tokens = tokenize("[1, 2]", language::Language::English).unwrap();
+        let tokens = tokenize("[1, 2]", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let (cursor, result) = parse_expression(cursor).unwrap();
         assert_eq!(
@@ -1162,7 +1162,7 @@ mod tests {
     #[test]
     fn or_boolean_x2() {
         let tokens =
-            tokenize("true | false", language::Language::English).unwrap();
+            tokenize("true | false", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1178,7 +1178,7 @@ mod tests {
     #[test]
     fn or_boolean_x3() {
         let tokens =
-            tokenize("true | false | true", language::Language::English)
+            tokenize("true | false | true", common::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
@@ -1196,7 +1196,7 @@ mod tests {
     #[test]
     fn and_boolean_x2() {
         let tokens =
-            tokenize("true & false", language::Language::English).unwrap();
+            tokenize("true & false", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1212,7 +1212,7 @@ mod tests {
     #[test]
     fn and_boolean_x3() {
         let tokens =
-            tokenize("true & false & true", language::Language::English)
+            tokenize("true & false & true", common::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
@@ -1230,7 +1230,7 @@ mod tests {
     #[test]
     fn or_and() {
         let tokens =
-            tokenize("true | false & true", language::Language::English)
+            tokenize("true | false & true", common::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
@@ -1251,7 +1251,7 @@ mod tests {
     #[test]
     fn and_or() {
         let tokens =
-            tokenize("true & false | true", language::Language::English)
+            tokenize("true & false | true", common::Language::English)
                 .unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
@@ -1271,7 +1271,7 @@ mod tests {
 
     #[test]
     fn factorial() {
-        let tokens = tokenize("10!", language::Language::English).unwrap();
+        let tokens = tokenize("10!", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1285,7 +1285,7 @@ mod tests {
 
     #[test]
     fn function_no_arg() {
-        let tokens = tokenize("() -> 2", language::Language::English).unwrap();
+        let tokens = tokenize("() -> 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1301,7 +1301,7 @@ mod tests {
     #[test]
     fn function_1_arg() {
         let tokens =
-            tokenize("(x) -> x^2", language::Language::English).unwrap();
+            tokenize("(x) -> x^2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
@@ -1323,7 +1323,7 @@ mod tests {
     #[test]
     fn function_2_args() {
         let tokens =
-            tokenize("(x, y) -> x^2", language::Language::English).unwrap();
+            tokenize("(x, y) -> x^2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(

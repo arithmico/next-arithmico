@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-language = { version = "0.1.0", path = "../language" }
+common = { version = "0.1.0", path = "../common" }
 node = { version = "0.1.0", path = "../node" }
 trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true

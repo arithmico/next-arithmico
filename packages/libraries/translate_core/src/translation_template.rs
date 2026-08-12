@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use language::Language;
+use common::Language;
 
 use crate::{TranslationError, template::Template};
 

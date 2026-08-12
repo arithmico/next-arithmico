@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use language::Language;
+use common::Language;
 
 use crate::TranslationError;
 

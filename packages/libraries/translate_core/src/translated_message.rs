@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fmt::Debug, rc::Rc};
 
-use language::Language;
+use common::Language;
 
 use crate::{Translatable, TranslationError, TranslationTemplateProvider};
 

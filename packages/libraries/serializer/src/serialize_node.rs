@@ -25,7 +25,7 @@ impl SerializeNode for Node {
 
 #[cfg(test)]
 mod test {
-    use language::Language;
+    use common::Language;
     use node::{
         And, Boolean, Definition, Division, Equals, Factorial, Function,
         FunctionCall, FunctionSignature, GreaterThan, GreaterThanOrEquals,

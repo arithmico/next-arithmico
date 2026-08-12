@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 use lexer::{GetTokenSpan, Span, Token, TokenKind};
 use node::NodeType;
 use thiserror::Error;
