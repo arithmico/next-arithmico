@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]

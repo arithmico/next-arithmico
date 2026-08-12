@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum DecimalSeperator {

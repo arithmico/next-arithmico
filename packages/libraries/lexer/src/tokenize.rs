@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 
 use crate::{
     ArrowToken, AsteriskToken, BooleanToken, CaretToken, DefineToken, Error,

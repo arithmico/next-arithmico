@@ -8,7 +8,7 @@ mod translation_template;
 mod translation_template_provider;
 
 pub use error::*;
-pub use language::Language;
+pub use common::Language;
 pub use standalone_translated_message::*;
 pub use template::*;
 pub use translatable::*;

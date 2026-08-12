@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 use translate_core::{
     Quoted, Translatable, TranslatedMessage, TranslationError,
 };

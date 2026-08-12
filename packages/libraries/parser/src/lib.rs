@@ -1,4 +1,4 @@
-use language::Language;
+use common::Language;
 use lexer::tokenize;
 
 mod binding_power;
