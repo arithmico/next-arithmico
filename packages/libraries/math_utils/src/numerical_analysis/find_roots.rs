@@ -111,7 +111,7 @@ where
     let mut b = start;
     let mut previous: Option<(f64, f64)> = None;
 
-    while b < end {
+    loop {
         match f(b) {
             Some(fb) if fb.is_finite() => {
                 if fb == 0.0 {
@@ -136,10 +136,13 @@ where
 
                 previous = Some((b, fb));
             }
-
             _ => {
                 previous = None;
             }
+        }
+
+        if b >= end {
+            break;
         }
 
         b = b + STEP_SIZE;
@@ -149,7 +152,7 @@ where
 }
 
 fn push_unique(roots: &mut Vec<f64>, candidate: f64) {
-    const DUPLICATE_TOLERANCE: f64 = 1.0e-10;
+    const DUPLICATE_TOLERANCE: f64 = 1.0e-14;
 
     let is_duplicate = roots
         .iter()
@@ -328,9 +331,7 @@ mod tests {
     /// f(x) = cbrt(x) in \[-2.0, 2.0\]
     #[test]
     fn finds_zero_of_cube_root_function() -> Result<(), FindRootsError> {
-        let f = |x: f64| {
-            if x < 0.0 { None } else { Some(x.cbrt()) }
-        };
+        let f = |x: f64| Some(x.cbrt());
 
         let roots = find_roots(&f, -2.0, 2.0)?;
 
@@ -401,15 +402,30 @@ mod tests {
         Ok(())
     }
 
+    /// f(x) = sqrt(x) in \[-10, 10\]
     #[test]
     fn skips_values_outside_function_domain() -> Result<(), FindRootsError> {
         let f = |x: f64| {
-            if x < 0.0 { None } else { Some(x.sqrt() - 2.0) }
+            if x < 0.0 { None } else { Some(x.sqrt()) }
         };
 
         let roots = find_roots(&f, -10.0, 10.0)?;
 
-        assert_roots_close(roots, &[4.0], ROOT_TOLERANCE);
+        assert_roots_close(roots, &[0.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = sqrt(x) in \[-10, 0\]
+    #[test]
+    fn find_root_sqrt_although_skipping_domain() -> Result<(), FindRootsError> {
+        let f = |x: f64| {
+            if x < 0.0 { None } else { Some(x.sqrt()) }
+        };
+
+        let roots = find_roots(&f, -10.0, 0.0)?;
+
+        assert_roots_close(roots, &[0.0], ROOT_TOLERANCE);
 
         Ok(())
     }

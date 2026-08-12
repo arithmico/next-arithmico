@@ -1,12 +1,11 @@
 use core::f64;
-use std::sync::LazyLock;
+use std::{collections::HashSet, sync::LazyLock};
 
 use engine_derive::FunctionArguments;
 use evaluator::{Error, ErrorKind, MapToEvaluatorError};
 use math_utils::find_roots;
 use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
-use node_validator::NumberValidator;
-use trace::{Tracable, TracableMut};
+use node_validator::{NodeValidator, NumberValidator};
 
 use crate::{
     Context,
@@ -69,24 +68,24 @@ impl FunctionEndpoint for NSolveEndpoint {
             Negate::new(*equation.right.clone()),
         ]);
 
-        let variable_names = expression
-            .get_symbol_names()
-            .into_iter()
-            .filter(|name| context.lookup(name).is_none())
-            .collect::<Vec<String>>();
+        let symbol_names = expression.get_symbol_names();
 
-        let variable_count = variable_names.len();
-        if variable_count > 1 {
-            return Err(Error::too_many_parameters(variable_count)
-                .with_optional_span(equation.hull()));
-        }
-        if variable_count < 1 {
-            return Err(Error::missing_parameter("")
-                .with_optional_span(equation.hull()));
-        }
+        let known_symbols = symbol_names
+            .iter()
+            .filter(|name| context.lookup(name).is_some())
+            .map(|name| name.to_string())
+            .collect::<HashSet<_>>();
+
+        expression
+            .validate_one_unknown_symbol(&known_symbols)
+            .map_to_error_kind(ErrorKind::RuntimeError)?;
+
+        let variable_name = symbol_names
+            .iter()
+            .find(|name| !known_symbols.contains(*name))
+            .expect("unknown symbol count was validated");
 
         let function = |x: f64| -> Option<f64> {
-            let variable_name = &variable_names[0];
             let mut local_context = context.clone();
 
             local_context
