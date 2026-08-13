@@ -206,6 +206,10 @@ German = "Commit-Hash"
 English = "Build date"
 German = "Erstellungsdatum"
 
+[about.version.sbom]
+English = "Software Bill of Materials"
+German = "Software Bill of Materials"
+
 [about.team]
 English = "Team"
 German = "Team"
