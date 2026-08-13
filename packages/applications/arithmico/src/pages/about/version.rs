@@ -32,6 +32,14 @@ pub fn VersionDetails() -> impl IntoView {
                     <FormattedMessage id="about.version.commit_hash" />
                 </dd>
                 <dt>{env!("COMMIT_HASH")}</dt>
+                <dd>
+                    <FormattedMessage id="about.version.sbom" />
+                </dd>
+                <dt>
+                    <a href="/sbom.json" download>
+                        SBOM
+                    </a>
+                </dt>
             </dl>
         </section>
     }
