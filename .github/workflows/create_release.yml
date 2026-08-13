@@ -67,6 +67,11 @@ jobs:
         run: |
           touch index.css 
           ~/.cargo/bin/trunk build --release
+      - name: Generate SBOM
+        run: |
+          cargo binstall cargo-cyclonedx
+          cargo cyclonedx --format json --override-filename sbom
+          cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
       - uses: actions/setup-node@v7
         with:
           node-version: 24
