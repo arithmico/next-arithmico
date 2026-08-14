@@ -1,32 +1,28 @@
-use std::collections::HashMap;
-
-use evaluator::Error;
+use evaluator::{ArgumentMapping, Error, FunctionArguments};
 use node::{FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType};
-use translate_core::Language;
+use translate::RenderedTranslatedMessage;
 
-use crate::{ArgumentMapping, Context, FunctionArguments};
+use crate::Context;
 
 pub type FunctionExecutor =
     fn(&ArgumentMapping, &Context) -> Result<Node, Error>;
 
 pub type ConstantExecutor = fn(&Context) -> Node;
 
-pub type TranslatedString = HashMap<Language, String>;
-
 #[derive(Debug)]
 pub struct EndpointMetadata {
     endpoint_name: String,
     module_id: String,
-    module_name: TranslatedString,
-    description: TranslatedString,
+    module_name: RenderedTranslatedMessage,
+    description: RenderedTranslatedMessage,
 }
 
 impl EndpointMetadata {
     pub fn new(
         endpoint_name: String,
         module_id: String,
-        module_name: TranslatedString,
-        description: TranslatedString,
+        module_name: RenderedTranslatedMessage,
+        description: RenderedTranslatedMessage,
     ) -> Self {
         EndpointMetadata {
             endpoint_name,
@@ -44,11 +40,11 @@ impl EndpointMetadata {
         &self.module_id
     }
 
-    pub fn module_name(&self) -> &TranslatedString {
+    pub fn module_name(&self) -> &RenderedTranslatedMessage {
         &self.module_name
     }
 
-    pub fn description(&self) -> &TranslatedString {
+    pub fn description(&self) -> &RenderedTranslatedMessage {
         &self.description
     }
 }
@@ -69,7 +65,7 @@ pub enum HostEndpoint {
 impl HostEndpoint {
     pub fn function<F: FunctionEndpoint>(
         module_id: &str,
-        module_name: TranslatedString,
+        module_name: RenderedTranslatedMessage,
     ) -> Self {
         Self::Function {
             metadata: EndpointMetadata {
@@ -85,7 +81,7 @@ impl HostEndpoint {
 
     pub fn constant<C: ConstantEndpoint>(
         module_id: &str,
-        module_name: TranslatedString,
+        module_name: RenderedTranslatedMessage,
     ) -> Self {
         Self::Constant {
             metadata: EndpointMetadata {
@@ -113,7 +109,7 @@ impl HostEndpoint {
         &self.metadata().module_id
     }
 
-    pub fn module_name(&self) -> &TranslatedString {
+    pub fn module_name(&self) -> &RenderedTranslatedMessage {
         &self.metadata().module_name
     }
 }
@@ -133,7 +129,7 @@ pub trait FunctionEndpoint {
     }
 
     #[doc(hidden)]
-    fn description() -> TranslatedString {
+    fn description() -> RenderedTranslatedMessage {
         Self::Arguments::function_description()
     }
 
@@ -157,7 +153,7 @@ pub trait FunctionEndpoint {
 
 pub trait ConstantMetadata {
     fn constant_name() -> &'static str;
-    fn constant_description() -> TranslatedString;
+    fn constant_description() -> RenderedTranslatedMessage;
 }
 
 pub trait ConstantEndpoint: ConstantMetadata {
@@ -171,7 +167,7 @@ pub trait ConstantEndpoint: ConstantMetadata {
     }
 
     #[doc(hidden)]
-    fn description() -> TranslatedString {
+    fn description() -> RenderedTranslatedMessage {
         Self::constant_description()
     }
 

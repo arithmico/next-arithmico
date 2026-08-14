@@ -1,8 +1,8 @@
 use node::Node;
 
 #[derive(Debug, Clone)]
-pub enum ArgumentMappingEntry {
+pub enum Entry {
     Value(Node),
-    ValueList(Vec<Node>),
+    List(Vec<Node>),
     None,
 }

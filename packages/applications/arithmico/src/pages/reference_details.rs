@@ -75,11 +75,11 @@ fn ItemSection(
     let decimal_format = state.select(|state| state.get_decimal_format());
     let synopsis = Signal::derive({
         let item = item.clone();
-        move || item.get_synopsis(&language.read()).cloned()
+        move || item.get_synopsis(language.get())
     });
     let description = Signal::derive({
         let item = item.clone();
-        move || item.get_description(&language.read()).cloned()
+        move || item.get_description(language.get())
     });
     view! {
         <PageHeader>
@@ -195,9 +195,7 @@ fn ItemSection(
                                                     }
                                                 }
                                             </td>
-                                            <td>
-                                                {move || param.get_description(&language.read()).clone()}
-                                            </td>
+                                            <td>{move || param.get_description(language.get())}</td>
                                         </tr>
                                     }
                                 })

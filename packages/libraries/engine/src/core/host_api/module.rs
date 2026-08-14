@@ -1,6 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use node::FunctionSignature;
+use translate::RenderedTranslatedMessage;
 use translate_core::Language;
 
 use crate::core::{
@@ -8,10 +9,10 @@ use crate::core::{
     FunctionExecutor,
 };
 
-use super::{TranslatedString, endpoint::HostEndpoint};
+use super::endpoint::HostEndpoint;
 
 pub struct HostApiModule {
-    module_name: TranslatedString,
+    module_name: RenderedTranslatedMessage,
     endpoints: Vec<HostEndpoint>,
 }
 
@@ -61,8 +62,8 @@ impl HostApiModuleBuilderNameStage {
         language: Language,
         name: &str,
     ) -> HostApiModuleBuilderEndpointsStage {
-        let mut module_name = HashMap::new();
-        module_name.insert(language, name.to_string());
+        let mut module_name = RenderedTranslatedMessage::new();
+        module_name.add_message(language, Ok(name.to_string()));
 
         HostApiModuleBuilderEndpointsStage {
             module_id: self.module_id,
@@ -74,7 +75,7 @@ impl HostApiModuleBuilderNameStage {
 
 pub struct HostApiModuleBuilderEndpointsStage {
     module_id: String,
-    module_name: TranslatedString,
+    module_name: RenderedTranslatedMessage,
     endpoints: Vec<HostEndpoint>,
 }
 
@@ -84,7 +85,7 @@ impl HostApiModuleBuilderEndpointsStage {
         language: Language,
         name: &str,
     ) -> HostApiModuleBuilderEndpointsStage {
-        self.module_name.insert(language, name.to_string());
+        self.module_name.add_message(language, Ok(name.to_string()));
         self
     }
 
@@ -144,7 +145,7 @@ impl HostApiModuleBuilderEndpointsStage {
 
 pub struct EndpointBuilder {
     module_id: String,
-    module_name: TranslatedString,
+    module_name: RenderedTranslatedMessage,
 }
 
 impl EndpointBuilder {
@@ -153,16 +154,16 @@ impl EndpointBuilder {
             module_id: self.module_id,
             module_name: self.module_name,
             endpoint_name: name.to_string(),
-            description: HashMap::new(),
+            description: RenderedTranslatedMessage::new(),
         }
     }
 }
 
 pub struct EndpointBuilderNameStage {
     module_id: String,
-    module_name: TranslatedString,
     endpoint_name: String,
-    description: TranslatedString,
+    module_name: RenderedTranslatedMessage,
+    description: RenderedTranslatedMessage,
 }
 
 impl EndpointBuilderNameStage {
@@ -171,7 +172,8 @@ impl EndpointBuilderNameStage {
         language: Language,
         description: &str,
     ) -> EndpointBuilderAdditionalDescriptionsStage {
-        self.description.insert(language, String::from(description));
+        self.description
+            .add_message(language, Ok(String::from(description)));
         EndpointBuilderAdditionalDescriptionsStage {
             module_id: self.module_id,
             module_name: self.module_name,
@@ -183,9 +185,9 @@ impl EndpointBuilderNameStage {
 
 pub struct EndpointBuilderAdditionalDescriptionsStage {
     module_id: String,
-    module_name: TranslatedString,
     endpoint_name: String,
-    description: TranslatedString,
+    module_name: RenderedTranslatedMessage,
+    description: RenderedTranslatedMessage,
 }
 
 impl EndpointBuilderAdditionalDescriptionsStage {
@@ -194,7 +196,8 @@ impl EndpointBuilderAdditionalDescriptionsStage {
         language: Language,
         description: &str,
     ) -> Self {
-        self.description.insert(language, String::from(description));
+        self.description
+            .add_message(language, Ok(String::from(description)));
         self
     }
 
@@ -226,9 +229,9 @@ impl EndpointBuilderAdditionalDescriptionsStage {
 
 pub struct FunctionEndpointBuilderArgumentsPhase {
     module_id: String,
-    module_name: TranslatedString,
     endpoint_name: String,
-    description: TranslatedString,
+    module_name: RenderedTranslatedMessage,
+    description: RenderedTranslatedMessage,
     signature: FunctionSignature,
 }
 

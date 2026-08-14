@@ -10,13 +10,13 @@ pub struct RenderedTranslatedMessage {
 }
 
 impl RenderedTranslatedMessage {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             messages: HashMap::new(),
         }
     }
 
-    pub(crate) fn add_message(
+    pub fn add_message(
         &mut self,
         language: Language,
         message: Result<String, TranslationError>,

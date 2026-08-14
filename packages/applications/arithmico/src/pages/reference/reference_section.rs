@@ -8,7 +8,7 @@ use crate::pages::reference::reference_item::ReferenceItem;
 pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
     view! {
         <section class="reference-section">
-            <h2>{module.name(Language::English).cloned()}</h2>
+            <h2>{module.name(Language::English)}</h2>
             <ul>
                 {module
                     .items()
