@@ -73,13 +73,13 @@ mod tests {
     use std::sync::Arc;
 
     use engine_derive::FunctionArguments;
-    use evaluator::FunctionArguments;
+    use evaluator::{FunctionArguments, Stack};
     use node::{
         Boolean, Function, FunctionSignature, NodeType, Number, Power, Symbol,
     };
     use serializer::DecimalPlaces;
 
-    use crate::core::{HostApi, HostApiModule, Language, Stack};
+    use crate::core::{HostApi, HostApiModule, Language};
 
     use super::*;
 
