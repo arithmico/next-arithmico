@@ -67,7 +67,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
             .iter()
             .find(|name| !known_symbols.contains(*name))
             .copied()
-            .expect("unknown symbol count was validated");
+            .ok_or_else(|| Error::unreachable())?;
 
         f.validate_argument_matches_unknown_symbol(unknown_symbol)
             .map_to_error_kind(ErrorKind::RuntimeError)?;

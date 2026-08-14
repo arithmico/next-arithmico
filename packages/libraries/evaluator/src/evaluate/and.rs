@@ -13,8 +13,7 @@ impl EvaluateNode for And {
             .iter()
             .map(|element| element.evaluate(context))
             .reduce(|left, right| combine_and_elements(&left?, &right?))
-            // Safety: this can not panic due to the previous length check
-            .expect("min 2 elements")
+            .ok_or_else(|| Error::unreachable())?
     }
 }
 
