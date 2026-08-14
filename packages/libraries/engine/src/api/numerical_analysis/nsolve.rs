@@ -72,7 +72,7 @@ impl FunctionEndpoint for NSolveEndpoint {
         let known_symbols = symbol_names
             .iter()
             .filter(|name| options.lookup(name).is_some())
-            .map(|name| name.to_string())
+            .copied()
             .collect::<HashSet<_>>();
 
         expression

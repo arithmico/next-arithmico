@@ -4,7 +4,7 @@ use crate::Node;
 
 impl Node {
     /// Returns the unique symbol names contained in `node`.
-    pub fn get_symbol_names(&self) -> BTreeSet<String> {
+    pub fn get_symbol_names(&self) -> BTreeSet<&str> {
         let mut names = BTreeSet::new();
 
         collect_symbol_names(self, &mut names);
@@ -13,7 +13,7 @@ impl Node {
     }
 }
 
-fn collect_symbol_names(node: &Node, names: &mut BTreeSet<String>) {
+fn collect_symbol_names<'a>(node: &'a Node, names: &mut BTreeSet<&'a str>) {
     match node {
         Node::Boolean(_) => {}
         Node::Sum(sum) => {
@@ -44,7 +44,7 @@ fn collect_symbol_names(node: &Node, names: &mut BTreeSet<String>) {
         }
         Node::Number(_) => {}
         Node::Symbol(symbol) => {
-            names.insert(symbol.name.clone());
+            names.insert(symbol.name.as_str());
         }
         Node::Function(function) => {
             collect_symbol_names(&function.expression, names);
@@ -88,7 +88,7 @@ fn collect_symbol_names(node: &Node, names: &mut BTreeSet<String>) {
         }
         Node::HostFunction(_) => {}
         Node::Definition(def) => {
-            names.insert(def.symbol.clone());
+            names.insert(def.symbol.as_str());
             collect_symbol_names(&def.expression, names);
         }
         Node::Factorial(factorial) => {

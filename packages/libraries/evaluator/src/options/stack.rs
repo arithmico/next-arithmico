@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use node::Node;
 
@@ -49,5 +49,15 @@ impl Stack {
             }
         }
         result
+    }
+
+    pub fn names(&self) -> HashSet<&str> {
+        let mut output = HashSet::new();
+        for frame in self.frames.iter() {
+            for name in frame.keys() {
+                output.insert(name.as_str());
+            }
+        }
+        output
     }
 }

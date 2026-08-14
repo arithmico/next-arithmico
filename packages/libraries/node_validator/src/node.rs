@@ -10,7 +10,7 @@ pub trait NodeValidator {
     /// Validates that the node contains exactly one unknown symbol.
     fn validate_one_unknown_symbol(
         &self,
-        known_symbols: &HashSet<String>,
+        known_symbols: &HashSet<&str>,
     ) -> Result<&Self, Error> {
         self.validate_unknown_symbol_count(known_symbols, 1)
     }
@@ -18,7 +18,7 @@ pub trait NodeValidator {
     /// not part of `known_symbols`.
     fn validate_unknown_symbol_count(
         &self,
-        known_symbols: &HashSet<String>,
+        known_symbols: &HashSet<&str>,
         expected: usize,
     ) -> Result<&Self, Error>;
 }
@@ -26,13 +26,13 @@ pub trait NodeValidator {
 impl NodeValidator for Node {
     fn validate_unknown_symbol_count(
         &self,
-        known_symbols: &HashSet<String>,
+        known_symbols: &HashSet<&str>,
         expected: usize,
     ) -> Result<&Self, Error> {
         let unknown_symbols = self
             .get_symbol_names()
             .into_iter()
-            .filter(|symbol| !known_symbols.contains(symbol))
+            .filter(|symbol| !known_symbols.contains(*symbol))
             .collect::<HashSet<_>>();
 
         let actual = unknown_symbols.len();
