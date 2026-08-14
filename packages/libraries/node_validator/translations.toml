@@ -62,6 +62,10 @@ German = "Der Ausdruck enthält zu wenige unbekannte Variablen. Erwartet wurden 
 English = "The expression contains too many unknown variables. Expected {expected}, but found {actual}."
 German = "Der Ausdruck enthält zu viele unbekannte Variablen. Erwartet wurden {expected}, gefunden wurden {actual}."
 
+[error.node.invalid_variable_name]
+English = "Invalid variable name. Expected {expected}, but found {actual}."
+German = "Ungültiger Variablenname. Statt {expected} wurde {actual} vorgefunden."
+
 [error.function.too_few_arguments]
 English = "The function has too few arguments. Expected {expected}, but found {actual}."
 German = "Die Funktion hat zu wenige Argumente. Erwartet wurden {expected}, gefunden wurden {actual}."

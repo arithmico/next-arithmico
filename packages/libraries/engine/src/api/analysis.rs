@@ -27,6 +27,8 @@ use crate::api::analysis::root::RootEndpoint;
 use crate::api::analysis::round::RoundEndpoint;
 #[cfg(feature = "api_endpoint_analysis_sqrt")]
 use crate::api::analysis::sqrt::SqrtEndpoint;
+#[cfg(feature = "api_endpoint_analysis_table")]
+use crate::api::analysis::table::TableEndpoint;
 
 mod abs;
 mod ceil;
@@ -41,6 +43,7 @@ mod min;
 mod root;
 mod round;
 mod sqrt;
+mod table;
 
 pub fn load_analysis_module() -> ApiModule {
     let module = ApiModule::builder()
@@ -86,6 +89,9 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_max")]
     let module = module.function::<MaxEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_table")]
+    let module = module.function::<TableEndpoint>();
 
     module.build()
 }
