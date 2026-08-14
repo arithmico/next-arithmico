@@ -59,10 +59,10 @@ impl FunctionSignature {
         &self.arguments
     }
 
-    pub fn argument_names(&self) -> Vec<String> {
+    pub fn argument_names(&self) -> Vec<&str> {
         self.arguments()
             .iter()
-            .map(|argument| argument.get_name().to_string())
+            .map(|argument| argument.get_name())
             .collect()
     }
 
