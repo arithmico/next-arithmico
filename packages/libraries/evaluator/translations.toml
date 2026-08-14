@@ -109,3 +109,7 @@ German = "Ungültiger Parameterwert"
 [engine.evaluate.error.unexpected_node_type.error_kind]
 Enlish = "Unexpected value"
 German = "Unerwarteter Wert"
+
+[engine.evaluate.error.unreachable]
+English = "Internal Error"
+German = "Interner Fehler"

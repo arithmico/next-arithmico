@@ -231,6 +231,16 @@ impl Error {
             ),
         )
     }
+
+    pub fn unreachable() -> Self {
+        Self::new(
+            ErrorKind::RuntimeError,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.unreachable",
+                translation_resolver,
+            ),
+        )
+    }
 }
 
 impl AsRef<Trace> for Error {
