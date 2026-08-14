@@ -1,3 +1,4 @@
+use evaluator::ApiModule;
 use translate::Language;
 
 #[cfg(feature = "api_endpoint_distributions_binom")]
@@ -12,7 +13,6 @@ use crate::api::distributions::normal::NormalEndpoint;
 use crate::api::distributions::qbinom::QBinomEndpoint;
 #[cfg(feature = "api_endpoint_distributions_qnormal")]
 use crate::api::distributions::qnormal::QNormalEndpoint;
-use crate::core::HostApiModule;
 
 mod binom;
 mod cbinom;
@@ -21,8 +21,8 @@ mod normal;
 mod qbinom;
 mod qnormal;
 
-pub fn load_distributions_module() -> HostApiModule {
-    let module = HostApiModule::builder()
+pub fn load_distributions_module() -> ApiModule {
+    let module = ApiModule::builder()
         .id("distributions")
         .name(Language::English, "Distributions")
         .name(Language::German, "Verteilungen");

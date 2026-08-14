@@ -8,7 +8,7 @@ use crate::{components::CalculatorOutput, state::State};
 #[component]
 pub fn HistoryItem(item: SessionEntry, position: usize) -> impl IntoView {
     let state = State::expect_state();
-    let context = state.select(|state| state.create_engine_context());
+    let context = state.select(|state| state.create_serialize_options());
 
     view! {
         <li class="history-item">
@@ -29,7 +29,7 @@ pub fn HistoryItem(item: SessionEntry, position: usize) -> impl IntoView {
                             view! {
                                 <CalculatorOutput
                                     value=Some(item.output.clone())
-                                    context=context
+                                    options=context
                                 />
                             }
                         }

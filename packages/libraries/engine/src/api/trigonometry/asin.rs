@@ -1,12 +1,10 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use node::Number;
 use node_validator::NumberValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("asin")]
@@ -28,7 +26,7 @@ impl FunctionEndpoint for AsinEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         AsinArgs { x }: Self::Arguments<'a>,
-        context: &Context,
+        context: Options,
     ) -> Result<Self::Output, Error> {
         x.validate_inside_closed_interval(-1.0, 1.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;

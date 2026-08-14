@@ -1,8 +1,7 @@
 use engine_derive::ConstantMetadata;
+use evaluator::{ConstantEndpoint, Options};
 use node::Number;
 use translate::Language;
-
-use crate::{Context, core::ConstantEndpoint};
 
 #[derive(ConstantMetadata)]
 #[name("e")]
@@ -19,7 +18,7 @@ pub struct EEndpoint;
 impl ConstantEndpoint for EEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(std::f64::consts::E)
     }
 }

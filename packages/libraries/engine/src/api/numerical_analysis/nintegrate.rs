@@ -1,18 +1,17 @@
 use core::f64;
 use std::{cell::RefCell, collections::HashSet};
 
+use common::Language;
 use engine_derive::FunctionArguments;
 
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, EvaluateNode, FunctionEndpoint, MapToEvaluatorError,
+    Options,
+};
 use math_utils::calculate_numerical_integral;
-use node::{Function, IntoNode, Node, Number};
+use node::{Function, Node, Number};
 use node_validator::{FunctionValidator, NodeValidator};
 use trace::{Tracable, TracableMut};
-
-use crate::{
-    Context,
-    core::{EvaluateNode, FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("nintegrate")]
@@ -47,7 +46,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         NIntegrateArgs { f, start, stop }: Self::Arguments<'a>,
-        context: &Context,
+        options: Options,
     ) -> Result<Self::Output, Error> {
         f.validate_one_argument()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
@@ -56,7 +55,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
 
         let known_symbols = symbol_names
             .iter()
-            .filter(|name| context.lookup(name).is_some())
+            .filter(|name| options.lookup(name).is_some())
             .map(|name| name.to_string())
             .collect::<HashSet<_>>();
 
@@ -75,14 +74,15 @@ impl FunctionEndpoint for NIntegrateEndpoint {
         let evaluation_error = RefCell::new(None::<Error>);
 
         let function = |x: f64| -> f64 {
-            let mut local_context = context.clone();
+            let mut local_stack = options.stack.clone();
+            local_stack.insert(unknown_symbol, Number::new_node(x));
 
-            local_context.stack.insert(
-                &unknown_symbol.to_string(),
-                Number::new(x).into_node(),
-            );
+            let options = Options {
+                stack: &local_stack,
+                ..options
+            };
 
-            match f.expression.evaluate(&local_context) {
+            match f.expression.evaluate(options) {
                 Ok(Node::Number(value)) => value.value,
                 Err(error) => {
                     if evaluation_error.borrow().is_none() {

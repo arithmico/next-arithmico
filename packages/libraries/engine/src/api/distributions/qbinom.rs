@@ -1,9 +1,8 @@
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use math_utils::calculate_quantile_of_binomial_cdf;
 use node::Number;
 use node_validator::NumberValidator;
@@ -40,7 +39,7 @@ impl FunctionEndpoint for QBinomEndpoint {
 
     fn executor<'a>(
         QBinomArgs { p_q, n, p }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         p_q.validate_inside_closed_interval(0.0, 1.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;

@@ -15,7 +15,7 @@ use crate::{
 pub fn CalculatorPage() -> impl IntoView {
     let state = State::expect_state();
     let current_output = state.select(|state| state.current_output);
-    let context = state.select(|state| state.create_engine_context());
+    let context = state.select(|state| state.create_serialize_options());
 
     view! {
         <PageWithSidebar class="calculator">
@@ -25,7 +25,7 @@ pub fn CalculatorPage() -> impl IntoView {
                 <CalculatorOutput
                     class="calculator-output-field"
                     value=current_output
-                    context=context
+                    options=context
                 />
             </div>
         </PageWithSidebar>

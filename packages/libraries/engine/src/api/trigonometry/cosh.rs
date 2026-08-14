@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("cosh")]
@@ -27,7 +23,7 @@ impl FunctionEndpoint for CoshEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         CoshArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         let value = x.value;
 

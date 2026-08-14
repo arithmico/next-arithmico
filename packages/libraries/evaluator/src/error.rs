@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use node::NodeType;
 use thiserror::Error;
 use trace::Trace;
-use translate::{
+use translate_core::{
     IntoValue, RenderedTranslatedMessage, Translatable, TranslatedMessage,
 };
 

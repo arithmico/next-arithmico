@@ -1,16 +1,15 @@
 use core::f64;
 use std::{collections::HashSet, sync::LazyLock};
 
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, EvaluateNode, FunctionEndpoint, MapToEvaluatorError,
+    Options,
+};
 use math_utils::find_roots;
 use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
 use node_validator::{NodeValidator, NumberValidator};
-
-use crate::{
-    Context,
-    core::{EvaluateNode, FunctionEndpoint, Language},
-};
 
 static DEFAULT_START: LazyLock<Node> =
     LazyLock::new(|| Number::new(-20.0).into_node());
@@ -57,7 +56,7 @@ impl FunctionEndpoint for NSolveEndpoint {
             start,
             stop,
         }: Self::Arguments<'a>,
-        context: &Context,
+        options: Options,
     ) -> Result<Self::Output, Error> {
         start
             .validate_less_than(stop.value)
@@ -72,7 +71,7 @@ impl FunctionEndpoint for NSolveEndpoint {
 
         let known_symbols = symbol_names
             .iter()
-            .filter(|name| context.lookup(name).is_some())
+            .filter(|name| options.lookup(name).is_some())
             .map(|name| name.to_string())
             .collect::<HashSet<_>>();
 
@@ -86,13 +85,14 @@ impl FunctionEndpoint for NSolveEndpoint {
             .expect("unknown symbol count was validated");
 
         let function = |x: f64| -> Option<f64> {
-            let mut local_context = context.clone();
+            let mut local_stack = options.stack.clone();
+            local_stack.insert(variable_name, Number::new(x).into_node());
+            let options = Options {
+                stack: &local_stack,
+                ..options
+            };
 
-            local_context
-                .stack
-                .insert(variable_name, Number::new(x).into_node());
-
-            match expression.evaluate(&local_context) {
+            match expression.evaluate(options) {
                 Ok(Node::Number(value)) if value.value.is_finite() => {
                     Some(value.value)
                 }

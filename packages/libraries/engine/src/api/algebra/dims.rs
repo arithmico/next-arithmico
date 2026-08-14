@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::{Number, Tensor};
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("tensor:dims")]
@@ -27,7 +23,7 @@ impl FunctionEndpoint for DimsEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         DimskArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         Ok(Tensor::new(
             x.shape

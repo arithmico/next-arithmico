@@ -3,7 +3,7 @@ use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{Context, Session, SessionError};
+use engine::{SerializeOptions, Session, SessionError};
 use node::Node;
 use trace::Trace;
 use web_state::WebState;
@@ -34,13 +34,14 @@ impl State {
         }
     }
 
-    pub fn create_engine_context(&self) -> Context {
+    pub fn create_serialize_options(&self) -> SerializeOptions {
         let decimal_places = self.settings.decimal_places;
         let language = self.get_decimal_format();
-        let angle_unit = self.settings.angle_unit;
 
-        self.session
-            .create_context(decimal_places, language, angle_unit)
+        SerializeOptions {
+            language,
+            decimal_places,
+        }
     }
 
     pub fn get_decimal_format(&self) -> Language {

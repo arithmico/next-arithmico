@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("ceil")]
@@ -33,7 +29,7 @@ impl FunctionEndpoint for CeilEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         CeilArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         let result = x.value.ceil();
 

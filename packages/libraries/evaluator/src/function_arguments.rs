@@ -1,5 +1,5 @@
 use node::FunctionSignature;
-use translate::RenderedTranslatedMessage;
+use translate_core::RenderedTranslatedMessage;
 
 use crate::{ArgumentMapping, Error};
 

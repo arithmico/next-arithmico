@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("atan")]
@@ -27,7 +23,7 @@ impl FunctionEndpoint for AtanEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         AtanArgs { x }: Self::Arguments<'a>,
-        context: &Context,
+        context: Options,
     ) -> Result<Self::Output, Error> {
         let value = x.value;
         let result = context.angle_unit.from_radians(value.atan());

@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{DeriveInput, LitStr, spanned::Spanned};
 
-use crate::DescriptionAttribute;
+use crate::{DescriptionAttribute, crete_path::crate_path};
 
 pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
     let struct_name = &ast.ident;
@@ -51,8 +51,10 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
         }
     });
 
+    let evaluator_path = crate_path("evaluator");
+
     let generated = quote! {
-        impl crate::core::ConstantMetadata for #struct_name {
+        impl #evaluator_path::ConstantMetadata for #struct_name {
 
             fn constant_name() -> &'static str {
                 #name

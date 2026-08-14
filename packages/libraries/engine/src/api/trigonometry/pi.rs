@@ -1,12 +1,9 @@
 use std::f64::consts::PI;
 
+use common::Language;
 use engine_derive::ConstantMetadata;
+use evaluator::{ConstantEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{ConstantEndpoint, Language},
-};
 
 #[derive(ConstantMetadata)]
 #[name("pi")]
@@ -23,7 +20,7 @@ pub struct PiEndpoint;
 impl ConstantEndpoint for PiEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(PI)
     }
 }

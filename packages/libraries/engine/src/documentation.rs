@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
+use common::Language;
+use evaluator::{Api, Endpoint};
 use node::{Argument, Cardinality, FunctionCall, NodeType, Symbol};
 use serializer::SerializeNode;
 use translate::{RenderedTranslatedMessage, Translatable};
 use translate_core::TranslationError;
-
-use crate::core::{HostApi, HostEndpoint, Language};
 
 #[derive(Debug, Clone)]
 pub struct ParameterDocumentationItem {
@@ -127,9 +127,9 @@ impl DocumentationItem {
         &self.endpoint_name
     }
 
-    pub fn from_endpoint(name: &str, endpoint: &HostEndpoint) -> Self {
+    pub fn from_endpoint(name: &str, endpoint: &Endpoint) -> Self {
         match endpoint {
-            HostEndpoint::Function {
+            Endpoint::Function {
                 metadata,
                 signature,
                 ..
@@ -176,7 +176,7 @@ impl DocumentationItem {
                 );
                 item
             }
-            HostEndpoint::Constant { metadata, .. } => {
+            Endpoint::Constant { metadata, .. } => {
                 let mut item =
                     DocumentationItem::new_constant(metadata.endpoint_name());
                 item.description = metadata.description().clone();
@@ -247,8 +247,8 @@ impl Documentation {
     }
 }
 
-impl From<&HostApi> for Documentation {
-    fn from(api: &HostApi) -> Self {
+impl From<&Api> for Documentation {
+    fn from(api: &Api) -> Self {
         let mut modules: HashMap<String, DocumentationModule> = HashMap::new();
         for (name, endpoint) in api.endpoints() {
             let module_id = endpoint.module_id();
