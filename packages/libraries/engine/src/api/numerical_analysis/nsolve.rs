@@ -82,7 +82,7 @@ impl FunctionEndpoint for NSolveEndpoint {
         let variable_name = symbol_names
             .iter()
             .find(|name| !known_symbols.contains(*name))
-            .expect("unknown symbol count was validated");
+            .ok_or_else(|| Error::unreachable())?;
 
         let function = |x: f64| -> Option<f64> {
             let mut local_stack = options.stack.clone();
