@@ -56,7 +56,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
         let known_symbols = symbol_names
             .iter()
             .filter(|name| options.lookup(name).is_some())
-            .map(|name| name.to_string())
+            .copied()
             .collect::<HashSet<_>>();
 
         f.expression
@@ -66,6 +66,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
         let unknown_symbol = symbol_names
             .iter()
             .find(|name| !known_symbols.contains(*name))
+            .copied()
             .expect("unknown symbol count was validated");
 
         f.validate_argument_matches_unknown_symbol(unknown_symbol)
