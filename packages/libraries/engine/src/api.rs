@@ -1,11 +1,10 @@
-use crate::{
-    api::{
-        algebra::load_algebra_module, analysis::load_analysis_module,
-        distributions::load_distributions_module,
-        numerical_analysis::load_numerical_analysis_module,
-        physics::load_physics_module, trigonometry::load_trigonometry_module,
-    },
-    core::HostApi,
+use evaluator::Api;
+
+use crate::api::{
+    algebra::load_algebra_module, analysis::load_analysis_module,
+    distributions::load_distributions_module,
+    numerical_analysis::load_numerical_analysis_module,
+    physics::load_physics_module, trigonometry::load_trigonometry_module,
 };
 
 mod algebra;
@@ -15,8 +14,8 @@ mod numerical_analysis;
 mod physics;
 mod trigonometry;
 
-pub fn load_host_api() -> HostApi {
-    HostApi::builder()
+pub fn load_host_api() -> Api {
+    Api::builder()
         .module(
             cfg!(feature = "api_module_loader_analysis"),
             load_analysis_module,

@@ -1,4 +1,3 @@
-use crate::core::{Context, HostApi, evaluate_node};
 use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -6,10 +5,9 @@ use std::sync::Arc;
 use common::AngleUnit;
 pub use entry::SessionEntry;
 pub use error::*;
-use evaluator::Stack;
+use evaluator::{Api, EvaluateNode, Options, Stack};
 use node::Node;
 use parser::parse;
-use serializer::DecimalPlaces;
 use translate::Language;
 
 mod entry;
@@ -18,7 +16,7 @@ mod error;
 #[derive(Debug, Clone)]
 pub struct Session {
     stack: Stack,
-    host_api: Arc<HostApi>,
+    host_api: Arc<Api>,
     entries: Vec<SessionEntry>,
 }
 
@@ -31,33 +29,21 @@ impl Session {
         }
     }
 
-    pub fn create_context(
-        &self,
-        decimal_places: DecimalPlaces,
-        language: Language,
-        angle_unit: AngleUnit,
-    ) -> Context {
-        Context::new(
-            self.stack.clone(),
-            decimal_places,
-            angle_unit,
-            language,
-            self.host_api.clone(),
-        )
+    pub fn create_options<'a>(&'a self, angle_unit: AngleUnit) -> Options<'a> {
+        Options::new(&self.stack, self.host_api.as_ref(), angle_unit)
     }
 
     fn evaluate_input(
         &mut self,
         input: &str,
-        decimal_places: DecimalPlaces,
         language: Language,
         angle_unit: AngleUnit,
     ) -> Result<Node, SessionError> {
-        let context = self.create_context(decimal_places, language, angle_unit);
+        let options = self.create_options(angle_unit);
 
         let node = parse(input, language)?;
 
-        let evaluatd_node = evaluate_node(&node, &context)?;
+        let evaluatd_node = node.evaluate(options)?;
 
         let output = if let Node::Definition(node) = &evaluatd_node {
             self.stack.insert(&node.symbol, *node.expression.clone());
@@ -72,12 +58,10 @@ impl Session {
     pub fn push(
         &mut self,
         input: &str,
-        decimal_places: DecimalPlaces,
         language: Language,
         angle_unit: AngleUnit,
     ) {
-        let output =
-            self.evaluate_input(input, decimal_places, language, angle_unit);
+        let output = self.evaluate_input(input, language, angle_unit);
 
         self.entries.push(SessionEntry {
             input: input.to_string(),

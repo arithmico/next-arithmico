@@ -1,12 +1,10 @@
 use std::f64::consts::PI;
 
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use float_utils::F64Extension;
 use node::Number;
-use translate_core::Language;
-
-use crate::core::FunctionEndpoint;
 
 #[derive(FunctionArguments)]
 #[name("tan")]
@@ -27,7 +25,7 @@ impl FunctionEndpoint for TanEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         TanArgs { x }: Self::Arguments<'a>,
-        context: &crate::Context,
+        context: Options,
     ) -> Result<Number, Error> {
         let value = context.angle_unit.to_radians(x.value);
 

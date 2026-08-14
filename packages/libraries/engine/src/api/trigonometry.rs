@@ -1,3 +1,6 @@
+use common::Language;
+use evaluator::ApiModule;
+
 #[cfg(feature = "api_endpoint_trigonometry_acos")]
 use crate::api::trigonometry::acos::AcosEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_acosh")]
@@ -24,7 +27,6 @@ use crate::api::trigonometry::sinh::SinhEndpoint;
 use crate::api::trigonometry::tan::TanEndpoint;
 #[cfg(feature = "api_endpoint_trigonometry_tanh")]
 use crate::api::trigonometry::tanh::TanhEndpoint;
-use crate::core::{HostApiModule, Language};
 
 mod acos;
 mod acosh;
@@ -40,8 +42,8 @@ mod sinh;
 mod tan;
 mod tanh;
 
-pub fn load_trigonometry_module() -> HostApiModule {
-    let module = HostApiModule::builder()
+pub fn load_trigonometry_module() -> ApiModule {
+    let module = ApiModule::builder()
         .id("trigonometry")
         .name(Language::English, "Trigonometry")
         .name(Language::German, "Trigonometrie");

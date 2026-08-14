@@ -1,6 +1,5 @@
+use evaluator::ApiModule;
 use translate_core::Language;
-
-use crate::core::HostApiModule;
 
 mod constants;
 
@@ -85,8 +84,8 @@ use constants::VMEndpoint;
 #[cfg(feature = "api_endpoint_physics_z_0")]
 use constants::Z0Endpoint;
 
-pub fn load_physics_module() -> HostApiModule {
-    let module = HostApiModule::builder()
+pub fn load_physics_module() -> ApiModule {
+    let module = ApiModule::builder()
         .id("physics")
         .name(Language::English, "Physics")
         .name(Language::German, "Physik");

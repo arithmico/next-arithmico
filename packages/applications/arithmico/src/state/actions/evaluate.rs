@@ -17,13 +17,10 @@ impl EvaluateAction {
 
 impl WebStateAction<State> for EvaluateAction {
     fn apply(&self, state: &mut State) {
-        let decimal_places = state.settings.decimal_places;
         let language = state.get_decimal_format();
         let angle_unit = state.settings.angle_unit;
 
-        state
-            .session
-            .push(&self.input, decimal_places, language, angle_unit);
+        state.session.push(&self.input, language, angle_unit);
         state.current_output = state
             .session
             .last_entry()

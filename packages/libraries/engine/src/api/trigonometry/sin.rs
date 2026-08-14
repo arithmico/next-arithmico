@@ -1,14 +1,10 @@
 use std::f64::consts::PI;
 
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use float_utils::F64Extension;
 use node::Number;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("sin")]
@@ -30,7 +26,7 @@ impl FunctionEndpoint for SinEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         SinArgs { x }: Self::Arguments<'a>,
-        context: &Context,
+        context: Options,
     ) -> Result<Self::Output, Error> {
         let value = context.angle_unit.to_radians(x.value);
 

@@ -1,3 +1,4 @@
+use evaluator::ApiModule;
 use translate::Language;
 
 #[cfg(feature = "api_endpoint_analysis_abs")]
@@ -26,7 +27,6 @@ use crate::api::analysis::root::RootEndpoint;
 use crate::api::analysis::round::RoundEndpoint;
 #[cfg(feature = "api_endpoint_analysis_sqrt")]
 use crate::api::analysis::sqrt::SqrtEndpoint;
-use crate::core::HostApiModule;
 
 mod abs;
 mod ceil;
@@ -42,8 +42,8 @@ mod root;
 mod round;
 mod sqrt;
 
-pub fn load_analysis_module() -> HostApiModule {
-    let module = HostApiModule::builder()
+pub fn load_analysis_module() -> ApiModule {
+    let module = ApiModule::builder()
         .id("analysis")
         .name(Language::English, "Analysis")
         .name(Language::German, "Analysis");

@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-use engine::{
-    Context, NodeConverter, SerializeNode, SerializeOptions, SessionError,
-};
+use engine::{SerializeNode, SerializeOptions, SessionError};
 use node::Node;
 
 use crate::components::CalculatorErrorOutput;
@@ -10,7 +8,7 @@ use crate::components::CalculatorErrorOutput;
 #[component]
 pub fn CalculatorOutput(
     #[prop(into)] value: Signal<Option<Result<Node, SessionError>>>,
-    #[prop(into)] context: Signal<Context>,
+    #[prop(into)] options: Signal<SerializeOptions>,
     #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView {
     view! {
@@ -23,15 +21,19 @@ pub fn CalculatorOutput(
             )
         >
             {move || {
-                let context = context.get();
+                let options = options.get();
                 match value.get() {
                     Some(result) => {
                         match result {
                             Ok(node) => {
-                                NodeToStringConverter::new(context).convert_node(&node)
+                                node.serialize(options)
+                                    .unwrap_or_else(|_| { String::from("SerializationError") })
+                                    .into_any()
                             }
                             Err(error) => {
-                                view! { <CalculatorErrorOutput error=error /> }.into_any()
+                                // TODO: translate serialization error
+                                view! { <CalculatorErrorOutput error=error /> }
+                                    .into_any()
                             }
                         }
                     }
@@ -39,25 +41,5 @@ pub fn CalculatorOutput(
                 }
             }}
         </output>
-    }
-}
-
-struct NodeToStringConverter {
-    context: Context,
-}
-
-impl NodeToStringConverter {
-    pub fn new(context: Context) -> Self {
-        Self { context }
-    }
-}
-
-impl NodeConverter<AnyView> for NodeToStringConverter {
-    fn convert_node(&self, node: &Node) -> AnyView {
-        node.serialize(SerializeOptions::new(
-            self.context.language,
-            self.context.decimal_places,
-        ))
-        .into_any()
     }
 }

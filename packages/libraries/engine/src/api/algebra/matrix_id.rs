@@ -1,12 +1,10 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use node::{Node, Number, Tensor};
 use node_validator::NumberValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("matrix:id")]
@@ -28,7 +26,7 @@ impl FunctionEndpoint for MatrixIdEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         MatrixIdArgs { n }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         n.validate_greater_than(0.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?

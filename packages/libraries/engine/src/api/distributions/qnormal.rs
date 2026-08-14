@@ -1,19 +1,17 @@
 use std::sync::LazyLock;
 
+use common::Language;
 use engine_derive::FunctionArguments;
 use evaluator::Error;
 use evaluator::ErrorKind;
+use evaluator::FunctionEndpoint;
 use evaluator::MapToEvaluatorError;
+use evaluator::Options;
 use math_utils::calculate_quantile_of_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
 use node_validator::NumberValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 static DEFAULT_MEAN: LazyLock<Node> =
     LazyLock::new(|| Number::new(0.0).into_node());
@@ -56,7 +54,7 @@ impl FunctionEndpoint for QNormalEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         QNormalArgs { p, mean, sd }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         p.validate_inside_open_interval(0.0, 1.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;

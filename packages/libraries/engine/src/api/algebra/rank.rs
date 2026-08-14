@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::{Number, Tensor};
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("tensor:rank")]
@@ -27,7 +23,7 @@ impl FunctionEndpoint for RankEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         RankArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         Ok(Number::new(x.get_rank() as f64))
     }

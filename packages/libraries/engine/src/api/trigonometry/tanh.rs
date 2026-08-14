@@ -1,11 +1,7 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::Error;
+use evaluator::{Error, FunctionEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("tanh")]
@@ -27,7 +23,7 @@ impl FunctionEndpoint for TanhEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         TanhArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         let value = x.value;
 

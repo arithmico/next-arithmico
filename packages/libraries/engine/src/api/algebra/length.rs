@@ -1,12 +1,10 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use node::{DowncastNodeVec, Number, Tensor};
 use node_validator::TensorValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("length")]
@@ -34,7 +32,7 @@ impl FunctionEndpoint for LengthEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         LengthArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         x.validate_not_empty()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?

@@ -1,12 +1,10 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use node::Number;
 use node_validator::NumberValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("atanh")]
@@ -34,7 +32,7 @@ impl FunctionEndpoint for AtanhEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         AtanhArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         let value = x.value;
 

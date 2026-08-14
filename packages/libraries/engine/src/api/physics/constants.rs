@@ -1,10 +1,7 @@
+use common::Language;
 use engine_derive::ConstantMetadata;
+use evaluator::{ConstantEndpoint, Options};
 use node::Number;
-
-use crate::{
-    Context,
-    core::{ConstantEndpoint, Language},
-};
 
 // source: https://physics.nist.gov/cgi-bin/cuu/Value?mp
 #[derive(ConstantMetadata)]
@@ -16,7 +13,7 @@ pub struct MPEndpoint;
 impl ConstantEndpoint for MPEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.672_621_926e-27)
     }
 }
@@ -31,7 +28,7 @@ pub struct MNEndpoint;
 impl ConstantEndpoint for MNEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.674_927_501e-27)
     }
 }
@@ -46,7 +43,7 @@ pub struct MEEndpoint;
 impl ConstantEndpoint for MEEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(9.109_383_71e-31)
     }
 }
@@ -61,7 +58,7 @@ pub struct MMuEndpoint;
 impl ConstantEndpoint for MMuEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.883_531_6e-28)
     }
 }
@@ -82,7 +79,7 @@ pub struct A0Endpoint;
 impl ConstantEndpoint for A0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(5.291_772_105e-11)
     }
 }
@@ -97,7 +94,7 @@ pub struct HEndpoint;
 impl ConstantEndpoint for HEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(6.626_070_15e-34)
     }
 }
@@ -118,7 +115,7 @@ pub struct MuNEndpoint;
 impl ConstantEndpoint for MuNEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(5.050_783_74e-27)
     }
 }
@@ -139,7 +136,7 @@ pub struct MuBEndpoint;
 impl ConstantEndpoint for MuBEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(9.274_010_07e-24)
     }
 }
@@ -160,7 +157,7 @@ pub struct HBarEndpoint;
 impl ConstantEndpoint for HBarEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.054_571_817e-34)
     }
 }
@@ -181,7 +178,7 @@ pub struct AlphaEndpoint;
 impl ConstantEndpoint for AlphaEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(7.297_352_56e-3)
     }
 }
@@ -202,7 +199,7 @@ pub struct REEndpoint;
 impl ConstantEndpoint for REEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(2.817_940_32e-15)
     }
 }
@@ -223,7 +220,7 @@ pub struct LambdaCEndpoint;
 impl ConstantEndpoint for LambdaCEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(2.426_310_235e-12)
     }
 }
@@ -244,7 +241,7 @@ pub struct GammaPEndpoint;
 impl ConstantEndpoint for GammaPEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(2.675_221_87e8)
     }
 }
@@ -265,7 +262,7 @@ pub struct LambdaCPEndpoint;
 impl ConstantEndpoint for LambdaCPEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.321_409_854e-15)
     }
 }
@@ -286,7 +283,7 @@ pub struct LambdaCNEndpoint;
 impl ConstantEndpoint for LambdaCNEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.319_590_904e-15)
     }
 }
@@ -307,7 +304,7 @@ pub struct RInfEndpoint;
 impl ConstantEndpoint for RInfEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(10_973_731.568_1)
     }
 }
@@ -328,7 +325,7 @@ pub struct UEndpoint;
 impl ConstantEndpoint for UEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.660_539_069e-27)
     }
 }
@@ -343,7 +340,7 @@ pub struct MuPEndpoint;
 impl ConstantEndpoint for MuPEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.410_606_795e-26)
     }
 }
@@ -358,7 +355,7 @@ pub struct MuEEndpoint;
 impl ConstantEndpoint for MuEEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(-9.284_764_69e-24)
     }
 }
@@ -373,7 +370,7 @@ pub struct MuNNEndpoint;
 impl ConstantEndpoint for MuNNEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(-9.662_37e-27)
     }
 }
@@ -388,7 +385,7 @@ pub struct MuMuEndpoint;
 impl ConstantEndpoint for MuMuEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(-4.490_448e-26)
     }
 }
@@ -409,7 +406,7 @@ pub struct FEndpoint;
 impl ConstantEndpoint for FEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(96_485.332_12)
     }
 }
@@ -430,7 +427,7 @@ pub struct EEndpoint;
 impl ConstantEndpoint for EEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.602_176_634e-19)
     }
 }
@@ -451,7 +448,7 @@ pub struct NAEndpoint;
 impl ConstantEndpoint for NAEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(6.022_140_76e23)
     }
 }
@@ -472,7 +469,7 @@ pub struct KEndpoint;
 impl ConstantEndpoint for KEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.380_649e-23)
     }
 }
@@ -493,7 +490,7 @@ pub struct VMEndpoint;
 impl ConstantEndpoint for VMEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(22.413_969_54e-3)
     }
 }
@@ -514,7 +511,7 @@ pub struct REndpoint;
 impl ConstantEndpoint for REndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(8.314_462_618)
     }
 }
@@ -529,7 +526,7 @@ pub struct CEndpoint;
 impl ConstantEndpoint for CEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(299_792_458.)
     }
 }
@@ -550,7 +547,7 @@ pub struct C1Endpoint;
 impl ConstantEndpoint for C1Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(3.741_771_852e-16)
     }
 }
@@ -571,7 +568,7 @@ pub struct C2Endpoint;
 impl ConstantEndpoint for C2Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.438_776_877e-2)
     }
 }
@@ -592,7 +589,7 @@ pub struct SigmaEndpoint;
 impl ConstantEndpoint for SigmaEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(5.670_374_419e-8)
     }
 }
@@ -613,7 +610,7 @@ pub struct Epsilon0Endpoint;
 impl ConstantEndpoint for Epsilon0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(8.854_187_82e-12)
     }
 }
@@ -634,7 +631,7 @@ pub struct Mu0Endpoint;
 impl ConstantEndpoint for Mu0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(1.256_637_061e-6)
     }
 }
@@ -655,7 +652,7 @@ pub struct Phi0Endpoint;
 impl ConstantEndpoint for Phi0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(2.067_833_848e-15)
     }
 }
@@ -676,7 +673,7 @@ pub struct GNEndpoint;
 impl ConstantEndpoint for GNEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(9.806_65)
     }
 }
@@ -697,7 +694,7 @@ pub struct G0Endpoint;
 impl ConstantEndpoint for G0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(7.748_091_729e-5)
     }
 }
@@ -718,7 +715,7 @@ pub struct Z0Endpoint;
 impl ConstantEndpoint for Z0Endpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(376.730_313_4)
     }
 }
@@ -738,7 +735,7 @@ pub struct TEndpoint;
 impl ConstantEndpoint for TEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(273.15)
     }
 }
@@ -759,7 +756,7 @@ pub struct GEndpoint;
 impl ConstantEndpoint for GEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(6.674e-11)
     }
 }
@@ -780,7 +777,7 @@ pub struct ATMEndpoint;
 impl ConstantEndpoint for ATMEndpoint {
     type Output = Number;
 
-    fn executor(_context: &Context) -> Self::Output {
+    fn executor(_context: Options) -> Self::Output {
         Number::new(101_325e0)
     }
 }

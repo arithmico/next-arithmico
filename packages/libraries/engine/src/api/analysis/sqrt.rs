@@ -1,12 +1,10 @@
+use common::Language;
 use engine_derive::FunctionArguments;
-use evaluator::{Error, ErrorKind, MapToEvaluatorError};
+use evaluator::{
+    Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
+};
 use node::Number;
 use node_validator::NumberValidator;
-
-use crate::{
-    Context,
-    core::{FunctionEndpoint, Language},
-};
 
 #[derive(FunctionArguments)]
 #[name("sqrt")]
@@ -28,7 +26,7 @@ impl FunctionEndpoint for SqrtEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         SqrtArgs { x }: Self::Arguments<'a>,
-        _context: &Context,
+        _context: Options,
     ) -> Result<Self::Output, Error> {
         x.validate_greater_than_or_equal(0.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;

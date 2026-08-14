@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{Data, DeriveInput, Ident, LitStr, Type, spanned::Spanned};
 
-use crate::DescriptionAttribute;
+use crate::{DescriptionAttribute, crete_path::crate_path};
 
 struct ArgumentField {
     ident: Ident,
@@ -267,11 +267,13 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         )
         .collect::<Vec<_>>();
 
+    let evaluator_path = crate_path("evaluator");
+
     let generated = quote! {
-        impl<'a> evaluator::FunctionArguments<'a> for #struct_name<'a> {
+        impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_name<'a> {
             fn from_mapping(
-                arguments: &'a evaluator::ArgumentMapping,
-            ) -> Result<Self, evaluator::Error> {
+                arguments: &'a #evaluator_path::ArgumentMapping,
+            ) -> Result<Self, #evaluator_path::Error> {
                 Ok(#struct_name {
                     #(#field_mapping,)*
                 })

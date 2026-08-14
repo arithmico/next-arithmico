@@ -1,4 +1,6 @@
-use translate::{Language, Translatable, TranslatedMessage, TranslationError};
+use translate_core::{
+    Language, Translatable, TranslatedMessage, TranslationError,
+};
 
 use crate::translation_provider::translation_resolver;
 
