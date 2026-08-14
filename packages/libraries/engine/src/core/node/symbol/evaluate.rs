@@ -19,12 +19,13 @@ impl EvaluateNode for Symbol {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use evaluator::Stack;
     use lexer::Span;
     use node::Number;
     use std::sync::Arc;
     use trace::TracableMut;
 
-    use crate::core::{HostApi, HostApiModule, Language, Stack};
+    use crate::core::{HostApi, HostApiModule, Language};
 
     #[test]
     fn evaluate_unknown_symbol() {

@@ -1,4 +1,4 @@
-use crate::core::{Context, HostApi, Stack, evaluate_node};
+use crate::core::{Context, HostApi, evaluate_node};
 use crate::{Documentation, api::load_host_api};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -6,6 +6,7 @@ use std::sync::Arc;
 use common::AngleUnit;
 pub use entry::SessionEntry;
 pub use error::*;
+use evaluator::Stack;
 use node::Node;
 use parser::parse;
 use serializer::DecimalPlaces;

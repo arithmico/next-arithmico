@@ -1,12 +1,13 @@
 use std::sync::Arc;
 
+use evaluator::Stack;
 use node::{HostFunction, Node};
 
 use common::AngleUnit;
 use serializer::DecimalPlaces;
 use translate::Language;
 
-use super::{HostApi, HostEndpoint, Stack};
+use super::{HostApi, HostEndpoint};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Context {
