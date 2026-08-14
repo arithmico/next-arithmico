@@ -300,8 +300,10 @@ api_endpoint_algebra_matrix_id = ["api_module_loader_algebra"]
 api_module_numerical_analysis = [
     "api_endpoint_numerical_analysis_nsolve",
     "api_endpoint_numerical_analysis_nintegrate",
+    "api_endpoint_numerical_analysis_nderive",
 ]
 
 api_module_loader_numerical_analysis = []
 api_endpoint_numerical_analysis_nsolve = ["api_module_loader_numerical_analysis"]
 api_endpoint_numerical_analysis_nintegrate = ["api_module_loader_numerical_analysis"]
+api_endpoint_numerical_analysis_nderive = ["api_module_loader_numerical_analysis"]

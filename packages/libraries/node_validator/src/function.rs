@@ -1,4 +1,3 @@
-
 use node::Function;
 use translate_core::TranslatedMessage;
 
