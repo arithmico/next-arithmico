@@ -73,7 +73,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             let language = &attribute.language;
             let description = &attribute.description;
             quote! {
-                description.insert(#language, #description.to_string());
+                description.add_message(#language, Ok(#description.to_string()));
             }
         })
         .collect::<Vec<_>>();
@@ -268,9 +268,9 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         .collect::<Vec<_>>();
 
     let generated = quote! {
-        impl<'a> crate::FunctionArguments<'a> for #struct_name<'a> {
+        impl<'a> evaluator::FunctionArguments<'a> for #struct_name<'a> {
             fn from_mapping(
-                arguments: &'a crate::ArgumentMapping,
+                arguments: &'a evaluator::ArgumentMapping,
             ) -> Result<Self, evaluator::Error> {
                 Ok(#struct_name {
                     #(#field_mapping,)*
@@ -282,8 +282,8 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 #(#signature_arguments)*
             }
 
-            fn function_description() -> crate::core::TranslatedString {
-                let mut description = std::collections::HashMap::new();
+            fn function_description() -> translate_core::RenderedTranslatedMessage {
+                let mut description = translate_core::RenderedTranslatedMessage::new();
                 #(
                     #struct_descriptions
                 )*

@@ -21,5 +21,3 @@ mod symbol;
 mod tensor;
 
 mod evaluate;
-
-pub use function_call::{ArgumentMapping, FunctionArguments};

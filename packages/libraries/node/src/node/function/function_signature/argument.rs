@@ -1,4 +1,4 @@
-use translate_core::{Language, TranslationTemplate};
+use translate_core::{Language, RenderedTranslatedMessage};
 
 use crate::{Node, NodeType};
 
@@ -7,7 +7,7 @@ use super::argument_options::{ArgumentOptions, Cardinality, Preprocess};
 #[derive(Debug, Clone, PartialEq)]
 pub struct Argument {
     name: String,
-    description: TranslationTemplate,
+    description: RenderedTranslatedMessage,
     options: ArgumentOptions,
 }
 
@@ -16,7 +16,7 @@ impl Argument {
     pub fn new(name: String) -> Self {
         Self {
             name,
-            description: TranslationTemplate::new(),
+            description: RenderedTranslatedMessage::new(),
             options: ArgumentOptions::new(),
         }
     }
@@ -88,7 +88,7 @@ impl Argument {
         description: T,
     ) -> Self {
         self.description
-            .add_translation(language, description.to_string());
+            .add_message(language, Ok(description.to_string()));
         self
     }
 
@@ -96,7 +96,7 @@ impl Argument {
         &self.name
     }
 
-    pub fn get_description(&self) -> TranslationTemplate {
+    pub fn get_description(&self) -> RenderedTranslatedMessage {
         self.description.clone()
     }
 

@@ -1,10 +1,10 @@
 use std::collections::VecDeque;
 
-use evaluator::Error;
+use evaluator::{ArgumentMapping, Error};
 use node::{Cardinality, FunctionSignature, GetNodeType, Node, Preprocess};
 use trace::{CombineHulls, Tracable, TracableMut};
 
-use crate::{ArgumentMapping, core::Context};
+use crate::core::Context;
 
 use super::EvaluateNode;
 

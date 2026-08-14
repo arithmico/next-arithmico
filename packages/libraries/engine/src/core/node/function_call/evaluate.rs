@@ -73,6 +73,7 @@ mod tests {
     use std::sync::Arc;
 
     use engine_derive::FunctionArguments;
+    use evaluator::FunctionArguments;
     use node::{
         Boolean, Function, FunctionSignature, NodeType, Number, Power, Symbol,
     };
@@ -155,7 +156,6 @@ mod tests {
                                             .add_return_type(NodeType::Any),
                                     )
                                     .executor(|argument, context| {
-                                        use super::super::FunctionArguments;
                                         let args =
                                             TestArgs::from_mapping(&argument)?;
                                         test_executor(args, context)
@@ -213,7 +213,6 @@ mod tests {
                                             .add_return_type(NodeType::Any),
                                     )
                                     .executor(|argument, context| {
-                                        use super::super::FunctionArguments;
                                         let args =
                                             TestArgs::from_mapping(&argument)?;
                                         test_executor(args, context)
@@ -286,7 +285,6 @@ mod tests {
                                             .add_return_type(NodeType::Any),
                                     )
                                     .executor(|argument, context| {
-                                        use super::super::FunctionArguments;
                                         let args =
                                             TestArgs::from_mapping(&argument)?;
                                         test_executor(args, context)

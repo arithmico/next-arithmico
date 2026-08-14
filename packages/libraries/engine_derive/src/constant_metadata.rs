@@ -47,23 +47,24 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
         let desc = &attr.description;
 
         quote! {
-            map.insert(#lang, #desc.to_string());
+            message.add_message(#lang, Ok(#desc.to_string()));
         }
     });
 
     let generated = quote! {
-            impl crate::core::ConstantMetadata for #struct_name {
-        fn constant_name() -> &'static str {
-            #name
-        }
+        impl crate::core::ConstantMetadata for #struct_name {
 
-        fn constant_description() -> crate::core::TranslatedString {
-            let mut map = std::collections::HashMap::new();
-            #(#description_tokens)*
-            map
+            fn constant_name() -> &'static str {
+                #name
+            }
+
+            fn constant_description() -> translate_core::RenderedTranslatedMessage {
+                let mut message = translate_core::RenderedTranslatedMessage::new();
+                #(#description_tokens)*
+                message
+            }
         }
-    }
-        };
+    };
 
     generated.into()
 }

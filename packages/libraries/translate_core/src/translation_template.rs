@@ -61,19 +61,3 @@ impl TranslationTemplate {
         template.render()
     }
 }
-
-type TranslatedString = HashMap<Language, String>;
-
-impl TryInto<TranslatedString> for TranslationTemplate {
-    type Error = TranslationError;
-
-    fn try_into(self) -> Result<TranslatedString, Self::Error> {
-        let mut result = TranslatedString::new();
-
-        for (lang, template) in self.templates {
-            result.insert(lang, template.render()?);
-        }
-
-        Ok(result)
-    }
-}

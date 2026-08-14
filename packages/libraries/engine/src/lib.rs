@@ -3,7 +3,7 @@ mod core;
 mod documentation;
 mod session;
 
-pub use core::{Context, NodeConverter, node::*};
+pub use core::{Context, NodeConverter};
 pub use documentation::{
     Documentation, DocumentationItem, DocumentationItemType,
     DocumentationModule,
