@@ -9,6 +9,7 @@ pub struct Product {
 }
 
 impl Product {
+    // TODO: make it fallible
     pub fn new(elements: Vec<Node>) -> Node {
         Node::Product(Self {
             elements,

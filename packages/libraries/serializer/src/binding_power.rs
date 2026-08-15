@@ -7,6 +7,7 @@ fn get_binding_power(node_type: NodeType) -> Option<u8> {
         | NodeType::Tensor
         | NodeType::Number
         | NodeType::Symbol
+        | NodeType::DataFrame
         | NodeType::Boolean => Some(u8::MAX),
         NodeType::Definition => Some(0),
         NodeType::Function => Some(1),

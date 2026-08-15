@@ -1,5 +1,6 @@
 mod and;
 mod boolean;
+mod data_frame;
 mod definition;
 mod division;
 mod equals;
@@ -22,6 +23,7 @@ mod tensor;
 
 pub use and::*;
 pub use boolean::*;
+pub use data_frame::*;
 pub use definition::*;
 pub use division::*;
 pub use equals::*;
@@ -65,4 +67,5 @@ pub enum Node {
     HostFunction(HostFunction),
     Definition(Definition),
     Factorial(Factorial),
+    DataFrame(DataFrame),
 }

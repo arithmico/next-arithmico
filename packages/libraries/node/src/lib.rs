@@ -1,3 +1,4 @@
+mod create_node_error;
 mod downcast_node;
 mod impl_node_traits;
 mod into_node;
@@ -8,6 +9,7 @@ mod symbol_names;
 mod trace;
 mod translation_provider;
 
+pub use create_node_error::*;
 pub use downcast_node::*;
 pub use into_node::*;
 pub use node::*;

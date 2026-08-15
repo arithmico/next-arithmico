@@ -1,9 +1,4 @@
-use node::{
-    And, Definition, Division, Equals, Factorial, Function, FunctionCall,
-    GreaterThan, GreaterThanOrEquals, IntoNode, LessThan, LessThanOrEquals,
-    Negate, Node, Or, Power, Product, Sum, Tensor,
-};
-use trace::{Tracable, TracableMut};
+use node::Node;
 
 trait Sealed {}
 
@@ -22,120 +17,124 @@ impl TransformNode for Node {
         self,
         transformer: impl Fn(Node) -> Result<Node, E>,
     ) -> Result<Node, E> {
-        let trace = self.trace().clone();
-
-        let mut node = match self {
+        let node = match self {
             Node::Boolean(node) => transformer(Node::Boolean(node))?,
             Node::Number(node) => transformer(Node::Number(node))?,
             Node::Symbol(node) => transformer(Node::Symbol(node))?,
             Node::HostFunction(node) => transformer(Node::HostFunction(node))?,
+            Node::Sum(mut node) => {
+                node.elements = node
+                    .elements
+                    .into_iter()
+                    .map(|node| transformer(node))
+                    .collect::<Result<Vec<_>, E>>()?;
+                transformer(Node::Sum(node))?
+            }
+            Node::Negate(mut node) => {
+                *node.value = transformer(*node.value)?;
+                transformer(Node::Negate(node))?
+            }
+            Node::Product(mut node) => {
+                node.elements = node
+                    .elements
+                    .into_iter()
+                    .map(|node| transformer(node))
+                    .collect::<Result<Vec<_>, E>>()?;
 
-            Node::Sum(node) => {
-                let elements = node
+                transformer(Node::Product(node))?
+            }
+            Node::Division(mut node) => {
+                *node.dividend = transformer(*node.dividend)?;
+                *node.divisor = transformer(*node.divisor)?;
+                transformer(Node::Division(node))?
+            }
+            Node::Power(mut node) => {
+                *node.base = transformer(*node.base)?;
+                *node.exponent = transformer(*node.exponent)?;
+                transformer(Node::Power(node))?
+            }
+            Node::Tensor(mut node) => {
+                node.elements = node
                     .elements
                     .into_iter()
                     .map(|node| transformer(node))
                     .collect::<Result<Vec<_>, E>>()?;
-                transformer(Sum::new(elements))?
+                transformer(Node::Tensor(node))?
             }
-            Node::Negate(node) => {
-                let value = transformer(*node.value)?;
-                transformer(Negate::new(value))?
+            Node::Function(mut node) => {
+                *node.expression = transformer(*node.expression)?;
+                transformer(Node::Function(node))?
             }
-            Node::Product(node) => {
-                let elements = node
-                    .elements
-                    .into_iter()
-                    .map(|node| transformer(node))
-                    .collect::<Result<Vec<_>, E>>()?;
-
-                transformer(Product::new(elements))?
-            }
-            Node::Division(node) => {
-                let dividend = transformer(*node.dividend)?;
-                let divisor = transformer(*node.divisor)?;
-                transformer(Division::new(dividend, divisor))?
-            }
-            Node::Power(node) => {
-                let base = transformer(*node.base)?;
-                let exponent = transformer(*node.exponent)?;
-                transformer(Power::new(base, exponent))?
-            }
-            Node::Tensor(node) => {
-                let elements = node
-                    .elements
-                    .into_iter()
-                    .map(|node| transformer(node))
-                    .collect::<Result<Vec<_>, E>>()?;
-                transformer(
-                    Tensor::new_with_shape(node.shape, elements).into_node(),
-                )?
-            }
-            Node::Function(node) => {
-                let expression = transformer(*node.expression)?;
-                transformer(Function::new(node.signature, expression))?
-            }
-            Node::FunctionCall(node) => {
-                let target = transformer(*node.target)?;
-                let elements = node
+            Node::FunctionCall(mut node) => {
+                *node.target = transformer(*node.target)?;
+                node.arguments = node
                     .arguments
                     .into_iter()
                     .map(|node| transformer(node))
                     .collect::<Result<Vec<_>, E>>()?;
-                transformer(FunctionCall::new(target, elements))?
+                transformer(Node::FunctionCall(node))?
             }
-            Node::And(node) => {
-                let elements = node
+            Node::And(mut node) => {
+                node.elements = node
                     .elements
                     .into_iter()
                     .map(|node| transformer(node))
                     .collect::<Result<Vec<_>, E>>()?;
-                transformer(And::new(elements))?
+                transformer(Node::And(node))?
             }
-            Node::Or(node) => {
-                let elements = node
+            Node::Or(mut node) => {
+                node.elements = node
                     .elements
                     .into_iter()
                     .map(|node| transformer(node))
                     .collect::<Result<Vec<_>, E>>()?;
-                transformer(Or::new(elements))?
+                transformer(Node::Or(node))?
             }
-            Node::Equals(node) => {
-                let left = transformer(*node.left)?;
-                let right = transformer(*node.right)?;
-                transformer(Equals::new(left, right))?
+            Node::Equals(mut node) => {
+                *node.left = transformer(*node.left)?;
+                *node.right = transformer(*node.right)?;
+                transformer(Node::Equals(node))?
             }
-            Node::LessThan(node) => {
-                let left = transformer(*node.left)?;
-                let right = transformer(*node.right)?;
-                transformer(LessThan::new(left, right))?
+            Node::LessThan(mut node) => {
+                *node.left = transformer(*node.left)?;
+                *node.right = transformer(*node.right)?;
+                transformer(Node::LessThan(node))?
             }
-            Node::LessThanOrEquals(node) => {
-                let left = transformer(*node.left)?;
-                let right = transformer(*node.right)?;
-                transformer(LessThanOrEquals::new(left, right))?
+            Node::LessThanOrEquals(mut node) => {
+                *node.left = transformer(*node.left)?;
+                *node.right = transformer(*node.right)?;
+                transformer(Node::LessThanOrEquals(node))?
             }
-            Node::GreaterThan(node) => {
-                let left = transformer(*node.left)?;
-                let right = transformer(*node.right)?;
-                transformer(GreaterThan::new(left, right))?
+            Node::GreaterThan(mut node) => {
+                *node.left = transformer(*node.left)?;
+                *node.right = transformer(*node.right)?;
+                transformer(Node::GreaterThan(node))?
             }
-            Node::GreaterThanOrEquals(node) => {
-                let left = transformer(*node.left)?;
-                let right = transformer(*node.right)?;
-                transformer(GreaterThanOrEquals::new(left, right))?
+            Node::GreaterThanOrEquals(mut node) => {
+                *node.left = transformer(*node.left)?;
+                *node.right = transformer(*node.right)?;
+                transformer(Node::GreaterThanOrEquals(node))?
             }
-            Node::Definition(node) => {
-                let expression = transformer(*node.expression)?;
-                transformer(Definition::new(node.symbol, expression))?
+            Node::Definition(mut node) => {
+                *node.expression = transformer(*node.expression)?;
+                transformer(Node::Definition(node))?
             }
-            Node::Factorial(node) => {
-                let value = transformer(*node.value)?;
-                transformer(Factorial::new(value))?
+            Node::Factorial(mut node) => {
+                *node.value = transformer(*node.value)?;
+                transformer(Node::Factorial(node))?
+            }
+            Node::DataFrame(mut node) => {
+                node.data = node
+                    .data
+                    .into_iter()
+                    .map(|node| match node {
+                        Some(node) => transformer(node).map(|node| Some(node)),
+                        None => Ok(None),
+                    })
+                    .collect::<Result<Vec<Option<_>>, E>>()?;
+                transformer(Node::DataFrame(node))?
             }
         };
-
-        *node.trace_mut() = trace;
 
         Ok(node)
     }
