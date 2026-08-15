@@ -77,7 +77,7 @@ jobs:
         ~/.cargo/bin/trunk build --release
     - name: Generate SBOM
       run: |
-        cargo binstall cargo-cyclonedx
+        cargo binstall -y --locked cargo-cyclonedx
         cargo cyclonedx --format json --override-filename sbom
         cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
     - name: configure aws credentials
