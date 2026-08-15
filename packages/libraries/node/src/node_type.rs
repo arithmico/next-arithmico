@@ -1,6 +1,6 @@
 use crate::Node;
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum NodeType {
     Any, // required for user defined functions without type signature
     Boolean,
@@ -24,6 +24,7 @@ pub enum NodeType {
     HostFunction,
     Definition,
     Factorial,
+    DataFrame,
 }
 
 impl std::fmt::Display for NodeType {
@@ -51,6 +52,7 @@ impl std::fmt::Display for NodeType {
             NodeType::HostFunction => f.write_str("HostFunction"),
             NodeType::Definition => f.write_str("Definition"),
             NodeType::Factorial => f.write_str("Factorial"),
+            NodeType::DataFrame => f.write_str("DataFrame"),
         }
     }
 }
@@ -83,6 +85,7 @@ impl GetNodeType for Node {
             Node::HostFunction(_) => NodeType::HostFunction,
             Node::Definition(_) => NodeType::Definition,
             Node::Factorial(_) => NodeType::Factorial,
+            Node::DataFrame(_) => NodeType::DataFrame,
         }
     }
 }

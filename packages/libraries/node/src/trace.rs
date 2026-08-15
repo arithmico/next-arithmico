@@ -26,6 +26,7 @@ impl AsMut<Trace> for Node {
             Node::HostFunction(node) => &mut node.trace,
             Node::Definition(node) => &mut node.trace,
             Node::Factorial(node) => &mut node.trace,
+            Node::DataFrame(node) => &mut node.trace,
         }
     }
 }
@@ -54,6 +55,7 @@ impl AsRef<Trace> for Node {
             Node::HostFunction(node) => &node.trace,
             Node::Definition(node) => &node.trace,
             Node::Factorial(node) => &node.trace,
+            Node::DataFrame(node) => &node.trace,
         }
     }
 }

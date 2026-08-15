@@ -9,6 +9,7 @@ pub struct And {
 }
 
 impl And {
+    // TODO: make it fallible
     pub fn new(values: Vec<Node>) -> Node {
         Node::And(And {
             elements: values,

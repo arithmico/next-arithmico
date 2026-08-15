@@ -5,6 +5,7 @@ use crate::{Error, Options};
 
 mod and;
 mod boolean;
+mod data_frame;
 mod definition;
 mod division;
 mod equals;
@@ -61,6 +62,7 @@ impl EvaluateNode for Node {
             }
             Node::Definition(definition) => definition.evaluate(options),
             Node::Factorial(factorial) => factorial.evaluate(options),
+            Node::DataFrame(data_frame) => data_frame.evaluate(options),
         }
         .map(|node| node.with_optional_span(self.hull()))
         .map_err(|error| error.with_optional_new_frame(self.hull()))

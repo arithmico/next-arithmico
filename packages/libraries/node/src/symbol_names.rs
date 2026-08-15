@@ -94,5 +94,12 @@ fn collect_symbol_names<'a>(node: &'a Node, names: &mut BTreeSet<&'a str>) {
         Node::Factorial(factorial) => {
             collect_symbol_names(&factorial.value, names);
         }
+        Node::DataFrame(dataframe) => {
+            for element in &dataframe.data {
+                if let Some(element) = element {
+                    collect_symbol_names(element, names);
+                }
+            }
+        }
     }
 }

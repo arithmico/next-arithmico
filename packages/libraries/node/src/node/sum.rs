@@ -4,6 +4,7 @@ use crate::{Node, impl_node_traits};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Sum {
+    // TODO: make it fallible
     pub elements: Vec<Node>,
     pub trace: Trace,
 }

@@ -9,6 +9,7 @@ pub struct Or {
 }
 
 impl Or {
+    // TODO: make it fallible
     pub fn new(values: Vec<Node>) -> Node {
         Node::Or(Or {
             elements: values,
