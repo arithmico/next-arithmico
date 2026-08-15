@@ -1,5 +1,5 @@
 use core::f64;
-use std::{cell::RefCell, collections::HashSet, sync::LazyLock};
+use std::{collections::HashSet, sync::LazyLock};
 
 use common::Language;
 use engine_derive::FunctionArguments;
@@ -52,7 +52,7 @@ impl FunctionEndpoint for NDeriveEndpoint {
         options: Options,
     ) -> Result<Self::Output, Error> {
         order
-            .validate_positive()
+            .validate_greater_than(0.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .validate_integer()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
@@ -81,9 +81,8 @@ impl FunctionEndpoint for NDeriveEndpoint {
         f.validate_argument_matches_unknown_symbol(unknown_symbol)
             .map_to_error_kind(ErrorKind::RuntimeError)?;
 
-        let local_stack = RefCell::new(options.stack.clone());
-        let function = |x: f64| -> f64 {
-            let mut local_stack = local_stack.borrow_mut();
+        let mut local_stack = options.stack.clone();
+        let mut function = |x: f64| -> f64 {
             local_stack.insert(unknown_symbol, Number::new(x).into_node());
 
             let local_options = Options {
@@ -98,7 +97,7 @@ impl FunctionEndpoint for NDeriveEndpoint {
         };
 
         let result = calculate_numerical_derivative(
-            &function,
+            &mut function,
             position.value,
             order.value as usize,
         );
