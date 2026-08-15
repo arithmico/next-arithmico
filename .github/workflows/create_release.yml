@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo binstall -y --locked trunk
+          cargo binstall -y --locked --force trunk
           cargo install cssbundler --path packages/applications/cssbundler
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.2.3
@@ -69,7 +69,7 @@ jobs:
           ~/.cargo/bin/trunk build --release
       - name: Generate SBOM
         run: |
-          cargo binstall cargo-cyclonedx
+          cargo binstall -y --locked --force cargo-cyclonedx
           cargo cyclonedx --format json --override-filename sbom
           cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
       - uses: actions/setup-node@v7
