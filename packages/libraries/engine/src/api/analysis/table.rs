@@ -7,7 +7,7 @@ use evaluator::{
     Error, ErrorKind, EvaluateNode, FunctionEndpoint, MapToEvaluatorError,
     Options,
 };
-use node::{Function, Node, Number, Symbol, Tensor};
+use node::{DataFrame, Function, Number, Symbol};
 use node_validator::{FunctionValidator, NodeValidator};
 use translate::TranslatedMessage;
 
@@ -41,7 +41,7 @@ pub struct TableArgs<'a> {
 pub struct TableEndpoint;
 
 impl FunctionEndpoint for TableEndpoint {
-    type Output = Tensor;
+    type Output = DataFrame;
     type Arguments<'a> = TableArgs<'a>;
 
     // TODO: unit tests
@@ -73,12 +73,15 @@ impl FunctionEndpoint for TableEndpoint {
         let n = (start.value - stop.value).abs().floor() as usize;
         let step: f64 = 1.0;
         let mut current = start.value;
-        let mut rows = Vec::<Node>::with_capacity(n + 1);
         let mut stack = options.stack.clone();
-        rows.push(Tensor::new_node(vec![
-            Symbol::new(variable_name),
-            f.expression.deref().clone(),
-        ]));
+        let mut output = DataFrame::new(
+            vec![
+                Some(Symbol::new(variable_name)),
+                Some(f.expression.deref().clone()),
+            ],
+            Vec::with_capacity(2 * n),
+        )
+        .map_err(|_| Error::unreachable())?;
 
         while current <= stop.value {
             let x = Number::new_node(current);
@@ -87,10 +90,12 @@ impl FunctionEndpoint for TableEndpoint {
                 stack: &stack,
                 ..options
             })?;
-            rows.push(Tensor::new_node(vec![x, y]));
+            output
+                .push_row(vec![Some(x), Some(y)])
+                .map_err(|_| Error::unreachable())?;
             current += step;
         }
 
-        Ok(Tensor::new(rows))
+        Ok(output)
     }
 }
