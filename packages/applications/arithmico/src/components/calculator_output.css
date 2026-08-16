@@ -14,3 +14,53 @@
 .calculator-output>dl>dt {
     font-weight: bolder;
 }
+
+.calculator-output .data-frame {
+    width: 100%;
+    border-radius: 0.25rem;
+    border-collapse: collapse;
+
+    th, td {
+        padding: 0.5rem;
+    }
+
+    th {
+        text-align: left;
+        font-weight: bold;
+        border-bottom-width: 1px;
+        border-right-width: 1px;
+        border-bottom-style: solid;
+        border-right-style: solid;
+    }
+
+    th:last-child {
+        border-right-width: 0;
+    }
+
+    td {
+        font-weight: normal;
+        border-right-width: 1px;
+        border-right-style: solid;
+    }
+
+    td:last-child {
+        border-right-width: 0;
+    }
+}
+
+.theme-dark .calculator-output .data-frame{
+    width: 100%;
+
+    th, td {
+        border-color: var(--color-neutral-700);
+    }
+    
+}
+
+.theme-light .calculator-output .data-frame{
+    width: 100%;
+
+    th, td {
+        border-color: var(--color-neutral-400);
+    }
+}
