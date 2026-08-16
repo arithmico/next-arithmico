@@ -31,7 +31,8 @@ datatypes = [
     "datatype_symbol",
     "datatype_tensor",
     "datatype_function",
-    "datatype_boolean"
+    "datatype_boolean",
+    "datatype_data_frame",
 ]
 operators = [
     "operator_negate_number",
@@ -68,6 +69,7 @@ datatype_symbol = ["evaluator/datatype_symbol"]
 datatype_tensor = ["evaluator/datatype_tensor"]
 datatype_function = ["evaluator/datatype_function"]
 datatype_boolean = ["evaluator/datatype_boolean"]
+datatype_data_frame = ["evaluator/datatype_data_frame"]
 
 # operator features
 operator_negate_number = ["evaluator/operator_negate_number"]
@@ -276,7 +278,7 @@ api_endpoint_analysis_ceil = ["api_module_loader_analysis"]
 api_endpoint_analysis_abs = ["api_module_loader_analysis"]
 api_endpoint_analysis_min = ["api_module_loader_analysis"]
 api_endpoint_analysis_max = ["api_module_loader_analysis"]
-api_endpoint_analysis_table = ["api_module_loader_analysis"]
+api_endpoint_analysis_table = ["api_module_loader_analysis", "datatype_data_frame"]
 
 # algebra
 api_module_algebra = [
