@@ -1,5 +1,7 @@
 mod stack;
 
+use std::collections::HashSet;
+
 use common::AngleUnit;
 use node::{HostFunction, Node};
 pub use stack::*;
@@ -39,5 +41,13 @@ impl<'a> Options<'a> {
 
     pub fn endpoint(&self, name: &str) -> Option<&Endpoint> {
         self.api.endpoint(name)
+    }
+
+    pub fn names(&self) -> HashSet<&str> {
+        self.stack
+            .names()
+            .union(&self.api.names())
+            .map(|name| *name)
+            .collect()
     }
 }

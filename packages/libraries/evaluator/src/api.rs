@@ -2,7 +2,7 @@ mod endpoint;
 mod endpoint_metadata;
 mod module;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 
 pub use endpoint::*;
 pub use endpoint_metadata::*;
@@ -37,6 +37,10 @@ impl Api {
 
     pub fn endpoints(&self) -> &BTreeMap<String, Endpoint> {
         &self.endpoints
+    }
+
+    pub fn names(&self) -> HashSet<&str> {
+        self.endpoints.keys().map(|key| key.as_str()).collect()
     }
 }
 
