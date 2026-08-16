@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{ops::Deref, sync::LazyLock};
 
 use common::Language;
 use engine_derive::FunctionArguments;
@@ -7,11 +7,14 @@ use evaluator::{
     Error, ErrorKind, EvaluateNode, FunctionEndpoint, MapToEvaluatorError,
     Options,
 };
-use node::{DataFrame, Function, Number, Symbol};
-use node_validator::{FunctionValidator, NodeValidator};
+use node::{DataFrame, Function, Node, Number, Symbol};
+use node_validator::{FunctionValidator, NodeValidator, NumberValidator};
 use translate::TranslatedMessage;
 
 use crate::translation_provider::translation_resolver;
+
+static DEFAULT_STEP_SIZE: LazyLock<Node> =
+    LazyLock::new(|| Number::new_node(1.0));
 
 #[derive(FunctionArguments)]
 #[name("table")]
@@ -35,7 +38,11 @@ pub struct TableArgs<'a> {
     #[description(Language::German, "Endwert")]
     #[description(Language::English, "stop value")]
     stop: &'a Number,
-    // TODO: add step parameter
+
+    #[default(&*DEFAULT_STEP_SIZE)]
+    #[description(Language::German, "Schrittweite")]
+    #[description(Language::English, "step size")]
+    step: &'a Number,
 }
 
 pub struct TableEndpoint;
@@ -46,7 +53,12 @@ impl FunctionEndpoint for TableEndpoint {
 
     // TODO: unit tests
     fn executor<'a>(
-        TableArgs { f, start, stop }: Self::Arguments<'a>,
+        TableArgs {
+            f,
+            start,
+            stop,
+            step,
+        }: Self::Arguments<'a>,
         options: Options,
     ) -> Result<Self::Output, Error> {
         f.validate_argument_count(1)
@@ -70,8 +82,11 @@ impl FunctionEndpoint for TableEndpoint {
             )));
         }
 
-        let n = (start.value - stop.value).abs().floor() as usize;
-        let step: f64 = 1.0;
+        step.validate_greater_than(0.0)
+            .map_to_error_kind(ErrorKind::RuntimeError)?;
+
+        let step: f64 = step.value;
+        let n = (start.value - stop.value).abs().div_euclid(step) as usize;
         let mut current = start.value;
         let mut stack = options.stack.clone();
         let mut output = DataFrame::new(
