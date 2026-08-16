@@ -22,6 +22,7 @@ default = [
     "datatype_tensor",
     "datatype_function",
     "datatype_boolean",
+    "datatype_data_frame",
     "operator_negate_number",
     "operator_negate_tensor",
     "operator_negate_boolean",
@@ -56,6 +57,7 @@ datatype_symbol = []
 datatype_tensor = []
 datatype_function = []
 datatype_boolean = []
+datatype_data_frame = []
 
 # operator features
 operator_negate_number = ["datatype_number"]
