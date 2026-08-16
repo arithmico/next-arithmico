@@ -60,7 +60,7 @@ impl FunctionEndpoint for TableEndpoint {
             .ok_or_else(|| Error::unreachable())?;
 
         f.expression
-            .validate_unknown_symbol_name(&options.stack.names(), variable_name)
+            .validate_unknown_symbol_name(&options.names(), variable_name)
             .map_to_error_kind(ErrorKind::RuntimeError)?;
 
         if start.value >= stop.value {
