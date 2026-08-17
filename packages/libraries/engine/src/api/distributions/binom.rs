@@ -5,7 +5,7 @@ use evaluator::{
 };
 use math_utils::calculate_binomial_pmf;
 use node::Number;
-use node_validator::NumberValidator;
+use validator::NumberValidator;
 
 #[derive(FunctionArguments)]
 #[name("binom")]

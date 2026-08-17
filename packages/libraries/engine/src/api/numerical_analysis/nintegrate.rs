@@ -10,7 +10,7 @@ use evaluator::{
 };
 use math_utils::calculate_numerical_integral;
 use node::{Function, Node, Number};
-use node_validator::{FunctionValidator, NodeValidator};
+use validator::{FunctionValidator, NodeValidator};
 use trace::{Tracable, TracableMut};
 
 #[derive(FunctionArguments)]

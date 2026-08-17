@@ -10,7 +10,7 @@ use evaluator::{
 };
 use math_utils::calculate_numerical_derivative;
 use node::{Function, IntoNode, Node, Number};
-use node_validator::{FunctionValidator, NodeValidator, NumberValidator};
+use validator::{FunctionValidator, NodeValidator, NumberValidator};
 
 static DEFAULT_ORDER: LazyLock<Node> =
     LazyLock::new(|| Number::new(1.0).into_node());

@@ -4,7 +4,7 @@ use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use node::{DowncastNodeVec, Number, Tensor};
-use node_validator::TensorValidator;
+use validator::TensorValidator;
 
 #[derive(FunctionArguments)]
 #[name("cross")]

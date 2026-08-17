@@ -5,7 +5,7 @@ use evaluator::{
 };
 use math_utils::calculate_quantile_of_binomial_cdf;
 use node::Number;
-use node_validator::NumberValidator;
+use validator::NumberValidator;
 
 #[derive(FunctionArguments)]
 #[name("qbinom")]
