@@ -1350,14 +1350,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "node_transform"
-version = "0.1.0"
-dependencies = [
- "node",
- "trace",
-]
-
-[[package]]
 name = "node_validator"
 version = "0.1.0"
 dependencies = [
@@ -1814,10 +1806,10 @@ version = "0.1.0"
 dependencies = [
  "common",
  "node",
- "node_transform",
  "serde",
  "thiserror 2.0.20",
  "trace",
+ "transformer",
 ]
 
 [[package]]
@@ -2141,6 +2133,14 @@ name = "trace"
 version = "0.1.0"
 dependencies = [
  "lexer",
+]
+
+[[package]]
+name = "transformer"
+version = "0.1.0"
+dependencies = [
+ "node",
+ "trace",
 ]
 
 [[package]]

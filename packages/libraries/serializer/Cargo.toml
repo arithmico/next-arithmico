@@ -8,5 +8,5 @@ common = { version = "0.1.0", path = "../common" }
 node = { version = "0.1.0", path = "../node" }
 trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true
-node_transform = { version = "0.1.0", path = "../node_transform" }
+transformer = { version = "0.1.0", path = "../transformer" }
 serde = { workspace = true, features = ["derive"] }
