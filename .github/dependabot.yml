@@ -23,6 +23,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      cdk:
+        patterns:
+          - "aws-cdk*"
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
