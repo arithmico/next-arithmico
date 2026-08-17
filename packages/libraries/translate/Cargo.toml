@@ -2,6 +2,8 @@
 name = "translate"
 version = "0.1.0"
 edition = "2024"
+license = "AGPL-3.0-or-later"
+license-file = "../../../LICENSE.md"
 
 [dependencies]
 translate_core = { path = "../translate_core" }
