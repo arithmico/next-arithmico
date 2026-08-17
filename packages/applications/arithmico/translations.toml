@@ -210,6 +210,14 @@ German = "Erstellungsdatum"
 English = "Software Bill of Materials"
 German = "Software Bill of Materials"
 
+[about.version.license]
+English = "License"
+German = "Lizenz"
+
+[about.version.repository]
+English = "Repository"
+German = "Repository"
+
 [about.team]
 English = "Team"
 German = "Team"
@@ -261,3 +269,7 @@ German = "Ausgabe"
 [definitions.title]
 English = "Definitions"
 German = "Definitionen"
+
+[license.title]
+English = "License"
+German = "Lizenz"
