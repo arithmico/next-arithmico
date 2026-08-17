@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use leptos::prelude::*;
+use leptos_router::components::A;
 use translate::FormattedMessage;
 
 fn get_source_date_epoch() -> DateTime<Utc> {
@@ -38,6 +39,20 @@ pub fn VersionDetails() -> impl IntoView {
                 <dt>
                     <a href="/sbom.json" download>
                         SBOM
+                    </a>
+                </dt>
+                <dd>
+                    <FormattedMessage id="about.version.license" />
+                </dd>
+                <dt>
+                    <A href="/about/license">AGPL v3</A>
+                </dt>
+                <dd>
+                    <FormattedMessage id="about.version.repository" />
+                </dd>
+                <dt>
+                    <a href="https://github.com/arithmico/next-arithmico">
+                        GitHub
                     </a>
                 </dt>
             </dl>

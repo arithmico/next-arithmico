@@ -12,7 +12,7 @@
 }
 
 .theme-light .version-details > dl > dd {
-    color: var(--color-neutral-400);
+    color: var(--color-neutral-500);
 }
 
 .theme-dark .version-details > dl > dd {

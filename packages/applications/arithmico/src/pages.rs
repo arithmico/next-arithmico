@@ -6,6 +6,7 @@ mod about;
 mod calculator;
 mod definitions;
 mod history;
+mod license;
 mod not_found;
 mod reference;
 mod reference_details;
@@ -19,6 +20,7 @@ pub use not_found::NotFoundPage;
 pub use reference::ReferencePage;
 pub use settings::SettingsPage;
 
+use crate::pages::license::LicensePage;
 use crate::pages::reference_details::ReferenceDetailsPage;
 
 #[component]
@@ -36,6 +38,7 @@ pub fn ApplicationRouter() -> impl IntoView {
                     path=path!("/reference/:endpoint_name")
                     view=ReferenceDetailsPage
                 />
+                <Route path=path!("/about/license") view=LicensePage />
             </Routes>
         </Router>
     }
