@@ -9,7 +9,7 @@ use evaluator::{
 };
 use math_utils::find_roots;
 use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
-use node_validator::{NodeValidator, NumberValidator};
+use validator::{NodeValidator, NumberValidator};
 
 static DEFAULT_START: LazyLock<Node> =
     LazyLock::new(|| Number::new(-20.0).into_node());

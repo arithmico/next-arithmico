@@ -11,7 +11,7 @@ use math_utils::calculate_normal_cdf;
 use node::IntoNode;
 use node::Node;
 use node::Number;
-use node_validator::NumberValidator;
+use validator::NumberValidator;
 
 static DEFAULT_MEAN: LazyLock<Node> =
     LazyLock::new(|| Number::new(0.0).into_node());

@@ -4,7 +4,7 @@ use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use node::Number;
-use node_validator::NumberValidator;
+use validator::NumberValidator;
 
 #[derive(FunctionArguments)]
 #[name("ln")]

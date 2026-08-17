@@ -14,7 +14,7 @@ node = { version = "0.1.0", path = "../node" }
 float_utils = { path = "../float_utils" }
 math_utils = { path = "../math_utils" }
 parser = { version = "0.1.0", path = "../parser" }
-node_validator = { version = "0.1.0", path = "../node_validator" }
+validator = { version = "0.1.0", path = "../validator" }
 serializer = { version = "0.1.0", path = "../serializer" }
 common = { version = "0.1.0", path = "../common" }
 evaluator = { version = "0.1.0", path = "../evaluator", default-features = false }
