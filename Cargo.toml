@@ -3,7 +3,6 @@ resolver = "2"
 members = [
     "packages/applications/arithmico", 
     "packages/applications/create_version", 
-    "packages/applications/cssbundler",
     "packages/libraries/*",
 ]
 

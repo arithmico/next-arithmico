@@ -13,4 +13,3 @@ rustup component add rustfmt
 cargo install trunk --locked
 cargo install leptosfmt
 cargo install cargo-watch
-cargo install cssbundler --path packages/applications/cssbundler
