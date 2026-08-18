@@ -26,9 +26,15 @@ impl Argument {
         self
     }
 
-    pub fn repeatable(mut self) -> Self {
-        self.options
-            .set_cardinality(Cardinality::Multiple { min: 1, max: None });
+    pub fn repeatable(
+        mut self,
+        min: impl Into<usize>,
+        max: impl Into<Option<usize>>,
+    ) -> Self {
+        self.options.set_cardinality(Cardinality::Multiple {
+            min: min.into(),
+            max: max.into(),
+        });
         self
     }
 

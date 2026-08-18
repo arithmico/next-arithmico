@@ -19,10 +19,6 @@ use crate::api::analysis::lg::LgEndpoint;
 use crate::api::analysis::ln::LnEndpoint;
 #[cfg(feature = "api_endpoint_analysis_log")]
 use crate::api::analysis::log::LogEndpoint;
-#[cfg(feature = "api_endpoint_analysis_max")]
-use crate::api::analysis::max::MaxEndpoint;
-#[cfg(feature = "api_endpoint_analysis_min")]
-use crate::api::analysis::min::MinEndpoint;
 #[cfg(feature = "api_endpoint_analysis_root")]
 use crate::api::analysis::root::RootEndpoint;
 #[cfg(feature = "api_endpoint_analysis_round")]
@@ -41,8 +37,6 @@ mod floor;
 mod lg;
 mod ln;
 mod log;
-mod max;
-mod min;
 mod root;
 mod round;
 mod sqrt;
@@ -86,12 +80,6 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_abs")]
     let module = module.function::<AbsEndpoint>();
-
-    #[cfg(feature = "api_endpoint_analysis_min")]
-    let module = module.function::<MinEndpoint>();
-
-    #[cfg(feature = "api_endpoint_analysis_max")]
-    let module = module.function::<MaxEndpoint>();
 
     #[cfg(feature = "api_endpoint_analysis_table")]
     let module = module.function::<TableEndpoint>();

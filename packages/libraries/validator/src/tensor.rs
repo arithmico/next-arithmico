@@ -68,6 +68,26 @@ pub trait TensorValidator {
         &self,
         dimension: usize,
     ) -> Result<&Self, Error>;
+
+    /// Validates that the tensor is a vector of the specified size.
+    ///
+    /// This method asserts two properties:
+    /// 1. The tensor is a vector (i.e., it has a rank of 1).
+    /// 2. The length (or size) of this vector is at least the provided `dimension`
+    ///    (e.g., providing `3` ensures that the vector has a size of at least 3 elements).
+    ///
+    /// # Arguments
+    ///
+    /// * `dimension` - The expected minimal size (number of elements) of the vector.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Error` if the tensor's rank is not exactly 1, or if the
+    /// size of the vector does not match the specified `dimension`.
+    fn validate_minimum_vector_length(
+        &self,
+        dimension: usize,
+    ) -> Result<&Self, Error>;
 }
 
 impl TensorValidator for Tensor {
@@ -130,6 +150,23 @@ impl TensorValidator for Tensor {
             _ => {
                 let message = TranslatedMessage::new(
                     "error.tensor.vector_dimension",
+                    translation_resolver,
+                )
+                .key("dim", dimension);
+                Err(Error::new(self, message))
+            }
+        }
+    }
+
+    fn validate_minimum_vector_length(
+        &self,
+        dimension: usize,
+    ) -> Result<&Self, Error> {
+        match self.shape[..] {
+            [dim] if dim >= dimension => Ok(self),
+            _ => {
+                let message = TranslatedMessage::new(
+                    "error.tensor.vector_min_dimension",
                     translation_resolver,
                 )
                 .key("dim", dimension);

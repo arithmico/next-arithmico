@@ -2,6 +2,7 @@ use evaluator::Api;
 
 use crate::api::{
     algebra::load_algebra_module, analysis::load_analysis_module,
+    descriptive_statistics::load_descriptive_statistics_module,
     distributions::load_distributions_module,
     numerical_analysis::load_numerical_analysis_module,
     physics::load_physics_module, trigonometry::load_trigonometry_module,
@@ -9,6 +10,7 @@ use crate::api::{
 
 mod algebra;
 mod analysis;
+mod descriptive_statistics;
 mod distributions;
 mod numerical_analysis;
 mod physics;
@@ -39,6 +41,10 @@ pub fn load_host_api() -> Api {
         .module(
             cfg!(feature = "api_module_loader_algebra"),
             load_algebra_module,
+        )
+        .module(
+            cfg!(feature = "api_module_loader_descriptive_statistics"),
+            load_descriptive_statistics_module,
         )
         .build()
 }

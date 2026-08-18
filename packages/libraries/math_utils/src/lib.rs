@@ -1,9 +1,11 @@
+mod descriptive_statistics;
 mod distributions;
 mod f64_extension;
 mod fibonacci;
 mod numerical_analysis;
 mod translation_provider;
 
+pub use descriptive_statistics::*;
 pub use distributions::*;
 pub use f64_extension::F64Extension;
 pub use fibonacci::fibonacci;
