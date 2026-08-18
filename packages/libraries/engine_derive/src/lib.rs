@@ -33,7 +33,7 @@ impl Parse for DescriptionAttribute {
 
 #[proc_macro_derive(
     FunctionArguments,
-    attributes(description, name, skip_evaluate, default)
+    attributes(description, name, skip_evaluate, default, repeatable)
 )]
 pub fn function_arguments_derive(input: TokenStream) -> TokenStream {
     let ast = match syn::parse(input) {

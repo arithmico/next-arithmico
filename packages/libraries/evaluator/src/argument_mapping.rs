@@ -133,6 +133,7 @@ impl ArgumentMapping {
     ) -> Result<ArgumentMapping, Error> {
         let mut parameters = VecDeque::from(arguments.to_vec());
         let mut mapping = ArgumentMapping::new();
+
         'outer: for argument in signature.arguments() {
             let mut matched = 0;
             let argument_options = argument.get_options();
@@ -161,12 +162,14 @@ impl ArgumentMapping {
                     }
                 }
             }
+
             while let Some(node) = parameters.front().cloned() {
                 let name = name;
                 let node = match argument_options.preprocess() {
                     Preprocess::None => node,
                     Preprocess::Evaluate => node.evaluate(options)?,
                 };
+
                 match argument_options.cardinality() {
                     Cardinality::Required => {
                         if argument.has_node_type(node.node_type()) {
@@ -223,6 +226,7 @@ impl ArgumentMapping {
                             }
                             if !argument.has_node_type(node.node_type()) {
                                 if matched >= min {
+                                    mapping.insert_value_list(name, values);
                                     continue 'outer;
                                 }
                                 return Err(

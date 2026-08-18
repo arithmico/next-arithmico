@@ -7,15 +7,15 @@ use node::Number;
 #[name("min")]
 #[description(
     Language::German,
-    "Gibt den kleinsten Wert aus den uebergebenen Werten zurück."
+    "Gibt den kleinsten Wert aus den übergebenen Werten zurück."
 )]
 #[description(
     Language::English,
     "Returns the smallest value among the given arguments."
 )]
 pub struct MinArgs<'a> {
-    #[description(Language::German, "Wert")]
-    #[description(Language::English, "value")]
+    #[description(Language::German, "Werte")]
+    #[description(Language::English, "values")]
     x: Vec<&'a Number>,
 }
 
@@ -29,7 +29,7 @@ impl FunctionEndpoint for MinEndpoint {
     // TODO: unit tests
     fn executor<'a>(
         MinArgs { x }: Self::Arguments<'a>,
-        _context: Options,
+        _options: Options,
     ) -> Result<Self::Output, Error> {
         let value = match &x[..] {
             [] => return Err(Error::missing_parameter("x")),

@@ -251,7 +251,7 @@ mod tests {
                                     })
                                     .argument("c", |argument| {
                                         argument
-                                            .repeatable()
+                                            .repeatable(1_usize, None)
                                             .node_type(NodeType::Any)
                                     })
                                     .add_return_type(NodeType::Any),

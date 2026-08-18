@@ -51,8 +51,13 @@ English = "Expected tensors to have equal dimensions, but got dimensions {left} 
 German = "Erwartet wurden Tensoren mit identischen Dimensionen, stattdessen haben sie die Dimensionen {left} und {right}."
 
 [error.tensor.vector_dimension]
-English = "The vector is expected to have {dim} dimensions."
-German = "Der Vektor muss {dim} dimensionen haben."
+English = "The vector is expected to have exactly {dim} elements."
+German = "Der Vektor muss genau {dim} Elemente haben."
+
+[error.tensor.vector_min_dimension]
+English = "The vector is expected to have at least {dim} elements."
+German = "Der Vektor muss mindestens {dim} Elemente haben."
+
 
 [error.node.too_few_variables]
 English = "The expression contains too few unknown variables. Expected {expected}, but found {actual}."

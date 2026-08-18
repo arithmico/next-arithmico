@@ -14,10 +14,44 @@ struct ArgumentField {
 }
 
 enum ArgumentCardinality {
-    Multiple,
     Optional,
     OptionalWithDefault { default: proc_macro2::TokenStream },
     Required,
+    Multiple { min: usize, max: Option<usize> },
+}
+
+fn parse_repeatable_attribute(
+    attribute: &syn::Attribute,
+) -> syn::Result<(usize, Option<usize>)> {
+    let mut min = 0;
+    let mut max = None;
+
+    attribute.parse_nested_meta(|meta| {
+        if meta.path.is_ident("min") {
+            let value = meta.value()?;
+            min = value.parse::<syn::LitInt>()?.base10_parse()?;
+            return Ok(());
+        }
+
+        if meta.path.is_ident("max") {
+            let value = meta.value()?;
+            max = Some(value.parse::<syn::LitInt>()?.base10_parse()?);
+            return Ok(());
+        }
+
+        Err(meta.error("expected `min` or `max`"))
+    })?;
+
+    if let Some(max) = max {
+        if min > max {
+            return Err(syn::Error::new_spanned(
+                attribute,
+                "`repeatable` requires `min <= max`",
+            ));
+        }
+    }
+
+    Ok((min, max))
 }
 
 pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
@@ -101,6 +135,13 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                     quote! { #expr }
                 });
 
+            let repeatable = field
+                .attrs
+                .iter()
+                .find(|attribute| attribute.path().is_ident("repeatable"))
+                .map(parse_repeatable_attribute)
+                .transpose()?;
+
             let description = field
                 .attrs
                 .iter()
@@ -149,12 +190,23 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 .ident
                 .to_string();
 
+            if repeatable.is_some() && root_field_type != "Vec" {
+                return Err(syn::Error::new(
+                    field.span(),
+                    "`repeatable` can only be used with Vec arguments",
+                ));
+            }
+
             let cardinality = if let Some(default) = default {
                 ArgumentCardinality::OptionalWithDefault { default }
             } else {
                 match root_field_type.as_str() {
                     "Option" => ArgumentCardinality::Optional,
-                    "Vec" => ArgumentCardinality::Multiple,
+                    "Vec" => {
+                        let (min, max) = repeatable.unwrap_or((0, None));
+
+                        ArgumentCardinality::Multiple { min, max }
+                    }
                     _ => ArgumentCardinality::Required,
                 }
             };
@@ -188,7 +240,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                     ArgumentCardinality::Optional => quote! {
                         #ident: arguments.optional(#name)?
                     },
-                    ArgumentCardinality::Multiple => quote! {
+                    ArgumentCardinality::Multiple { .. } => quote! {
                         #ident: arguments.multiple(#name)?
                     },
                     ArgumentCardinality::Required => quote! {
@@ -230,16 +282,23 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                             #evaluate
                         )
                     },
-                    ArgumentCardinality::Multiple => quote! {
+                    ArgumentCardinality::Multiple { min, max } => {
+                        let max = match max {
+                            Some(max) => quote! { Some(#max) },
+                            None => quote! { None },
+                        };
+
+                        quote! {
                         .argument(
                             #name,
-                            |arg| arg.repeatable().node_type(
+                            |arg| arg.repeatable(#min, #max).node_type(
                                 <#field_type as node::GetStaticNodeType>::static_node_type()
                             )
                             #(#description)*
                             #evaluate
                         )
-                    },
+                    }
+                },
                     ArgumentCardinality::Required => quote! {
                         .argument(
                             #name,
