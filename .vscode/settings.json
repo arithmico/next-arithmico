@@ -7,7 +7,6 @@
         "trace",
         "editor",
         "translate",
-        "cssbundler",
         "create_version",
         "web_state",
         "infrastructure",
