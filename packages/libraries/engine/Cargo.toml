@@ -263,6 +263,7 @@ api_module_analysis = [
     "api_endpoint_analysis_min",
     "api_endpoint_analysis_max",
     "api_endpoint_analysis_table",
+    "api_endpoint_analysis_fib",
 ]
 
 api_module_loader_analysis = []
@@ -280,6 +281,7 @@ api_endpoint_analysis_abs = ["api_module_loader_analysis"]
 api_endpoint_analysis_min = ["api_module_loader_analysis"]
 api_endpoint_analysis_max = ["api_module_loader_analysis"]
 api_endpoint_analysis_table = ["api_module_loader_analysis", "datatype_data_frame"]
+api_endpoint_analysis_fib = ["api_module_loader_analysis"]
 
 # algebra
 api_module_algebra = [

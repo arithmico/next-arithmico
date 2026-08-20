@@ -9,6 +9,8 @@ use crate::api::analysis::ceil::CeilEndpoint;
 use crate::api::analysis::e::EEndpoint;
 #[cfg(feature = "api_endpoint_analysis_exp")]
 use crate::api::analysis::exp::ExpEndpoint;
+#[cfg(feature = "api_endpoint_analysis_fib")]
+use crate::api::analysis::fib::FibEndpoint;
 #[cfg(feature = "api_endpoint_analysis_floor")]
 use crate::api::analysis::floor::FloorEndpoint;
 #[cfg(feature = "api_endpoint_analysis_lg")]
@@ -44,6 +46,7 @@ mod root;
 mod round;
 mod sqrt;
 mod table;
+mod fib;
 
 pub fn load_analysis_module() -> ApiModule {
     let module = ApiModule::builder()
@@ -92,6 +95,9 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_table")]
     let module = module.function::<TableEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_fib")]
+    let module = module.function::<FibEndpoint>();
 
     module.build()
 }
