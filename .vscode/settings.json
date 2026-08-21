@@ -18,7 +18,8 @@
         "validator",
         "transformer",
         "evaluator",
-        "common"
+        "common",
+        "editor_core"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }

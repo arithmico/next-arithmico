@@ -31,7 +31,7 @@ impl EditorState {
             ));
         } else {
             let is_selection_left_to_right =
-                self.is_node_before(anchor_node_id, focus_node_id).unwrap();
+                self.is_node_before(anchor_node_id, focus_node_id)?;
 
             if is_selection_left_to_right {
                 self.trim_leaf_node_right(anchor_node_id, anchor_offset);
