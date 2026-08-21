@@ -12,7 +12,6 @@ translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 engine_derive = { path = "../engine_derive" }
 node = { version = "0.1.0", path = "../node" }
-float_utils = { path = "../float_utils" }
 math_utils = { path = "../math_utils" }
 parser = { version = "0.1.0", path = "../parser" }
 validator = { version = "0.1.0", path = "../validator" }

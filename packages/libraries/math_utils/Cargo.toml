@@ -7,3 +7,4 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 thiserror = { workspace = true }
 translate_core = { version = "0.1.0", path = "../translate_core" }
+approx = "0.5.1"

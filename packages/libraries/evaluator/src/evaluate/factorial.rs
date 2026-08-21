@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use float_utils::F64Extension;
+use math_utils::F64Extension;
 use node::{Factorial, Node, Number};
 
 use crate::{Error, EvaluateNode, Options};
