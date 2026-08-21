@@ -1,4 +1,4 @@
-use float_utils::F64Extension;
+use math_utils::F64Extension;
 use node::Number;
 use translate_core::TranslatedMessage;
 

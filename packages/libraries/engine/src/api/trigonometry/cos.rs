@@ -3,7 +3,7 @@ use std::f64::consts::PI;
 use common::Language;
 use engine_derive::FunctionArguments;
 use evaluator::{Error, FunctionEndpoint, Options};
-use float_utils::F64Extension;
+use math_utils::F64Extension;
 use node::Number;
 
 #[derive(FunctionArguments)]
