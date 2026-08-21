@@ -55,6 +55,12 @@ pub fn VersionDetails() -> impl IntoView {
                         GitHub
                     </a>
                 </dt>
+                <dd>
+                    <FormattedMessage id="about.version.font_license" />
+                </dd>
+                <dt>
+                    <A href="/about/font_license">SIL Open Font License</A>
+                </dt>
             </dl>
         </section>
     }

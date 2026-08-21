@@ -5,6 +5,7 @@ use leptos_router::path;
 mod about;
 mod calculator;
 mod definitions;
+mod font_license;
 mod history;
 mod license;
 mod not_found;
@@ -15,6 +16,7 @@ mod settings;
 pub use about::AboutPage;
 pub use calculator::CalculatorPage;
 pub use definitions::DefinitionsPage;
+pub use font_license::FontLicensePage;
 pub use history::HistoryPage;
 pub use not_found::NotFoundPage;
 pub use reference::ReferencePage;
@@ -39,6 +41,7 @@ pub fn ApplicationRouter() -> impl IntoView {
                     view=ReferenceDetailsPage
                 />
                 <Route path=path!("/about/license") view=LicensePage />
+                <Route path=path!("/about/font_license") view=FontLicensePage />
             </Routes>
         </Router>
     }

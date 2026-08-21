@@ -36,6 +36,7 @@ mod abs;
 mod ceil;
 mod e;
 mod exp;
+mod fib;
 mod floor;
 mod lg;
 mod ln;
@@ -46,7 +47,6 @@ mod root;
 mod round;
 mod sqrt;
 mod table;
-mod fib;
 
 pub fn load_analysis_module() -> ApiModule {
     let module = ApiModule::builder()

@@ -9,14 +9,8 @@ use validator::NumberValidator;
 
 #[derive(FunctionArguments)]
 #[name("fib")]
-#[description(
-    Language::German,
-    "Berechnet die n-te Fibonacci Zahl."
-)]
-#[description(
-    Language::English,
-    "Calculates the n-th fibonacci number"
-)]
+#[description(Language::German, "Berechnet die n-te Fibonacci Zahl.")]
+#[description(Language::English, "Calculates the n-th fibonacci number")]
 pub struct FibArgs<'a> {
     #[description(Language::German, "Wert")]
     #[description(Language::English, "value")]

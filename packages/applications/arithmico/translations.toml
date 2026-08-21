@@ -214,6 +214,10 @@ German = "Software Bill of Materials"
 English = "License"
 German = "Lizenz"
 
+[about.version.font_license]
+English = "Font license"
+German = "Lizenz der Schriftart"
+
 [about.version.repository]
 English = "Repository"
 German = "Repository"
@@ -273,3 +277,7 @@ German = "Definitionen"
 [license.title]
 English = "License"
 German = "Lizenz"
+
+[font_license.title]
+English = "Font License"
+German = "Lizenz der Schriftart"

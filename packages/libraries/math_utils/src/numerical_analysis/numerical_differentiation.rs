@@ -69,7 +69,11 @@
 ///   begins to dominate. Its implementation also discusses Richardson
 ///   extrapolation as a numerical improvement:
 ///   <https://github.com/scipy/scipy/blob/main/scipy/differentiate/_differentiate.py>
-pub fn calculate_numerical_derivative<F>(f: &mut F, x0: f64, order: usize) -> f64
+pub fn calculate_numerical_derivative<F>(
+    f: &mut F,
+    x0: f64,
+    order: usize,
+) -> f64
 where
     F: FnMut(f64) -> f64,
 {
