@@ -8,8 +8,8 @@ use evaluator::{
     Options,
 };
 use node::{DataFrame, Function, Node, Number, Symbol};
-use validator::{FunctionValidator, NodeValidator, NumberValidator};
 use translate::TranslatedMessage;
+use validator::{FunctionValidator, NodeValidator, NumberValidator};
 
 use crate::translation_provider::translation_resolver;
 

@@ -10,8 +10,8 @@ use evaluator::{
 };
 use math_utils::calculate_numerical_integral;
 use node::{Function, Node, Number};
-use validator::{FunctionValidator, NodeValidator};
 use trace::{Tracable, TracableMut};
+use validator::{FunctionValidator, NodeValidator};
 
 #[derive(FunctionArguments)]
 #[name("nintegrate")]
