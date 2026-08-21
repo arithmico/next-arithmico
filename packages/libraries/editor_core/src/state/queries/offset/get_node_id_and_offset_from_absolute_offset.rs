@@ -9,7 +9,7 @@ impl EditorState {
         let last_leaf_id = all_leaf_node_ids.last().copied();
         let mut pos = 0;
         for node_id in all_leaf_node_ids {
-            let last_leaf_id = last_leaf_id.unwrap();
+            let last_leaf_id = last_leaf_id?;
             let node = self.get_leaf_node(node_id)?;
             let length = node.length();
             if absolute_offset == pos {
