@@ -1,16 +1,9 @@
 use std::collections::VecDeque;
 
-use node::Node;
+use crate::Node;
 
-use crate::sealed::Sealed;
-
-#[allow(private_bounds)]
-pub trait PostOrderIter: Sealed {
-    fn post_order_iter<'a>(&'a self) -> NodePostOrderIter<'a>;
-}
-
-impl PostOrderIter for Node {
-    fn post_order_iter<'a>(&'a self) -> NodePostOrderIter<'a> {
+impl Node {
+    pub fn post_order_iter<'a>(&'a self) -> NodePostOrderIter<'a> {
         NodePostOrderIter::new(self)
     }
 }
