@@ -12,6 +12,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "algebra"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "evaluator",
+ "node",
+ "transformer",
+]
+
+[[package]]
 name = "android_system_properties"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
