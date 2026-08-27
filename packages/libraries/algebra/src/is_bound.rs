@@ -23,6 +23,11 @@ impl<'a> NodeVisitor<'a> for IsBoundVisitor<'a> {
 
 #[allow(private_bounds)]
 pub trait IsBound: Sealed {
+    /// Determines whether an expression is fully bound.
+    ///
+    /// An expression is considered fully bound if all of its variables or symbols
+    /// are defined within the provided `known_symbols` set. If the expression
+    /// contains any free or unknown variables, this evaluates to `false`.
     fn is_bound(&self, known_symbols: &HashSet<&str>) -> bool;
 }
 
