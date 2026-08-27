@@ -1,0 +1,10 @@
+[package]
+name = "algebra"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+common = { version = "0.1.0", path = "../common" }
+evaluator = { version = "0.1.0", path = "../evaluator" }
+node = { version = "0.1.0", path = "../node" }
+transformer = { version = "0.1.0", path = "../transformer" }

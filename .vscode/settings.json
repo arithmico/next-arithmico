@@ -19,7 +19,8 @@
         "transformer",
         "evaluator",
         "common",
-        "editor_core"
+        "editor_core",
+        "algebra"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }
