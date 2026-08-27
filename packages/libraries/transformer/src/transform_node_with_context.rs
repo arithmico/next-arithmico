@@ -1,23 +1,73 @@
-use node::Node;
+use std::{marker::PhantomData, ops::ControlFlow};
+
+use node::{Node, NodeVisitorMut};
 
 use crate::sealed::Sealed;
 
 #[allow(private_bounds)]
 pub trait TransformNodeWithContext: Sealed {
-    fn transform_with_context<E, Ctx>(
+    fn transform_with_context<C, E>(
         self,
-        transformer: impl Fn(Node, &Ctx) -> Result<Node, E>,
-        context: &Ctx,
+        transformer: impl TransformerWithContextFn<C, E>,
+        context: &C,
     ) -> Result<Node, E>;
 }
 
+pub trait TransformerWithContextFn<Context, Error> {
+    fn transform<'a>(
+        &self,
+        node: &'a mut Node,
+        context: &'a Context,
+    ) -> Result<(), Error>;
+}
+
+impl<C, E, F: Fn(&mut Node, &C) -> Result<(), E>> TransformerWithContextFn<C, E>
+    for F
+{
+    fn transform(&self, node: &mut Node, context: &C) -> Result<(), E> {
+        (self)(node, context)
+    }
+}
+
+struct TransformVisitor<'a, C, E, F: TransformerWithContextFn<C, E>> {
+    f: F,
+    context: &'a C,
+    _marker: PhantomData<E>,
+}
+
+impl<'a, C, E, F: TransformerWithContextFn<C, E>> NodeVisitorMut
+    for TransformVisitor<'a, C, E, F>
+{
+    type Break = E;
+
+    fn visit(
+        &mut self,
+        node: &mut Node,
+    ) -> std::ops::ControlFlow<Self::Break, ()> {
+        match self.f.transform(node, &self.context) {
+            Ok(_) => ControlFlow::Continue(()),
+            Err(err) => ControlFlow::Break(err),
+        }
+    }
+}
+
 impl TransformNodeWithContext for Node {
-    fn transform_with_context<E, Ctx>(
-        self,
-        transformer: impl Fn(Node, &Ctx) -> Result<Node, E>,
-        context: &Ctx,
+    fn transform_with_context<C, E>(
+        mut self,
+        transformer: impl TransformerWithContextFn<C, E>,
+        context: &C,
     ) -> Result<Node, E> {
-        let node = match self {
+        let mut visitor = TransformVisitor {
+            f: transformer,
+            context: context,
+            _marker: PhantomData,
+        };
+        match self.visit_post_order_mut(&mut visitor) {
+            ControlFlow::Continue(_) => Ok(self),
+            ControlFlow::Break(err) => Err(err),
+        }
+
+        /*let node = match self {
             Node::Boolean(node) => transformer(Node::Boolean(node), context)?,
             Node::Number(node) => transformer(Node::Number(node), context)?,
             Node::Symbol(node) => transformer(Node::Symbol(node), context)?,
@@ -139,6 +189,6 @@ impl TransformNodeWithContext for Node {
             }
         };
 
-        Ok(node)
+        Ok(node)*/
     }
 }

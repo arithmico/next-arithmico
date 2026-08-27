@@ -9,10 +9,10 @@ pub(crate) trait NormalizeNode {
 
 impl NormalizeNode for Node {
     fn normalize(self, options: crate::Options) -> Result<Node, crate::Error> {
-        self.transform(|node| match node {
+        self.transform(|outer_node| match outer_node {
             Node::Number(node) => {
                 if node.value == 0.0 {
-                    return Ok(Number::new_node(node.value));
+                    return Ok(());
                 }
 
                 let decimal_places = usize::from(options.decimal_places);
@@ -21,11 +21,11 @@ impl NormalizeNode for Node {
                 let magnitude_abs =
                     if magnitude < 0 { -magnitude } else { magnitude };
                 if magnitude_abs <= decimal_places as i64 {
-                    return if node.value < 0.0 {
-                        Ok(Negate::new(Number::new_node(node.value.abs())))
-                    } else {
-                        Ok(Number::new_node(node.value))
-                    };
+                    if node.value < 0.0 {
+                        *outer_node =
+                            Negate::new(Number::new_node(node.value.abs()));
+                    }
+                    return Ok(());
                 }
 
                 let sign = node.value.signum();
@@ -45,16 +45,15 @@ impl NormalizeNode for Node {
                     .into(),
                 ]);
 
-                if sign > 0.0 {
-                    Ok(scientific_notation)
+                *outer_node = if sign > 0.0 {
+                    scientific_notation
                 } else {
-                    Ok(Negate::new(scientific_notation))
-                }
+                    Negate::new(scientific_notation)
+                };
+                Ok(())
             }
-            Node::HostFunction(node) => {
-                Err(Error::unsupported_node(&Node::HostFunction(node)))
-            }
-            node => Ok(node),
+            Node::HostFunction(_) => Err(Error::unsupported_node(&outer_node)),
+            _ => Ok(()),
         })
     }
 }
