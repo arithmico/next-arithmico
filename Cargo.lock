@@ -18,6 +18,7 @@ dependencies = [
  "common",
  "evaluator",
  "node",
+ "trace",
  "transformer",
 ]
 
