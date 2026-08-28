@@ -73,6 +73,31 @@ fn expand<'a>(node: &'a mut Node, _options: Options<'a>) -> Result<(), Error> {
                 }
             }
         }
+        Node::Product(inner) => {
+            if !inner.elements.iter().any(|e| matches!(e, Node::Product(_))) {
+                return Ok(());
+            }
+
+            // flatten nested products
+            let mut new_len = inner.elements.len();
+            inner.elements.iter().for_each(|e| {
+                if let Node::Sum(sum) = e {
+                    new_len += sum.elements.len().saturating_sub(1);
+                }
+            });
+
+            let mut elements = Vec::with_capacity(new_len);
+            std::mem::swap(&mut inner.elements, &mut elements);
+
+            for element in elements {
+                match element {
+                    Node::Product(sum) => {
+                        inner.elements.extend(sum.elements);
+                    }
+                    other => inner.elements.push(other),
+                }
+            }
+        }
         _ => (),
     }
 
@@ -83,7 +108,7 @@ fn expand<'a>(node: &'a mut Node, _options: Options<'a>) -> Result<(), Error> {
 mod tests {
     use common::AngleUnit;
     use evaluator::{Api, Stack};
-    use node::{Sum, Symbol};
+    use node::{Product, Sum, Symbol};
 
     use super::*;
 
@@ -92,14 +117,34 @@ mod tests {
         let api = Api::default();
         let stack = Stack::new();
         let options = Options::new(&stack, &api, AngleUnit::default());
-        let mut sum = Sum::new(vec![
+        let mut output = Sum::new(vec![
             Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
             Symbol::new("c"),
         ]);
-        sum.expand(options).unwrap();
+        output.expand(options).unwrap();
         assert_eq!(
-            sum,
+            output,
             Sum::new(vec![
+                Symbol::new("a"),
+                Symbol::new("b"),
+                Symbol::new("c"),
+            ])
+        )
+    }
+
+    #[test]
+    fn product_flatten() {
+        let api = Api::default();
+        let stack = Stack::new();
+        let options = Options::new(&stack, &api, AngleUnit::default());
+        let mut output = Product::new(vec![
+            Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
+            Symbol::new("c"),
+        ]);
+        output.expand(options).unwrap();
+        assert_eq!(
+            output,
+            Product::new(vec![
                 Symbol::new("a"),
                 Symbol::new("b"),
                 Symbol::new("c"),
