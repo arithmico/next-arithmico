@@ -49,24 +49,27 @@ impl<'a> NodeVisitorMut for ExpandVisitor<'a> {
 fn expand<'a>(node: &'a mut Node, _options: Options<'a>) -> Result<(), Error> {
     match node {
         Node::Sum(inner) => {
-            // flatten nested sums
-            let mut pos = 0;
-            while let Some(element) = inner.elements.get(pos) {
-                if let Node::Sum(element) = element {
-                    inner
-                        .elements
-                        .reserve(element.elements.len().saturating_sub(1));
-                    let Node::Sum(element) = inner.elements.remove(pos) else {
-                        // unreachable
-                        continue;
-                    };
+            if !inner.elements.iter().any(|e| matches!(e, Node::Sum(_))) {
+                return Ok(());
+            }
 
-                    for element in element.elements {
-                        inner.elements.insert(pos, element);
-                        pos += 1;
+            // flatten nested sums
+            let mut new_len = inner.elements.len();
+            inner.elements.iter().for_each(|e| {
+                if let Node::Sum(sum) = e {
+                    new_len += sum.elements.len().saturating_sub(1);
+                }
+            });
+
+            let mut elements = Vec::with_capacity(new_len);
+            std::mem::swap(&mut inner.elements, &mut elements);
+
+            for element in elements {
+                match element {
+                    Node::Sum(sum) => {
+                        inner.elements.extend(sum.elements);
                     }
-                } else {
-                    pos += 1;
+                    other => inner.elements.push(other),
                 }
             }
         }
