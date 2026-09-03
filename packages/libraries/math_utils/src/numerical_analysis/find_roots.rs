@@ -88,7 +88,7 @@ pub fn find_roots<F>(
 where
     F: Fn(f64) -> Option<f64>,
 {
-    const STEP_SIZE: f64 = 0.25;
+    const STEP_SIZE: f64 = 0.125;
 
     if !start.is_finite() {
         return Err(FindRootsError::NonFiniteBoundary {
@@ -108,45 +108,52 @@ where
     }
 
     let mut roots = Vec::new();
-    let mut b = start;
     let mut previous: Option<(f64, f64)> = None;
 
-    loop {
-        match f(b) {
-            Some(fb) if fb.is_finite() => {
-                if fb == 0.0 {
-                    push_unique(&mut roots, b);
-                }
+    let step_count = ((end - start) / STEP_SIZE).ceil() as usize;
 
-                if let Some((a, fa)) = previous {
-                    if fa.signum() != fb.signum() {
-                        let enclosed_function =
-                            |x: f64| f(x).unwrap_or(f64::NAN);
+    for index in 0..=step_count {
+        let b = if index == step_count {
+            end
+        } else {
+            start + index as f64 * STEP_SIZE
+        };
 
-                        let root = enclose_zero(&enclosed_function, a, b)
-                            .map_err(|source| FindRootsError::EncloseZero {
-                                a,
-                                b,
-                                source,
-                            })?;
+        let Some(fb) = f(b) else {
+            previous = None;
+            continue;
+        };
 
-                        push_unique(&mut roots, root);
-                    }
-                }
+        if !fb.is_finite() {
+            previous = None;
+            continue;
+        }
 
-                previous = Some((b, fb));
-            }
-            _ => {
-                previous = None;
+        // Exact sampled root.
+        if fb == 0.0 {
+            push_unique(&mut roots, b);
+        }
+
+        // Ordinary root enclosed by a sign change.
+        if let Some((a, fa)) = previous {
+            if fa != 0.0 && fb != 0.0 && fa.signum() != fb.signum() {
+                let enclosed_function = |x: f64| f(x).unwrap_or(f64::NAN);
+
+                let root = enclose_zero(&enclosed_function, a, b).map_err(
+                    |source| FindRootsError::EncloseZero { a, b, source },
+                )?;
+
+                push_unique(&mut roots, root);
             }
         }
 
-        if b >= end {
-            break;
-        }
+        // maybe: Detection of a local minimum of |f|. This could avoid errors for roots with an
+        // even multiplicity, where the sign does not change.
 
-        b = b + STEP_SIZE;
+        previous = Some((b, fb));
     }
+
+    roots.sort_by(f64::total_cmp);
 
     Ok(roots)
 }
@@ -426,6 +433,225 @@ mod tests {
         let roots = find_roots(&f, -10.0, 0.0)?;
 
         assert_roots_close(roots, &[0.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = (-11 + 18 * x)^2 + (2 - 6 * x)^2 - 25 in \[-10, 10\]
+    #[test]
+    fn find_root_two_squared_terms() -> Result<(), FindRootsError> {
+        let f = |x: f64| {
+            Some((-11.0 + 18.0 * x).powi(2) + (2.0 - 6.0 * x).powi(2) - 25.)
+        };
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(
+            roots,
+            &[3.333333333333333e-1, 8.333333333333334e-1],
+            ROOT_TOLERANCE,
+        );
+
+        Ok(())
+    }
+
+    /// f(x) = 100 - 420 * x + 360 * x^2 in \[-10, 10\]
+    #[test]
+    fn find_root_quadratic_function() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(100.0 - 420.0 * x + 360.0 * x.powi(2));
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(
+            roots,
+            &[3.333333333333333e-1, 8.333333333333334e-1],
+            ROOT_TOLERANCE,
+        );
+
+        Ok(())
+    }
+
+    /// f(x) = 100 * 0.87 ^ x - 1 in \[0, 50\]
+    #[test]
+    fn find_root_exponenttial_function() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(100.0 * (0.87_f64).powf(x) - 1.0);
+
+        let roots = find_roots(&f, 0.0, 50.0)?;
+
+        assert_roots_close(roots, &[3.306837442646557e1], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = x^3 - 2*x^2 + x in \[-10, 10\]
+    #[test]
+    fn find_root_cubic_function() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(x.powi(3) - 2.0 * x.powi(2) + x);
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[0.0, 1.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = (x^2 - 3*x + 2) * (x - 2) in \[-10, 10\]
+    #[test]
+    fn find_root_cubic_function_2() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some((x.powi(2) - 3.0 * x + 2.0) * (x - 2.0));
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[1.0, 2.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = x^3 - 18*x^2 + 81*x in \[-10, 10\]
+    #[test]
+    fn find_root_cubic_function_3() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(x.powi(3) - 18.0_f64 * x.powi(2) + 81.0 * x);
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[0.0, 9.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = x^2 - (9/5)*x + 4/5 in \[-10, 10\]
+    #[test]
+    fn find_root_quadratic_function_2() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(x.powi(2) - (9.0 / 5.0) * x + 4.0 / 5.0);
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[0.8, 1.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = (1/120) * x^2 - 2*x + 120 in \[0, 200\]
+    #[test]
+    fn find_root_quadratic_function_3() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some((1.0 / 120.0) * x.powi(2) - 2.0 * x + 120.0);
+
+        let roots = find_roots(&f, 0.0, 200.0)?;
+
+        assert_roots_close(roots, &[120.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = (200 + 10*x)^2 + (300 + 10*x)^2 + (5*x - 10)^2 - 1600^2 in \[-100_000, 1000\]
+    #[test]
+    fn find_root_quadratic_function_4() -> Result<(), FindRootsError> {
+        let f = |x: f64| {
+            Some(
+                (200.0 + 10.0 * x).powi(2)
+                    + (300.0 + 10.0 * x).powi(2)
+                    + (5.0 * x - 10.0).powi(2)
+                    - 1600.0_f64.powi(2),
+            )
+        };
+
+        let roots = find_roots(&f, -100_000.0, 1000.0)?;
+
+        assert_roots_close(
+            roots,
+            &[-128.224081806131, 84.2240818061307], // with Wolfram Alpha: https://www.wolframalpha.com/input?i=solve%28%28200+%2B+10*x%29%5E2+%2B+%28300+%2B+10*x%29%5E2+%2B+%285*x+-+10%29%5E2+-+1600%5E2%29
+            ROOT_TOLERANCE,
+        );
+
+        Ok(())
+    }
+
+    /// f(x) = 3*x^2 - 6*x + 3 in \[-10, 10\]
+    #[test]
+    fn find_root_quadratic_function_5() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(3.0 * x.powi(2) - 6.0 * x + 3.0);
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[1.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = 100*x^16 - 15 in \[-10, 10\]
+    #[test]
+    fn find_root_degree_16_function() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(100.0 * x.powi(16) - 15.0);
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(
+            roots,
+            &[-0.8881896410448874, 0.8881896410448868],
+            ROOT_TOLERANCE,
+        );
+
+        Ok(())
+    }
+
+    /// f(x) = 1.5*e^x in \[-100, 100\]
+    #[test]
+    fn find_root_exponential_function_with_euler_base()
+    -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(1.5_f64 * x.exp());
+
+        let roots = find_roots(&f, -100.0, 100.0)?;
+
+        assert_roots_close(roots, &[], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = 1.5*x^2 - x + x^3 in \[-10, 10\]
+    #[test]
+    fn find_root_cubic_function_4() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(1.5_f64 * x.powi(2) - x + x.powi(3));
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[-2.0, 0.0, 0.5], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = 7*x - 14*x^2 in \[-10, 10\]
+    #[test]
+    fn find_root_quadratic_function_6() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(7.0 * x - 14.0 * x.powi(2));
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[0.0, 0.5], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = 2*x*e^(1 - x^2) in \[-10, 10\]
+    #[test]
+    fn find_root_exponential_function_with_euler_base_2()
+    -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(2.0 * x * (1.0 - x.powi(2)).exp());
+
+        let roots = find_roots(&f, -10.0, 10.0)?;
+
+        assert_roots_close(roots, &[0.0], ROOT_TOLERANCE);
+
+        Ok(())
+    }
+
+    /// f(x) = x^2 - 10_000 in \[-10_000, 100_000\]
+    #[test]
+    fn find_root_quadratic_function_7() -> Result<(), FindRootsError> {
+        let f = |x: f64| Some(x.powi(2) - 10_000.0);
+
+        let roots = find_roots(&f, -10_000.0, 100_000.0)?;
+
+        assert_roots_close(roots, &[-100.0, 100.0], ROOT_TOLERANCE);
 
         Ok(())
     }
