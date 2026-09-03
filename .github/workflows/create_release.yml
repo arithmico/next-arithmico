@@ -52,7 +52,7 @@ jobs:
           rustup target add wasm32-unknown-unknown
           cargo binstall -y --locked --force trunk
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.3
+        uses: aws-actions/configure-aws-credentials@v6.2.4
         with:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
