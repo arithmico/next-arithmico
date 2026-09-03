@@ -79,7 +79,7 @@ jobs:
         cargo cyclonedx --format json --override-filename sbom
         cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
     - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v6.2.3
+      uses: aws-actions/configure-aws-credentials@v6.2.4
       with:
         role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
         role-session-name: GitHub_to_AWS_via_FederatedOIDC
