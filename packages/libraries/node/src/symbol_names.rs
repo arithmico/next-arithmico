@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn product() {
         let symbols = BTreeSet::from_iter(vec!["x", "y"].into_iter());
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Number::new_node(1.0),
             Symbol::new("x"),
             Symbol::new("y"),

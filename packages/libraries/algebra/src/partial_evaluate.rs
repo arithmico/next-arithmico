@@ -99,9 +99,11 @@ fn partial_evaluate<'a>(
                     right.is_bound(&known_symbols),
                 ) {
                     (true, true) => {
-                        let partial_sum =
-                            Product::new(vec![left.clone(), right.clone()])
-                                .evaluate(options)?;
+                        let partial_sum = Product::new_node(vec![
+                            left.clone(),
+                            right.clone(),
+                        ])
+                        .evaluate(options)?;
                         inner.elements[pos] = partial_sum;
                         inner.elements.remove(pos + 1);
                     }
@@ -240,8 +242,10 @@ mod tests {
         let api = Api::default();
         let stack = Stack::new();
         let options = Options::new(&stack, &api, AngleUnit::default());
-        let mut output =
-            Product::new(vec![Number::new_node(1.0), Number::new_node(2.0)]);
+        let mut output = Product::new_node(vec![
+            Number::new_node(1.0),
+            Number::new_node(2.0),
+        ]);
         output.partial_evaluate(options).unwrap();
         assert_eq!(output, Number::new_node(2.0));
     }
@@ -251,14 +255,14 @@ mod tests {
         let api = Api::default();
         let stack = Stack::new();
         let options = Options::new(&stack, &api, AngleUnit::default());
-        let mut output = Product::new(vec![
+        let mut output = Product::new_node(vec![
             Sum::new(vec![Number::new_node(1.0), Number::new_node(2.0)]),
             Symbol::new("x"),
         ]);
         output.partial_evaluate(options).unwrap();
         assert_eq!(
             output,
-            Product::new(vec![Number::new_node(3.0), Symbol::new("x")])
+            Product::new_node(vec![Number::new_node(3.0), Symbol::new("x")])
         );
     }
 
@@ -267,7 +271,7 @@ mod tests {
         let api = Api::default();
         let stack = Stack::new();
         let options = Options::new(&stack, &api, AngleUnit::default());
-        let mut output = Product::new(vec![
+        let mut output = Product::new_node(vec![
             Number::new_node(1.0),
             Number::new_node(2.0),
             Symbol::new("x"),
@@ -275,7 +279,7 @@ mod tests {
         output.partial_evaluate(options).unwrap();
         assert_eq!(
             output,
-            Product::new(vec![Number::new_node(2.0), Symbol::new("x")])
+            Product::new_node(vec![Number::new_node(2.0), Symbol::new("x")])
         );
     }
 

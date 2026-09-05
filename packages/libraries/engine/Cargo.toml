@@ -108,6 +108,7 @@ api_modules = [
     "api_module_algebra",
     "api_module_numerical_analysis",
     "api_module_descriptive_statistics",
+    "api_module_discrete_mathematics",
 ]
 
 # trigonometry
@@ -261,7 +262,6 @@ api_module_analysis = [
     "api_endpoint_analysis_ceil",
     "api_endpoint_analysis_abs",
     "api_endpoint_analysis_table",
-    "api_endpoint_analysis_fib",
 ]
 
 api_module_loader_analysis = []
@@ -277,7 +277,6 @@ api_endpoint_analysis_floor = ["api_module_loader_analysis"]
 api_endpoint_analysis_ceil = ["api_module_loader_analysis"]
 api_endpoint_analysis_abs = ["api_module_loader_analysis"]
 api_endpoint_analysis_table = ["api_module_loader_analysis", "datatype_data_frame"]
-api_endpoint_analysis_fib = ["api_module_loader_analysis"]
 
 # algebra
 api_module_algebra = [
@@ -334,3 +333,25 @@ api_endpoint_descriptive_statistics_median = ["api_module_loader_descriptive_sta
 api_endpoint_descriptive_statistics_quantile = ["api_module_loader_descriptive_statistics"]
 api_endpoint_descriptive_statistics_cov = ["api_module_loader_descriptive_statistics"]
 api_endpoint_descriptive_statistics_corr = ["api_module_loader_descriptive_statistics"]
+
+# discrete mathematics
+api_module_discrete_mathematics = [
+    "api_endpoint_discrete_mathematics_mod",
+    "api_endpoint_discrete_mathematics_idiv",
+    "api_endpoint_discrete_mathematics_gcd",
+    "api_endpoint_discrete_mathematics_lcm",
+    "api_endpoint_discrete_mathematics_binco",
+    "api_endpoint_discrete_mathematics_perm",
+    "api_endpoint_discrete_mathematics_fact",
+    "api_endpoint_discrete_mathematics_fib",
+]
+
+api_module_loader_discrete_mathematics = []
+api_endpoint_discrete_mathematics_mod = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_idiv = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_gcd = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_lcm = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_binco = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_perm = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_fact = ["api_module_loader_discrete_mathematics"]
+api_endpoint_discrete_mathematics_fib = ["api_module_loader_discrete_mathematics"]

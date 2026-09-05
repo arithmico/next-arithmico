@@ -87,8 +87,11 @@ fn multiply_number_and_tensor(
         .elements
         .iter()
         .map(|element| {
-            Product::new(vec![Number::new_node(number.value), element.clone()])
-                .evaluate(context)
+            Product::new_node(vec![
+                Number::new_node(number.value),
+                element.clone(),
+            ])
+            .evaluate(context)
         })
         .collect::<Result<Vec<_>, _>>()?;
 
@@ -110,8 +113,9 @@ fn multiply_vectors(
         ));
     }
 
-    let elements = zip(left.elements.iter(), right.elements.iter())
-        .map(|(left, right)| Product::new(vec![left.clone(), right.clone()]));
+    let elements = zip(left.elements.iter(), right.elements.iter()).map(
+        |(left, right)| Product::new_node(vec![left.clone(), right.clone()]),
+    );
 
     Sum::new(elements.collect()).evaluate(context)
 }
@@ -146,7 +150,7 @@ fn multiply_matrices(
             Sum::new(
                 (0usize..x)
                     .map(|j| {
-                        Product::new(vec![
+                        Product::new_node(vec![
                             left.get_element(&vec![i, j]).unwrap().clone(),
                             right.get_element(&vec![j, k]).unwrap().clone(),
                         ])
@@ -173,7 +177,8 @@ mod tests {
         let stack = Stack::new();
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
-        let result = Product::new(vec![Number::new_node(1.)]).evaluate(options);
+        let result =
+            Product::new_node(vec![Number::new_node(1.)]).evaluate(options);
         assert_eq!(result, Err(Error::invalid_node(NodeType::Product)));
     }
 
@@ -183,7 +188,7 @@ mod tests {
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         let result =
-            Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
+            Product::new_node(vec![Number::new_node(1.), Number::new_node(2.)])
                 .evaluate(options)
                 .unwrap();
         assert_eq!(result, Number::new_node(2.));
@@ -195,7 +200,7 @@ mod tests {
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         let result =
-            Product::new(vec![Number::new_node(1.), Number::new_node(2.)])
+            Product::new_node(vec![Number::new_node(1.), Number::new_node(2.)])
                 .evaluate(options)
                 .unwrap();
         assert_eq!(result, Number::new_node(2.));
@@ -206,7 +211,7 @@ mod tests {
         let stack = Stack::new();
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
-        let result = Product::new(vec![
+        let result = Product::new_node(vec![
             Tensor::new_node(vec![
                 Number::new_node(1.),
                 Number::new_node(2.),
@@ -228,7 +233,7 @@ mod tests {
         let stack = Stack::new();
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
-        let result = Product::new(vec![
+        let result = Product::new_node(vec![
             Number::new_node(2.),
             Tensor::new_node(vec![
                 Number::new_node(1.),
@@ -253,7 +258,7 @@ mod tests {
         let stack = Stack::new();
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
-        let result = Product::new(vec![
+        let result = Product::new_node(vec![
             Number::new_node(2.),
             Tensor::new_node(vec![
                 Tensor::new_node(vec![
@@ -289,7 +294,7 @@ mod tests {
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         assert_eq!(
-            Product::new(vec![
+            Product::new_node(vec![
                 Tensor::new_node(vec![
                     Tensor::new_node(vec![
                         Number::new_node(3.0),
