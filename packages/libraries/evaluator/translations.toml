@@ -113,3 +113,7 @@ German = "Unerwarteter Wert"
 [engine.evaluate.error.unreachable]
 English = "Internal Error"
 German = "Interner Fehler"
+
+[engine.evaluate.error.overflow]
+English = "The result exceeds the supported numeric range (overflow)."
+German = "Das Ergebnis überschreitet den unterstützten Zahlenbereich (Overflow)."

@@ -9,8 +9,6 @@ use crate::api::analysis::ceil::CeilEndpoint;
 use crate::api::analysis::e::EEndpoint;
 #[cfg(feature = "api_endpoint_analysis_exp")]
 use crate::api::analysis::exp::ExpEndpoint;
-#[cfg(feature = "api_endpoint_analysis_fib")]
-use crate::api::analysis::fib::FibEndpoint;
 #[cfg(feature = "api_endpoint_analysis_floor")]
 use crate::api::analysis::floor::FloorEndpoint;
 #[cfg(feature = "api_endpoint_analysis_lg")]
@@ -32,7 +30,6 @@ mod abs;
 mod ceil;
 mod e;
 mod exp;
-mod fib;
 mod floor;
 mod lg;
 mod ln;
@@ -83,9 +80,6 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_table")]
     let module = module.function::<TableEndpoint>();
-
-    #[cfg(feature = "api_endpoint_analysis_fib")]
-    let module = module.function::<FibEndpoint>();
 
     module.build()
 }

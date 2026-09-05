@@ -137,14 +137,14 @@ mod tests {
         let api = Api::default();
         let stack = Stack::new();
         let options = Options::new(&stack, &api, AngleUnit::default());
-        let mut output = Product::new(vec![
-            Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
+        let mut output = Product::new_node(vec![
+            Product::new_node(vec![Symbol::new("a"), Symbol::new("b")]),
             Symbol::new("c"),
         ]);
         output.expand(options).unwrap();
         assert_eq!(
             output,
-            Product::new(vec![
+            Product::new_node(vec![
                 Symbol::new("a"),
                 Symbol::new("b"),
                 Symbol::new("c"),

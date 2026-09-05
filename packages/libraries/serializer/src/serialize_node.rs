@@ -251,7 +251,7 @@ mod test {
 
     #[test]
     fn serialize_invalid_product() {
-        let node = Product::new(vec![Symbol::new("a")]);
+        let node = Product::new_node(vec![Symbol::new("a")]);
         assert_eq!(
             node.serialize(Default::default()).unwrap_err(),
             Error::malformed_node(&node)
@@ -260,13 +260,13 @@ mod test {
 
     #[test]
     fn serialize_product_symbol() {
-        let node = Product::new(vec![Symbol::new("a"), Symbol::new("b")]);
+        let node = Product::new_node(vec![Symbol::new("a"), Symbol::new("b")]);
         assert_eq!(node.serialize(Default::default()).unwrap(), "a * b");
     }
 
     #[test]
     fn serialize_product_sum() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Sum::new(vec![Symbol::new("a"), Symbol::new("b")]),
             Sum::new(vec![Symbol::new("c"), Symbol::new("d")]),
         ]);
@@ -278,9 +278,9 @@ mod test {
 
     #[test]
     fn serialize_nested_product() {
-        let node = Product::new(vec![
-            Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
-            Product::new(vec![Symbol::new("c"), Symbol::new("d")]),
+        let node = Product::new_node(vec![
+            Product::new_node(vec![Symbol::new("a"), Symbol::new("b")]),
+            Product::new_node(vec![Symbol::new("c"), Symbol::new("d")]),
         ]);
         assert_eq!(
             node.serialize(Default::default()).unwrap(),
@@ -290,7 +290,7 @@ mod test {
 
     #[test]
     fn serialize_product_negate() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Negate::new(Symbol::new("a")),
             Negate::new(Symbol::new("b")),
         ]);
@@ -299,7 +299,7 @@ mod test {
 
     #[test]
     fn serialize_product_division() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Symbol::new("a"),
             Division::new(Symbol::new("b"), Symbol::new("c")),
         ]);
@@ -308,7 +308,7 @@ mod test {
 
     #[test]
     fn serialize_product_and() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             And::new(vec![Symbol::new("a"), Symbol::new("b")]),
             And::new(vec![Symbol::new("c"), Symbol::new("d")]),
         ]);
@@ -320,7 +320,7 @@ mod test {
 
     #[test]
     fn serialize_product_or() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Or::new(vec![Symbol::new("a"), Symbol::new("b")]),
             Or::new(vec![Symbol::new("c"), Symbol::new("d")]),
         ]);
@@ -332,7 +332,7 @@ mod test {
 
     #[test]
     fn serialize_product_function() {
-        let node = Product::new(vec![
+        let node = Product::new_node(vec![
             Function::new(
                 FunctionSignature::new()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
@@ -367,8 +367,8 @@ mod test {
     #[test]
     fn serialize_power_product() {
         let node = Power::new(
-            Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
-            Product::new(vec![Symbol::new("c"), Symbol::new("d")]),
+            Product::new_node(vec![Symbol::new("a"), Symbol::new("b")]),
+            Product::new_node(vec![Symbol::new("c"), Symbol::new("d")]),
         );
         assert_eq!(
             node.serialize(Default::default()).unwrap(),
@@ -576,8 +576,8 @@ mod test {
     #[test]
     fn serialize_division_with_product() {
         let node = Division::new(
-            Product::new(vec![Symbol::new("a"), Symbol::new("b")]),
-            Product::new(vec![Symbol::new("c"), Symbol::new("d")]),
+            Product::new_node(vec![Symbol::new("a"), Symbol::new("b")]),
+            Product::new_node(vec![Symbol::new("c"), Symbol::new("d")]),
         );
         assert_eq!(
             node.serialize(Default::default()).unwrap(),
@@ -897,7 +897,7 @@ mod test {
 
     #[test]
     fn serialize_factorial_product() {
-        let node = Factorial::new(Product::new(vec![
+        let node = Factorial::new(Product::new_node(vec![
             Symbol::new("a"),
             Symbol::new("b"),
         ]));

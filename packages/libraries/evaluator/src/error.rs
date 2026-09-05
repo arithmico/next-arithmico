@@ -241,6 +241,16 @@ impl Error {
             ),
         )
     }
+
+    pub fn overflow() -> Self {
+        Self::new(
+            ErrorKind::RuntimeError,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.overflow",
+                translation_resolver,
+            ),
+        )
+    }
 }
 
 impl AsRef<Trace> for Error {
