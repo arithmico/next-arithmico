@@ -1,15 +1,5 @@
 use std::collections::HashMap;
 
-use nom::{
-    IResult, Parser,
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{none_of, space0},
-    combinator::all_consuming,
-    multi::{many0, many1},
-    sequence::delimited,
-};
-
 use crate::error::TranslationError;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -23,10 +13,7 @@ impl Template {
     }
 
     pub fn new<T: ToString>(template: T) -> Self {
-        let (_, template) = parse_template(&template.to_string())
-            .expect("failed to parse template");
-
-        template
+        parse_template(&template.to_string()).expect("failed to parse template")
     }
 
     pub fn render(&self) -> Result<String, TranslationError> {
@@ -66,35 +53,36 @@ impl TranslationTemmplateItem {
     }
 }
 
-fn parse_template(input: &str) -> IResult<&str, Template> {
-    let (_, items) =
-        all_consuming(many0(alt((parse_template_text, parse_template_key))))
-            .parse(input)?;
+fn parse_template(input: &str) -> Result<Template, String> {
+    let mut items = Vec::new();
+    let mut remaining = input;
 
-    Ok(("", Template::new_with_items(items)))
-}
+    while !remaining.is_empty() {
+        if remaining.starts_with("{") {
+            let end = remaining
+                .find("}")
+                .ok_or_else(|| "closing \"}\" is missing")?;
+            let key = &remaining[1..end].trim();
 
-fn parse_template_text(input: &str) -> IResult<&str, TranslationTemmplateItem> {
-    let (remaining_input, text) = many1(none_of("{}")).parse(input)?;
+            if key.is_empty() {
+                return Err("empty template key".into());
+            }
+            if key.contains(['{', '}', ' ']) {
+                return Err("invalid characters in template key".into());
+            }
 
-    Ok((
-        remaining_input,
-        TranslationTemmplateItem::Text(text.into_iter().collect()),
-    ))
-}
+            items.push(TranslationTemmplateItem::Key(key.to_string()));
+            remaining = &remaining[(end + 1)..];
+        } else {
+            let end = remaining.find('{').unwrap_or(remaining.len());
+            let text = &remaining[..end];
 
-fn parse_template_key(input: &str) -> IResult<&str, TranslationTemmplateItem> {
-    let (remaining_input, text) = delimited(
-        (tag("{"), space0),
-        many1(none_of("{} ")),
-        (space0, tag("}")),
-    )
-    .parse(input)?;
+            items.push(TranslationTemmplateItem::Text(text.to_string()));
+            remaining = &remaining[end..];
+        }
+    }
 
-    Ok((
-        remaining_input,
-        TranslationTemmplateItem::Key(text.into_iter().collect()),
-    ))
+    Ok(Template::new_with_items(items))
 }
 
 #[cfg(test)]
