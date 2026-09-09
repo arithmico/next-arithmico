@@ -1,4 +1,4 @@
-use node::{FunctionSignature, GetStaticNodeType, IntoNode, Node, NodeType};
+use node::{FunctionSignature, GetStaticNodeType, Node, NodeType};
 use translate_core::RenderedTranslatedMessage;
 
 use crate::{
@@ -76,7 +76,7 @@ impl Endpoint {
 }
 
 pub trait FunctionEndpoint {
-    type Output: GetStaticNodeType + IntoNode;
+    type Output: GetStaticNodeType + Into<Node>;
     type Arguments<'a>: FunctionArguments<'a>;
 
     fn executor<'a>(
@@ -99,10 +99,8 @@ pub trait FunctionEndpoint {
         arguments: &ArgumentMapping,
         context: Options,
     ) -> Result<Node, Error> {
-        Ok(
-            Self::executor(Self::Arguments::from_mapping(arguments)?, context)?
-                .into_node(),
-        )
+        Self::executor(Self::Arguments::from_mapping(arguments)?, context)
+            .map(Into::into)
     }
 
     #[doc(hidden)]
@@ -118,7 +116,7 @@ pub trait ConstantMetadata {
 }
 
 pub trait ConstantEndpoint: ConstantMetadata {
-    type Output: IntoNode + GetStaticNodeType;
+    type Output: Into<Node> + GetStaticNodeType;
 
     fn executor(context: Options) -> Self::Output;
 
@@ -134,7 +132,7 @@ pub trait ConstantEndpoint: ConstantMetadata {
 
     #[doc(hidden)]
     fn call(context: Options) -> Node {
-        Self::executor(context).into_node()
+        Self::executor(context).into()
     }
 
     #[doc(hidden)]

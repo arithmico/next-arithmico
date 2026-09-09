@@ -1,4 +1,4 @@
-use node::{GetNodeType, IntoNode, Node, Number, Sum, Tensor};
+use node::{GetNodeType, Node, Number, Sum, Tensor};
 use std::iter::zip;
 use trace::{Tracable, TracableMut};
 
@@ -68,7 +68,7 @@ fn add_sum_elements(
                     })
                     .collect::<Result<Vec<_>, Error>>()?,
             )
-            .into_node())
+            .into())
         }
         (left, right) => Err(Error::unsupported_operation()
             .with_optional_span(left.hull())
@@ -204,7 +204,7 @@ mod tests {
                     Number::new_node(1.0),
                 ],
             )
-            .into_node(),
+            .into(),
             Tensor::new_with_shape(
                 vec![3, 3],
                 vec![
@@ -221,7 +221,7 @@ mod tests {
                     Number::new_node(1.0),
                 ],
             )
-            .into_node(),
+            .into(),
         ])
         .evaluate(options)
         .unwrap();
@@ -244,7 +244,7 @@ mod tests {
                     Number::new_node(2.0),
                 ],
             )
-            .into_node(),
+            .into(),
         );
     }
 
@@ -270,7 +270,7 @@ mod tests {
                     Number::new_node(1.0),
                 ],
             )
-            .into_node(),
+            .into(),
             Tensor::new_with_shape(
                 vec![2, 2],
                 vec![
@@ -280,7 +280,7 @@ mod tests {
                     Number::new_node(1.0),
                 ],
             )
-            .into_node(),
+            .into(),
         ])
         .evaluate(options)
         .unwrap_err();
@@ -307,7 +307,7 @@ mod tests {
                     Number::new_node(0.0),
                 ],
             )
-            .into_node(),
+            .into(),
             Tensor::new_with_shape(
                 vec![2, 2, 2],
                 vec![
@@ -321,7 +321,7 @@ mod tests {
                     Number::new_node(0.0),
                 ],
             )
-            .into_node(),
+            .into(),
         ])
         .evaluate(options)
         .unwrap();
@@ -341,7 +341,7 @@ mod tests {
                     Number::new_node(0.0),
                 ],
             )
-            .into_node(),
+            .into(),
         );
     }
 
@@ -364,7 +364,7 @@ mod tests {
                     Number::new_node(0.0),
                 ],
             )
-            .into_node(),
+            .into(),
             Tensor::new_with_shape(
                 vec![2, 2, 2, 2],
                 vec![
@@ -386,7 +386,7 @@ mod tests {
                     Number::new_node(0.0),
                 ],
             )
-            .into_node(),
+            .into(),
         ])
         .evaluate(options)
         .unwrap_err();

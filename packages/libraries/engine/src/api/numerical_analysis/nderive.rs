@@ -9,11 +9,11 @@ use evaluator::{
     Options,
 };
 use math_utils::calculate_numerical_derivative;
-use node::{Function, IntoNode, Node, Number};
+use node::{Function, Node, Number};
 use validator::{FunctionValidator, NodeValidator, NumberValidator};
 
 static DEFAULT_ORDER: LazyLock<Node> =
-    LazyLock::new(|| Number::new(1.0).into_node());
+    LazyLock::new(|| Number::new(1.0).into());
 
 #[derive(FunctionArguments)]
 #[name("nderive")]
@@ -83,7 +83,7 @@ impl FunctionEndpoint for NDeriveEndpoint {
 
         let mut local_stack = options.stack.clone();
         let mut function = |x: f64| -> f64 {
-            local_stack.insert(unknown_symbol, Number::new(x).into_node());
+            local_stack.insert(unknown_symbol, Number::new(x).into());
 
             let local_options = Options {
                 stack: &local_stack,

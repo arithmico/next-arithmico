@@ -1,4 +1,4 @@
-use node::{GetNodeType, IntoNode, Node, Tensor};
+use node::{GetNodeType, Node, Tensor};
 
 use crate::{Error, EvaluateNode, Options};
 
@@ -15,7 +15,7 @@ impl EvaluateNode for Tensor {
                 .map(|element| element.evaluate(context))
                 .collect::<Result<Vec<_>, Error>>()?,
         )
-        .into_node())
+        .into())
     }
 }
 
@@ -123,7 +123,7 @@ mod tests {
                     Number::new_node(4.)
                 ]
             )
-            .into_node()
+            .into()
         );
     }
 }

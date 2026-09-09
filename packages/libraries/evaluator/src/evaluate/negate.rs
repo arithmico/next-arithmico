@@ -1,4 +1,4 @@
-use node::{Boolean, IntoNode, Negate, Node, Number, Tensor};
+use node::{Boolean, Negate, Node, Number, Tensor};
 
 use crate::{Error, EvaluateNode, Options};
 
@@ -35,7 +35,7 @@ impl EvaluateNode for Negate {
                     .collect::<Result<Vec<_>, Error>>()?;
 
                 Ok(Tensor::new_with_shape(tensor.shape.clone(), elements)
-                    .into_node())
+                    .into())
             }
             _ => Err(Error::unsupported_operation()),
         }

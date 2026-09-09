@@ -1,4 +1,4 @@
-use node::{DataFrame, GetNodeType, IntoNode};
+use node::{DataFrame, GetNodeType};
 
 use crate::{Error, EvaluateNode, Options};
 
@@ -11,6 +11,6 @@ impl EvaluateNode for DataFrame {
             return Err(Error::unsupported_datatype(self.node_type()));
         }
 
-        Ok(self.clone().into_node())
+        Ok(self.clone().into())
     }
 }

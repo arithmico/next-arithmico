@@ -8,16 +8,13 @@ use evaluator::FunctionEndpoint;
 use evaluator::MapToEvaluatorError;
 use evaluator::Options;
 use math_utils::calculate_quantile_of_normal_cdf;
-use node::IntoNode;
 use node::Node;
 use node::Number;
 use validator::NumberValidator;
 
-static DEFAULT_MEAN: LazyLock<Node> =
-    LazyLock::new(|| Number::new(0.0).into_node());
+static DEFAULT_MEAN: LazyLock<Node> = LazyLock::new(|| Number::new(0.0).into());
 
-static DEFAULT_SD: LazyLock<Node> =
-    LazyLock::new(|| Number::new(1.0).into_node());
+static DEFAULT_SD: LazyLock<Node> = LazyLock::new(|| Number::new(1.0).into());
 
 #[derive(FunctionArguments)]
 #[name("qnormal")]

@@ -2,7 +2,7 @@ use std::iter::zip;
 
 use trace::Trace;
 
-use crate::{IntoNode, Node, impl_node_traits};
+use crate::{Node, impl_node_traits};
 
 #[derive(PartialEq, Debug, Clone)]
 pub struct Tensor {
@@ -19,7 +19,7 @@ impl Tensor {
     }
 
     pub fn new_node(elements: Vec<Node>) -> Node {
-        Self::new(elements).into_node()
+        Self::new(elements).into()
     }
 
     pub fn new_with_shape(shape: Vec<usize>, elements: Vec<Node>) -> Self {
