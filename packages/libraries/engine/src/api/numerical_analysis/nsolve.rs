@@ -8,13 +8,13 @@ use evaluator::{
     Options,
 };
 use math_utils::find_roots;
-use node::{Equals, IntoNode, Negate, Node, Number, Sum, Tensor};
+use node::{Equals, Negate, Node, Number, Sum, Tensor};
 use validator::{NodeValidator, NumberValidator};
 
 static DEFAULT_START: LazyLock<Node> =
-    LazyLock::new(|| Number::new(-20.0).into_node());
+    LazyLock::new(|| Number::new(-20.0).into());
 static DEFAULT_STOP: LazyLock<Node> =
-    LazyLock::new(|| Number::new(20.0).into_node());
+    LazyLock::new(|| Number::new(20.0).into());
 
 #[derive(FunctionArguments)]
 #[name("nsolve")]
@@ -86,7 +86,7 @@ impl FunctionEndpoint for NSolveEndpoint {
 
         let function = |x: f64| -> Option<f64> {
             let mut local_stack = options.stack.clone();
-            local_stack.insert(variable_name, Number::new(x).into_node());
+            local_stack.insert(variable_name, Number::new(x).into());
             let options = Options {
                 stack: &local_stack,
                 ..options
@@ -103,10 +103,8 @@ impl FunctionEndpoint for NSolveEndpoint {
         let roots = find_roots(&function, start.value, stop.value)
             .map_to_error_kind(ErrorKind::RuntimeError)?;
 
-        let results = roots
-            .iter()
-            .map(|root| Number::new(*root).into_node())
-            .collect();
+        let results =
+            roots.iter().map(|root| Number::new(*root).into()).collect();
 
         Ok(Tensor::new(results))
     }

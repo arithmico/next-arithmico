@@ -25,9 +25,9 @@ macro_rules! impl_node_traits {
             }
         }
 
-        impl crate::IntoNode for $node {
-            fn into_node(self) -> crate::Node {
-                crate::Node::$node(self)
+        impl From<$node> for crate::Node {
+            fn from(value: $node) -> Self {
+                Self::$node(value)
             }
         }
 

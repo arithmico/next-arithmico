@@ -1,8 +1,7 @@
 use std::iter::zip;
 
 use node::{
-    GetNodeType, IntoNode, Node, Number, Product, Sum, Tensor,
-    convert_to_outer_index,
+    GetNodeType, Node, Number, Product, Sum, Tensor, convert_to_outer_index,
 };
 use trace::{Tracable, TracableMut};
 
@@ -95,7 +94,7 @@ fn multiply_number_and_tensor(
         })
         .collect::<Result<Vec<_>, _>>()?;
 
-    Ok(Tensor::new_with_shape(tensor.shape.clone(), elements).into_node())
+    Ok(Tensor::new_with_shape(tensor.shape.clone(), elements).into())
 }
 
 fn multiply_vectors(
@@ -284,7 +283,7 @@ mod tests {
                     Number::new_node(8.),
                 ]
             )
-            .into_node(),
+            .into(),
         );
     }
 

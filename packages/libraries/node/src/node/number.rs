@@ -10,10 +10,7 @@ pub struct Number {
 
 impl Number {
     pub fn new_node(value: f64) -> Node {
-        Node::Number(Self {
-            value,
-            trace: Trace::new(),
-        })
+        Self::new(value).into()
     }
 
     pub fn new(value: f64) -> Self {
