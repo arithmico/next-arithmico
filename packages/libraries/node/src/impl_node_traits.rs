@@ -31,19 +31,19 @@ macro_rules! impl_node_traits {
             }
         }
 
-        impl crate::DowncastNode for $node {
-            fn downcast_node(
-                node: &Node,
-            ) -> Result<&Self, crate::DowncastNodeError> {
+        impl<'a> TryFrom<&'a crate::Node> for &'a $node {
+            type Error = crate::DowncastNodeError;
+
+            fn try_from(value: &'a Node) -> Result<Self, Self::Error> {
                 use crate::GetNodeType;
                 use trace::Tracable;
 
-                match node {
+                match value {
                     crate::Node::$node(node) => Ok(node),
                     node => Err(crate::DowncastNodeError {
-                        expected: <Self as crate::GetStaticNodeType>::static_node_type(),
-                        received: node.node_type(),
-                        trace: node.trace().clone()
+                            expected: <Self as crate::GetStaticNodeType>::static_node_type(),
+                            received: node.node_type(),
+                            trace: node.trace().clone(),
                     }),
                 }
             }

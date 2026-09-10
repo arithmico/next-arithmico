@@ -6,7 +6,7 @@ use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use math_utils::calculate_sample_quantile;
-use node::{DowncastNodeVec, GetNodeType, NodeType, Number, Tensor};
+use node::{GetNodeType, NodeType, Number, Tensor};
 use validator::{NumberValidator, TensorValidator};
 
 #[derive(FunctionArguments)]
@@ -48,17 +48,19 @@ impl FunctionEndpoint for QuantileEndpoint {
 
         let mut x_values = xs
             .elements
-            .downcast::<Number>()
-            .map_err(|_| {
-                Error::invalid_parameter_type(
-                    "xs",
-                    HashSet::from([NodeType::Number]),
-                    xs.node_type(),
-                )
-            })?
             .iter()
-            .map(|number| number.value)
-            .collect::<Vec<_>>();
+            .map(|node| {
+                <&Number>::try_from(node)
+                    .map(|number| number.value)
+                    .map_err(|_| {
+                        Error::invalid_parameter_type(
+                            "xs",
+                            HashSet::from([NodeType::Number]),
+                            xs.node_type(),
+                        )
+                    })
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
 
         let value = calculate_sample_quantile(p.value, &mut x_values);
 
