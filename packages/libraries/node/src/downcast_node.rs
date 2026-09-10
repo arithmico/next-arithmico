@@ -2,10 +2,7 @@ use thiserror::Error;
 use trace::Trace;
 use translate_core::{Translatable, TranslatedMessage};
 
-use crate::{
-    GetStaticNodeType, Node, NodeType,
-    translation_provider::translation_resolver,
-};
+use crate::{Node, NodeType, translation_provider::translation_resolver};
 
 #[derive(Debug, Clone, Error)]
 #[error("Failed to downcast Node. Expected {expected} but received {received}")]
@@ -32,22 +29,17 @@ impl Translatable for DowncastNodeError {
     }
 }
 
-pub trait DowncastNode: Sized + GetStaticNodeType {
-    fn downcast_node(node: &Node) -> Result<&Self, DowncastNodeError>;
-}
-
-impl Node {
-    pub fn downcast<T: DowncastNode>(&self) -> Result<&T, DowncastNodeError> {
-        T::downcast_node(self)
-    }
-}
-
 pub trait DowncastNodeVec {
-    fn downcast<T: DowncastNode>(&self) -> Result<Vec<&T>, DowncastNodeError>;
+    fn downcast<'a, T>(&'a self) -> Result<Vec<&'a T>, DowncastNodeError>
+    where
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>;
 }
 
 impl DowncastNodeVec for Vec<Node> {
-    fn downcast<T: DowncastNode>(&self) -> Result<Vec<&T>, DowncastNodeError> {
-        self.iter().map(|node| T::downcast_node(node)).collect()
+    fn downcast<'a, T>(&'a self) -> Result<Vec<&'a T>, DowncastNodeError>
+    where
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>,
+    {
+        self.iter().map(|node| node.try_into()).collect()
     }
 }

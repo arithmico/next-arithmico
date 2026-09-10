@@ -3,7 +3,8 @@ use std::collections::{HashMap, VecDeque};
 mod entry;
 
 use node::{
-    Cardinality, DowncastNode, FunctionSignature, GetNodeType, Node, Preprocess,
+    Cardinality, DowncastNodeError, FunctionSignature, GetNodeType, Node,
+    Preprocess,
 };
 use trace::{CombineHulls, Tracable, TracableMut};
 
@@ -57,13 +58,13 @@ impl ArgumentMapping {
         }
     }
 
-    pub fn required<T>(&self, name: &str) -> Result<&T, Error>
+    pub fn required<'a, T>(&'a self, name: &str) -> Result<&'a T, Error>
     where
-        T: DowncastNode,
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>,
     {
         match self.get_parameter_entry(name)? {
             Entry::Value(node) => Ok(node
-                .downcast::<T>()
+                .try_into()
                 .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
             Entry::None => {
                 Err(Error::missing_parameter("required argument missing"))
@@ -72,13 +73,13 @@ impl ArgumentMapping {
         }
     }
 
-    pub fn optional<T>(&self, name: &str) -> Result<Option<&T>, Error>
+    pub fn optional<'a, T>(&'a self, name: &str) -> Result<Option<&'a T>, Error>
     where
-        T: DowncastNode,
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>,
     {
         match self.get_parameter_entry(name)? {
             Entry::Value(node) => Ok(Some(
-                node.downcast::<T>()
+                node.try_into()
                     .map_to_error_kind(ErrorKind::UnexpectedNodeType)?,
             )),
             Entry::None => Ok(None),
@@ -86,16 +87,16 @@ impl ArgumentMapping {
         }
     }
 
-    pub fn multiple<T>(&self, name: &str) -> Result<Vec<&T>, Error>
+    pub fn multiple<'a, T>(&'a self, name: &str) -> Result<Vec<&'a T>, Error>
     where
-        T: DowncastNode,
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>,
     {
         match self.get_parameter_entry(name)? {
             Entry::List(nodes) => nodes
                 .iter()
                 .map(|node| -> Result<&T, Error> {
                     Ok(node
-                        .downcast::<T>()
+                        .try_into()
                         .map_to_error_kind(ErrorKind::UnexpectedNodeType)?)
                 })
                 .collect(),
@@ -113,14 +114,14 @@ impl ArgumentMapping {
         default: &'a Node,
     ) -> Result<&'a T, Error>
     where
-        T: DowncastNode,
+        &'a T: TryFrom<&'a Node, Error = DowncastNodeError>,
     {
         match self.get_parameter_entry(name)? {
             Entry::Value(node) => Ok(node
-                .downcast::<T>()
+                .try_into()
                 .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
             Entry::None => Ok(default
-                .downcast::<T>()
+                .try_into()
                 .map_to_error_kind(ErrorKind::UnexpectedNodeType)?),
             Entry::List(nodes) => Err(Error::too_many_parameters(nodes.len())),
         }

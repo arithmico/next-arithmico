@@ -6,7 +6,7 @@ use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use math_utils::calculate_correlation_coefficient;
-use node::{DowncastNodeVec, GetNodeType, NodeType, Number, Tensor};
+use node::{GetNodeType, NodeType, Number, Tensor};
 use trace::{Tracable, TracableMut};
 use validator::TensorValidator;
 
@@ -51,30 +51,34 @@ impl FunctionEndpoint for CorrEndpoint {
 
         let x_values = xs
             .elements
-            .downcast::<Number>()
-            .map_err(|_| {
-                Error::invalid_parameter_type(
-                    "xs",
-                    HashSet::from([NodeType::Number]),
-                    xs.node_type(),
-                )
-            })?
             .iter()
-            .map(|number| number.value)
-            .collect::<Vec<_>>();
+            .map(|node| {
+                <&Number>::try_from(node)
+                    .map(|number| number.value)
+                    .map_err(|_| {
+                        Error::invalid_parameter_type(
+                            "xs",
+                            HashSet::from([NodeType::Number]),
+                            xs.node_type(),
+                        )
+                    })
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
         let y_values = ys
             .elements
-            .downcast::<Number>()
-            .map_err(|_| {
-                Error::invalid_parameter_type(
-                    "ys",
-                    HashSet::from([NodeType::Number]),
-                    ys.node_type(),
-                )
-            })?
             .iter()
-            .map(|number| number.value)
-            .collect::<Vec<_>>();
+            .map(|node| {
+                <&Number>::try_from(node)
+                    .map(|number| number.value)
+                    .map_err(|_| {
+                        Error::invalid_parameter_type(
+                            "ys",
+                            HashSet::from([NodeType::Number]),
+                            ys.node_type(),
+                        )
+                    })
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
 
         let result = calculate_correlation_coefficient(&x_values, &y_values)
             .ok_or_else(|| {
