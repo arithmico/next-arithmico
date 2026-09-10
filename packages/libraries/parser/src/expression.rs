@@ -126,7 +126,7 @@ fn parse_expression_pratt<'a>(
                     left = left.with_optional_span(span);
                 } else {
                     let span = (&left, &right).combine_hulls();
-                    left = Product::new_node(vec![left, right])
+                    left = Product::new(vec![left, right])
                         .with_optional_span(span);
                 }
             }
@@ -656,7 +656,7 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Product::new_node(vec![
+            Product::new(vec![
                 Number::new_node(1.0).with_span(Span::new_between(0, 0)),
                 Number::new_node(2.0).with_span(Span::new_between(4, 4)),
             ])
@@ -670,7 +670,7 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Product::new_node(vec![
+            Product::new(vec![
                 Number::new_node(1.0).with_span(Span::new_between(0, 0)),
                 Number::new_node(2.0).with_span(Span::new_between(4, 4)),
                 Number::new_node(3.0).with_span(Span::new_between(8, 8)),
@@ -687,7 +687,7 @@ mod tests {
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
                 Number::new_node(1.0).with_span(Span::new_between(0, 0)),
-                Product::new_node(vec![
+                Product::new(vec![
                     Number::new_node(2.0).with_span(Span::new_between(4, 4)),
                     Number::new_node(3.0).with_span(Span::new_between(8, 8)),
                 ])
@@ -704,7 +704,7 @@ mod tests {
         assert_eq!(
             parse_expression(cursor).unwrap().1,
             Sum::new(vec![
-                Product::new_node(vec![
+                Product::new(vec![
                     Number::new_node(1.0).with_span(Span::new_between(0, 0)),
                     Number::new_node(2.0).with_span(Span::new_between(4, 4)),
                 ])
@@ -753,7 +753,7 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap().1,
-            Product::new_node(vec![
+            Product::new(vec![
                 Number::new_node(1.0).with_span(Span::new_between(0, 0)),
                 Division::new(
                     Number::new_node(2.0).with_span(Span::new_between(4, 4)),
@@ -773,7 +773,7 @@ mod tests {
         let output = parse_expression(cursor).unwrap().1;
         assert_eq!(
             output,
-            Product::new_node(vec![
+            Product::new(vec![
                 Sum::new(vec![
                     Number::new_node(1.0).with_span(Span::new_between(1, 1)),
                     Number::new_node(2.0).with_span(Span::new_between(5, 5)),
