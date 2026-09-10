@@ -4,7 +4,7 @@ use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use math_utils::factorize;
-use node::{Number, Power, Product};
+use node::{Node, Number, Power, Product};
 use validator::NumberValidator;
 
 #[derive(FunctionArguments)]
@@ -26,7 +26,7 @@ pub struct FactArgs<'a> {
 pub struct FactEndpoint;
 
 impl FunctionEndpoint for FactEndpoint {
-    type Output = Product;
+    type Output = Node;
     type Arguments<'a> = FactArgs<'a>;
 
     // TODO: unit tests
@@ -35,7 +35,7 @@ impl FunctionEndpoint for FactEndpoint {
         _context: Options,
     ) -> Result<Self::Output, Error> {
         let n_value = n
-            .validate_greater_than_or_equal(0.0)
+            .validate_greater_than_or_equal(1.0)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .validate_integer()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?
@@ -55,6 +55,10 @@ impl FunctionEndpoint for FactEndpoint {
             })
             .collect::<Vec<_>>();
 
-        Ok(Product::new(elements))
+        match elements.len() {
+            0 => Err(Error::unreachable()),
+            1 => Ok(elements.into_iter().next().unwrap().into()),
+            _ => Ok(Product::new(elements)),
+        }
     }
 }

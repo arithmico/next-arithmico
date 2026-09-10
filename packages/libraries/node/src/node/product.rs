@@ -10,15 +10,11 @@ pub struct Product {
 
 impl Product {
     // TODO: make it fallible
-    pub fn new_node(elements: Vec<Node>) -> Node {
-        Self::new(elements).into()
-    }
-
-    pub fn new(elements: Vec<Node>) -> Self {
-        Self {
+    pub fn new(elements: Vec<Node>) -> Node {
+        Node::Product(Self {
             elements,
             trace: Trace::new(),
-        }
+        })
     }
 }
 

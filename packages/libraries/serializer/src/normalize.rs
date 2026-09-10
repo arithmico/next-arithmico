@@ -30,7 +30,7 @@ impl NormalizeNode for Node {
 
                 let sign = node.value.signum();
                 let factor = node.value.abs() * 10_f64.powi(-magnitude as i32);
-                let scientific_notation = Product::new_node(vec![
+                let scientific_notation = Product::new(vec![
                     Number::new_node(factor).into(),
                     Power::new(
                         Number::new_node(10.0),
