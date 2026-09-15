@@ -43,3 +43,8 @@ German = "Der Ausdruck lieferte bei x = {x} den nicht endlichen Wert {value}."
 [find_roots.enclose_zero]
 English = "The zero in the interval from {a} to {b} could not be enclosed."
 German = "Die Nullstelle im Intervall von {a} bis {b} konnte nicht eingeschlossen werden."
+
+# matrix errors
+[matrix.non_invertible]
+English = "Matrix is not invertible."
+German = "Die Matrix is nicht invertierbar."

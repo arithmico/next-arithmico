@@ -88,6 +88,10 @@ pub trait TensorValidator {
         &self,
         dimension: usize,
     ) -> Result<&Self, Error>;
+
+    fn validate_square_matrix(&self) -> Result<&Self, Error>;
+
+    fn validate_matrix(&self) -> Result<&Self, Error>;
 }
 
 impl TensorValidator for Tensor {
@@ -170,6 +174,34 @@ impl TensorValidator for Tensor {
                     translation_resolver,
                 )
                 .key("dim", dimension);
+                Err(Error::new(self, message))
+            }
+        }
+    }
+
+    fn validate_square_matrix(&self) -> Result<&Self, Error> {
+        match self.shape[..] {
+            [rows, columns] if rows == columns => Ok(self),
+            _ => {
+                let message = TranslatedMessage::new(
+                    "error.tensor.square_matrix",
+                    translation_resolver,
+                )
+                .key("shape", serialize_shape(&self.shape));
+                Err(Error::new(self, message))
+            }
+        }
+    }
+
+    fn validate_matrix(&self) -> Result<&Self, Error> {
+        match self.shape.len() {
+            2 => Ok(self),
+            _ => {
+                let message = TranslatedMessage::new(
+                    "error.tensor.matrix",
+                    translation_resolver,
+                )
+                .key("shape", serialize_shape(&self.shape));
                 Err(Error::new(self, message))
             }
         }
