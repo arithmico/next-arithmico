@@ -287,6 +287,10 @@ api_module_algebra = [
     "api_endpoint_algebra_rank",
     "api_endpoint_algebra_dims",
     "api_endpoint_algebra_cross",
+    "api_endpoint_algebra_matrix_inverse",
+    "api_endpoint_algebra_matrix_rref",
+    "api_endpoint_algebra_matrix_transpose",
+    "api_endpoint_algebra_matrix_det",
     "api_endpoint_algebra_matrix_id",
 ]
 
@@ -295,6 +299,10 @@ api_endpoint_algebra_length = ["api_module_loader_algebra"]
 api_endpoint_algebra_rank = ["api_module_loader_algebra"]
 api_endpoint_algebra_dims = ["api_module_loader_algebra"]
 api_endpoint_algebra_cross = ["api_module_loader_algebra"]
+api_endpoint_algebra_matrix_inverse = ["api_module_loader_algebra"]
+api_endpoint_algebra_matrix_rref = ["api_module_loader_algebra"]
+api_endpoint_algebra_matrix_transpose = ["api_module_loader_algebra"]
+api_endpoint_algebra_matrix_det = ["api_module_loader_algebra"]
 api_endpoint_algebra_matrix_id = ["api_module_loader_algebra"]
 
 # numerical analysis

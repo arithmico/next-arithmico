@@ -58,6 +58,13 @@ German = "Der Vektor muss genau {dim} Elemente haben."
 English = "The vector is expected to have at least {dim} elements."
 German = "Der Vektor muss mindestens {dim} Elemente haben."
 
+[error.tensor.square_matrix]
+English = "The matrix must be square, but a tensor with shape {shape} was received."
+German = "Die Matrix muss quadratisch sein, aber es wurde ein Tensor mit der Form {shape} übergeben."
+
+[error.tensor.matrix]
+English = "The input must be a matrix, but a tensor with shape {shape} was received."
+German = "Die Eingabe muss eine Matrix sein, aber es wurde ein Tensor mit der Form {shape} übergeben."
 
 [error.node.too_few_variables]
 English = "The expression contains too few unknown variables. Expected {expected}, but found {actual}."

@@ -1,5 +1,6 @@
 #![allow(clippy::excessive_precision)]
 
+mod algebra;
 mod descriptive_statistics;
 mod discrete_mathematics;
 mod distributions;
@@ -7,6 +8,7 @@ mod f64_extension;
 mod numerical_analysis;
 mod translation_provider;
 
+pub use algebra::*;
 pub use descriptive_statistics::*;
 pub use discrete_mathematics::*;
 pub use distributions::*;
