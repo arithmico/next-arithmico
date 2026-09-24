@@ -44,11 +44,9 @@ impl FunctionEndpoint for CrossEndpoint {
             .validate_vector_dimension(3)
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
         let a = a
-            .elements
             .downcast::<Number>()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
         let b = b
-            .elements
             .downcast::<Number>()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 

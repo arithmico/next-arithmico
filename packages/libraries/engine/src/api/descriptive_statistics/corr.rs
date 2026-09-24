@@ -1,12 +1,10 @@
-use std::collections::HashSet;
-
 use common::Language;
 use engine_derive::FunctionArguments;
 use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use math_utils::calculate_correlation_coefficient;
-use node::{GetNodeType, NodeType, Number, Tensor};
+use node::{DowncastNodeVec, Number, Tensor};
 use trace::{Tracable, TracableMut};
 use validator::TensorValidator;
 
@@ -50,35 +48,17 @@ impl FunctionEndpoint for CorrEndpoint {
             .map_to_error_kind(ErrorKind::IncompatibleVectorDimensions)?;
 
         let x_values = xs
-            .elements
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .iter()
-            .map(|node| {
-                <&Number>::try_from(node)
-                    .map(|number| number.value)
-                    .map_err(|_| {
-                        Error::invalid_parameter_type(
-                            "xs",
-                            HashSet::from([NodeType::Number]),
-                            xs.node_type(),
-                        )
-                    })
-            })
-            .collect::<Result<Vec<_>, Error>>()?;
+            .map(|number| number.value)
+            .collect::<Vec<_>>();
         let y_values = ys
-            .elements
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .iter()
-            .map(|node| {
-                <&Number>::try_from(node)
-                    .map(|number| number.value)
-                    .map_err(|_| {
-                        Error::invalid_parameter_type(
-                            "ys",
-                            HashSet::from([NodeType::Number]),
-                            ys.node_type(),
-                        )
-                    })
-            })
-            .collect::<Result<Vec<_>, Error>>()?;
+            .map(|number| number.value)
+            .collect::<Vec<_>>();
 
         let result = calculate_correlation_coefficient(&x_values, &y_values)
             .ok_or_else(|| {
