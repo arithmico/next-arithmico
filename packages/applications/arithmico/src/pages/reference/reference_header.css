@@ -1,4 +1,4 @@
-.reference-search {
+input[type=search].reference-search {
     border-width: 1px;
     border-style: solid;
     border-radius: var(--radius-sm);
@@ -11,12 +11,30 @@
     color: inherit;
 }
 
-.theme-dark .reference-search {
-    background-color: var(--color-neutral-900);
-    border-color: var(--color-neutral-700);
+input[type=search].reference-search:focus-visible {
+    outline-width: 2px;
+    outline-offset: 2px;
+    outline-style: solid;
 }
 
-.theme-light .reference-search {
-    background-color: var(--color-neutral-100);
-    border-color: var(--color-neutral-400);
+.theme-dark {
+    input[type=search].reference-search {
+        background-color: var(--color-neutral-900);
+        border-color: var(--color-neutral-700);
+    }
+
+    .reference-search:focus-visible {
+        outline-color: white;
+    }
+}
+
+.theme-light {
+    input[type=search].reference-search {
+        background-color: var(--color-neutral-100);
+        border-color: var(--color-neutral-400);
+    }
+
+    .reference-search:focus-visible {
+        outline-color: black;
+    }
 }
