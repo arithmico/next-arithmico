@@ -37,6 +37,7 @@ chrono = "0.4.45"
 node = { version = "0.1.0", path = "../../libraries/node" }
 common = { version = "0.1.0", path = "../../libraries/common" }
 leptos-md = "0.1.0"
+frizbee = "0.13.0"
 
 [build-dependencies]
 chrono = "0.4.45"
