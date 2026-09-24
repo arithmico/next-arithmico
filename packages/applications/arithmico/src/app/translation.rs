@@ -35,10 +35,10 @@ pub fn TranslationProvider(children: Children) -> impl IntoView {
 
     view! {
         <Provider
-            current_language=move || {
+            current_language=Signal::derive(move || {
                 browser_language_trigger.track();
                 current_language.get()
-            }
+            })
             fallback_language=Language::English
             translations
         >

@@ -3,7 +3,7 @@ use translate::{FormattedMessage, use_translate};
 use ui::{common::page_title::PageTitle, container::page_header::PageHeader};
 
 #[component]
-pub fn ReferenceHeader() -> impl IntoView {
+pub fn ReferenceHeader(search_query: RwSignal<String>) -> impl IntoView {
     let translate = use_translate();
 
     view! {
@@ -16,6 +16,7 @@ pub fn ReferenceHeader() -> impl IntoView {
                 class="reference-search"
                 placeholder=translate("reference.search", None)
                     .unwrap_or(String::from("TranslationError"))
+                bind:value=search_query
             />
         </PageHeader>
     }

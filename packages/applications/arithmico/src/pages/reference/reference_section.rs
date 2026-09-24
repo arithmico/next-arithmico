@@ -1,23 +1,24 @@
-use common::Language;
-use engine::DocumentationModule;
 use leptos::prelude::*;
 
-use crate::pages::reference::reference_item::ReferenceItem;
+use crate::pages::reference::{
+    matching::ReferenceModuleMatch, reference_item::ReferenceItem,
+};
 
 #[component]
-pub fn ReferenceSection(module: DocumentationModule) -> impl IntoView {
+pub fn ReferenceSection(module: ReferenceModuleMatch) -> impl IntoView {
     view! {
         <section class="reference-section">
-            <h2>{module.name(Language::English)}</h2>
+            <h2>{module.name}</h2>
             <ul>
                 {module
-                    .items()
-                    .iter()
+                    .matches
+                    .into_iter()
                     .map(|item| {
                         view! {
                             <ReferenceItem
-                                item=item.clone()
-                                language=Language::English
+                                synopsis=item.synopsis
+                                description=item.description
+                                url=item.url
                             />
                         }
                     })
