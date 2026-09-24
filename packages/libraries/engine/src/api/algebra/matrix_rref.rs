@@ -1,12 +1,10 @@
-use std::collections::HashSet;
-
 use common::Language;
 use engine_derive::FunctionArguments;
 use evaluator::{
     Error, ErrorKind, FunctionEndpoint, MapToEvaluatorError, Options,
 };
 use math_utils::reduced_row_echelon_form;
-use node::{GetNodeType, NodeType, Number, Tensor};
+use node::{DowncastNodeVec, Number, Tensor};
 use validator::TensorValidator;
 
 #[derive(FunctionArguments)]
@@ -40,20 +38,11 @@ impl FunctionEndpoint for MatrixRrefEndpoint {
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let mut matrix = n
-            .elements
+            .downcast::<Number>()
+            .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .iter()
-            .map(|node| {
-                <&Number>::try_from(node)
-                    .map(|number| number.value)
-                    .map_err(|_| {
-                        Error::invalid_parameter_type(
-                            "n",
-                            HashSet::from([NodeType::Number]),
-                            node.node_type(),
-                        )
-                    })
-            })
-            .collect::<Result<Vec<_>, Error>>()?;
+            .map(|number| number.value)
+            .collect::<Vec<_>>();
 
         let (rows, columns) = match n.shape[..] {
             [r, c] => (r, c),

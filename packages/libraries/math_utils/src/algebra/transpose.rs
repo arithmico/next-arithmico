@@ -1,6 +1,6 @@
 use std::usize;
 
-pub fn transpose(rows: usize, columns: usize, matrix: &mut [f64]) -> () {
+pub fn transpose(rows: usize, columns: usize, matrix: &mut [f64]) {
     let mut buffer = vec![0.0; matrix.len()];
 
     for i in 0..rows {

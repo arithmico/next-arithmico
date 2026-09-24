@@ -40,7 +40,6 @@ impl FunctionEndpoint for LengthEndpoint {
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?;
 
         let value = x
-            .elements
             .downcast::<Number>()
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .iter()
