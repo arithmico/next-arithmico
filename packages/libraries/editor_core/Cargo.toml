@@ -8,4 +8,4 @@ license = "AGPL-3.0-or-later"
 leptos = { workspace = true }
 leptos_dom = { workspace = true }
 send_wrapper = "0.6.0"
-web-sys = { version = "0.3.72", features = ["Document", "Element", "Selection"] }
+web-sys = { version = "0.3.72", features = ["Document", "Element", "Selection", "Node", "NodeList"] }

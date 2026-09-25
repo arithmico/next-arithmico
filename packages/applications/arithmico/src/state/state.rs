@@ -21,7 +21,7 @@ pub struct State {
 
 impl State {
     pub fn new() -> Self {
-        let mut editor_state = EditorState::new();
+        let mut editor_state = EditorState::default();
         editor_state.add_transform(MergeTextNodesTransform::new());
         editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());
 

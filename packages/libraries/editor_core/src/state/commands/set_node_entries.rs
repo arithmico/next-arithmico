@@ -14,7 +14,7 @@ impl EditorState {
     ) {
         self.editor_nodes.insert(node_id, editor_node);
         self.dom_nodes
-            .insert(node_id, dom_node.map(|node| SendWrapper::new(node)));
+            .insert(node_id, dom_node.map(SendWrapper::new));
         self.children.insert(node_id, children);
         self.parent.insert(node_id, parent);
         self.mark_node_id_as_modified(node_id);

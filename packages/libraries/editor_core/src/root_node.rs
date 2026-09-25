@@ -8,8 +8,8 @@ use crate::EditorContainerNode;
 #[derive(Clone, Debug)]
 pub struct RootNode;
 
-impl RootNode {
-    pub fn new() -> Self {
+impl Default for RootNode {
+    fn default() -> Self {
         Self
     }
 }

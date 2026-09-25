@@ -17,7 +17,7 @@ impl EditorState {
             .expect("parent supports children");
         let position = position.unwrap_or(parent_children.len());
         parent_children.insert(position, node_id);
-        let children = node.supports_children().then(|| vec![]);
+        let children = node.supports_children().then(Vec::new);
         self.set_node_entries(node_id, node, None, children, Some(parent_id));
         node_id
     }
