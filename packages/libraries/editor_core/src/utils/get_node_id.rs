@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 
 thread_local! {
-    static NEXT_NODE_ID: RefCell<usize> = RefCell::new(0);
+    static NEXT_NODE_ID: RefCell<usize> = const { RefCell::new(0) };
 }
 
 pub fn get_node_id() -> usize {

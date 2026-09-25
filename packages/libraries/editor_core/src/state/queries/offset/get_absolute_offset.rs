@@ -16,7 +16,7 @@ impl EditorState {
                 let node = self.get_leaf_node(node_id).expect("leaf node");
                 node.length()
             })
-            .fold(0, |left, right| left + right);
+            .sum::<usize>();
 
         Some(previous_offset + offset)
     }

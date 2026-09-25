@@ -101,7 +101,7 @@ impl EditorState {
         let replaced_node_ids = self.replace_nodes_that_require_update();
         let affected_parent_ids = created_node_ids
             .into_iter()
-            .chain(replaced_node_ids.into_iter())
+            .chain(replaced_node_ids)
             .filter_map(|node_id| self.get_parent_id(node_id))
             .collect::<HashSet<_>>()
             .union(&self.modified_nodes)

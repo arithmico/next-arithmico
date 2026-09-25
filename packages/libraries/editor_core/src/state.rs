@@ -51,9 +51,11 @@ impl EditorState {
         );
         state
     }
+}
 
-    pub fn new() -> Self {
-        let root_node = RootNode::new();
+impl Default for EditorState {
+    fn default() -> Self {
+        let root_node = RootNode;
         Self::new_with_root_node(root_node.into_editor_node())
     }
 }

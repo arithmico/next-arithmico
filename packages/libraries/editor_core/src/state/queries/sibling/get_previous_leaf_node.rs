@@ -8,7 +8,6 @@ impl EditorState {
         nodes_before.truncate(node_position);
         nodes_before
             .into_iter()
-            .filter(|node_id| self.is_leaf_node(*node_id))
-            .last()
+            .rfind(|node_id| self.is_leaf_node(*node_id))
     }
 }
