@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use leptos::prelude::expect_context;
+use leptos::{logging::warn, prelude::expect_context};
 
 use crate::TranslateContext;
 
@@ -12,7 +12,10 @@ pub fn use_translate()
         let template = context
             .get_template_provider()
             .get_template(&id)
-            .ok_or("TranslationError")?;
+            .ok_or_else(|| {
+                warn!(r#"Missing translation for id "{}""#, &id);
+                "TranslationError"
+            })?;
         let keys = keys.unwrap_or_default();
 
         match template.translate_with(context.get_current_language(), &keys) {
