@@ -112,12 +112,12 @@ pub fn Editor(
                         state.get_leaf_node(*node_id).expect("node").length();
                     state.set_selection(SelectionRange::new_at(
                         *node_id,
-                        length.checked_sub(1).unwrap_or(0),
+                        length.saturating_sub(1),
                     ));
                 } else {
                     let root_id = state.get_root_id();
                     let node_id = state.insert_node(
-                        TextNode::new().into_editor_node(),
+                        TextNode::default().into_editor_node(),
                         Some(root_id),
                         None,
                     );
@@ -142,24 +142,16 @@ pub fn Editor(
                     state.execute_command(command.into());
                 }
                 "deleteContentBackward" => {
-                    state.execute_command(
-                        DeleteContentBackwardCommand::new().into(),
-                    );
+                    state.execute_command(DeleteContentBackwardCommand.into());
                 }
                 "deleteContentForward" => {
-                    state.execute_command(
-                        DeleteContentForwardCommand::new().into(),
-                    );
+                    state.execute_command(DeleteContentForwardCommand.into());
                 }
                 "deleteWordBackward" => {
-                    state.execute_command(
-                        DeleteWordBackwardCommand::new().into(),
-                    );
+                    state.execute_command(DeleteWordBackwardCommand.into());
                 }
                 "deleteWordForward" => {
-                    state.execute_command(
-                        DeleteWordForwardCommand::new().into(),
-                    );
+                    state.execute_command(DeleteWordForwardCommand.into());
                 }
                 "insertFromPaste" => {
                     let data = event

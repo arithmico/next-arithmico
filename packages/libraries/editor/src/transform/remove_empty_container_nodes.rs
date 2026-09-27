@@ -4,8 +4,8 @@ use editor_core::{
 
 pub struct RemoveEmptyContainerNodesTransform;
 
-impl RemoveEmptyContainerNodesTransform {
-    pub fn new() -> Self {
+impl Default for RemoveEmptyContainerNodesTransform {
+    fn default() -> Self {
         Self
     }
 }
@@ -29,10 +29,10 @@ fn find_first_deletable_container(state: &EditorState) -> Option<usize> {
         } else if state.get_children_count(*node_id) == Some(1) {
             let child_id =
                 state.get_child_id_at(*node_id, 0).expect("child id");
-            if let Some(child) = state.get_leaf_node(child_id) {
-                if child.length() == 0 {
-                    return true;
-                }
+            if let Some(child) = state.get_leaf_node(child_id)
+                && child.length() == 0
+            {
+                return true;
             }
         }
         false

@@ -1,12 +1,7 @@
 use editor_core::{EditorCommand, selection::SelectionRange};
 
+#[derive(Debug, Default)]
 pub struct DeleteWordForwardCommand;
-
-impl DeleteWordForwardCommand {
-    pub fn new() -> Self {
-        Self
-    }
-}
 
 impl EditorCommand for DeleteWordForwardCommand {
     fn apply(&self, state: &mut editor_core::EditorState) -> Option<()> {

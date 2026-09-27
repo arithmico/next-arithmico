@@ -7,8 +7,8 @@ use crate::node::TextNode;
 
 pub struct MergeTextNodesTransform;
 
-impl MergeTextNodesTransform {
-    pub fn new() -> Self {
+impl Default for MergeTextNodesTransform {
+    fn default() -> Self {
         Self
     }
 }
@@ -18,12 +18,10 @@ fn find_first_text_node_child(
     node_id: usize,
 ) -> Option<usize> {
     let children = state.get_children_ids(node_id);
-    for child_id in children {
-        if let Some(_) = state.get_leaf_node_as::<TextNode>(child_id) {
-            return Some(child_id);
-        }
-    }
-    None
+
+    children.into_iter().find(|&child_id| {
+        state.get_leaf_node_as::<TextNode>(child_id).is_some()
+    })
 }
 
 fn find_transform_candidate(
@@ -32,7 +30,10 @@ fn find_transform_candidate(
 ) -> Option<(usize, usize)> {
     let first_text_node_id = find_first_text_node_child(state, node_id)?;
     let next_sibling_id = state.get_next_sibling_id(first_text_node_id)?;
-    if let Some(_) = state.get_leaf_node_as::<TextNode>(next_sibling_id) {
+    if state
+        .get_leaf_node_as::<TextNode>(next_sibling_id)
+        .is_some()
+    {
         Some((first_text_node_id, next_sibling_id))
     } else {
         None

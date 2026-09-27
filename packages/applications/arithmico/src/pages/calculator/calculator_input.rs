@@ -70,7 +70,7 @@ fn CalculatorInputEditor() -> impl IntoView {
                     for (segment, is_highlighted) in segments.clone() {
                         if is_highlighted {
                             let mark_node_id = state.insert_node(
-                                MarkNode::new().into_editor_node(),
+                                MarkNode::default().into_editor_node(),
                                 None,
                                 None,
                             );
