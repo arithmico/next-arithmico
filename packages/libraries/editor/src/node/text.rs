@@ -10,11 +10,13 @@ pub struct TextNode {
     content: String,
 }
 
-impl TextNode {
-    pub fn new() -> Self {
+impl Default for TextNode {
+    fn default() -> Self {
         Self::new_with_content("")
     }
+}
 
+impl TextNode {
     pub fn new_with_content<T: ToString>(content: T) -> Self {
         Self {
             content: content.to_string(),
@@ -44,18 +46,15 @@ impl TextNode {
 impl EditorLeafNode for TextNode {
     fn create_node(&self) -> web_sys::Node {
         let text = document().create_text_node(&self.content);
-        return text.dyn_into().expect("node");
+        text.dyn_into().expect("node")
     }
 
     fn requires_update(&self, dom_node: &web_sys::Node) -> bool {
         match dom_node.clone().dyn_into::<Text>() {
-            Ok(text_node) => {
-                let requires_update = text_node
-                    .text_content()
-                    .and_then(|content| Some(content != self.content))
-                    .unwrap_or(true);
-                requires_update
-            }
+            Ok(text_node) => text_node
+                .text_content()
+                .map(|content| content != self.content)
+                .unwrap_or(true),
             _ => true,
         }
     }

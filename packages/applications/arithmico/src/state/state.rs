@@ -22,8 +22,9 @@ pub struct State {
 impl State {
     pub fn new() -> Self {
         let mut editor_state = EditorState::default();
-        editor_state.add_transform(MergeTextNodesTransform::new());
-        editor_state.add_transform(RemoveEmptyContainerNodesTransform::new());
+        editor_state.add_transform(MergeTextNodesTransform::default());
+        editor_state
+            .add_transform(RemoveEmptyContainerNodesTransform::default());
 
         Self {
             session: Session::new(),

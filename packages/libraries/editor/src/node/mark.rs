@@ -7,8 +7,8 @@ use web_sys::{Node, wasm_bindgen::JsCast};
 #[derive(Debug, Clone)]
 pub struct MarkNode;
 
-impl MarkNode {
-    pub fn new() -> Self {
+impl Default for MarkNode {
+    fn default() -> Self {
         Self
     }
 }
@@ -17,7 +17,7 @@ impl EditorContainerNode for MarkNode {
     fn create_node(&self) -> web_sys::Node {
         let node = document().create_element("span").expect("element");
         let class = "editor-error-mark";
-        node.set_class_name(&class);
+        node.set_class_name(class);
         node.dyn_into::<Node>().expect("node")
     }
 
