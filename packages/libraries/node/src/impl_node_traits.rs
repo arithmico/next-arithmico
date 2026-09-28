@@ -1,15 +1,15 @@
 #[macro_export]
 macro_rules! impl_node_traits {
     ($node:ident) => {
-        impl crate::GetNodeType for $node {
-            fn node_type(&self) -> crate::NodeType {
-                crate::NodeType::$node
+        impl $crate::GetNodeType for $node {
+            fn node_type(&self) -> $crate::NodeType {
+                $crate::NodeType::$node
             }
         }
 
-        impl crate::GetStaticNodeType for $node {
-            fn static_node_type() -> crate::NodeType {
-                crate::NodeType::$node
+        impl $crate::GetStaticNodeType for $node {
+            fn static_node_type() -> $crate::NodeType {
+                $crate::NodeType::$node
             }
         }
 
@@ -25,23 +25,23 @@ macro_rules! impl_node_traits {
             }
         }
 
-        impl From<$node> for crate::Node {
+        impl From<$node> for $crate::Node {
             fn from(value: $node) -> Self {
                 Self::$node(value)
             }
         }
 
-        impl<'a> TryFrom<&'a crate::Node> for &'a $node {
-            type Error = crate::DowncastNodeError;
+        impl<'a> TryFrom<&'a $crate::Node> for &'a $node {
+            type Error = $crate::DowncastNodeError;
 
             fn try_from(value: &'a Node) -> Result<Self, Self::Error> {
-                use crate::GetNodeType;
+                use $crate::GetNodeType;
                 use trace::Tracable;
 
                 match value {
-                    crate::Node::$node(node) => Ok(node),
-                    node => Err(crate::DowncastNodeError {
-                            expected: <Self as crate::GetStaticNodeType>::static_node_type(),
+                    $crate::Node::$node(node) => Ok(node),
+                    node => Err($crate::DowncastNodeError {
+                            expected: <Self as $crate::GetStaticNodeType>::static_node_type(),
                             received: node.node_type(),
                             trace: node.trace().clone(),
                     }),
