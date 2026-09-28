@@ -150,16 +150,13 @@ pub fn convert_to_inner_index(
     }
     let dimension_offsets: Vec<_> = dimension_offsets(shape);
 
-    zip(index, zip(shape, dimension_offsets)).fold(
-        Some(0usize),
-        |acc, (&index, (&dimension_length, dimension_offset))| match acc {
-            None => None,
-            Some(acc) => {
-                if index >= dimension_length {
-                    return None;
-                }
-                Some(acc + index * dimension_offset)
+    zip(index, zip(shape, dimension_offsets)).try_fold(
+        0usize,
+        |acc, (&index, (&dimension_length, dimension_offset))| {
+            if index >= dimension_length {
+                return None;
             }
+            Some(acc + index * dimension_offset)
         },
     )
 }
