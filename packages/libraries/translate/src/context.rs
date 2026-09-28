@@ -26,7 +26,7 @@ impl TranslateContext {
     }
 
     pub fn get_fallback_language(&self) -> Language {
-        self.fallback_language.clone()
+        self.fallback_language
     }
 
     pub fn get_template_provider(&self) -> &TranslationTemplateProvider {
