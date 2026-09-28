@@ -65,7 +65,7 @@ impl Tensor {
         }
     }
 
-    fn get_shape(elements: &Vec<Node>) -> Vec<usize> {
+    fn get_shape(elements: &[Node]) -> Vec<usize> {
         let inner_shape = elements
             .iter()
             .map(|element| match element {
@@ -102,12 +102,12 @@ impl Tensor {
         }
     }
 
-    fn flatten_elements(elements: &Vec<Node>, shape: &Vec<usize>) -> Vec<Node> {
-        if shape.len() == 0 {
+    fn flatten_elements(elements: &[Node], shape: &[usize]) -> Vec<Node> {
+        if shape.is_empty() {
             unreachable!();
         }
         if shape.len() == 1 {
-            return elements.clone();
+            return elements.to_vec();
         }
         elements
             .iter()
@@ -121,12 +121,12 @@ impl Tensor {
 
 impl_node_traits!(Tensor);
 
-pub fn get_capacity(shape: &Vec<usize>) -> usize {
+pub fn get_capacity(shape: &[usize]) -> usize {
     shape.iter().product()
 }
 
 pub fn convert_to_outer_index(
-    shape: &Vec<usize>,
+    shape: &[usize],
     inner_index: usize,
 ) -> Option<Vec<usize>> {
     if inner_index >= get_capacity(shape) {
