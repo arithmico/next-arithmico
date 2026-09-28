@@ -78,7 +78,7 @@ mod tests {
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         let result = FunctionCall::new(
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
@@ -96,7 +96,7 @@ mod tests {
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         let result = FunctionCall::new(
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
@@ -135,7 +135,7 @@ mod tests {
                             .name("f")
                             .description(Language::English, "test")
                             .function(
-                                FunctionSignature::new()
+                                FunctionSignature::default()
                                     .argument("x", |argument| {
                                         argument.node_type(NodeType::Any)
                                     })
@@ -185,7 +185,7 @@ mod tests {
                             .name("f")
                             .description(Language::English, "test")
                             .function(
-                                FunctionSignature::new()
+                                FunctionSignature::default()
                                     .argument("x", |argument| {
                                         argument.node_type(NodeType::Any)
                                     })
@@ -240,7 +240,7 @@ mod tests {
                             .name("f")
                             .description(Language::English, "test")
                             .function(
-                                FunctionSignature::new()
+                                FunctionSignature::default()
                                     .argument("a", |argument| {
                                         argument.node_type(NodeType::Any)
                                     })

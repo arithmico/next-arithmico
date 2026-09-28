@@ -339,7 +339,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             }
 
             fn signature() -> node::FunctionSignature {
-                node::FunctionSignature::new()
+                node::FunctionSignature::default()
                 #(#signature_arguments)*
             }
 

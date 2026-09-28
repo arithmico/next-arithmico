@@ -26,7 +26,7 @@ mod tests {
         let api = Api::default();
         let options = Options::new(&stack, &api, common::AngleUnit::Radian);
         let result = Function::new(
-            FunctionSignature::new()
+            FunctionSignature::default()
                 .argument("x", |argument| argument.node_type(NodeType::Any))
                 .add_return_type(NodeType::Any),
             Symbol::new("x"),
@@ -36,7 +36,7 @@ mod tests {
         assert_eq!(
             result,
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x")

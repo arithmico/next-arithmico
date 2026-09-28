@@ -135,7 +135,7 @@ mod test {
     #[test]
     fn serialize_negate_function() {
         let node = Negate::new(Function::new(
-            FunctionSignature::new()
+            FunctionSignature::default()
                 .argument("x", |argument| argument.node_type(NodeType::Any))
                 .add_return_type(NodeType::Any),
             Symbol::new("x"),
@@ -334,13 +334,13 @@ mod test {
     fn serialize_product_function() {
         let node = Product::new(vec![
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
             ),
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("y"),
@@ -434,14 +434,14 @@ mod test {
     fn serialize_power_function() {
         let node = Power::new(
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Sum::new(vec![Symbol::new("x"), Symbol::new("y")]),
             ),
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
@@ -503,7 +503,7 @@ mod test {
     fn serialize_in_place_function_call() {
         let node = FunctionCall::new(
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
@@ -528,7 +528,7 @@ mod test {
         let node = Definition::new(
             "f",
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
@@ -613,13 +613,13 @@ mod test {
     fn serialize_division_with_function() {
         let node = Division::new(
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("x"),
             ),
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Symbol::new("y"),
@@ -907,7 +907,7 @@ mod test {
     #[test]
     fn serialize_function_with_no_arguments() {
         let node = Function::new(
-            FunctionSignature::new().add_return_type(NodeType::Any),
+            FunctionSignature::default().add_return_type(NodeType::Any),
             Number::new_node(1.),
         );
         assert_eq!(node.serialize(Default::default()).unwrap(), "() -> 1");
@@ -916,7 +916,7 @@ mod test {
     #[test]
     fn serialize_function_with_1_argument() {
         let node = Function::new(
-            FunctionSignature::new()
+            FunctionSignature::default()
                 .argument("x", |argument| argument.node_type(NodeType::Any))
                 .add_return_type(NodeType::Any),
             Symbol::new("x"),
@@ -927,7 +927,7 @@ mod test {
     #[test]
     fn serialize_function_with_2_arguments() {
         let node = Function::new(
-            FunctionSignature::new()
+            FunctionSignature::default()
                 .argument("x", |argument| argument.node_type(NodeType::Any))
                 .argument("y", |argument| argument.node_type(NodeType::Any))
                 .add_return_type(NodeType::Any),
@@ -942,11 +942,11 @@ mod test {
     #[test]
     fn serialize_nested_functions() {
         let node = Function::new(
-            FunctionSignature::new()
+            FunctionSignature::default()
                 .argument("x", |argument| argument.node_type(NodeType::Any))
                 .add_return_type(NodeType::Any),
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("y", |argument| argument.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Sum::new(vec![Symbol::new("x"), Symbol::new("y")]),

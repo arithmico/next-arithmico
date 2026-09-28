@@ -4,20 +4,13 @@ use crate::NodeType;
 
 use super::argument::Argument;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct FunctionSignature {
     arguments: Vec<Argument>,
     return_type: HashSet<NodeType>,
 }
 
 impl FunctionSignature {
-    pub fn new() -> Self {
-        Self {
-            arguments: Vec::new(),
-            return_type: HashSet::new(),
-        }
-    }
-
     pub fn argument<T: ToString>(
         mut self,
         name: T,

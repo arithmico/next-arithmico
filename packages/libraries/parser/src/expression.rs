@@ -144,7 +144,7 @@ fn parse_expression_pratt<'a>(
                     left = Definition::new(symbol.name, right)
                         .with_optional_span(span);
                 } else if let Node::FunctionCall(function_call) = &left {
-                    let mut signature = FunctionSignature::new();
+                    let mut signature = FunctionSignature::default();
                     for argument in &function_call.arguments {
                         if let Node::Symbol(symbol) = argument {
                             if signature.has_argument(&symbol.name) {
@@ -443,7 +443,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         cursor,
                         TokenKind::Define.binding_power().unwrap() + 1,
                     )?;
-                    let mut signature = FunctionSignature::new();
+                    let mut signature = FunctionSignature::default();
                     for param in parameters {
                         if signature.has_argument(&param) {
                             return Err(Error::DuplicateFunctionArgumentName {
@@ -862,7 +862,7 @@ mod tests {
             Definition::new(
                 "f",
                 Function::new(
-                    FunctionSignature::new()
+                    FunctionSignature::default()
                         .argument("x", |arg| arg.node_type(NodeType::Any)),
                     Symbol::new("x").with_span(Span::new_between(8, 8))
                 )
@@ -1289,7 +1289,7 @@ mod tests {
         assert_eq!(
             output,
             Function::new(
-                FunctionSignature::new().add_return_type(NodeType::Any),
+                FunctionSignature::default().add_return_type(NodeType::Any),
                 Number::new_node(2.0).with_span(Span::new_between(6, 6))
             )
             .with_span(Span::new_between(0, 6)),
@@ -1304,7 +1304,7 @@ mod tests {
         assert_eq!(
             output,
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |arg| arg.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
                 Power::new(
@@ -1326,7 +1326,7 @@ mod tests {
         assert_eq!(
             output,
             Function::new(
-                FunctionSignature::new()
+                FunctionSignature::default()
                     .argument("x", |arg| arg.node_type(NodeType::Any))
                     .argument("y", |arg| arg.node_type(NodeType::Any))
                     .add_return_type(NodeType::Any),
