@@ -95,7 +95,7 @@ fn stirlerr(n: f64) -> f64 {
         return (S0 - (S1 - (S2 - S3 / nn) / nn) / nn) / n;
     }
 
-    return (S0 - (S1 - (S2 - (S3 - S4 / nn) / nn) / nn) / nn) / n;
+    (S0 - (S1 - (S2 - (S3 - S4 / nn) / nn) / nn) / nn) / n
 }
 
 /// Evaluate the deviance term
@@ -116,7 +116,7 @@ fn bd0(x: f64, np: f64) -> f64 {
             s = s1;
         }
     }
-    return x * (x / np).ln() + np - x;
+    x * (x / np).ln() + np - x
 }
 
 fn dbinom(x: f64, n: f64, p: f64) -> f64 {
@@ -139,7 +139,7 @@ fn dbinom(x: f64, n: f64, p: f64) -> f64 {
         - bd0(x, n * p)
         - bd0(n - x, n * (1.0 - p));
 
-    return lc.exp() * (n / (TAU * x * (n - x))).sqrt();
+    lc.exp() * (n / (TAU * x * (n - x))).sqrt()
 }
 
 #[allow(dead_code)]
@@ -150,7 +150,7 @@ fn dpois(x: f64, lb: f64) -> f64 {
     if x == 0.0 {
         return (-lb).exp();
     }
-    return (-stirlerr(x) - bd0(x, lb)).exp() / (TAU * x).sqrt();
+    (-stirlerr(x) - bd0(x, lb)).exp() / (TAU * x).sqrt()
 }
 
 #[cfg(test)]

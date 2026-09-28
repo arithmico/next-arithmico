@@ -801,10 +801,10 @@ fn bratio(a: f64, b: f64, x: f64, y: f64) -> Result<BratioResult, BetaError> {
     if a == 0.0 && b == 0.0 {
         return Err(BothAAndBZero);
     }
-    if x < 0.0 || x > 1.0 {
+    if !(0.0..=1.0).contains(&x) {
         return Err(XOutOfRange);
     }
-    if y < 0.0 || y > 1.0 {
+    if !(0.0..=1.0).contains(&y) {
         return Err(YOutOfRange);
     }
 
@@ -941,13 +941,13 @@ fn bratio(a: f64, b: f64, x: f64, y: f64) -> Result<BratioResult, BetaError> {
         let mut n = b0.trunc() as usize;
         let mut b0 = b0 - n as f64;
         if b0 == 0.0 {
-            n = n - 1;
+            n -= 1;
             b0 = 1.0;
         }
 
         let mut w = bup(b0, a0, y0, x0, n, eps);
         if x0 <= 0.7 {
-            w = w + bpser(a0, b0, x0, eps);
+            w += bpser(a0, b0, x0, eps);
             let w1 = 0.5 + (0.5 - w);
             return Ok(BratioResult::from_swap(is_swap, w, w1));
         }
@@ -955,8 +955,8 @@ fn bratio(a: f64, b: f64, x: f64, y: f64) -> Result<BratioResult, BetaError> {
         let mut a0 = a0;
         if a0 <= 15.0 {
             n = 20;
-            w = w + bup(a0, b0, x0, y0, n, eps);
-            a0 = a0 + n as f64;
+            w += bup(a0, b0, x0, y0, n, eps);
+            a0 += n as f64;
         }
 
         w = bgrat(a0, b0, x0, y0, w, 15.0 * eps)?;
@@ -977,7 +977,7 @@ fn bratio(a: f64, b: f64, x: f64, y: f64) -> Result<BratioResult, BetaError> {
 
     let w = basym(a0, b0, lambda, 100.0 * eps);
     let w1 = 0.5 + (0.5 - w);
-    return Ok(BratioResult::from_swap(is_swap, w, w1));
+    Ok(BratioResult::from_swap(is_swap, w, w1))
 }
 
 /// Evaluation of I_x(a, b) for b < min(eps, eps * a) and x <= 0.5.
@@ -993,24 +993,24 @@ fn fpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
     }
 
     // Note that 1 / B(A,B) = B
-    value = (b / a) * value;
+    value *= (b / a);
     let tol = eps / a;
     let mut an = a + 1.0;
     let mut t = x;
     let mut s = t / an;
 
     loop {
-        an = an + 1.0;
-        t = x * t;
+        an += 1.0;
+        t *= x;
         let c = t / an;
-        s = s + c;
+        s += c;
 
         if c.abs() <= tol {
             break;
         }
     }
 
-    return value * (1.0 + a * s);
+    value * (1.0 + a * s)
 }
 
 /// apser yields the incomplete beta ratio I_{1 - x}(b, a) for
@@ -1033,17 +1033,17 @@ fn apser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
     let mut s = 0.0;
 
     loop {
-        j = j + 1.0;
-        t = t * (x - bx / j);
+        j += 1.0;
+        t *= (x - bx / j);
         let aj = t / j;
-        s = s + aj;
+        s += aj;
 
         if aj.abs() <= tol {
             break;
         }
     }
 
-    return -a * (c + s);
+    -a * (c + s)
 }
 
 /// Power series expansion for evaluating I_x(a, b) when b <= 1
@@ -1079,8 +1079,8 @@ fn bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
             let u = if m >= 1 {
                 let mut c = 1.0;
                 for _i in 1..=m {
-                    b0 = b0 - 1.0;
-                    c = c * (b0 / (a0 + b0));
+                    b0 -= 1.0;
+                    c *= (b0 / (a0 + b0));
                 }
 
                 c.ln() + gamln1(a0)
@@ -1089,7 +1089,7 @@ fn bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
             };
 
             let z = a * x.ln() - u;
-            b0 = b0 - 1.0;
+            b0 -= 1.0;
             let apb = a0 + b0;
             let t = if apb > 1.0 {
                 let u = a0 + b0 - 1.0;
@@ -1132,21 +1132,21 @@ fn bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
     let tol = eps / a;
 
     loop {
-        n = n + 1.0;
+        n += 1.0;
         c = c * (0.5 + (0.5 - b / n)) * x;
         let w = c / (a + n);
-        sum = sum + w;
+        sum += w;
 
         if w.abs() <= tol {
             break;
         }
     }
 
-    return if a * sum > -1.0 {
+    if a * sum > -1.0 {
         value * (1.0 + a * sum)
     } else {
         0.0
-    };
+    }
 }
 
 /// Evaluation of I_x(a, b) - I_x(a * n, b) where n is a positive integer.
@@ -1193,8 +1193,8 @@ fn bup(a: f64, b: f64, x: f64, y: f64, n: usize, eps: f64) -> f64 {
         // Add the increasing terms of the series
         for i in 0..k {
             let i_f = i as f64;
-            d = ((apb + i_f) / (ap1 + i_f)) * x * d;
-            w = w + d;
+            d *= ((apb + i_f) / (ap1 + i_f)) * x;
+            w += d;
         }
         if k == nm1 {
             return value * w;
@@ -1204,14 +1204,14 @@ fn bup(a: f64, b: f64, x: f64, y: f64, n: usize, eps: f64) -> f64 {
     // Add the remaining terms of the series
     for i in k..nm1 {
         let i_f = i as f64;
-        d = ((apb + i_f) / (ap1 + i_f)) * x * d;
-        w = w + d;
+        d *= ((apb + i_f) / (ap1 + i_f)) * x;
+        w += d;
         if d <= eps * w {
             break;
         }
     }
 
-    return value * w;
+    value * w
 }
 
 /// Continued fraction expansion for I_x(a, b) when a, b > 1.
@@ -1239,7 +1239,7 @@ fn bfrac(a: f64, b: f64, x: f64, y: f64, lambda: f64, eps: f64) -> f64 {
 
     // Continued fraction calculation
     loop {
-        n = n + 1.0;
+        n += 1.0;
         let t = n / a;
         let w = n * (b - n) * x;
         let e1 = a / s;
@@ -1247,7 +1247,7 @@ fn bfrac(a: f64, b: f64, x: f64, y: f64, lambda: f64, eps: f64) -> f64 {
         let e2 = (1.0 + t) / (c1 + t + t);
         let beta = n + w / s + e2 * (c + n * yp1);
         p = 1.0 + t;
-        s = s + 2.0;
+        s += 2.0;
 
         // Update an, bn, anp1, and bnp1
         let t = alpha * an + beta * anp1;
@@ -1264,8 +1264,8 @@ fn bfrac(a: f64, b: f64, x: f64, y: f64, lambda: f64, eps: f64) -> f64 {
         }
 
         // Rescale an, bn, anp1, and bnp1
-        an = an / bnp1;
-        bn = bn / bnp1;
+        an /= bnp1;
+        bn /= bnp1;
         anp1 = r;
         bnp1 = 1.0;
 
@@ -1275,7 +1275,7 @@ fn bfrac(a: f64, b: f64, x: f64, y: f64, lambda: f64, eps: f64) -> f64 {
         }
     }
 
-    return value * r;
+    value * r
 }
 
 /// Evaluating of x^a * y^b / beta(a, b)
@@ -1298,7 +1298,7 @@ fn brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
 
         let mut z = a * lnx + b * lny;
         if a0 >= 1.0 {
-            z = z - betaln(a, b);
+            z -= betaln(a, b);
             return z.exp();
         }
 
@@ -1335,8 +1335,8 @@ fn brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
         let u = if n >= 1 {
             let mut c = 1.0;
             for _i in 0..n {
-                b0 = b0 - 1.0;
-                c = c * (b0 / (a0 + b0));
+                b0 -= 1.0;
+                c *= (b0 / (a0 + b0));
             }
 
             c.ln() + gamln1(a0)
@@ -1344,8 +1344,8 @@ fn brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
             gamln1(a0)
         };
 
-        z = z - u;
-        b0 = b0 - 1.0;
+        z -= u;
+        b0 -= 1.0;
         let apb = a0 + b0;
         let t = if apb > 1.0 {
             let u = a0 + b0 - 1.0;
@@ -1391,7 +1391,7 @@ fn brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
     };
 
     let z = (-(a * u + b * v)).exp();
-    return CONST * (b * x0).sqrt() * z * (-bcorr(a, b)).exp();
+    CONST * (b * x0).sqrt() * z * (-bcorr(a, b)).exp()
 }
 
 /// Evaluation of exp(mu) * (x^a * y^b / beta(a, b))
@@ -1410,7 +1410,7 @@ fn brcmp1(mu: f64, a: f64, b: f64, x: f64, y: f64) -> f64 {
 
         let mut z = a * lnx + b * lny;
         if a0 >= 1.0 {
-            z = z - betaln(a, b);
+            z -= betaln(a, b);
             return esum(mu, z);
         }
 
@@ -1447,8 +1447,8 @@ fn brcmp1(mu: f64, a: f64, b: f64, x: f64, y: f64) -> f64 {
         let u = if n >= 1 {
             let mut c = 1.0;
             for _i in 0..n {
-                b0 = b0 - 1.0;
-                c = c * (b0 / (a0 + b0));
+                b0 -= 1.0;
+                c *= (b0 / (a0 + b0));
             }
 
             c.ln() + gamln1(a0)
@@ -1456,8 +1456,8 @@ fn brcmp1(mu: f64, a: f64, b: f64, x: f64, y: f64) -> f64 {
             gamln1(a0)
         };
 
-        z = z - u;
-        b0 = b0 - 1.0;
+        z -= u;
+        b0 -= 1.0;
         let apb = a0 + b0;
         let t = if apb > 1.0 {
             let u = a0 + b0 - 1.0;
@@ -1503,7 +1503,7 @@ fn brcmp1(mu: f64, a: f64, b: f64, x: f64, y: f64) -> f64 {
     };
 
     let z = esum(mu, -(a * u + b * v));
-    return CONST * (b * x0).sqrt() * z * (-bcorr(a, b)).exp();
+    CONST * (b * x0).sqrt() * z * (-bcorr(a, b)).exp()
 }
 
 /// Asymptotic expansion for I_x(a, b) when a is larger than b.
@@ -1556,9 +1556,9 @@ fn bgrat(
     for n in 0..ARRAY_LEN {
         let bp2n = b + n2;
         j = (bp2n * (bp2n + 1.0) * j + (z + bp2n + 1.0) * t) * v;
-        n2 = n2 + 2.0;
-        t = t * t2;
-        cn = cn / (n2 * (n2 + 1.0));
+        n2 += 2.0;
+        t *= t2;
+        cn /= (n2 * (n2 + 1.0));
         c[n] = cn;
 
         let mut s = 0.0;
@@ -1567,14 +1567,14 @@ fn bgrat(
             let mut coef = b - ((n + 1) as f64);
 
             for i in 0..n {
-                s = s + coef * c[i] * d[n - i - 1]; //original: D[N - I - 1]; alt: D[NM1 - I]
-                coef = coef + b;
+                s += coef * c[i] * d[n - i - 1]; //original: D[N - I - 1]; alt: D[NM1 - I]
+                coef += b;
             }
         }
 
         d[n] = bm1 * cn + s / ((n + 1) as f64);
         let dj = d[n] * j;
-        sum = sum + dj;
+        sum += dj;
 
         if sum <= 0.0 {
             return Err(Internal("bgrat: sum <= 0"));
@@ -1588,7 +1588,7 @@ fn bgrat(
     // Add the results to w
     let w = w + u * sum;
 
-    return Ok(w);
+    Ok(w)
 }
 
 /// Evaluation of the incomplete Gamma ratio funcions
@@ -1619,10 +1619,10 @@ fn grat1(a: f64, x: f64, r: f64, eps: f64) -> (f64, f64) {
         let tol = (0.1 * eps) / (a + 1.0);
 
         loop {
-            an = an + 1.0;
+            an += 1.0;
             c = -c * (x / an);
             let t = c / (a + an);
-            sum = sum + t;
+            sum += t;
 
             if t.abs() <= tol {
                 break;
@@ -1666,7 +1666,7 @@ fn grat1(a: f64, x: f64, r: f64, eps: f64) -> (f64, f64) {
         a2nm1 = x * a2n + c * a2nm1;
         b2nm1 = x * b2n + c * b2nm1;
         let am0 = a2nm1 / b2nm1;
-        c = c + 1.0;
+        c += 1.0;
         let cma = c - a;
         a2n = a2nm1 + cma * a2n;
         b2n = b2nm1 + cma * b2n;
@@ -1679,7 +1679,7 @@ fn grat1(a: f64, x: f64, r: f64, eps: f64) -> (f64, f64) {
 
     let q = r * an0;
     let p = 0.5 + (0.5 - q);
-    return (p, q);
+    (p, q)
 }
 
 /// Asymptotic expansion for I_x(a, b) for large a and b.
@@ -1741,9 +1741,9 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
     let mut sum = j0 + d[0] * w0 * j1;
 
     for n in (2..=NUM).step_by(2) {
-        hh = h2 * hh;
+        hh *= h2;
         a0[n - 1] = (2.0 * r0 * (1.0 + h * hh)) / (n + 2) as f64;
-        s = s + hh;
+        s += hh;
         a0[n] = (2.0 * r1 * s) / (n + 3) as f64;
         let np1 = n + 1;
 
@@ -1757,8 +1757,7 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
 
                 for j in 1..=mm1 {
                     let mmj = m - j;
-                    bsum = bsum
-                        + (j as f64 * r - mmj as f64) * a0[j - 1] * b0[mmj - 1];
+                    bsum += (j as f64 * r - mmj as f64) * a0[j - 1] * b0[mmj - 1];
                 }
 
                 b0[m - 1] = r * a0[m - 1] + bsum / m as f64;
@@ -1770,7 +1769,7 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
 
             for j in 1..=im1 {
                 let imj = i - j;
-                dsum = dsum + d[imj - 1] * c[j - 1];
+                dsum += d[imj - 1] * c[j - 1];
             }
 
             d[im1] = -(dsum + c[im1]);
@@ -1778,13 +1777,13 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
 
         j0 = E1 * znm1 + (n - 1) as f64 * j0;
         j1 = E1 * zn + n as f64 * j1;
-        znm1 = z2 * znm1;
-        zn = z2 * zn;
-        w = w0 * w;
+        znm1 *= z2;
+        zn *= z2;
+        w *= w0;
         let t0 = d[n - 1] * w * j0;
-        w = w0 * w;
+        w *= w0;
         let t1 = d[n] * w * j1;
-        sum = sum + (t0 + t1);
+        sum += (t0 + t1);
 
         if t0.abs() + t1.abs() <= eps * sum {
             break;
@@ -1792,7 +1791,7 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
     }
 
     let u = (-bcorr(a, b)).exp();
-    return E0 * t * u * sum;
+    E0 * t * u * sum
 }
 
 /// If l = 0 then exparg(l) = the largest positive w for which
@@ -1832,7 +1831,7 @@ fn esum(mu: f64, x: f64) -> f64 {
         }
     }
 
-    return mu.exp() * x.exp();
+    mu.exp() * x.exp()
 }
 
 /// Evaluation of the function exp(x) - 1
@@ -1855,7 +1854,7 @@ fn rexp(x: f64) -> f64 {
         return (w - 0.5) - 0.5;
     }
 
-    return w * (0.5 + (0.5 - 1.0 / w));
+    w * (0.5 + (0.5 - 1.0 / w))
 }
 
 /// Evaluation of the function ln(1 + a)
@@ -1877,7 +1876,7 @@ fn alnrel(a: f64) -> f64 {
 
     let x = 1.0 + a;
 
-    return x.ln();
+    x.ln()
 }
 
 /// Evaluation of the function x - ln(1 + x)
@@ -1890,7 +1889,7 @@ fn rlog1(x: f64) -> f64 {
     const Q1: f64 = -0.127408923933623e1;
     const Q2: f64 = 0.354508718369557e0;
 
-    if x < -0.39 || x > 0.57 {
+    if !(-0.39..=0.57).contains(&x) {
         let w = (x + 0.5) + 0.5;
         return x - w.ln();
     }
@@ -1898,7 +1897,7 @@ fn rlog1(x: f64) -> f64 {
     // Argument reduction
     let (h, w1) = if x < -0.18 {
         let mut h = x + 0.3;
-        h = h / 0.7;
+        h /= 0.7;
         let w1 = A - h * 0.3;
 
         (h, w1)
@@ -1919,7 +1918,7 @@ fn rlog1(x: f64) -> f64 {
     let t = r * r;
     let w = ((P2 * t + P1) * t + P0) / ((Q2 * t + Q1) * t + 1.0);
 
-    return 2.0 * t * (1.0 / (1.0 - r) - r * w) + w1;
+    2.0 * t * (1.0 / (1.0 - r) - r * w) + w1
 }
 
 /// Evaluation of the real Error function
@@ -2014,7 +2013,7 @@ fn erf(x: f64) -> f64 {
     let bot = (((S[0] * t + S[1]) * t + S[2]) * t + S[3]) * t + 1.0;
     let mut value = (C - top / (x2 * bot)) / ax;
     value = 0.5 + (0.5 - (-x2).exp() * value);
-    return if x < 0.0 { -value } else { value };
+    if x < 0.0 { -value } else { value }
 }
 
 /// Evaluation of the complementary Error function
@@ -2135,8 +2134,8 @@ fn erfc1(ind: usize, x: f64) -> f64 {
     let t = w; // original: float (32 bit precision)
     let e = w - t;
 
-    value = (0.5 + (0.5 - e)) * (-t).exp() * value;
-    return if x < 0.0 { 2.0 - value } else { value };
+    value *= (0.5 + (0.5 - e)) * (-t).exp();
+    if x < 0.0 { 2.0 - value } else { value }
 }
 
 /// Computation of 1/Gamma(a + 1) - 1 for -0.5 <= a <= 1.5
@@ -2210,7 +2209,7 @@ fn gam1(a: f64) -> f64 {
     if d > 0.0 {
         return (t * w) / a;
     }
-    return a * ((w + 0.5) + 0.5);
+    a * ((w + 0.5) + 0.5)
 }
 
 /// Evaluation of ln(Gamma(1 + a)) for -0.2 <= a <= 1.25
@@ -2254,7 +2253,7 @@ fn gamln1(a: f64) -> f64 {
     let x = (a - 0.5) - 0.5;
     let w = (((((R5 * x + R4) * x + R3) * x + R2) * x + R1) * x + R0)
         / (((((S5 * x + S4) * x + S3) * x + S2) * x + S1) * x + 1.0);
-    return x * w;
+    x * w
 }
 
 /// Evaluation of the Digamma function
@@ -2352,7 +2351,7 @@ fn psi(xx: f64) -> f64 {
             }
 
             let mut nq = w.trunc() as i32; // int
-            w = w - (nq as f64); // double
+            w -= (nq as f64); // double
             nq = (w * 4.0).trunc() as i32; // int
             w = 4.0 * (w - (nq as f64) * 0.25); // double
 
@@ -2424,10 +2423,10 @@ fn psi(xx: f64) -> f64 {
             upper = (upper + P2[i]) * w;
         }
 
-        aug = upper / (den + Q2[3]) - 0.5 / x + aug;
+        aug += upper / (den + Q2[3]) - 0.5 / x;
     }
 
-    return aug + x.ln();
+    aug + x.ln()
 }
 
 /// Evaluation of the logarithm of the Beta function.
@@ -2472,8 +2471,8 @@ fn betaln(a0: f64, b0: f64) -> f64 {
             // Reduction of a when b > 1000
             w = 1.0;
             for _i in 1..=n_int {
-                a = a - 1.0;
-                w = w * (a / (1.0 + a / b));
+                a -= 1.0;
+                w *= (a / (1.0 + a / b));
             }
 
             return w.ln() - n * b.ln() + (gamln(a) + algdiv(a, b));
@@ -2482,9 +2481,9 @@ fn betaln(a0: f64, b0: f64) -> f64 {
         // Reduction of a when b <= 1000
         w = 1.0;
         for _i in 1..=n_int {
-            a = a - 1.0;
+            a -= 1.0;
             let h = a / b;
-            w = w * (h / (1.0 + h));
+            w *= (h / (1.0 + h));
         }
 
         w = w.ln();
@@ -2507,11 +2506,11 @@ fn betaln(a0: f64, b0: f64) -> f64 {
     let n_int = n.trunc() as usize;
     let mut z = 1.0;
     for _i in 1..=n_int {
-        b = b - 1.0;
-        z = z * (b / (a + b));
+        b -= 1.0;
+        z *= (b / (a + b));
     }
 
-    return w + z.ln() + (gamln(a) + (gamln(b) - gsumln(a, b)));
+    w + z.ln() + (gamln(a) + (gamln(b) - gsumln(a, b)))
 }
 
 /// Evaluation of the function ln(Gamma(a + b))
@@ -2524,7 +2523,7 @@ fn gsumln(a: f64, b: f64) -> f64 {
     if x <= 1.25 {
         return gamln1(x) + alnrel(x);
     }
-    return gamln1(x - 1.0) + (x * (1.0 + x)).ln();
+    gamln1(x - 1.0) + (x * (1.0 + x)).ln()
 }
 
 /// Evaluation of del(a0) + del(b0) - del(a0 + b0) where
@@ -2559,11 +2558,11 @@ fn bcorr(a0: f64, b0: f64) -> f64 {
         + C1 * s3)
         * t
         + C0;
-    w = w * (c / b);
+    w *= (c / b);
 
     // Compute del(a) + w
     let t = (1.0 / a).powi(2);
-    return (((((C5 * t + C4) * t + C3) * t + C2) * t + C1) * t + C0) / a + w;
+    (((((C5 * t + C4) * t + C3) * t + C2) * t + C1) * t + C0) / a + w
 }
 
 /// Computation of ln(Gamma(b)/Gamma(a + b)) when b >= 8
@@ -2610,13 +2609,13 @@ fn algdiv(a: f64, b: f64) -> f64 {
         + C1 * s3)
         * t
         + C0;
-    w = w * (c / b);
+    w *= (c / b);
 
     // Combine the results
     let u = d * alnrel(a / b);
     let v = a * (b.ln() - 1.0);
 
-    return if u <= v { (w - u) - v } else { (w - v) - u };
+    if u <= v { (w - u) - v } else { (w - v) - u }
 }
 
 /// Evaluation of ln(Gamma(a)) for positive a
@@ -2645,8 +2644,8 @@ fn gamln(a: f64) -> f64 {
         let mut w = 1.0;
 
         for _i in 1..=n {
-            t = t - 1.0;
-            w = t * w;
+            t -= 1.0;
+            w *= t;
         }
 
         return gamln1(t - 1.0) + w.ln();
@@ -2654,5 +2653,5 @@ fn gamln(a: f64) -> f64 {
 
     let t = (1.0 / a).powi(2);
     let w = (((((C5 * t + C4) * t + C3) * t + C2) * t + C1) * t + C0) / a;
-    return D + w + (a - 0.5) * (a.ln() - 1.0);
+    D + w + (a - 0.5) * (a.ln() - 1.0)
 }

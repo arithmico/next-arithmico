@@ -128,7 +128,7 @@ where
         let b0 = b;
 
         // Updates the number of iteration.
-        itnum = itnum + 1;
+        itnum += 1;
 
         // Calculates the termination criterion. Stops the procedure if the
         // criterion is satisfied.
@@ -444,7 +444,7 @@ fn tole(b: f64, neps: i32, eps: f64) -> f64 {
         10.0_f64.powi(-neps)
     };
 
-    tol = tol + 2.0 * b.abs() * eps;
+    tol += 2.0 * b.abs() * eps;
 
     2.0 * tol
 }
@@ -484,7 +484,7 @@ fn newqua(a: f64, b: f64, d: f64, fa: f64, fb: f64, fd: f64, k: isize) -> f64 {
                 if pdc == 0.0 {
                     ierror = 1;
                 } else {
-                    c = c - pc / pdc;
+                    c -= pc / pdc;
                 }
             }
         }
@@ -493,7 +493,7 @@ fn newqua(a: f64, b: f64, d: f64, fa: f64, fb: f64, fd: f64, k: isize) -> f64 {
         }
     }
 
-    return c;
+    c
 }
 
 /// Uses cubic inverse interpolation of f(x) at a, b, d and e to
@@ -540,7 +540,7 @@ fn rmp() -> f64 {
     loop {
         let b = 1.0 + a;
         if b > 1.0 {
-            a = a / beta;
+            a /= beta;
         } else {
             return a * beta;
         }

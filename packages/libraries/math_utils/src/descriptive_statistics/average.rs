@@ -1,5 +1,5 @@
 pub fn calculate_average(values: &[f64]) -> Option<f64> {
-    if values.len() == 0 {
+    if values.is_empty() {
         return None;
     }
 

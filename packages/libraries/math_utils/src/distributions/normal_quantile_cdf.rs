@@ -181,7 +181,7 @@ fn ppnd16(p: f64) -> f64 {
                 + 1.0)
     };
 
-    return if q < 0.0 { -t } else { t };
+    if q < 0.0 { -t } else { t }
 }
 
 #[cfg(test)]

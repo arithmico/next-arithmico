@@ -135,8 +135,8 @@ where
         }
 
         // Ordinary root enclosed by a sign change.
-        if let Some((a, fa)) = previous {
-            if fa != 0.0 && fb != 0.0 && fa.signum() != fb.signum() {
+        if let Some((a, fa)) = previous
+            && fa != 0.0 && fb != 0.0 && fa.signum() != fb.signum() {
                 let enclosed_function = |x: f64| f(x).unwrap_or(f64::NAN);
 
                 let root = enclose_zero(&enclosed_function, a, b).map_err(
@@ -145,7 +145,6 @@ where
 
                 push_unique(&mut roots, root);
             }
-        }
 
         // maybe: Detection of a local minimum of |f|. This could avoid errors for roots with an
         // even multiplicity, where the sign does not change.

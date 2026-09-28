@@ -1,7 +1,7 @@
 use crate::{calculate_biased_variance, calculate_unbiased_variance};
 
 pub fn calculate_biased_standard_deviation(values: &[f64]) -> Option<f64> {
-    if values.len() == 0 {
+    if values.is_empty() {
         return None;
     }
 
@@ -9,7 +9,7 @@ pub fn calculate_biased_standard_deviation(values: &[f64]) -> Option<f64> {
 }
 
 pub fn calculate_unbiased_standard_deviation(values: &[f64]) -> Option<f64> {
-    if values.len() == 0 {
+    if values.is_empty() {
         return None;
     }
 
