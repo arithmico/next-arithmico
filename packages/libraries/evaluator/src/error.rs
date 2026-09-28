@@ -21,7 +21,7 @@ impl Error {
     pub fn new(kind: ErrorKind, message: &impl Translatable) -> Self {
         Self {
             kind,
-            trace: Trace::new(),
+            trace: Trace::default(),
             message: message.render(),
         }
     }

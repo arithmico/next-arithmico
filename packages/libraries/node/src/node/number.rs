@@ -16,7 +16,7 @@ impl Number {
     pub fn new(value: f64) -> Self {
         Self {
             value,
-            trace: Trace::new(),
+            trace: Trace::default(),
         }
     }
 }

@@ -13,7 +13,7 @@ impl Sum {
     pub fn new(elements: Vec<Node>) -> Node {
         Node::Sum(Self {
             elements,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

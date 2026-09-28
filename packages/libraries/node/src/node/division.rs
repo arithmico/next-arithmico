@@ -14,7 +14,7 @@ impl Division {
         Node::Division(Self {
             dividend: Box::new(dividend),
             divisor: Box::new(divisor),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

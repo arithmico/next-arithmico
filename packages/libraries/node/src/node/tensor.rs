@@ -35,7 +35,7 @@ impl Tensor {
         Self {
             elements,
             shape,
-            trace: Trace::new(),
+            trace: Trace::default(),
         }
     }
 
@@ -224,7 +224,7 @@ mod tests {
             Node::Tensor(Tensor {
                 elements: vec![Number::new_node(1.)],
                 shape: vec![1],
-                trace: Trace::new()
+                trace: Trace::default()
             })
         )
     }
@@ -244,7 +244,7 @@ mod tests {
                     Number::new_node(3.)
                 ],
                 shape: vec![3, 1],
-                trace: Trace::new()
+                trace: Trace::default()
             })
         )
     }
@@ -274,7 +274,7 @@ mod tests {
                     Number::new_node(6.),
                 ],
                 shape: vec![1, 2, 3],
-                trace: Trace::new()
+                trace: Trace::default()
             })
         )
     }

@@ -14,7 +14,7 @@ impl LessThanOrEquals {
         Node::LessThanOrEquals(LessThanOrEquals {
             left: left.into(),
             right: right.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

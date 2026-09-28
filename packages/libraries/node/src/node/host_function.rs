@@ -12,7 +12,7 @@ impl HostFunction {
     pub fn new<T: Into<String>>(name: T) -> Node {
         Node::HostFunction(HostFunction {
             name: name.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

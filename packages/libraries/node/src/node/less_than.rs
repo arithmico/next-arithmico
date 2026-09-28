@@ -14,7 +14,7 @@ impl LessThan {
         Node::LessThan(LessThan {
             left: left.into(),
             right: right.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

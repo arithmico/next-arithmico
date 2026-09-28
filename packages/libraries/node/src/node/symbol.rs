@@ -12,7 +12,7 @@ impl Symbol {
     pub fn new(name: &str) -> Node {
         Node::Symbol(Self {
             name: name.to_string(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

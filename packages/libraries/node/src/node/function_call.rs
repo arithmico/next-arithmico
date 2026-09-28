@@ -14,7 +14,7 @@ impl FunctionCall {
         Node::FunctionCall(FunctionCall {
             target: target.into(),
             arguments,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

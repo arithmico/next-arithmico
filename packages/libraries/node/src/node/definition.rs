@@ -14,7 +14,7 @@ impl Definition {
         Node::Definition(Definition {
             symbol: symbol.into(),
             expression: expression.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }
