@@ -75,6 +75,7 @@ impl F64Extension for f64 {
     /// Checks whether `self` is approximately equal to `shift + k * base` for some integer `k`.
     /// This is useful for detecting periodic offsets such as:
     /// - `π/2` relative to period `π`
+    ///
     /// Returns `false` if `base` is approximately zero.
     fn is_close_to_shifted_multiple_of(&self, base: f64, shift: f64) -> bool {
         if base.is_close_to_zero() {

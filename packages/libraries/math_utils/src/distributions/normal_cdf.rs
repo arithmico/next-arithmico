@@ -138,7 +138,9 @@ fn ndtr(a: f64) -> f64 {
     let z = x.abs();
 
     /* if( z < SQRTH ) */
-    let y = if z < 1.0 {
+    
+
+    if z < 1.0 {
         0.5 + 0.5 * erf(x)
     } else {
         let mut y;
@@ -159,9 +161,7 @@ fn ndtr(a: f64) -> f64 {
         }
 
         y
-    };
-
-    y
+    }
 }
 
 /// Computes the complementary error function:
@@ -255,8 +255,8 @@ fn erf(x: f64) -> f64 {
         return 1.0 - erfc(x);
     }
     let z = x * x;
-    let y = x * polevl(z, &T) / p1evl(z, &U);
-    y
+    
+    x * polevl(z, &T) / p1evl(z, &U)
 }
 
 /// This function avoids overflow and underflow by splitting
