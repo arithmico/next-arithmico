@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::{Node, NodeType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct ArgumentOptions {
     preprocess: Preprocess,
     cardinality: Cardinality,
@@ -10,14 +10,6 @@ pub struct ArgumentOptions {
 }
 
 impl ArgumentOptions {
-    pub fn new() -> Self {
-        Self {
-            preprocess: Preprocess::None,
-            cardinality: Cardinality::Required,
-            node_types: HashSet::new(),
-        }
-    }
-
     pub fn preprocess(&self) -> Preprocess {
         self.preprocess.clone()
     }
@@ -43,17 +35,24 @@ impl ArgumentOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum Preprocess {
+    #[default]
     None,
     Evaluate,
     // TODO: Reduce
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub enum Cardinality {
+    #[default]
     Required,
     Optional,
-    OptionalWithDefault { default: Node },
-    Multiple { min: usize, max: Option<usize> },
+    OptionalWithDefault {
+        default: Node,
+    },
+    Multiple {
+        min: usize,
+        max: Option<usize>,
+    },
 }
