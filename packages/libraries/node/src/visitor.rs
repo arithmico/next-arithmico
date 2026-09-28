@@ -39,7 +39,7 @@ impl Node {
                                 sum.elements
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::Negate(negate) => {
@@ -52,7 +52,7 @@ impl Node {
                                     .elements
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::Division(division) => {
@@ -70,7 +70,7 @@ impl Node {
                                     .elements
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::Function(function) => {
@@ -85,7 +85,7 @@ impl Node {
                                     .arguments
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::And(and) => {
@@ -94,7 +94,7 @@ impl Node {
                                 and.elements
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::Or(or) => {
@@ -103,7 +103,7 @@ impl Node {
                                 or.elements
                                     .iter()
                                     .rev()
-                                    .map(|node| StackEntry::Explore(node)),
+                                    .map(StackEntry::Explore),
                             );
                         }
                         Node::Equals(relation) => {
