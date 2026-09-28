@@ -1,5 +1,5 @@
 use core::f64;
-use std::f64::consts::{FRAC_2_SQRT_PI, LN_2};
+use std::f64::consts::{FRAC_2_SQRT_PI, FRAC_PI_4, LN_2};
 
 use thiserror::Error;
 
@@ -2270,7 +2270,6 @@ fn gamln1(a: f64) -> f64 {
 /// package of special function subroutines. PSI was modified by
 /// A. H. Morris (NSWC).
 fn psi(xx: f64) -> f64 {
-    const PIOV4: f64 = 0.785398163397448e0; // pi / 4
     const DX0: f64 = 1.461632144968362341262659542325721325; // zero of Psi to extended precision
 
     // Coefficients for rational approximation of
@@ -2340,7 +2339,7 @@ fn psi(xx: f64) -> f64 {
         } else {
             // Reduction of argument for cotan
             let mut w = -x;
-            let mut sgn = PIOV4;
+            let mut sgn = FRAC_PI_4;
             if w <= 0.0 {
                 w = -w;
                 sgn = -sgn;
@@ -2368,7 +2367,7 @@ fn psi(xx: f64) -> f64 {
                 w = 1.0 - w;
             }
 
-            let z = PIOV4 * w;
+            let z = FRAC_PI_4 * w;
             let mut m = n / 2;
             if m + m != n {
                 sgn = -sgn;
