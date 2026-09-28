@@ -44,7 +44,7 @@ impl<'a, C, E, F: TransformerWithContextFn<C, E>> NodeVisitorMut
         &mut self,
         node: &mut Node,
     ) -> std::ops::ControlFlow<Self::Break, ()> {
-        match self.f.transform(node, &self.context) {
+        match self.f.transform(node, self.context) {
             Ok(_) => ControlFlow::Continue(()),
             Err(err) => ControlFlow::Break(err),
         }
@@ -59,7 +59,7 @@ impl TransformNodeWithContext for Node {
     ) -> Result<Node, E> {
         let mut visitor = TransformVisitor {
             f: transformer,
-            context: context,
+            context,
             _marker: PhantomData,
         };
         match self.visit_post_order_mut(&mut visitor) {
