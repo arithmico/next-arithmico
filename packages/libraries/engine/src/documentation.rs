@@ -21,7 +21,7 @@ impl ParameterDocumentationItem {
             name: String::new(),
             parameter_types: Vec::new(),
             requirement: Cardinality::Optional,
-            description: RenderedTranslatedMessage::new(),
+            description: RenderedTranslatedMessage::default(),
         }
     }
 
@@ -82,8 +82,8 @@ impl DocumentationItem {
     pub fn new_function(id: &str) -> Self {
         Self {
             documentation_type: DocumentationItemType::Function,
-            synopsis: RenderedTranslatedMessage::new(),
-            description: RenderedTranslatedMessage::new(),
+            synopsis: RenderedTranslatedMessage::default(),
+            description: RenderedTranslatedMessage::default(),
             parameters: Vec::new(),
             return_types: Vec::new(),
             endpoint_name: id.to_string(),
@@ -93,8 +93,8 @@ impl DocumentationItem {
     pub fn new_constant(id: &str) -> Self {
         Self {
             documentation_type: DocumentationItemType::Constant,
-            synopsis: RenderedTranslatedMessage::new(),
-            description: RenderedTranslatedMessage::new(),
+            synopsis: RenderedTranslatedMessage::default(),
+            description: RenderedTranslatedMessage::default(),
             parameters: Vec::new(),
             return_types: Vec::new(),
             endpoint_name: id.to_string(),

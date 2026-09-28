@@ -20,7 +20,7 @@ pub trait Translatable: Debug {
     }
 
     fn render(&self) -> RenderedTranslatedMessage {
-        let mut message = RenderedTranslatedMessage::new();
+        let mut message = RenderedTranslatedMessage::default();
         for language in Language::iter() {
             message.add_message(language, self.translate(language));
         }
@@ -76,7 +76,7 @@ impl<T: Translatable> TranslatableList for [T] {
             [item] => item.translate(language),
             [head @ .., last] => {
                 let mut output = head
-                    .into_iter()
+                    .iter()
                     .map(|t| t.translate(language))
                     .collect::<Result<Vec<_>, _>>()?
                     .join(match language {
@@ -102,7 +102,7 @@ impl<T: Translatable> TranslatableList for [T] {
             [item] => item.translate(language),
             [head @ .., last] => {
                 let mut output = head
-                    .into_iter()
+                    .iter()
                     .map(|t| t.translate(language))
                     .collect::<Result<Vec<_>, _>>()?
                     .join(match language {

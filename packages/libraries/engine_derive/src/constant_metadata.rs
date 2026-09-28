@@ -61,7 +61,7 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
             }
 
             fn constant_description() -> translate_core::RenderedTranslatedMessage {
-                let mut message = translate_core::RenderedTranslatedMessage::new();
+                let mut message = translate_core::RenderedTranslatedMessage::default();
                 #(#description_tokens)*
                 message
             }

@@ -9,6 +9,12 @@ pub struct TranslationTemplate {
     templates: HashMap<Language, Template>,
 }
 
+impl Default for TranslationTemplate {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TranslationTemplate {
     pub fn new() -> Self {
         Self {
@@ -50,7 +56,7 @@ impl TranslationTemplate {
         keys: &HashMap<String, String>,
     ) -> Result<String, TranslationError> {
         let template = self.get_template_for(language)?;
-        template.render_with(&keys)
+        template.render_with(keys)
     }
 
     pub fn translate(

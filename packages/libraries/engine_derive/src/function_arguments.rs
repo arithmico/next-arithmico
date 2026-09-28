@@ -344,7 +344,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
             }
 
             fn function_description() -> translate_core::RenderedTranslatedMessage {
-                let mut description = translate_core::RenderedTranslatedMessage::new();
+                let mut description = translate_core::RenderedTranslatedMessage::default();
                 #(
                     #struct_descriptions
                 )*
