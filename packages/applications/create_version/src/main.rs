@@ -8,7 +8,7 @@ fn main() -> ExitCode {
     match run() {
         Ok(_) => ExitCode::SUCCESS,
         Err(error) => {
-            println!("Error: {}", error.to_string());
+            println!("Error: {}", error);
             ExitCode::FAILURE
         }
     }
@@ -110,11 +110,10 @@ fn find_last_version_tag(
     repository
         .tag_foreach(|oid, name| {
             let name = String::from_utf8(name.to_vec()).expect("name");
-            if let Some(name) = name.strip_prefix("refs/tags/v") {
-                if let Ok(version) = Version::parse(&name) {
+            if let Some(name) = name.strip_prefix("refs/tags/v")
+                && let Ok(version) = Version::parse(name) {
                     versions.push(VersionTag { oid, version });
                 }
-            }
             true
         })
         .expect("all tags checked");
