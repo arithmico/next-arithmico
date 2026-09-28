@@ -52,7 +52,7 @@ pub fn calculate_quantile_of_binomial_cdf(
     n: usize,
     p: f64,
 ) -> Result<usize, DistributionError> {
-    if p_q < 0.0 || p_q > 1.0 {
+    if !(0.0..=1.0).contains(&p_q) {
         return Err(DistributionError::OutOfRange {
             min: 0.0,
             max: 1.0,

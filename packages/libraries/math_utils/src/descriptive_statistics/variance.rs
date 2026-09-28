@@ -1,7 +1,7 @@
 use crate::calculate_average;
 
 pub fn calculate_biased_variance(values: &[f64]) -> Option<f64> {
-    if values.len() == 0 {
+    if values.is_empty() {
         return None;
     }
 
@@ -17,7 +17,7 @@ pub fn calculate_biased_variance(values: &[f64]) -> Option<f64> {
 }
 
 pub fn calculate_unbiased_variance(values: &[f64]) -> Option<f64> {
-    if values.len() == 0 {
+    if values.is_empty() {
         return None;
     }
 

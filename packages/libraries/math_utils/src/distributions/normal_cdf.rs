@@ -149,7 +149,7 @@ fn ndtr(a: f64) -> f64 {
 
             // Multiply by exp(-x^2 / 2)
             let z = expx2(a, -1);
-            y = y * z.sqrt();
+            y *= z.sqrt();
         } else {
             y = 0.5 * erfc(z);
         }
@@ -161,7 +161,7 @@ fn ndtr(a: f64) -> f64 {
         y
     };
 
-    return y;
+    y
 }
 
 /// Computes the complementary error function:
@@ -220,7 +220,7 @@ fn erfc(a: f64) -> f64 {
         return if a < 0.0 { 2.0 } else { 0.0 };
     }
 
-    return y;
+    y
 }
 
 /// Exponentially scaled erfc function
@@ -239,7 +239,7 @@ fn erfce(x: f64) -> f64 {
 
         (p, q)
     };
-    return p / q;
+    p / q
 }
 
 /// Uses a polynomial approximation for |x| <= 1,
@@ -256,7 +256,7 @@ fn erf(x: f64) -> f64 {
     }
     let z = x * x;
     let y = x * polevl(z, &T) / p1evl(z, &U);
-    return y;
+    y
 }
 
 /// This function avoids overflow and underflow by splitting
@@ -301,7 +301,7 @@ fn expx2(x: f64, sign: i8) -> f64 {
 
     /* u is exact, u1 is small.  */
     u = u.exp() * u1.exp();
-    return u;
+    u
 }
 
 /// Evaluates a polynomial using Horner's method.

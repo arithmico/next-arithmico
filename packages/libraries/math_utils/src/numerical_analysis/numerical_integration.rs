@@ -537,7 +537,7 @@ where
             break 'main_loop MainLoopExit::EnterFinalSelection;
         }
 
-        last = last + 1;
+        last += 1;
 
         // bisect the subinterval with the nrmax-th largest error estimate.
         let a1 = alist[maxerr];
@@ -568,14 +568,14 @@ where
                 && erro12 >= 0.99 * errmax
             {
                 if extrap {
-                    iroff2 = iroff2 + 1;
+                    iroff2 += 1;
                 } else {
-                    iroff1 = iroff1 + 1;
+                    iroff1 += 1;
                 }
             }
 
             if last > 10 && erro12 > errmax {
-                iroff3 = iroff3 + 1;
+                iroff3 += 1;
             }
         }
 
@@ -652,9 +652,9 @@ where
             continue;
         }
 
-        erlarg = erlarg - erlast;
+        erlarg -= erlast;
         if (b1 - a1).abs() > small {
-            erlarg = erlarg + erro12;
+            erlarg += erro12;
         }
 
         if !extrap {
@@ -688,12 +688,12 @@ where
                 if (blist[maxerr] - alist[maxerr]).abs() > small {
                     continue 'main_loop;
                 }
-                nrmax = nrmax + 1;
+                nrmax += 1;
             }
         }
 
         // perform extrapolation.
-        numrl2 = numrl2 + 1;
+        numrl2 += 1;
         rlist2[numrl2 - 1] = area;
 
         let epsilon = dqelg(numrl2, &mut rlist2, &mut res3la, nres);
@@ -703,7 +703,7 @@ where
         nres = epsilon.extrapolation_count;
         numrl2 = epsilon.table_length;
 
-        ktmin = ktmin + 1;
+        ktmin += 1;
         if ktmin > 5 && abserr < 1e-3 * errsum {
             ier = 5;
         }
@@ -733,7 +733,7 @@ where
         errmax = elist[maxerr];
         nrmax = 0;
         extrap = false;
-        small = small * 0.5;
+        small *= 0.5;
         erlarg = errsum;
     }; // end loop
 
@@ -759,7 +759,7 @@ where
                     FinalAction::KeepExtrapolatedAndTestDivergence
                 } else {
                     if ierro == 3 {
-                        abserr = abserr + correc;
+                        abserr += correc;
                     }
                     if ier == 0 {
                         ier = 3;
@@ -800,7 +800,7 @@ where
         if !cancellation_case {
             let ratio = result / area;
 
-            if ratio < 0.01 || ratio > 100.0 || errsum > area.abs() {
+            if !(0.01..=100.0).contains(&ratio) || errsum > area.abs() {
                 ier = 6;
             }
         }
@@ -810,14 +810,14 @@ where
     if let FinalAction::UseGlobalSum = final_action {
         result = 0.0;
         for k in 0..last {
-            result = result + rlist[k];
+            result += rlist[k];
         }
 
         abserr = errsum;
     }
 
     if ier > 2 {
-        ier = ier - 1;
+        ier -= 1;
     }
     neval = 42 * last - 21;
 
@@ -994,7 +994,7 @@ fn dqelg(
         // the value of result.
         let res = e1 + 1.0 / ss;
         epstab[k1 - 1] = res;
-        k1 = k1 - 2;
+        k1 -= 2;
         let error = err2 + (res - e2).abs() + err3;
 
         if error <= abserr {
@@ -1024,7 +1024,7 @@ fn dqelg(
         let mut indx = num - n + 1;
         for i in 1..=n {
             epstab[i - 1] = epstab[indx - 1];
-            indx = indx + 1;
+            indx += 1;
         }
     }
 
@@ -1164,7 +1164,7 @@ fn dqpsrt(
             }
 
             iord[nrmax] = isucc;
-            nrmax = nrmax - 1;
+            nrmax -= 1;
         }
     }
 
@@ -1242,7 +1242,7 @@ fn dqpsrt(
         }
 
         iord[k + 1] = isucc;
-        k = k - 1;
+        k -= 1;
     }
 
     if is_early_jump {
@@ -1432,9 +1432,9 @@ where
         fv1[jtw] = fval1;
         fv2[jtw] = fval2;
         let fsum = fval1 + fval2;
-        resg = resg + WG[j] * fsum;
-        resk = resk + WGK[jtw] * fsum;
-        resabs = resabs + WGK[jtw] * (fval1.abs() + fval2.abs());
+        resg += WG[j] * fsum;
+        resk += WGK[jtw] * fsum;
+        resabs += WGK[jtw] * (fval1.abs() + fval2.abs());
     }
 
     for j in 0..5 {
@@ -1445,21 +1445,20 @@ where
         fv1[jtwm1] = fval1;
         fv2[jtwm1] = fval2;
         let fsum = fval1 + fval2;
-        resk = resk + WGK[jtwm1] * fsum;
-        resabs = resabs + WGK[jtwm1] * (fval1.abs() + fval2.abs());
+        resk += WGK[jtwm1] * fsum;
+        resabs += WGK[jtwm1] * (fval1.abs() + fval2.abs());
     }
 
     let reskh = resk * 0.5;
     let mut resasc = WGK[10] * (fc - reskh).abs();
 
     for j in 0..10 {
-        resasc =
-            resasc + WGK[j] * ((fv1[j] - reskh).abs() + (fv2[j] - reskh).abs());
+        resasc += WGK[j] * ((fv1[j] - reskh).abs() + (fv2[j] - reskh).abs());
     }
 
     let result = resk * hlgth;
-    resabs = resabs * dhlgth;
-    resasc = resasc * dhlgth;
+    resabs *= dhlgth;
+    resasc *= dhlgth;
     let mut abserr = ((resk - resg) * hlgth).abs();
 
     if resasc != 0.0 && abserr != 0.0 {

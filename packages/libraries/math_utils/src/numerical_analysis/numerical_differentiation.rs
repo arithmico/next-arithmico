@@ -245,7 +245,7 @@ where
 fn generate_stencil_offsets(order: usize, error_order: usize) -> Vec<f64> {
     // Mathematical determination of the stencil half-width based on order and accuracy.
     // For a central scheme, the minimal number of points is forced to be odd to ensure symmetry.
-    let half_stencil = (2 * ((order + 1) / 2) - 1 + error_order) / 2;
+    let half_stencil = (2 * order.div_ceil(2) - 1 + error_order) / 2;
     // alternative: (order + error_order - 1) / 2;
 
     let half_range = half_stencil as i32;
@@ -382,7 +382,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
 
         for j in 0..i {
             let c3 = x[i] - x[j];
-            c2 = c2 * c3;
+            c2 *= c3;
 
             if j == i - 1 {
                 for k in (1..=mn).rev() {
@@ -393,7 +393,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
                         / c2;
                 }
 
-                c[i * stride + 0] = -c1 * c5 * c[(i - 1) * stride + 0] / c2
+                c[(i * stride)] = -c1 * c5 * c[((i - 1) * stride)] / c2
             }
 
             for k in (1..=mn).rev() {
@@ -403,7 +403,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
                     / c3;
             }
 
-            c[j * stride + 0] = c4 * c[j * stride + 0] / c3
+            c[(j * stride)] = c4 * c[(j * stride)] / c3
         }
 
         c1 = c2;
