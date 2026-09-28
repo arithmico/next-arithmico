@@ -372,7 +372,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
     let stride = m + 1; // Number of columns (0 to m - order of derivatives)
     let mut c = vec![0.0_f64; n * stride]; // result matrix as flatted vec
 
-    c[0 * stride + 0] = 1.0;
+    c[0] = 1.0;
 
     for i in 1..n {
         let mn = i.min(m);
