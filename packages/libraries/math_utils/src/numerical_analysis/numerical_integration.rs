@@ -1021,10 +1021,8 @@ fn dqelg(
     }
 
     if num != n {
-        let mut indx = num - n + 1;
-        for i in 1..=n {
+        for (indx, i) in (num - n + 1..).zip(1..=n) {
             epstab[i - 1] = epstab[indx - 1];
-            indx += 1;
         }
     }
 
