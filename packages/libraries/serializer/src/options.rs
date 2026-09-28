@@ -3,6 +3,7 @@ use common::Language;
 use crate::DecimalPlaces;
 
 #[derive(Debug, Clone, Copy)]
+#[derive(Default)]
 pub struct Options {
     pub language: Language,
     pub decimal_places: DecimalPlaces,
@@ -17,11 +18,3 @@ impl Options {
     }
 }
 
-impl Default for Options {
-    fn default() -> Self {
-        Self {
-            language: Default::default(),
-            decimal_places: Default::default(),
-        }
-    }
-}

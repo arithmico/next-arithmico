@@ -31,18 +31,17 @@ impl NormalizeNode for Node {
                 let sign = node.value.signum();
                 let factor = node.value.abs() * 10_f64.powi(-magnitude as i32);
                 let scientific_notation = Product::new(vec![
-                    Number::new_node(factor).into(),
+                    Number::new_node(factor),
                     Power::new(
                         Number::new_node(10.0),
                         if magnitude < 0 {
-                            Node::from(Negate::new(Number::new_node(
+                            Negate::new(Number::new_node(
                                 magnitude.abs() as f64,
-                            )))
+                            ))
                         } else {
-                            Node::from(Number::new_node(magnitude.abs() as f64))
+                            Number::new_node(magnitude.abs() as f64)
                         },
-                    )
-                    .into(),
+                    ),
                 ]);
 
                 *outer_node = if sign > 0.0 {
@@ -52,7 +51,7 @@ impl NormalizeNode for Node {
                 };
                 Ok(())
             }
-            Node::HostFunction(_) => Err(Error::unsupported_node(&outer_node)),
+            Node::HostFunction(_) => Err(Error::unsupported_node(outer_node)),
             _ => Ok(()),
         })
     }

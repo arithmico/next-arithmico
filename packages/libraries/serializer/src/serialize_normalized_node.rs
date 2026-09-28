@@ -44,12 +44,10 @@ impl SerializeNormalizedNode for Node {
                 let decimal_separator =
                     DecimalSeperator::from(options.language).to_string();
 
-                let number_string = String::from(
-                    serialized_value
+                let number_string = serialized_value
                         .trim_end_matches("0")
                         .trim_end_matches(".")
-                        .replace(".", &decimal_separator),
-                );
+                        .replace(".", &decimal_separator);
 
                 serializer.write(&number_string);
             }
@@ -187,7 +185,7 @@ impl SerializeNormalizedNode for Node {
                             .collect();
 
                     index_delta.pop();
-                    let delta_count = index_delta.iter().fold(0, |a, b| a + b);
+                    let delta_count = index_delta.iter().sum::<usize>();
 
                     serializer.write(&"]".repeat(delta_count));
                     if current_inner_index != 0 {
@@ -208,7 +206,7 @@ impl SerializeNormalizedNode for Node {
             Node::Function(node) => {
                 serializer.write("(");
                 for (pos, argument) in
-                    node.signature.arguments().into_iter().enumerate()
+                    node.signature.arguments().iter().enumerate()
                 {
                     if pos > 0 {
                         serializer.write_spaced_after(
@@ -217,7 +215,7 @@ impl SerializeNormalizedNode for Node {
                         );
                     }
                     // TODO: decide how to serialize cardinality and node type
-                    serializer.write(&argument.get_name());
+                    serializer.write(argument.get_name());
                 }
                 serializer.write(")");
                 serializer.write_spaced("->");
@@ -410,7 +408,7 @@ impl SerializeNormalizedNode for Node {
                                         .to_string(),
                                 );
                             }
-                            serializer.write(&argument.get_name());
+                            serializer.write(argument.get_name());
                         }
                         serializer.write(")");
                         serializer.write_spaced(":=");
