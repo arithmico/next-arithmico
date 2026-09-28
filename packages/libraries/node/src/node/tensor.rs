@@ -136,7 +136,7 @@ pub fn convert_to_outer_index(
     let mut outer_index = Vec::new();
     for offset in dimension_offsets(shape) {
         outer_index.push(rest.div_euclid(offset));
-        rest = rest % offset;
+        rest %= offset;
     }
     Some(outer_index)
 }
