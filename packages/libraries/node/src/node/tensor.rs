@@ -90,15 +90,12 @@ impl Tensor {
             });
 
         match inner_shape {
-            None => vec![elements.len()],
-            Some(inner_shape) => match inner_shape {
-                None => vec![elements.len()],
-                Some(mut inner_shape) => {
-                    let mut shape = vec![elements.len()];
-                    shape.append(&mut inner_shape);
-                    shape
-                }
-            },
+            Some(Some(mut inner_shape)) => {
+                let mut shape = vec![elements.len()];
+                shape.append(&mut inner_shape);
+                shape
+            }
+            _ => vec![elements.len()],
         }
     }
 
