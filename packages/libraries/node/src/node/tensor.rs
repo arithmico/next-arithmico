@@ -122,7 +122,7 @@ impl Tensor {
 impl_node_traits!(Tensor);
 
 pub fn get_capacity(shape: &Vec<usize>) -> usize {
-    shape.iter().fold(1, |a, &b| a * b)
+    shape.iter().product()
 }
 
 pub fn convert_to_outer_index(
