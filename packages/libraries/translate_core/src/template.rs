@@ -27,7 +27,7 @@ impl Template {
     ) -> Result<String, TranslationError> {
         self.items
             .iter()
-            .map(|item| item.render(&key_map))
+            .map(|item| item.render(key_map))
             .collect::<Result<String, _>>()
     }
 }
@@ -61,7 +61,7 @@ fn parse_template(input: &str) -> Result<Template, String> {
         if remaining.starts_with("{") {
             let end = remaining
                 .find("}")
-                .ok_or_else(|| "closing \"}\" is missing")?;
+                .ok_or("closing \"}\" is missing")?;
             let key = &remaining[1..end].trim();
 
             if key.is_empty() {

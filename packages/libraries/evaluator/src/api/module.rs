@@ -59,7 +59,7 @@ impl HostApiModuleBuilderNameStage {
         language: Language,
         name: &str,
     ) -> HostApiModuleBuilderEndpointsStage {
-        let mut module_name = RenderedTranslatedMessage::new();
+        let mut module_name = RenderedTranslatedMessage::default();
         module_name.add_message(language, Ok(name.to_string()));
 
         HostApiModuleBuilderEndpointsStage {
@@ -147,7 +147,7 @@ impl EndpointBuilder {
             module_id: self.module_id,
             module_name: self.module_name,
             endpoint_name: name.to_string(),
-            description: RenderedTranslatedMessage::new(),
+            description: RenderedTranslatedMessage::default(),
         }
     }
 }

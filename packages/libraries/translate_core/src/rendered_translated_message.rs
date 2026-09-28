@@ -4,18 +4,12 @@ use common::Language;
 
 use crate::{Translatable, TranslationError};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct RenderedTranslatedMessage {
     messages: HashMap<Language, Result<String, TranslationError>>,
 }
 
 impl RenderedTranslatedMessage {
-    pub fn new() -> Self {
-        Self {
-            messages: HashMap::new(),
-        }
-    }
-
     pub fn add_message(
         &mut self,
         language: Language,

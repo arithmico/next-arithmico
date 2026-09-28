@@ -10,6 +10,12 @@ pub struct TranslationTemplateProvider {
     templates: HashMap<String, TranslationTemplate>,
 }
 
+impl Default for TranslationTemplateProvider {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TranslationTemplateProvider {
     pub fn new() -> Self {
         Self {
@@ -44,11 +50,10 @@ impl TranslationTemplateProvider {
         });
 
         for (key, value) in text_entries {
-            if let Ok(language) = key.parse::<Language>() {
-                if let Value::String(value) = value {
+            if let Ok(language) = key.parse::<Language>()
+                && let Value::String(value) = value {
                     self.add_translation(prefix, language, value);
                 }
-            }
         }
 
         for (key, value) in table_entries {

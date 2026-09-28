@@ -16,7 +16,7 @@ impl Argument {
     pub fn new(name: String) -> Self {
         Self {
             name,
-            description: RenderedTranslatedMessage::new(),
+            description: RenderedTranslatedMessage::default(),
             options: ArgumentOptions::default(),
         }
     }
