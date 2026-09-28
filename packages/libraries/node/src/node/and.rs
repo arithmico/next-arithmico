@@ -13,7 +13,7 @@ impl And {
     pub fn new(values: Vec<Node>) -> Node {
         Node::And(And {
             elements: values,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

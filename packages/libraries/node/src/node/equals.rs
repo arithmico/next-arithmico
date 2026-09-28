@@ -14,7 +14,7 @@ impl Equals {
         Node::Equals(Equals {
             left: left.into(),
             right: right.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

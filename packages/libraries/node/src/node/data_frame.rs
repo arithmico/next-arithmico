@@ -28,7 +28,7 @@ impl DataFrame {
         Ok(Self {
             headers,
             data,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 

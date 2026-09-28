@@ -13,7 +13,7 @@ impl Product {
     pub fn new(elements: Vec<Node>) -> Node {
         Node::Product(Self {
             elements,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

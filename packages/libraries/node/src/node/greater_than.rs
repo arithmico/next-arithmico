@@ -14,7 +14,7 @@ impl GreaterThan {
         Node::GreaterThan(GreaterThan {
             left: left.into(),
             right: right.into(),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

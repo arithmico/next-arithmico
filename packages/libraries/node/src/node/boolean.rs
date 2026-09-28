@@ -12,7 +12,7 @@ impl Boolean {
     pub fn new(value: bool) -> Node {
         Node::Boolean(Self {
             value,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

@@ -13,7 +13,7 @@ impl Or {
     pub fn new(values: Vec<Node>) -> Node {
         Node::Or(Or {
             elements: values,
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

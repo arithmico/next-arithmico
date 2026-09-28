@@ -18,7 +18,7 @@ impl Function {
         Node::Function(Function {
             signature,
             expression: Box::new(expression),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

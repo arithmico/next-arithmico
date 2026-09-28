@@ -2,16 +2,12 @@ use lexer::Span;
 
 use crate::frame::Frame;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 pub struct Trace {
     frames: Vec<Frame>,
 }
 
 impl Trace {
-    pub fn new() -> Self {
-        Self { frames: vec![] }
-    }
-
     pub fn is_hull(&self) -> bool {
         if let Some(frame) = self.frames.last()
             && frame.is_hull()
@@ -71,7 +67,7 @@ impl Trace {
 
 impl From<Frame> for Trace {
     fn from(value: Frame) -> Self {
-        let mut trace = Self::new();
+        let mut trace = Self::default();
         trace.push(value);
         trace
     }

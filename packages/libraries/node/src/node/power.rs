@@ -14,7 +14,7 @@ impl Power {
         Node::Power(Self {
             base: Box::new(base),
             exponent: Box::new(exponent),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }

@@ -12,7 +12,7 @@ impl Negate {
     pub fn new(value: Node) -> Node {
         Node::Negate(Self {
             value: Box::new(value),
-            trace: Trace::new(),
+            trace: Trace::default(),
         })
     }
 }
