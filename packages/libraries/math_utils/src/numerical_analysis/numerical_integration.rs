@@ -1156,15 +1156,17 @@ fn dqpsrt(
     // start after the nrmax-th largest error estimate.
     let errmax = elist[maxerr];
     if nrmax != 0 {
-        for _i in 0..nrmax {
+        let mut i = 0usize;
+        while i < nrmax {
             let isucc = iord[nrmax - 1];
-            // jump out of do-loop
+
             if errmax <= elist[isucc] {
                 break;
             }
 
             iord[nrmax] = isucc;
             nrmax -= 1;
+            i += 1;
         }
     }
 
@@ -1424,6 +1426,7 @@ where
     let mut resk = WGK[10] * fc;
     let mut resabs = resk.abs();
 
+    #[allow(clippy::needless_range_loop)]
     for j in 0..5 {
         let jtw = 2 * j + 1;
         let absc = hlgth * XGK[jtw];
