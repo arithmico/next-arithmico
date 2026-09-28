@@ -20,7 +20,8 @@
         "evaluator",
         "common",
         "editor_core",
-        "algebra"
+        "algebra",
+        "serializer"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
 }

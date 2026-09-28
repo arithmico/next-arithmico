@@ -1,3 +1,5 @@
+use std::fmt::{Display, Write};
+
 use common::Language;
 
 #[derive(Debug, Clone, Copy)]
@@ -15,11 +17,11 @@ impl From<Language> for DecimalSeperator {
     }
 }
 
-impl ToString for DecimalSeperator {
-    fn to_string(&self) -> String {
+impl Display for DecimalSeperator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DecimalSeperator::Comma => String::from(","),
-            DecimalSeperator::Dot => String::from("."),
+            DecimalSeperator::Comma => f.write_char(','),
+            DecimalSeperator::Dot => f.write_char('.'),
         }
     }
 }
@@ -39,11 +41,11 @@ impl From<Language> for ArgumentSeperator {
     }
 }
 
-impl ToString for ArgumentSeperator {
-    fn to_string(&self) -> String {
+impl Display for ArgumentSeperator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ArgumentSeperator::Semicolon => String::from(";"),
-            ArgumentSeperator::Comma => String::from(","),
+            ArgumentSeperator::Semicolon => f.write_char(';'),
+            ArgumentSeperator::Comma => f.write_char(','),
         }
     }
 }
