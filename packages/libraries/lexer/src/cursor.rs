@@ -65,11 +65,10 @@ impl<'a> LexerCursor<'a> {
         &mut self,
         ranges: &[RangeInclusive<char>],
     ) -> Option<Position> {
-        if let Some((position, front_char)) = self.peek_nth(0) {
-            if ranges.iter().any(|range| range.contains(&front_char)) {
+        if let Some((position, front_char)) = self.peek_nth(0)
+            && ranges.iter().any(|range| range.contains(&front_char)) {
                 return Some(position);
             }
-        }
         None
     }
 
