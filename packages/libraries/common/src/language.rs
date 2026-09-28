@@ -4,17 +4,21 @@ use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Hash, Eq, Serialize, Deserialize, EnumIter,
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Hash,
+    Eq,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    Default,
 )]
 pub enum Language {
     German,
+    #[default]
     English,
-}
-
-impl Default for Language {
-    fn default() -> Self {
-        Self::English
-    }
 }
 
 impl FromStr for Language {
