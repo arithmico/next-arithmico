@@ -1,5 +1,5 @@
 use core::f64;
-use std::{cell::Cell, usize};
+use std::cell::Cell;
 
 use thiserror::Error;
 use translate_core::{Translatable, TranslatedMessage};
@@ -809,8 +809,8 @@ where
     // compute global integral sum.
     if let FinalAction::UseGlobalSum = final_action {
         result = 0.0;
-        for k in 0..last {
-            result += rlist[k];
+        for item in rlist.iter().take(last) {
+            result += item;
         }
 
         abserr = errsum;
