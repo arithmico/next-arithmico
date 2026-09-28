@@ -1,16 +1,13 @@
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, EnumIter)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Serialize, Deserialize, EnumIter, Default,
+)]
 pub enum AngleUnit {
+    #[default]
     Radian,
     Degree,
-}
-
-impl Default for AngleUnit {
-    fn default() -> Self {
-        Self::Radian
-    }
 }
 
 impl AngleUnit {
