@@ -1,12 +1,12 @@
 use leptos::prelude::*;
-use translate::{FormattedMessage, IntoTranslationId};
+use translate::{FormattedMessage, GetTranslationId};
 
 #[component]
 pub fn SettingsSection(
     children: Children,
-    title: impl IntoTranslationId + 'static,
+    title: impl GetTranslationId + 'static,
 ) -> impl IntoView {
-    let title_id = title.into_translation_id().to_string();
+    let title_id = title.get_translation_id().to_string();
 
     view! {
         <section class="settings-section">

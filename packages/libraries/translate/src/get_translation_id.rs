@@ -1,15 +1,15 @@
-pub trait IntoTranslationId {
-    fn into_translation_id(&self) -> &str;
+pub trait GetTranslationId {
+    fn get_translation_id(&self) -> &str;
 }
 
-impl IntoTranslationId for String {
-    fn into_translation_id(&self) -> &str {
+impl GetTranslationId for String {
+    fn get_translation_id(&self) -> &str {
         self.as_str()
     }
 }
 
-impl IntoTranslationId for &str {
-    fn into_translation_id(&self) -> &str {
+impl GetTranslationId for &str {
+    fn get_translation_id(&self) -> &str {
         self
     }
 }

@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use translate::IntoTranslationId;
+use translate::GetTranslationId;
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub enum Theme {
@@ -24,8 +24,8 @@ impl Theme {
     }
 }
 
-impl IntoTranslationId for Theme {
-    fn into_translation_id(&self) -> &str {
+impl GetTranslationId for Theme {
+    fn get_translation_id(&self) -> &str {
         match self {
             Theme::Light => "settings.theme.light",
             Theme::Dark => "settings.theme.dark",
