@@ -99,7 +99,7 @@ struct Bracket {
 /// * `neps` -- Integer. Used to determine the termination criterion;
 /// * `eps` -- Double precision. Used in the termination criterion;
 /// * `a`, `b` -- Double precision. Input as the initial interval and
-///         output as the enclosing interval at the termination;
+///   output as the enclosing interval at the termination;
 fn rroot<F>(func: &F, a: f64, b: f64, neps: i32, eps: f64) -> RootResult
 where
     F: Fn(f64) -> f64,
@@ -317,18 +317,19 @@ where
 ///
 /// * `nprob` -- Integer. Indicating the problem to be solved;
 /// * `a`, `b` -- Double precision. [A, B] is input as the current
-///             enclosing interval and output as the shrinked new
-///             enclosing interval;
+///   enclosing interval and output as the shrinked new
+///   enclosing interval;
 /// * `c` -- Double precision. Used to determine the new enclosing
-///             interval;
+///   interval;
 /// * `d` -- Double precision. Output: If the new enclosing interval
-///             is [A, C] then D = B, otherwise D = A;
+///   is [A, C] then D = B, otherwise D = A;
 /// * `fa`, `fb`, `fd` -- Double precision. FA = F(A), FB = F(B), and FD = F(D);
 /// * `tol` -- Double precision. Input as the current termination
-///             criterion and output as the updated termination
-///             criterion according to the new enclosing interval;
+///   criterion and output as the updated termination
+///   criterion according to the new enclosing interval;
 /// * `neps` -- Integer. Used to determine the termination criterion;
 /// * `eps` -- Double precision. Used in the termination criterion.
+#[allow(clippy::too_many_arguments)]
 fn brackt<F>(
     func: &F,
     a: f64,
@@ -435,8 +436,8 @@ fn isign(x: f64) -> i8 {
 /// * `neps` -- Integer.
 /// * `eps` -- Double precision.
 /// * `tol` -- Double precision. Output as the termination criterion.
-///        tol = 2 * (2 * eps * |B| + 10 - neps),  if neps is not 1000;
-/// and    tol = 2 * (2 * eps * |B|),              if neps = 1000;
+///   tol = 2 * (2 * eps * |B| + 10 - neps),  if neps is not 1000;
+///   and tol = 2 * (2 * eps * |B|),              if neps = 1000;
 fn tole(b: f64, neps: i32, eps: f64) -> f64 {
     let mut tol = if neps == 1000 {
         0.0
@@ -454,9 +455,9 @@ fn tole(b: f64, neps: i32, eps: f64) -> f64 {
 /// is used to avoid overflow.
 ///
 /// * `a`, `b`, `d`, `fa`, `fb`, `fd` -- Double precision. d lies outside the interval
-///             [a, b]. fa = f(a), fb = f(b), and fd = f(d). f(a)f(b) < 0.
+///   [a, b]. fa = f(a), fb = f(b), and fd = f(d). f(a)f(b) < 0.
 /// * `c` -- Double precision. Output as the approximate zero
-///             in (a, b) of the quadratic polynomial.
+///   in (a, b) of the quadratic polynomial.
 /// * `k` -- Integer. Input indicating the number of Newton
 fn newqua(a: f64, b: f64, d: f64, fa: f64, fb: f64, fd: f64, k: isize) -> f64 {
     // Initialization. Find the coefficients of the quadratic polynomial.
@@ -502,8 +503,9 @@ fn newqua(a: f64, b: f64, d: f64, fa: f64, fb: f64, fd: f64, k: isize) -> f64 {
 /// described by Stoer and Bulirsch in "Intro. to Numerical Analysis"
 /// Springer-Verlag, New York (1980).
 /// * `a`, `b`, `d`, `e`, `fa`, `fb`, `fd`, `fe` -- Double precision. d and e lie outside
-///     the interval [a, b], fa = f(a), fb = f(b),
-///     fd = f(d), and fe = f(e).
+///   the interval [a, b], fa = f(a), fb = f(b),
+///   fd = f(d), and fe = f(e).
+#[allow(clippy::too_many_arguments)]
 fn pzero(
     a: f64,
     b: f64,

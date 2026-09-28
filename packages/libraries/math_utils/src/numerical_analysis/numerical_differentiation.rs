@@ -361,7 +361,7 @@ fn update_richardson_terms(
 /// # References
 ///
 /// * B. Fornberg (1998): "Calculation of Weights in Finite Difference Formulas".
-/// SIAM Review 40, pp. 685-691. <https://doi.org/10.1137/S0036144596322507>
+///   SIAM Review 40, pp. 685-691. <https://doi.org/10.1137/S0036144596322507>
 /// * Stabilization fix inspired by the Julia scientific machine learning ecosystem (SciML/DiffEqOperators.jl):
 ///   <https://github.com/SciML/DiffEqOperators.jl/blob/master/src/derivative_operators/fornberg.jl>
 fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
