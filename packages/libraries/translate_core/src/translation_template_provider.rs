@@ -39,21 +39,20 @@ impl TranslationTemplateProvider {
     }
 
     fn write_toml_data(&mut self, prefix: &str, table: &Table) {
-        let text_entries = table.iter().filter(|(_, value)| match value {
-            Value::String(_) => true,
-            _ => false,
-        });
+        let text_entries = table
+            .iter()
+            .filter(|(_, value)| matches!(value, Value::String(_)));
 
-        let table_entries = table.iter().filter(|(_, value)| match value {
-            Value::Table(_) => true,
-            _ => false,
-        });
+        let table_entries = table
+            .iter()
+            .filter(|(_, value)| matches!(value, Value::Table(_)));
 
         for (key, value) in text_entries {
             if let Ok(language) = key.parse::<Language>()
-                && let Value::String(value) = value {
-                    self.add_translation(prefix, language, value);
-                }
+                && let Value::String(value) = value
+            {
+                self.add_translation(prefix, language, value);
+            }
         }
 
         for (key, value) in table_entries {
