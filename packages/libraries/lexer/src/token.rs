@@ -22,6 +22,8 @@ mod right_parenthesis;
 mod separator;
 mod slash;
 
+use std::fmt::Display;
+
 pub use and::*;
 pub use arrow::*;
 pub use asterisk::*;
@@ -75,36 +77,40 @@ pub enum Token {
     ExclamationMark(ExclamationMarkToken),
 }
 
-impl ToString for Token {
-    fn to_string(&self) -> String {
+impl Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Token::Identifier(identifier_token) => {
-                identifier_token.name.to_string()
+                f.write_str(&identifier_token.name)
             }
-            Token::Number(number_token) => number_token.value.to_string(),
-            Token::Boolean(boolean_token) => boolean_token.value.to_string(),
-            Token::LeftParenthesis(_) => String::from("("),
-            Token::RightParenthesis(_) => String::from(")"),
-            Token::LeftBracket(_) => String::from("["),
-            Token::RightBracket(_) => String::from("]"),
-            Token::Plus(_) => String::from("+"),
-            Token::Minus(_) => String::from("-"),
-            Token::Asterisk(_) => String::from("*"),
-            Token::Slash(_) => String::from("/"),
-            Token::Caret(_) => String::from("^"),
+            Token::Number(number_token) => {
+                f.write_str(&number_token.value.to_string())
+            }
+            Token::Boolean(boolean_token) => {
+                f.write_str(&boolean_token.value.to_string())
+            }
+            Token::LeftParenthesis(_) => f.write_str("("),
+            Token::RightParenthesis(_) => f.write_str(")"),
+            Token::LeftBracket(_) => f.write_str("["),
+            Token::RightBracket(_) => f.write_str("]"),
+            Token::Plus(_) => f.write_str("+"),
+            Token::Minus(_) => f.write_str("-"),
+            Token::Asterisk(_) => f.write_str("*"),
+            Token::Slash(_) => f.write_str("/"),
+            Token::Caret(_) => f.write_str("^"),
             Token::Separator(separator_token) => {
-                separator_token.content.clone()
+                f.write_str(&separator_token.content)
             }
-            Token::Arrow(_) => String::from("->"),
-            Token::Define(_) => String::from(":="),
-            Token::LessThan(_) => String::from("<"),
-            Token::LessThanOrEquals(_) => String::from("<="),
-            Token::GreaterThan(_) => String::from(">"),
-            Token::GreaterThanOrEquals(_) => String::from(">="),
-            Token::Equals(_) => String::from("="),
-            Token::And(_) => String::from("&"),
-            Token::Or(_) => String::from("|"),
-            Token::ExclamationMark(_) => String::from("!"),
+            Token::Arrow(_) => f.write_str("->"),
+            Token::Define(_) => f.write_str(":="),
+            Token::LessThan(_) => f.write_str("<"),
+            Token::LessThanOrEquals(_) => f.write_str("<="),
+            Token::GreaterThan(_) => f.write_str(">"),
+            Token::GreaterThanOrEquals(_) => f.write_str(">="),
+            Token::Equals(_) => f.write_str("="),
+            Token::And(_) => f.write_str("&"),
+            Token::Or(_) => f.write_str("|"),
+            Token::ExclamationMark(_) => f.write_str("!"),
         }
     }
 }
