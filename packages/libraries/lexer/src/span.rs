@@ -10,7 +10,7 @@ pub struct Span {
 
 impl PartialOrd for Span {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(&other))
+        Some(self.cmp(other))
     }
 }
 
@@ -36,7 +36,7 @@ impl Span {
         }
     }
 
-    pub fn extract_str_from<'a, 'b>(&'a self, input: &'b str) -> &'b str {
+    pub fn extract_str_from<'b>(&self, input: &'b str) -> &'b str {
         &input[self.from.byte_index..=self.to.byte_index]
     }
 
