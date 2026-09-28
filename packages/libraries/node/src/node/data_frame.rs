@@ -20,7 +20,7 @@ impl DataFrame {
         headers: Vec<Option<Node>>,
         data: Vec<Option<Node>>,
     ) -> Result<Self, CreateNodeError> {
-        if headers.len() == 0 || data.len().rem(headers.len()) != 0 {
+        if headers.is_empty() || data.len().rem(headers.len()) != 0 {
             return Err(CreateNodeError {
                 node_type: NodeType::DataFrame,
             });
