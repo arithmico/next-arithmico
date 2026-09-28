@@ -11,7 +11,7 @@ pub fn use_translate()
         let context = expect_context::<TranslateContext>();
         let template = context
             .get_template_provider()
-            .get_template(&id)
+            .get_template(id)
             .ok_or_else(|| {
                 warn!(r#"Missing translation for id "{}""#, &id);
                 "TranslationError"
