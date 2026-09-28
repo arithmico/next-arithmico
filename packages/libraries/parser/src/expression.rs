@@ -45,21 +45,18 @@ fn parse_expression_pratt<'a>(
     };
 
     while let Some(next_token) = cursor.peek() {
-        match (cursor.current_token_kind(), cursor.peek_token_kind()) {
-            (
+        if let (
                 Some(TokenKind::RightParenthesis),
                 Some(TokenKind::LeftParenthesis),
-            ) => {
-                return Err(Error::MissingMultiplyBetween {
-                    span: Span::new(
-                        // Safety: the match pattern garantees that this is always Some(_)
-                        cursor.current_position().unwrap(),
-                        // Safety: the match pattern garantees that this is always Some(_)
-                        cursor.peek_position().unwrap(),
-                    ),
-                });
-            }
-            _ => (),
+            ) = (cursor.current_token_kind(), cursor.peek_token_kind()) {
+            return Err(Error::MissingMultiplyBetween {
+                span: Span::new(
+                    // Safety: the match pattern garantees that this is always Some(_)
+                    cursor.current_position().unwrap(),
+                    // Safety: the match pattern garantees that this is always Some(_)
+                    cursor.peek_position().unwrap(),
+                ),
+            });
         };
 
         let Some(binding_power) = next_token.binding_power() else {
@@ -208,7 +205,7 @@ fn parse_expression_pratt<'a>(
                 let mut items = Vec::<(RelationType, Node)>::new();
                 // Safety: unwrap can not fail in this context
                 let relation_type =
-                    RelationType::try_from_token(&operator).unwrap();
+                    RelationType::try_from_token(operator).unwrap();
                 items.push((relation_type, right));
                 while let Some(token) = cursor.peek()
                     && let Some(relation_type) =
@@ -368,15 +365,12 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         cursor = next_cursor;
                         arguments.push(node);
 
-                        match cursor.expect_one_of(&[
+                        if let Token::RightParenthesis(token) = cursor.expect_one_of(&[
                             TokenKind::RightParenthesis,
                             TokenKind::Separator,
                         ])? {
-                            Token::RightParenthesis(token) => {
-                                outer_span = outer_span.hull(&token.get_span());
-                                break;
-                            }
-                            _ => (),
+                            outer_span = outer_span.hull(&token.get_span());
+                            break;
                         }
                     }
                     if arguments.is_empty() {
@@ -459,10 +453,10 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         span = span.hull(&s);
                     }
 
-                    return Ok((
+                    Ok((
                         next_cursor,
                         Function::new(signature, node).with_span(span),
-                    ));
+                    ))
                 } else {
                     // parse expression between parenthesis
                     let (next_cursor, node) = parse_expression(cursor)?;
@@ -484,7 +478,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     elements.push(node);
                     match cursor
                         .next()
-                        .ok_or_else(|| Error::UnexpectedEndOfInput)?
+                        .ok_or(Error::UnexpectedEndOfInput)?
                     {
                         Token::Separator(_) => (),
                         Token::RightBracket(token) => {

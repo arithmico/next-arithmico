@@ -36,7 +36,7 @@ impl<'a> Cursor<'a> {
         &mut self,
     ) -> Option<&'a T> {
         if self.peek_token_kind() == Some(T::token_kind()) {
-            self.next().map(|token| T::downcast(token)).flatten()
+            self.next().and_then(|token| T::downcast(token))
         } else {
             None
         }
