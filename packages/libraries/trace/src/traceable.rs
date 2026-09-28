@@ -20,7 +20,7 @@ impl<T: AsRef<Trace>> Tracable for T {
 
 impl AsRef<Trace> for Trace {
     fn as_ref(&self) -> &Trace {
-        &self
+        self
     }
 }
 
@@ -62,12 +62,12 @@ pub trait TracableMut: Sized {
     fn only_hull(mut self) -> Self {
         let trace = self.trace_mut();
         trace.compact();
-        if let Some(frame) = trace.last_mut() {
-            if !frame.is_hull() {
-                let hull = frame.hull();
-                let hull_frame = Frame::from(hull);
-                *frame = hull_frame;
-            }
+        if let Some(frame) = trace.last_mut()
+            && !frame.is_hull()
+        {
+            let hull = frame.hull();
+            let hull_frame = Frame::from(hull);
+            *frame = hull_frame;
         }
         self
     }
