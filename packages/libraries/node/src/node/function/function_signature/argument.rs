@@ -17,7 +17,7 @@ impl Argument {
         Self {
             name,
             description: RenderedTranslatedMessage::new(),
-            options: ArgumentOptions::new(),
+            options: ArgumentOptions::default(),
         }
     }
 
