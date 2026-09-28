@@ -309,8 +309,8 @@ mod tests {
             1e-19,
             0.0003,
             (
-                0.9999999999999997,     // sagemath: 0.9999999999999991
-                3.3347192050912765e-16, // sagemath: 8.88178419700125e-16
+                0.9999999999999997,    // sagemath: 0.9999999999999991
+                3.334719205091276e-16, // sagemath: 8.88178419700125e-16
             ),
         );
     }
@@ -993,7 +993,7 @@ fn fpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
     }
 
     // Note that 1 / B(A,B) = B
-    value *= (b / a);
+    value *= b / a;
     let tol = eps / a;
     let mut an = a + 1.0;
     let mut t = x;
@@ -1034,7 +1034,7 @@ fn apser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
 
     loop {
         j += 1.0;
-        t *= (x - bx / j);
+        t *= x - bx / j;
         let aj = t / j;
         s += aj;
 
@@ -1080,7 +1080,7 @@ fn bpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
                 let mut c = 1.0;
                 for _i in 1..=m {
                     b0 -= 1.0;
-                    c *= (b0 / (a0 + b0));
+                    c *= b0 / (a0 + b0);
                 }
 
                 c.ln() + gamln1(a0)
@@ -1336,7 +1336,7 @@ fn brcomp(a: f64, b: f64, x: f64, y: f64) -> f64 {
             let mut c = 1.0;
             for _i in 0..n {
                 b0 -= 1.0;
-                c *= (b0 / (a0 + b0));
+                c *= b0 / (a0 + b0);
             }
 
             c.ln() + gamln1(a0)
@@ -1448,7 +1448,7 @@ fn brcmp1(mu: f64, a: f64, b: f64, x: f64, y: f64) -> f64 {
             let mut c = 1.0;
             for _i in 0..n {
                 b0 -= 1.0;
-                c *= (b0 / (a0 + b0));
+                c *= b0 / (a0 + b0);
             }
 
             c.ln() + gamln1(a0)
@@ -1558,7 +1558,7 @@ fn bgrat(
         j = (bp2n * (bp2n + 1.0) * j + (z + bp2n + 1.0) * t) * v;
         n2 += 2.0;
         t *= t2;
-        cn /= (n2 * (n2 + 1.0));
+        cn /= n2 * (n2 + 1.0);
         c[n] = cn;
 
         let mut s = 0.0;
@@ -1757,7 +1757,8 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
 
                 for j in 1..=mm1 {
                     let mmj = m - j;
-                    bsum += (j as f64 * r - mmj as f64) * a0[j - 1] * b0[mmj - 1];
+                    bsum +=
+                        (j as f64 * r - mmj as f64) * a0[j - 1] * b0[mmj - 1];
                 }
 
                 b0[m - 1] = r * a0[m - 1] + bsum / m as f64;
@@ -1783,7 +1784,7 @@ fn basym(a: f64, b: f64, lambda: f64, eps: f64) -> f64 {
         let t0 = d[n - 1] * w * j0;
         w *= w0;
         let t1 = d[n] * w * j1;
-        sum += (t0 + t1);
+        sum += t0 + t1;
 
         if t0.abs() + t1.abs() <= eps * sum {
             break;
@@ -2351,7 +2352,7 @@ fn psi(xx: f64) -> f64 {
             }
 
             let mut nq = w.trunc() as i32; // int
-            w -= (nq as f64); // double
+            w -= nq as f64; // double
             nq = (w * 4.0).trunc() as i32; // int
             w = 4.0 * (w - (nq as f64) * 0.25); // double
 
@@ -2472,7 +2473,7 @@ fn betaln(a0: f64, b0: f64) -> f64 {
             w = 1.0;
             for _i in 1..=n_int {
                 a -= 1.0;
-                w *= (a / (1.0 + a / b));
+                w *= a / (1.0 + a / b);
             }
 
             return w.ln() - n * b.ln() + (gamln(a) + algdiv(a, b));
@@ -2483,7 +2484,7 @@ fn betaln(a0: f64, b0: f64) -> f64 {
         for _i in 1..=n_int {
             a -= 1.0;
             let h = a / b;
-            w *= (h / (1.0 + h));
+            w *= h / (1.0 + h);
         }
 
         w = w.ln();
@@ -2507,7 +2508,7 @@ fn betaln(a0: f64, b0: f64) -> f64 {
     let mut z = 1.0;
     for _i in 1..=n_int {
         b -= 1.0;
-        z *= (b / (a + b));
+        z *= b / (a + b);
     }
 
     w + z.ln() + (gamln(a) + (gamln(b) - gsumln(a, b)))
@@ -2558,7 +2559,7 @@ fn bcorr(a0: f64, b0: f64) -> f64 {
         + C1 * s3)
         * t
         + C0;
-    w *= (c / b);
+    w *= c / b;
 
     // Compute del(a) + w
     let t = (1.0 / a).powi(2);
@@ -2609,7 +2610,7 @@ fn algdiv(a: f64, b: f64) -> f64 {
         + C1 * s3)
         * t
         + C0;
-    w *= (c / b);
+    w *= c / b;
 
     // Combine the results
     let u = d * alnrel(a / b);

@@ -393,7 +393,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
                         / c2;
                 }
 
-                c[(i * stride)] = -c1 * c5 * c[((i - 1) * stride)] / c2
+                c[i * stride] = -c1 * c5 * c[(i - 1) * stride] / c2
             }
 
             for k in (1..=mn).rev() {
@@ -403,7 +403,7 @@ fn weights(z: f64, x: &[f64], m: usize) -> Vec<f64> {
                     / c3;
             }
 
-            c[(j * stride)] = c4 * c[(j * stride)] / c3
+            c[j * stride] = c4 * c[j * stride] / c3
         }
 
         c1 = c2;
