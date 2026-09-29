@@ -73,26 +73,26 @@ fn expand<'a>(node: &'a mut Node, _options: Options<'a>) -> Result<(), Error> {
                 }
             }
         }
-        Node::Product(inner) => {
-            // flatten nested products
-            if inner.elements.iter().any(|e| matches!(e, Node::Product(_))) {
-                let mut new_len = inner.elements.len();
-                inner.elements.iter().for_each(|e| {
-                    if let Node::Sum(sum) = e {
-                        new_len += sum.elements.len().saturating_sub(1);
-                    }
-                });
+        // flatten nested products
+        Node::Product(inner)
+            if inner.elements.iter().any(|e| matches!(e, Node::Product(_))) =>
+        {
+            let mut new_len = inner.elements.len();
+            inner.elements.iter().for_each(|e| {
+                if let Node::Sum(sum) = e {
+                    new_len += sum.elements.len().saturating_sub(1);
+                }
+            });
 
-                let mut elements = Vec::with_capacity(new_len);
-                std::mem::swap(&mut inner.elements, &mut elements);
+            let mut elements = Vec::with_capacity(new_len);
+            std::mem::swap(&mut inner.elements, &mut elements);
 
-                for element in elements {
-                    match element {
-                        Node::Product(sum) => {
-                            inner.elements.extend(sum.elements);
-                        }
-                        other => inner.elements.push(other),
+            for element in elements {
+                match element {
+                    Node::Product(sum) => {
+                        inner.elements.extend(sum.elements);
                     }
+                    other => inner.elements.push(other),
                 }
             }
         }

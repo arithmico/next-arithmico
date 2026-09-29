@@ -12,10 +12,10 @@ impl<'a> NodeVisitor<'a> for IsBoundVisitor<'a> {
     type Break = ();
 
     fn visit(&mut self, node: &'a node::Node) -> ControlFlow<Self::Break, ()> {
-        if let Node::Symbol(symbol) = node {
-            if !self.known_symbols.contains(symbol.name.as_str()) {
-                return ControlFlow::Break(());
-            }
+        if let Node::Symbol(symbol) = node
+            && !self.known_symbols.contains(symbol.name.as_str())
+        {
+            return ControlFlow::Break(());
         }
         ControlFlow::Continue(())
     }
