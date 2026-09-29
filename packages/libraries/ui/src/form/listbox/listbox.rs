@@ -59,7 +59,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     });
 
     view! {
-        <div class=format!("listbox {}", class.unwrap_or(String::new()))>
+        <div class=format!("listbox {}", class.unwrap_or_default())>
             <label
                 id=move || {
                     format!(

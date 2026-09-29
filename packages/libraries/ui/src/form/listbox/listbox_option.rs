@@ -21,10 +21,10 @@ pub fn ListboxOption<V: PartialEq + Send + Sync + Clone + 'static>(
     });
     Effect::new(move |_| {
         let listbox_context = listbox_context.get();
-        if pos == listbox_context.get_position() {
-            if let Some(node_ref) = node_ref.get() {
-                node_ref.focus().expect("focus");
-            }
+        if pos == listbox_context.get_position()
+            && let Some(node_ref) = node_ref.get()
+        {
+            node_ref.focus().expect("focus");
         }
     });
     view! {

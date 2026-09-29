@@ -1,3 +1,4 @@
+#[allow(clippy::module_inception)]
 mod menu;
 mod menu_context;
 mod menu_definition;

@@ -24,8 +24,7 @@ impl<V: PartialEq + Send + Sync + Clone + 'static> ListboxContext<V> {
         on_change: Callback<V>,
         on_cancel: Callback<()>,
     ) -> Self {
-        let initial_position =
-            definition.position_of(&value).expect("position");
+        let initial_position = definition.position_of(value).expect("position");
         Self {
             widget_id: use_widget_id(),
             is_open: false,
