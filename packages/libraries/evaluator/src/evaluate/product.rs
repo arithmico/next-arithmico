@@ -146,8 +146,8 @@ fn multiply_matrices(
                 (0usize..x)
                     .map(|j| {
                         Product::new(vec![
-                            left.get_element(&vec![i, j]).unwrap().clone(),
-                            right.get_element(&vec![j, k]).unwrap().clone(),
+                            left.get_element(&[i, j]).unwrap().clone(),
+                            right.get_element(&[j, k]).unwrap().clone(),
                         ])
                     })
                     .collect(),
