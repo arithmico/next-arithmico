@@ -42,13 +42,13 @@ fn parse_repeatable_attribute(
         Err(meta.error("expected `min` or `max`"))
     })?;
 
-    if let Some(max) = max {
-        if min > max {
-            return Err(syn::Error::new_spanned(
-                attribute,
-                "`repeatable` requires `min <= max`",
-            ));
-        }
+    if let Some(max) = max
+        && min > max
+    {
+        return Err(syn::Error::new_spanned(
+            attribute,
+            "`repeatable` requires `min <= max`",
+        ));
     }
 
     Ok((min, max))
