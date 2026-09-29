@@ -9,11 +9,17 @@ pub struct Stack {
     frames: Vec<Stackframe>,
 }
 
-impl Stack {
-    pub fn new() -> Self {
-        Stack {
+impl Default for Stack {
+    fn default() -> Self {
+        Self {
             frames: vec![HashMap::new()],
         }
+    }
+}
+
+impl Stack {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn get_frames(&self) -> &Vec<Stackframe> {
