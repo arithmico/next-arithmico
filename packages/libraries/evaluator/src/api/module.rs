@@ -118,7 +118,7 @@ impl HostApiModuleBuilderEndpointsStage {
         self
     }
 
-    fn assert_endpoint_name_is_unique(&self, name: &str) -> () {
+    fn assert_endpoint_name_is_unique(&self, name: &str) {
         if self
             .endpoints
             .iter()

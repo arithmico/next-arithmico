@@ -8,7 +8,7 @@ pub use endpoint::*;
 pub use endpoint_metadata::*;
 pub use module::*;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Api {
     endpoints: BTreeMap<String, Endpoint>,
 }
@@ -44,24 +44,9 @@ impl Api {
     }
 }
 
-impl Default for Api {
-    fn default() -> Self {
-        Self {
-            endpoints: Default::default(),
-        }
-    }
-}
-
+#[derive(Debug, Default)]
 pub struct ApiBuilder {
     endpoints: BTreeMap<String, Endpoint>,
-}
-
-impl Default for ApiBuilder {
-    fn default() -> Self {
-        Self {
-            endpoints: Default::default(),
-        }
-    }
 }
 
 impl ApiBuilder {

@@ -24,7 +24,7 @@ impl EvaluateNode for FunctionCall {
                 }
 
                 let local_options =
-                    Options::new(&stack, &options.api, options.angle_unit);
+                    Options::new(&stack, options.api, options.angle_unit);
 
                 function.expression.evaluate(local_options)
             }
@@ -44,7 +44,7 @@ impl EvaluateNode for FunctionCall {
                 };
 
                 let mapping = ArgumentMapping::from_arguments(
-                    &signature,
+                    signature,
                     &self.arguments,
                     options,
                 )?;

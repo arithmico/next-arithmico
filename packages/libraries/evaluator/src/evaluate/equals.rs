@@ -34,7 +34,7 @@ impl EvaluateNode for Equals {
                 }
 
                 let comparison_result: Result<bool, Error> =
-                    zip(left.elements.into_iter(), right.elements.into_iter())
+                    zip(left.elements, right.elements)
                         .map(|(left, right)| {
                             Equals::new(left, right).evaluate(context).map(
                                 |element| match element {
