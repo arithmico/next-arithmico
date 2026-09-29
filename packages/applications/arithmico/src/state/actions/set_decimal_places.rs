@@ -15,6 +15,6 @@ impl SetDecimalPlacesAction {
 
 impl WebStateAction<State> for SetDecimalPlacesAction {
     fn apply(&self, state: &mut State) {
-        state.settings.decimal_places = self.value.clone();
+        state.settings.decimal_places = self.value;
     }
 }

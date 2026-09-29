@@ -15,10 +15,7 @@ pub fn CalculatorOutput(
         <output
             for="calculator-output"
             data-testid="calculator-output"
-            class=format!(
-                "calculator-output {}",
-                class.unwrap_or(String::new()),
-            )
+            class=format!("calculator-output {}", class.unwrap_or_default())
         >
             {move || {
                 let options = options.get();
@@ -56,12 +53,11 @@ pub fn CalculatorOutput(
                                                 <tbody>
                                                     {data_frame
                                                         .rows()
-                                                        .into_iter()
                                                         .map(|row| {
                                                             view! {
                                                                 <tr>
                                                                     {row
-                                                                        .into_iter()
+                                                                        .iter()
                                                                         .cloned()
                                                                         .map(|node| {
                                                                             node.map(|node| {

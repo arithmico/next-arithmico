@@ -50,9 +50,8 @@ fn CalculatorInputEditor() -> impl IntoView {
 
             state.dispatch_untracked(&UpdateInputEditorAction::new(
                 EditorStateMutation::new(move |state| {
-                    let selection_pos = state
-                        .get_selection()
-                        .map(|selection| {
+                    let selection_pos =
+                        state.get_selection().and_then(|selection| {
                             let anchor_pos = state.get_absolute_offset(
                                 selection.get_anchor().get_node_id(),
                                 selection.get_anchor().get_offset(),
@@ -62,15 +61,14 @@ fn CalculatorInputEditor() -> impl IntoView {
                                 selection.get_focus().get_offset(),
                             )?;
                             Some((anchor_pos, focus_pos))
-                        })
-                        .flatten();
+                        });
 
                     state.clear_root_node();
                     state.clear_selection();
                     for (segment, is_highlighted) in segments.clone() {
                         if is_highlighted {
                             let mark_node_id = state.insert_node(
-                                MarkNode::default().into_editor_node(),
+                                MarkNode.into_editor_node(),
                                 None,
                                 None,
                             );
