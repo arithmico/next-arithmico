@@ -49,7 +49,7 @@ mod tests {
 
     #[test]
     fn symbol() {
-        let symbols = BTreeSet::from_iter(vec!["x"].into_iter());
+        let symbols = BTreeSet::from_iter(vec!["x"]);
         let node = Symbol::new("x");
         let output = node.get_symbol_names();
         assert_eq!(symbols, output);
@@ -57,7 +57,7 @@ mod tests {
 
     #[test]
     fn sum() {
-        let symbols = BTreeSet::from_iter(vec!["x"].into_iter());
+        let symbols = BTreeSet::from_iter(vec!["x"]);
         let node = Sum::new(vec![Number::new_node(1.0), Symbol::new("x")]);
 
         let output = node.get_symbol_names();
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn product() {
-        let symbols = BTreeSet::from_iter(vec!["x", "y"].into_iter());
+        let symbols = BTreeSet::from_iter(vec!["x", "y"]);
         let node = Product::new(vec![
             Number::new_node(1.0),
             Symbol::new("x"),

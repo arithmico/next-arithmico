@@ -72,7 +72,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
-                            .constant(|_options| Number::new_node(42.0).into())
+                            .constant(|_options| Number::new_node(42.0))
                     }])
                     .build()
             })
@@ -96,7 +96,7 @@ mod tests {
                         builder
                             .name("test")
                             .description(Language::English, "test")
-                            .constant(|_options| Number::new_node(42.0).into())
+                            .constant(|_options| Number::new_node(42.0))
                     }])
                     .build()
             })
