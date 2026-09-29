@@ -123,7 +123,7 @@ fn multiply_matrices(
     debug_assert_eq!(left.get_rank(), 2);
     debug_assert_eq!(right.get_rank(), 2);
 
-    if left.shape.get(1).unwrap() != right.shape.get(0).unwrap() {
+    if left.shape.get(1).unwrap() != right.shape.first().unwrap() {
         return Err(Error::incompatible_matrix_dimensions(
             left.shape.clone(),
             right.shape.clone(),
@@ -131,7 +131,7 @@ fn multiply_matrices(
     }
 
     let x = *left.shape.get(1).unwrap();
-    let dim0 = *left.shape.get(0).unwrap();
+    let dim0 = *left.shape.first().unwrap();
     let dim1 = *right.shape.get(1).unwrap();
     let result_shape = vec![dim0, dim1];
 
@@ -139,7 +139,7 @@ fn multiply_matrices(
         .map(|index| {
             let outer_index =
                 convert_to_outer_index(&result_shape, index).unwrap();
-            let i = *outer_index.get(0).unwrap();
+            let i = *outer_index.first().unwrap();
             let k = *outer_index.get(1).unwrap();
 
             Sum::new(
