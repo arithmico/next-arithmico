@@ -111,9 +111,10 @@ fn find_last_version_tag(
         .tag_foreach(|oid, name| {
             let name = String::from_utf8(name.to_vec()).expect("name");
             if let Some(name) = name.strip_prefix("refs/tags/v")
-                && let Ok(version) = Version::parse(name) {
-                    versions.push(VersionTag { oid, version });
-                }
+                && let Ok(version) = Version::parse(name)
+            {
+                versions.push(VersionTag { oid, version });
+            }
             true
         })
         .expect("all tags checked");

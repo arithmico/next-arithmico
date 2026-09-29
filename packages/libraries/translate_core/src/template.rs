@@ -59,9 +59,7 @@ fn parse_template(input: &str) -> Result<Template, String> {
 
     while !remaining.is_empty() {
         if remaining.starts_with("{") {
-            let end = remaining
-                .find("}")
-                .ok_or("closing \"}\" is missing")?;
+            let end = remaining.find("}").ok_or("closing \"}\" is missing")?;
             let key = &remaining[1..end].trim();
 
             if key.is_empty() {

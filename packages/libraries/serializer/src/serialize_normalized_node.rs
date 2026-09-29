@@ -45,9 +45,9 @@ impl SerializeNormalizedNode for Node {
                     DecimalSeperator::from(options.language).to_string();
 
                 let number_string = serialized_value
-                        .trim_end_matches("0")
-                        .trim_end_matches(".")
-                        .replace(".", &decimal_separator);
+                    .trim_end_matches("0")
+                    .trim_end_matches(".")
+                    .replace(".", &decimal_separator);
 
                 serializer.write(&number_string);
             }

@@ -2,8 +2,7 @@ use common::Language;
 
 use crate::DecimalPlaces;
 
-#[derive(Debug, Clone, Copy)]
-#[derive(Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Options {
     pub language: Language,
     pub decimal_places: DecimalPlaces,
@@ -17,4 +16,3 @@ impl Options {
         }
     }
 }
-

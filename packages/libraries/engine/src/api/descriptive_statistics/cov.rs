@@ -79,7 +79,7 @@ impl FunctionEndpoint for CovEndpoint {
                     })
             })
             .collect::<Result<Vec<_>, Error>>()?;
-        
+
         let value =
             calculate_covariance(&x_values, &y_values).ok_or_else(|| {
                 Error::unreachable()
