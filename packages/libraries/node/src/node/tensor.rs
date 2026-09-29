@@ -183,17 +183,15 @@ mod tests {
 
     #[test]
     fn tensor_shape_rank1() {
-        assert_eq!(Tensor::get_shape(&vec![Number::new_node(1.)]), vec![1])
+        assert_eq!(Tensor::get_shape(&[Number::new_node(1.)]), vec![1])
     }
 
     #[test]
     fn tensor_shape_rank2() {
         assert_eq!(
-            Tensor::get_shape(&vec![
-                Tensor::new_node(vec![Number::new_node(1.)]),
+            Tensor::get_shape(&[Tensor::new_node(vec![Number::new_node(1.)]),
                 Tensor::new_node(vec![Number::new_node(2.)]),
-                Tensor::new_node(vec![Number::new_node(3.)]),
-            ]),
+                Tensor::new_node(vec![Number::new_node(3.)])]),
             vec![3, 1]
         )
     }
@@ -201,7 +199,7 @@ mod tests {
     #[test]
     fn tensor_shape_rank3() {
         assert_eq!(
-            Tensor::get_shape(&vec![Tensor::new_node(vec![
+            Tensor::get_shape(&[Tensor::new_node(vec![
                 Tensor::new_node(vec![
                     Number::new_node(1.),
                     Number::new_node(2.),
@@ -212,7 +210,7 @@ mod tests {
                     Number::new_node(5.),
                     Number::new_node(6.)
                 ]),
-            ]),]),
+            ])]),
             vec![1, 2, 3]
         )
     }

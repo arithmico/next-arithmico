@@ -142,7 +142,7 @@ mod tests {
                                     .add_return_type(NodeType::Any),
                             )
                             .executor(|argument, context| {
-                                let args = TestArgs::from_mapping(&argument)?;
+                                let args = TestArgs::from_mapping(argument)?;
                                 test_executor(args, context)
                             })
                     }])
@@ -192,7 +192,7 @@ mod tests {
                                     .add_return_type(NodeType::Any),
                             )
                             .executor(|argument, context| {
-                                let args = TestArgs::from_mapping(&argument)?;
+                                let args = TestArgs::from_mapping(argument)?;
                                 test_executor(args, context)
                             })
                     }])
@@ -220,7 +220,7 @@ mod tests {
             TestArgs { a, b, c }: TestArgs,
             context: Options,
         ) -> Result<Node, Error> {
-            let result = if let Some(_) = b {
+            let result = if b.is_some() {
                 Number::new_node(a.value)
             } else {
                 Number::new_node(c.iter().map(|n| n.value).sum())
@@ -257,7 +257,7 @@ mod tests {
                                     .add_return_type(NodeType::Any),
                             )
                             .executor(|argument, context| {
-                                let args = TestArgs::from_mapping(&argument)?;
+                                let args = TestArgs::from_mapping(argument)?;
                                 test_executor(args, context)
                             })
                     }])

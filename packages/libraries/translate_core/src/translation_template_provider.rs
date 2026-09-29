@@ -102,7 +102,7 @@ mod tests {
         "#;
 
         let parsed_provider =
-            TranslationTemplateProvider::try_from_toml(&content).unwrap();
+            TranslationTemplateProvider::try_from_toml(content).unwrap();
 
         let mut expected_provider = TranslationTemplateProvider::new();
         expected_provider.add_translation(
