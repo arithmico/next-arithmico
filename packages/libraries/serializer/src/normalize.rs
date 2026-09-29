@@ -35,9 +35,9 @@ impl NormalizeNode for Node {
                     Power::new(
                         Number::new_node(10.0),
                         if magnitude < 0 {
-                            Negate::new(Number::new_node(
-                                magnitude.abs() as f64,
-                            ))
+                            Negate::new(
+                                Number::new_node(magnitude.abs() as f64),
+                            )
                         } else {
                             Number::new_node(magnitude.abs() as f64)
                         },

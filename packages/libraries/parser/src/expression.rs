@@ -46,9 +46,10 @@ fn parse_expression_pratt<'a>(
 
     while let Some(next_token) = cursor.peek() {
         if let (
-                Some(TokenKind::RightParenthesis),
-                Some(TokenKind::LeftParenthesis),
-            ) = (cursor.current_token_kind(), cursor.peek_token_kind()) {
+            Some(TokenKind::RightParenthesis),
+            Some(TokenKind::LeftParenthesis),
+        ) = (cursor.current_token_kind(), cursor.peek_token_kind())
+        {
             return Err(Error::MissingMultiplyBetween {
                 span: Span::new(
                     // Safety: the match pattern garantees that this is always Some(_)
@@ -365,10 +366,12 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         cursor = next_cursor;
                         arguments.push(node);
 
-                        if let Token::RightParenthesis(token) = cursor.expect_one_of(&[
-                            TokenKind::RightParenthesis,
-                            TokenKind::Separator,
-                        ])? {
+                        if let Token::RightParenthesis(token) = cursor
+                            .expect_one_of(&[
+                                TokenKind::RightParenthesis,
+                                TokenKind::Separator,
+                            ])?
+                        {
                             outer_span = outer_span.hull(&token.get_span());
                             break;
                         }
@@ -476,10 +479,7 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 while let Ok((next_cursor, node)) = parse_expression(cursor) {
                     cursor = next_cursor;
                     elements.push(node);
-                    match cursor
-                        .next()
-                        .ok_or(Error::UnexpectedEndOfInput)?
-                    {
+                    match cursor.next().ok_or(Error::UnexpectedEndOfInput)? {
                         Token::Separator(_) => (),
                         Token::RightBracket(token) => {
                             span = span.hull(&token.span);
