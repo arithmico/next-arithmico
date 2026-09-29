@@ -69,7 +69,7 @@ impl FunctionEndpoint for TableEndpoint {
             .argument_names()
             .first()
             .copied()
-            .ok_or_else(|| Error::unreachable())?;
+            .ok_or_else(Error::unreachable)?;
 
         f.expression
             .validate_unknown_symbol_name(&options.names(), variable_name)

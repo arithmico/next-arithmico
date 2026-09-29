@@ -58,6 +58,6 @@ impl FunctionEndpoint for CNormalEndpoint {
 
         calculate_normal_cdf(x.value, mean.value, sd.value)
             .map_err(|_| Error::runtime_error("cnormal"))
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

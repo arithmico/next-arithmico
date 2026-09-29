@@ -58,6 +58,6 @@ impl FunctionEndpoint for NormalEndpoint {
 
         calculate_normal_pdf(x.value, mean.value, sd.value)
             .map_err(|_| Error::runtime_error("normal"))
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

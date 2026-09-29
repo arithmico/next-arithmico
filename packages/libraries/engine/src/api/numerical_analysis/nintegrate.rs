@@ -67,7 +67,7 @@ impl FunctionEndpoint for NIntegrateEndpoint {
             .iter()
             .find(|name| !known_symbols.contains(*name))
             .copied()
-            .ok_or_else(|| Error::unreachable())?;
+            .ok_or_else(Error::unreachable)?;
 
         f.validate_argument_matches_unknown_symbol(unknown_symbol)
             .map_to_error_kind(ErrorKind::RuntimeError)?;
@@ -105,6 +105,6 @@ impl FunctionEndpoint for NIntegrateEndpoint {
 
         result
             .map_to_error_kind(ErrorKind::RuntimeError)
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

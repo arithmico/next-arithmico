@@ -54,6 +54,6 @@ impl FunctionEndpoint for BinomEndpoint {
 
         calculate_binomial_pmf(n.value as usize, p.value, k.value as usize)
             .map_err(|_| Error::runtime_error("binom"))
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

@@ -54,6 +54,6 @@ impl FunctionEndpoint for CBinomEndpoint {
 
         calculate_binomial_cdf(n.value as usize, p.value, k.value as usize)
             .map_err(|_| Error::runtime_error("cbinom"))
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

@@ -140,7 +140,7 @@ impl DocumentationItem {
                 item.parameters = signature
                     .arguments()
                     .iter()
-                    .map(|argument| ParameterDocumentationItem::from(argument))
+                    .map(ParameterDocumentationItem::from)
                     .collect();
                 item.return_types =
                     signature.get_return_type().iter().cloned().collect();
@@ -149,7 +149,7 @@ impl DocumentationItem {
                     signature
                         .argument_names()
                         .iter()
-                        .map(|argument| Symbol::new(&argument))
+                        .map(|argument| Symbol::new(argument))
                         .collect(),
                 );
                 item.synopsis.add_message(
