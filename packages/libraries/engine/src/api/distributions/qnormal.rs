@@ -60,6 +60,6 @@ impl FunctionEndpoint for QNormalEndpoint {
 
         calculate_quantile_of_normal_cdf(p.value, mean.value, sd.value)
             .map_err(|_| Error::runtime_error("qnormal"))
-            .map(|result| Number::new(result))
+            .map(Number::new)
     }
 }

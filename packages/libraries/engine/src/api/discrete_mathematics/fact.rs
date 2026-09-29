@@ -57,7 +57,7 @@ impl FunctionEndpoint for FactEndpoint {
 
         match elements.len() {
             0 => Err(Error::unreachable()),
-            1 => Ok(elements.into_iter().next().unwrap().into()),
+            1 => Ok(elements.into_iter().next().unwrap()),
             _ => Ok(Product::new(elements)),
         }
     }

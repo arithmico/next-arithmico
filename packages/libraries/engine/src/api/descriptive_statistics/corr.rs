@@ -46,7 +46,7 @@ impl FunctionEndpoint for CorrEndpoint {
         ys.validate_minimum_vector_length(2)
             .map_to_error_kind(ErrorKind::IncompatibleVectorDimensions)?;
 
-        xs.validate_equal_shapes(&ys)
+        xs.validate_equal_shapes(ys)
             .map_to_error_kind(ErrorKind::IncompatibleVectorDimensions)?;
 
         let x_values = xs
