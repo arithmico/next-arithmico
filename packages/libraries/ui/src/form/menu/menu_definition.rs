@@ -30,6 +30,12 @@ pub struct MenuDefinition {
     items: Vec<MenuItemDefinition>,
 }
 
+impl Default for MenuDefinition {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MenuDefinition {
     pub fn new() -> Self {
         Self {

@@ -24,6 +24,12 @@ pub struct ListboxDefinition<V: Send + Sync + Clone> {
     pub options: Vec<ListboxOptionDefinition<V>>,
 }
 
+impl<V: Send + Sync + Clone> Default for ListboxDefinition<V> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<V: Send + Sync + Clone> ListboxDefinition<V> {
     pub fn new() -> Self {
         Self {
@@ -51,6 +57,10 @@ impl<V: Send + Sync + Clone> ListboxDefinition<V> {
 
     pub fn len(&self) -> usize {
         self.options.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.options.is_empty()
     }
 }
 

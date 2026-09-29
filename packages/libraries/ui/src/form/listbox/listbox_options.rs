@@ -57,17 +57,14 @@ pub fn ListboxOptions<V: Send + Sync + Clone + PartialEq + 'static>(
                 .iter()
                 .cloned()
                 .enumerate()
-                .map({
-                    let value = value.clone();
-                    move |(pos, option)| {
-                        view! {
-                            <ListboxOption
-                                pos=pos
-                                option=option
-                                value=value
-                                container_ref=container_ref
-                            />
-                        }
+                .map(move |(pos, option)| {
+                    view! {
+                        <ListboxOption
+                            pos=pos
+                            option=option
+                            value=value
+                            container_ref=container_ref
+                        />
                     }
                 })
                 .collect_view()}

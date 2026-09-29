@@ -1,3 +1,4 @@
+#[allow(clippy::module_inception)]
 mod listbox;
 mod listbox_button;
 mod listbox_context;
