@@ -111,6 +111,19 @@ jobs:
       - name: Format check
         run: leptosfmt --check .
 
+  lint:
+    name: Check Clippy
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: "-Dwarnings" # Make sure CI fails on all warnings
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          components: clippy
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features
+
   comment-deployment-info:
     name: Comment Deployment Info
     runs-on: ubuntu-latest
