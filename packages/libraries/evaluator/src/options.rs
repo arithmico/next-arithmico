@@ -30,9 +30,7 @@ impl<'a> Options<'a> {
         }
         if let Some(endpoint) = self.api.endpoint(name) {
             return match endpoint {
-                Endpoint::Function { .. } => {
-                    Some(HostFunction::new(name).into())
-                }
+                Endpoint::Function { .. } => Some(HostFunction::new(name)),
                 Endpoint::Constant { executor, .. } => Some(executor(*self)),
             };
         }
@@ -47,7 +45,7 @@ impl<'a> Options<'a> {
         self.stack
             .names()
             .union(&self.api.names())
-            .map(|name| *name)
+            .copied()
             .collect()
     }
 }
