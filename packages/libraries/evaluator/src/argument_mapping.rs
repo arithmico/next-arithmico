@@ -13,16 +13,14 @@ use crate::{
     argument_mapping::entry::Entry,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ArgumentMapping {
     map: HashMap<String, Entry>,
 }
 
 impl ArgumentMapping {
     pub fn new() -> Self {
-        Self {
-            map: HashMap::new(),
-        }
+        Self::default()
     }
 
     pub fn insert_value<T: ToString>(&mut self, name: T, node: Node) {
@@ -95,9 +93,8 @@ impl ArgumentMapping {
             Entry::List(nodes) => nodes
                 .iter()
                 .map(|node| -> Result<&T, Error> {
-                    Ok(node
-                        .try_into()
-                        .map_to_error_kind(ErrorKind::UnexpectedNodeType)?)
+                    node.try_into()
+                        .map_to_error_kind(ErrorKind::UnexpectedNodeType)
                 })
                 .collect(),
             Entry::Value(node) => {
@@ -140,7 +137,6 @@ impl ArgumentMapping {
             let argument_options = argument.get_options();
             let name = argument.get_name();
             if parameters.is_empty() {
-                let name = name;
                 match argument_options.cardinality() {
                     Cardinality::Required => {
                         return Err(Error::missing_parameter(name));
@@ -164,8 +160,7 @@ impl ArgumentMapping {
                 }
             }
 
-            while let Some(node) = parameters.front().cloned() {
-                let name = name;
+            if let Some(node) = parameters.front().cloned() {
                 let node = match argument_options.preprocess() {
                     Preprocess::None => node,
                     Preprocess::Evaluate => node.evaluate(options)?,

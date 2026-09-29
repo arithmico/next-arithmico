@@ -13,7 +13,7 @@ impl EvaluateNode for And {
             .iter()
             .map(|element| element.evaluate(context))
             .reduce(|left, right| combine_and_elements(&left?, &right?))
-            .ok_or_else(|| Error::unreachable())?
+            .ok_or_else(Error::unreachable)?
     }
 }
 

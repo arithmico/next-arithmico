@@ -85,7 +85,7 @@ impl Error {
             )
             .key(
                 "left",
-                left.into_iter()
+                left.iter()
                     .map(|dim| dim.to_string())
                     .collect::<Vec<_>>()
                     .join("x"),
@@ -93,7 +93,7 @@ impl Error {
             .key(
                 "right",
                 right
-                    .into_iter()
+                    .iter()
                     .map(|dim| dim.to_string())
                     .collect::<Vec<_>>()
                     .join("x"),
