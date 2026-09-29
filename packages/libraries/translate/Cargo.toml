@@ -7,3 +7,6 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 translate_core = { path = "../translate_core" }
 leptos = { workspace = true }
+
+[lints]
+workspace = true

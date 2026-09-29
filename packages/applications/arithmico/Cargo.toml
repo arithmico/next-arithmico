@@ -41,3 +41,6 @@ frizbee = "0.13.0"
 
 [build-dependencies]
 chrono = "0.4.45"
+
+[lints]
+workspace = true

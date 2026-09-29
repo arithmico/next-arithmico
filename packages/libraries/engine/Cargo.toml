@@ -22,6 +22,9 @@ evaluator = { version = "0.1.0", path = "../evaluator", default-features = false
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
 
+[lints]
+workspace = true
+
 [features]
 default = ["datatypes", "operators", "api_modules"]
 

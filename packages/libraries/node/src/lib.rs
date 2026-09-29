@@ -1,3 +1,5 @@
+#![allow(clippy::new_ret_no_self)]
+
 mod create_node_error;
 mod downcast_node;
 mod impl_node_traits;

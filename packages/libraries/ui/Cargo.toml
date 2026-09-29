@@ -7,3 +7,6 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 leptos = { workspace = true }
 web-sys = { version = "0.3.72", features = ["HtmlDivElement", "Node"] }
+
+[lints]
+workspace = true

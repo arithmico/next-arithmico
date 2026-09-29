@@ -16,6 +16,9 @@ math_utils = { version = "0.1.0", path = "../math_utils" }
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
 engine_derive = { path = "../engine_derive" }
 
+[lints]
+workspace = true
+
 [features]
 default = [
     "datatype_number",

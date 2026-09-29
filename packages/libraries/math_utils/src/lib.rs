@@ -1,3 +1,5 @@
+#![allow(clippy::excessive_precision)]
+
 mod descriptive_statistics;
 mod discrete_mathematics;
 mod distributions;

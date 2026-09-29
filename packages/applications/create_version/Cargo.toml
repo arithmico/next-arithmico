@@ -8,3 +8,6 @@ license = "AGPL-3.0-or-later"
 anyhow = "1.0.102"
 git2 = "0.21.0"
 semver = "1.0.28"
+
+[lints]
+workspace = true

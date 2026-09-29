@@ -6,3 +6,6 @@ license = "AGPL-3.0-or-later"
 
 [dependencies]
 lexer = { version = "0.1.0", path = "../lexer" }
+
+[lints]
+workspace = true
