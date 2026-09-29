@@ -19,16 +19,10 @@ pub fn ReferencePage() -> impl IntoView {
     let language = use_language();
     let search_query = RwSignal::new(String::new());
     let modules = state.select(move |state| {
-        let mut items = state
-            .session
-            .documentation()
-            .modules()
-            .into_iter()
-            .cloned()
-            .collect::<Vec<_>>();
+        let mut items = state.session.documentation().modules().to_vec();
 
         let language = language.get();
-        items.sort_by(|a, b| a.name(language).cmp(&b.name(language)));
+        items.sort_by_key(|a| a.name(language));
         items
     });
     let search_results =

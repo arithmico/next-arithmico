@@ -66,7 +66,7 @@ pub fn match_reference_modules(
                     })
                     .collect::<Vec<_>>();
 
-                items.sort_by(|a, b| b.score.cmp(&a.score));
+                items.sort_by_key(|v| std::cmp::Reverse(v.score));
 
                 let max_score: u16 =
                     items.iter().fold(None, |acc: Option<u16>, val| {
@@ -84,7 +84,7 @@ pub fn match_reference_modules(
             })
             .collect::<Vec<_>>();
 
-        matches.sort_by(|a, b| b.max_score.cmp(&a.max_score));
+        matches.sort_by_key(|v| std::cmp::Reverse(v.max_score));
 
         matches
     })

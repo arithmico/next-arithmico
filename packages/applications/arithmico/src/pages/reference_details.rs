@@ -27,8 +27,7 @@ pub fn ReferenceDetailsPage() -> impl IntoView {
         params
             .get()
             .ok()
-            .map(|params| params.endpoint_name)
-            .flatten()
+            .and_then(|params| params.endpoint_name)
             .map(
                 |endpoint_name| view! { <Inner endpoint_name=endpoint_name /> },
             )

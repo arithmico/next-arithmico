@@ -36,7 +36,7 @@ fn get_team_members() -> Option<Vec<TeamMember>> {
 
 #[component]
 pub fn TeamMembers() -> impl IntoView {
-    let team_members = get_team_members().unwrap_or(Vec::new());
+    let team_members = get_team_members().unwrap_or_default();
 
     view! {
         <section>

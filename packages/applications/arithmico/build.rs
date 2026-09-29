@@ -9,7 +9,7 @@ fn main() {
     );
     let commit_hash = String::from_utf8(
         Command::new("git")
-            .args(&["rev-parse", "--short", "HEAD"])
+            .args(["rev-parse", "--short", "HEAD"])
             .output()
             .unwrap()
             .stdout,

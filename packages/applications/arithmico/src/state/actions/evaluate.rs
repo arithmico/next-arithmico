@@ -24,11 +24,12 @@ impl WebStateAction<State> for EvaluateAction {
         state.current_output = state
             .session
             .last_entry()
-            .and_then(|statement| Some(statement.output.clone()));
+            .map(|statement| statement.output.clone());
+
         state.current_error_trace = state
             .current_output
             .as_ref()
-            .map(|output| {
+            .and_then(|output| {
                 output
                     .as_ref()
                     .err()
@@ -39,7 +40,6 @@ impl WebStateAction<State> for EvaluateAction {
                         _ => None,
                     })
             })
-            .flatten()
             .flatten();
     }
 }
