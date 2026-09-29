@@ -10,3 +10,6 @@ leptos = { workspace = true }
 leptos_dom = { workspace = true }
 unicode-segmentation = "1.13.3"
 web-sys = { version = "0.3.72", features = ["Document", "Element", "Selection", "DataTransfer"] }
+
+[lints]
+workspace = true

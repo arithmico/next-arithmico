@@ -11,3 +11,6 @@ thiserror = "2.0.18"
 serde = { version = "1.0.228", features = ["derive"] }
 leptos = { version = "0.8.19", features = ["csr"] }
 leptos_dom = { version = "0.8.7" }
+
+[workspace.lints.clippy]
+module_inception = "allow"

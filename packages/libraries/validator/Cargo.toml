@@ -10,3 +10,6 @@ trace = { version = "0.1.0", path = "../trace" }
 thiserror = { workspace = true }
 translate_core = { version = "0.1.0", path = "../translate_core" }
 math_utils = { version = "0.1.0", path = "../math_utils" }
+
+[lints]
+workspace = true

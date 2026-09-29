@@ -9,5 +9,6 @@ trace = { version = "0.1.0", path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
 thiserror = { workspace = true }
 
-[lints.clippy]
-new_ret_no_self = "allow"
+[lints]
+workspace = true
+

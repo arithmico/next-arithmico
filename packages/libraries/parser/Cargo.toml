@@ -14,3 +14,6 @@ translate_core = { version = "0.1.0", path = "../translate_core" }
 
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
+
+[lints]
+workspace = true

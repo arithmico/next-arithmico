@@ -11,3 +11,6 @@ trace = { version = "0.1.0", path = "../trace" }
 thiserror.workspace = true
 transformer = { version = "0.1.0", path = "../transformer" }
 serde = { workspace = true, features = ["derive"] }
+
+[lints]
+workspace = true
