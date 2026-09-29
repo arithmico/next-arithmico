@@ -53,8 +53,6 @@ Commit messages in this repository must follow the [Conventional Commits](https:
 
 ## Getting Started
 
-## Getting Started
-
 The easiest way to start developing is by using our provided DevContainer configuration. This ensures you have the exact Rust toolchain, formatting tools (`rustfmt`, `leptosfmt`), and dependencies required for the workspace without needing to configure your local machine.
 
 1. Clone this repository.
