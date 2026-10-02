@@ -1,4 +1,4 @@
-# 2. Programming Language and Framework
+# Programming Language and Framework
 
 Previous iterations of Arithmico were built using web-native technologies:
 * **Arithmico v1:** JavaScript with Vue
