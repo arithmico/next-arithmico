@@ -18,24 +18,24 @@ mod tests {
 
     #[test]
     fn test_matrix_determinant_1() {
-        let mut matrix = [1.0];
-        let result = matrix_determinant(1, &mut matrix);
+        let matrix = [1.0];
+        let result = matrix_determinant(1, &matrix);
 
         assert_eq!(result, 1.0);
     }
 
     #[test]
     fn test_matrix_inverse_2() {
-        let mut matrix = [1.0, 0.0, 0.0, 1.0];
-        let result = matrix_determinant(2, &mut matrix);
+        let matrix = [1.0, 0.0, 0.0, 1.0];
+        let result = matrix_determinant(2, &matrix);
 
         assert_eq!(result, 1.0);
     }
 
     #[test]
     fn test_matrix_inverse_3() {
-        let mut matrix = [1.0, 2.0, 3.0, 4.0];
-        let result = matrix_determinant(2, &mut matrix);
+        let matrix = [1.0, 2.0, 3.0, 4.0];
+        let result = matrix_determinant(2, &matrix);
 
         assert_eq!(result, -2.0);
     }
