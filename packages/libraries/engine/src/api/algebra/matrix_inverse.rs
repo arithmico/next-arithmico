@@ -47,7 +47,7 @@ impl FunctionEndpoint for MatrixInverseEndpoint {
 
         Ok(Tensor::new_with_shape(
             vec![n, n],
-            matrix.into_iter().map(|v| Number::new_node(v)).collect(),
+            matrix.into_iter().map(Number::new_node).collect(),
         ))
     }
 }

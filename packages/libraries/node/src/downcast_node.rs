@@ -37,7 +37,6 @@ pub trait DowncastNodeVec {
         &'a T: TryFrom<&'a Node, Error = DowncastNodeError>;
 }
 
-
 impl DowncastNodeVec for Vec<Node> {
     fn downcast<'a, T>(&'a self) -> Result<Vec<&'a T>, DowncastNodeError>
     where
