@@ -51,6 +51,27 @@ Code formatting is strictly maintained throughout the repository. We use `rustfm
 ### Commit Convention
 Commit messages in this repository must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification to ensure a standardized version control history.
 
+## Architectural Decisions
+
+We document significant architectural and design choices using **Architecture Decision Records (ADRs)** located in the [`/adr/`](./adr/) directory. ADRs serve as our project's institutional memory, recording the context, options evaluated, and consequences of key technical decisions.
+
+### When to Write an ADR
+Write a new ADR during the pull request process when making a decision that:
+* Introduces, removes, or swaps major frameworks, libraries, or architecture patterns.
+* Alters core data models, expression syntax grammars, or the evaluation pipeline.
+* Impact accessibility standards, screen reader compatibility, or internationalization workflows.
+* Establishes project-wide standards or changes distribution and packaging strategies (e.g., web vs. native desktop wrappers).
+
+Routine bug fixes, refactoring within existing paradigms, and minor feature additions do not require an ADR.
+
+### Structure of an ADR
+Each ADR follows a standardized Markdown format (`NNNN-short-title.md`) containing:
+1. **Title** Descriptive title
+2. **Context:** The problem prompt, technological constraints, and requirements driving the decision.
+3. **Decision:** The chosen path and the rationale behind it.
+4. **Alternatives Considered:** Other approaches evaluated and the specific reasons they were rejected.
+5. **Consequences:** The resulting trade-offs, advantages, and maintenance impacts (both positive and negative).
+
 ## Getting Started
 
 The easiest way to start developing is by using our provided DevContainer configuration. This ensures you have the exact Rust toolchain, formatting tools (`rustfmt`, `leptosfmt`), and dependencies required for the workspace without needing to configure your local machine.
