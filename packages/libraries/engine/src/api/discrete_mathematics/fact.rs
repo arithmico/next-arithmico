@@ -41,7 +41,7 @@ impl FunctionEndpoint for FactEndpoint {
             .map_to_error_kind(ErrorKind::InvalidParameterValue)?
             .value as u64;
 
-        let elements = factorize(n_value)
+        let mut elements = factorize(n_value)
             .into_iter()
             .map(|(base, exponent)| {
                 if exponent == 1 {
@@ -55,10 +55,13 @@ impl FunctionEndpoint for FactEndpoint {
             })
             .collect::<Vec<_>>();
 
-        match elements.len() {
-            0 => Err(Error::unreachable()),
-            1 => Ok(elements.into_iter().next().unwrap()),
-            _ => Ok(Product::new(elements)),
+        if elements.len() > 1 {
+            return Ok(Product::new(elements));
+        }
+
+        match elements.pop() {
+            Some(element) => Ok(element),
+            None => Err(Error::unreachable()),
         }
     }
 }
