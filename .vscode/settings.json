@@ -24,5 +24,6 @@
         "serializer",
         "math_utils"
     ],
-    "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"]
+    "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
+    "rust-analyzer.check.command": "clippy",
 }
