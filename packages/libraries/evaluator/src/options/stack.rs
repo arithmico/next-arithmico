@@ -31,10 +31,11 @@ impl Stack {
     }
 
     pub fn insert(&mut self, name: &str, node: Node) {
-        if self.frames.is_empty() {
-            self.frames.push(HashMap::new());
-        }
-        self.frames.last_mut().unwrap().insert(name.into(), node);
+        let frame = match self.frames.last_mut() {
+            Some(frame) => frame,
+            None => self.frames.push_mut(HashMap::new()),
+        };
+        frame.insert(name.into(), node);
     }
 
     pub fn lookup(&self, name: &str) -> Option<Node> {
