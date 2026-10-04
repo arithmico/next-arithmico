@@ -1,4 +1,4 @@
-use leptos::{html, prelude::*};
+use leptos::{html, logging::error, prelude::*};
 use web_sys::{Node, wasm_bindgen::JsCast};
 
 use crate::form::menu::menu_context::MenuContext;
@@ -18,9 +18,11 @@ pub fn MenuItem(
         if context.get().get_position() != pos {
             return;
         }
-        if let Some(node_ref) = node_ref.get() {
-            node_ref.focus().expect("focus");
-        }
+        if let Some(node_ref) = node_ref.get()
+            && let Err(err) = node_ref.focus()
+        {
+            error!("Failed to focus node! {:?}", err);
+        };
     });
 
     view! {

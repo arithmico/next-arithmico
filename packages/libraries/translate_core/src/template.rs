@@ -13,7 +13,8 @@ impl Template {
     }
 
     pub fn new<T: ToString>(template: T) -> Self {
-        parse_template(&template.to_string()).expect("failed to parse template")
+        parse_template(&template.to_string())
+            .unwrap_or_else(|_| Self::new_with_items(vec![]))
     }
 
     pub fn render(&self) -> Result<String, TranslationError> {

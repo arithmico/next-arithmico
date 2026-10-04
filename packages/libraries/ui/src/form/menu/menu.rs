@@ -1,4 +1,4 @@
-use leptos::{html, prelude::*};
+use leptos::{html, logging::error, prelude::*};
 
 use crate::form::menu::{menu_context::MenuContext, menu_items::MenuItems};
 
@@ -9,8 +9,10 @@ pub fn Menu(definition: MenuDefinition) -> impl IntoView {
     let container_ref = NodeRef::<html::Div>::new();
     let button_ref = NodeRef::<html::Button>::new();
     let focus_button = Callback::new(move |_| {
-        if let Some(button) = button_ref.get() {
-            button.focus().expect("focus");
+        if let Some(button) = button_ref.get()
+            && let Err(err) = button.focus()
+        {
+            error!("Failed to focus node! {:?}", err);
         }
     });
     let context = RwSignal::new(MenuContext::new(

@@ -1,3 +1,6 @@
+#![allow(clippy::expect_used)]
+#![allow(clippy::unwrap_used)]
+
 mod expand;
 mod is_bound;
 mod partial_evaluate;

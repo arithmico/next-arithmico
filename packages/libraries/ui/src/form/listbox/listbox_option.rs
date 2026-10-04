@@ -1,4 +1,4 @@
-use leptos::{html, prelude::*};
+use leptos::{html, logging::error, prelude::*};
 use web_sys::{Node, wasm_bindgen::JsCast};
 
 use crate::form::listbox::listbox_context::ListboxContext;
@@ -23,8 +23,9 @@ pub fn ListboxOption<V: PartialEq + Send + Sync + Clone + 'static>(
         let listbox_context = listbox_context.get();
         if pos == listbox_context.get_position()
             && let Some(node_ref) = node_ref.get()
+            && let Err(err) = node_ref.focus()
         {
-            node_ref.focus().expect("focus");
+            error!("Failed to focus node! {:?}", err);
         }
     });
     view! {
