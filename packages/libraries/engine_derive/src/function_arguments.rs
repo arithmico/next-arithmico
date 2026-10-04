@@ -131,8 +131,13 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 .iter()
                 .find(|attr| attr.path().is_ident("default"))
                 .map(|attr| {
-                    let expr: syn::Expr = attr.parse_args().unwrap();
-                    quote! { #expr }
+                    let expr: Result<syn::Expr, _> = attr.parse_args();
+                    match expr {
+                      Ok(expr) =>  quote! { #expr },
+                      Err(_) => quote_spanned! {
+                        ast.span() => compile_error!("failed to parse default attribute")
+                      }
+                    }
                 });
 
             let repeatable = field
