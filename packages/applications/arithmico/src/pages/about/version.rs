@@ -5,10 +5,10 @@ use translate::FormattedMessage;
 
 fn get_source_date_epoch() -> DateTime<Utc> {
     DateTime::from_timestamp(
-        env!("SOURCE_DATE_EPOCH").parse::<i64>().unwrap(),
+        env!("SOURCE_DATE_EPOCH").parse::<i64>().unwrap_or_default(),
         0,
     )
-    .unwrap()
+    .unwrap_or_default()
 }
 
 #[component]

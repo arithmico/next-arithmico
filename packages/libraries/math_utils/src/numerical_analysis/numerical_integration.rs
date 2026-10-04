@@ -1212,7 +1212,7 @@ fn dqpsrt(
         iord[i - 1] = isucc;
     }
 
-    if index.is_none() {
+    let Some(index) = index else {
         iord[jbnd] = maxerr;
         iord[jupbn - 1] = last - 1;
 
@@ -1225,9 +1225,9 @@ fn dqpsrt(
             max_error: ermax,
             rank: nrmax,
         };
-    }
+    };
 
-    let i = index.unwrap();
+    let i = index;
 
     // insert errmin by traversing the list bottom-up.
     iord[i - 1] = maxerr;

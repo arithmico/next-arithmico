@@ -107,20 +107,18 @@ fn find_last_version_tag(
 ) -> anyhow::Result<VersionTag> {
     let mut versions = Vec::<VersionTag>::new();
 
-    repository
-        .tag_foreach(|oid, name| {
-            let name = String::from_utf8(name.to_vec()).expect("name");
-            if let Some(name) = name.strip_prefix("refs/tags/v")
-                && let Ok(version) = Version::parse(name)
-            {
-                versions.push(VersionTag { oid, version });
-            }
-            true
-        })
-        .expect("all tags checked");
+    repository.tag_foreach(|oid, name| {
+        let name = String::from_utf8(name.to_vec()).unwrap_or_default();
+        if let Some(name) = name.strip_prefix("refs/tags/v")
+            && let Ok(version) = Version::parse(name)
+        {
+            versions.push(VersionTag { oid, version });
+        }
+        true
+    })?;
 
     versions.sort_by(|a, b| a.version.cmp(&b.version));
-    let last = versions.last().cloned().expect("last");
+    let last = versions.last().cloned().ok_or(anyhow!("No tag found"))?;
 
     Ok(last)
 }

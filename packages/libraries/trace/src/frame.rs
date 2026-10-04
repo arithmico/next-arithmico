@@ -32,10 +32,12 @@ impl Frame {
 
     pub fn hull(&self) -> Span {
         // Safety: frames are always initialized with at least one span
+        #[allow(clippy::unwrap_used)]
         let first = self.spans.first().unwrap();
         if self.spans.len() == 1 {
             return *first;
         }
+        #[allow(clippy::unwrap_used)]
         let last = self.spans.last().unwrap();
         Span::new(first.from.min(last.from), first.to.max(last.to))
     }

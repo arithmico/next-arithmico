@@ -51,6 +51,7 @@ fn parse_expression_pratt<'a>(
         ) = (cursor.current_token_kind(), cursor.peek_token_kind())
         {
             return Err(Error::MissingMultiplyBetween {
+                #[allow(clippy::unwrap_used)]
                 span: Span::new(
                     // Safety: the match pattern garantees that this is always Some(_)
                     cursor.current_position().unwrap(),
@@ -205,6 +206,7 @@ fn parse_expression_pratt<'a>(
             | TokenKind::Equals => {
                 let mut items = Vec::<(RelationType, Node)>::new();
                 // Safety: unwrap can not fail in this context
+                #[allow(clippy::unwrap_used)]
                 let relation_type =
                     RelationType::try_from_token(operator).unwrap();
                 items.push((relation_type, right));
@@ -438,7 +440,8 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     // parse function expression
                     let (next_cursor, node) = parse_expression_pratt(
                         cursor,
-                        TokenKind::Define.binding_power().unwrap() + 1,
+                        TokenKind::Define.binding_power().unwrap_or_default()
+                            + 1,
                     )?;
                     let mut signature = FunctionSignature::default();
                     for param in parameters {

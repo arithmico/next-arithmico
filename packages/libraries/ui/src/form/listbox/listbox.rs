@@ -1,4 +1,4 @@
-use leptos::{html, prelude::*};
+use leptos::{html, logging::error, prelude::*};
 
 use crate::form::listbox::{
     listbox_button::ListboxButton, listbox_options::ListboxOptions,
@@ -25,13 +25,17 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     let container_ref = NodeRef::<html::Div>::new();
     let on_change = Callback::new(move |value| {
         on_change.run(value);
-        if let Some(button_ref) = button_ref.get_untracked() {
-            button_ref.focus().expect("focus");
+        if let Some(button_ref) = button_ref.get_untracked()
+            && let Err(err) = button_ref.focus()
+        {
+            error!("Failed to focus node! {:?}", err);
         }
     });
     let on_cancel = Callback::new(move |()| {
-        if let Some(button_ref) = button_ref.get_untracked() {
-            button_ref.focus().expect("focus");
+        if let Some(button_ref) = button_ref.get_untracked()
+            && let Err(err) = button_ref.focus()
+        {
+            error!("Failed to focus node! {:?}", err);
         }
     });
     let listbox_context = RwSignal::new(ListboxContext::new(

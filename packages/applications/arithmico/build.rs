@@ -7,6 +7,7 @@ fn main() {
         "cargo:rustc-env=SOURCE_DATE_EPOCH={}",
         Utc::now().timestamp()
     );
+    #[allow(clippy::unwrap_used)]
     let commit_hash = String::from_utf8(
         Command::new("git")
             .args(["rev-parse", "--short", "HEAD"])
