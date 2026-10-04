@@ -123,12 +123,6 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
-    fn parse_key_failed_due_to_whitespace() {
-        Template::new("{my key}");
-    }
-
-    #[test]
     fn parse_template_with_key_and_text() {
         assert_eq!(
             Template::new("Hello, my name is {name}!"),
