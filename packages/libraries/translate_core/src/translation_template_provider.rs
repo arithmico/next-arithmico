@@ -30,12 +30,8 @@ impl TranslationTemplateProvider {
         template: impl ToString,
     ) {
         let id = id.to_string();
-        if !self.templates.contains_key(&id) {
-            self.templates
-                .insert(id.clone(), TranslationTemplate::new());
-        }
-        let translation_template = self.templates.get_mut(&id).unwrap();
-        translation_template.add_translation(language, template);
+        let entry = self.templates.entry(id).or_default();
+        entry.add_translation(language, template);
     }
 
     fn write_toml_data(&mut self, prefix: &str, table: &Table) {
