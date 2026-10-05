@@ -1,4 +1,5 @@
 use engine::Session;
+use leptos::logging::error;
 use web_state::WebStateAction;
 
 use crate::state::State;
@@ -16,9 +17,12 @@ impl ResetSessionAction {
 impl WebStateAction<State> for ResetSessionAction {
     fn apply(&self, state: &mut State) {
         state.session = Session::new();
-        state
+        if let Err(err) = state
             .input_editor_state
-            .execute_command(Box::new(ClearInputAction::new()));
+            .execute_command(Box::new(ClearInputAction::new()))
+        {
+            error!("Failed to clear input field: {}", err);
+        }
         state.current_output = None;
     }
 }

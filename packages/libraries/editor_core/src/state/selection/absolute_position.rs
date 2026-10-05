@@ -9,9 +9,7 @@ impl EditorState {
     pub fn get_absolute_selection(
         &self,
     ) -> Result<AbsoluteSelectionRange, crate::Error> {
-        let selection = self
-            .get_selection()
-            .ok_or_else(|| crate::Error::MissingSelection)?;
+        let selection = self.get_selection_or_err()?;
         let focus = selection.get_focus();
         let abs_focus =
             self.get_absolute_offset(focus.get_node_id(), focus.get_offset())?;

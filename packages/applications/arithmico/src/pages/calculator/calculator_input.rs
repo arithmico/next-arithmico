@@ -52,18 +52,22 @@ fn CalculatorInputEditor() -> impl IntoView {
                 EditorStateMutation::new(move |state| {
                     let selection_pos =
                         state.get_selection().and_then(|selection| {
-                            let anchor_pos = state.get_absolute_offset(
-                                selection.get_anchor().get_node_id(),
-                                selection.get_anchor().get_offset(),
-                            )?;
-                            let focus_pos = state.get_absolute_offset(
-                                selection.get_focus().get_node_id(),
-                                selection.get_focus().get_offset(),
-                            )?;
+                            let anchor_pos = state
+                                .get_absolute_offset(
+                                    selection.get_anchor().get_node_id(),
+                                    selection.get_anchor().get_offset(),
+                                )
+                                .ok()?;
+                            let focus_pos = state
+                                .get_absolute_offset(
+                                    selection.get_focus().get_node_id(),
+                                    selection.get_focus().get_offset(),
+                                )
+                                .ok()?;
                             Some((anchor_pos, focus_pos))
                         });
 
-                    state.clear_root_node();
+                    state.clear_root_node()?;
                     state.clear_selection();
                     for (segment, is_highlighted) in segments.clone() {
                         if is_highlighted {
@@ -71,20 +75,20 @@ fn CalculatorInputEditor() -> impl IntoView {
                                 MarkNode.into_editor_node(),
                                 None,
                                 None,
-                            );
+                            )?;
                             state.insert_node(
                                 TextNode::new_with_content(segment)
                                     .into_editor_node(),
                                 Some(mark_node_id),
                                 None,
-                            );
+                            )?;
                         } else {
                             state.insert_node(
                                 TextNode::new_with_content(segment)
                                     .into_editor_node(),
                                 None,
                                 None,
-                            );
+                            )?;
                         }
                     }
                     if let Some((anchor_pos, focus_pos)) = selection_pos {
@@ -113,9 +117,11 @@ fn CalculatorInputEditor() -> impl IntoView {
                     } else {
                         state.clear_selection();
                     }
-                    state.apply_transforms();
-                    state.update_dom();
-                    state.write_selection_to_dom();
+                    state.apply_transforms()?;
+                    state.update_dom()?;
+                    state.write_selection_to_dom()?;
+
+                    Ok(())
                 }),
             ));
         }

@@ -8,9 +8,7 @@ impl EditorState {
         node_id: usize,
         position: usize,
     ) -> Result<Node, crate::Error> {
-        let child_id = self
-            .get_child_id_at(node_id, position)
-            .ok_or_else(|| crate::Error::NodeNotFound)?;
+        let child_id = self.get_child_id_at(node_id, position)?;
         self.get_dom_node(child_id)
     }
 

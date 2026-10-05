@@ -15,6 +15,9 @@ pub enum Error {
     #[error("Selection collapsed")]
     SelectionCollapsed,
 
+    #[error("Selection not collapsed")]
+    SelectionNotCollapsed,
+
     #[error("Node not found")]
     NodeNotFound,
 

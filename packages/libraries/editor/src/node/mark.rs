@@ -14,11 +14,13 @@ impl Default for MarkNode {
 }
 
 impl EditorContainerNode for MarkNode {
-    fn create_node(&self) -> web_sys::Node {
-        let node = document().create_element("span").expect("element");
+    fn create_node(&self) -> Result<web_sys::Node, editor_core::Error> {
+        let node = document().create_element("span")?;
         let class = "editor-error-mark";
         node.set_class_name(class);
-        node.dyn_into::<Node>().expect("node")
+        node.dyn_into::<Node>().map_err(|element| {
+            editor_core::Error::FailedToCreateElement(element)
+        })
     }
 
     fn requires_update(&self, _dom_node: &web_sys::Node) -> bool {

@@ -44,9 +44,10 @@ impl TextNode {
 }
 
 impl EditorLeafNode for TextNode {
-    fn create_node(&self) -> web_sys::Node {
+    fn create_node(&self) -> Result<web_sys::Node, editor_core::Error> {
         let text = document().create_text_node(&self.content);
-        text.dyn_into().expect("node")
+        text.dyn_into()
+            .map_err(|_| editor_core::Error::NodeCastFailed)
     }
 
     fn requires_update(&self, dom_node: &web_sys::Node) -> bool {
@@ -103,7 +104,7 @@ impl EditorLeafNode for TextNode {
             })
     }
 
-    fn serialize(&self) -> Option<String> {
-        Some(self.content.clone())
+    fn serialize(&self) -> String {
+        self.content.clone()
     }
 }

@@ -21,19 +21,19 @@ impl InsertTextCommand {
         node_id: usize,
         focus_offset: usize,
         anchor_offset: usize,
-    ) -> Option<()> {
+    ) -> Result<(), editor_core::Error> {
         let node = state.get_leaf_node(node_id)?.arc_clone();
         let start_offset = focus_offset.min(anchor_offset);
         let end_offset = focus_offset.max(anchor_offset);
 
         if start_offset > 0 {
             let node_before = node.slice(0, start_offset);
-            state.insert_node_before(node_before, node_id);
+            state.insert_node_before(node_before, node_id)?;
         }
         state.replace_node(
             node_id,
             TextNode::new_with_content(&self.text).into_editor_node(),
-        );
+        )?;
 
         state.set_selection(SelectionRange::new_at(node_id, self.text.len()));
 
@@ -41,10 +41,10 @@ impl InsertTextCommand {
             state.insert_node_after(
                 node.slice(end_offset, node.length()),
                 node_id,
-            );
+            )?;
         }
 
-        Some(())
+        Ok(())
     }
 
     fn insert_into_container_node(
@@ -53,53 +53,53 @@ impl InsertTextCommand {
         node_id: usize,
         focus_offset: usize,
         anchor_offset: usize,
-    ) -> Option<()> {
+    ) -> Result<(), editor_core::Error> {
         if focus_offset != anchor_offset {
-            return None;
+            return Err(editor_core::Error::SelectionNotCollapsed);
         }
         let new_node_id = state.insert_node(
             TextNode::new_with_content(&self.text).into_editor_node(),
             Some(node_id),
             Some(focus_offset),
-        );
+        )?;
         state.set_selection(SelectionRange::new_at(
             new_node_id,
             self.text.len(),
         ));
-        Some(())
+        Ok(())
     }
 }
 
 impl EditorCommand for InsertTextCommand {
-    fn apply(&self, state: &mut EditorState) -> Option<()> {
-        let range = state.get_selection()?;
+    fn apply(&self, state: &mut EditorState) -> Result<(), editor_core::Error> {
+        let range = state.get_selection_or_err()?;
 
         let nodes_between = state.get_all_node_ids_between(
             range.get_anchor().get_node_id(),
             range.get_focus().get_node_id(),
-        );
+        )?;
 
         let focus_node_id = range.get_focus().get_node_id();
         let anchor_node_id = range.get_anchor().get_node_id();
         let focus_offset = range.get_focus().get_offset();
         let anchor_offset = range.get_anchor().get_offset();
-        state.delete_many_nodes(nodes_between.into_iter().collect());
+        state.delete_many_nodes(nodes_between.into_iter().collect())?;
 
         if focus_node_id == anchor_node_id {
-            if state.is_container_node(focus_node_id) {
+            if state.is_container_node(focus_node_id)? {
                 self.insert_into_container_node(
                     state,
                     focus_node_id,
                     focus_offset,
                     anchor_offset,
-                );
+                )?;
             } else {
                 self.insert_into_leaf_node(
                     state,
                     focus_node_id,
                     focus_offset,
                     anchor_offset,
-                );
+                )?;
             }
         } else {
             let new_node =
@@ -109,15 +109,17 @@ impl EditorCommand for InsertTextCommand {
                 .unwrap()
             {
                 // left to right selection
-                let node_id = state.insert_node_before(new_node, focus_node_id);
-                state.trim_leaf_node_right(anchor_node_id, anchor_offset);
-                state.trim_leaf_node_left(focus_node_id, focus_offset);
+                let node_id =
+                    state.insert_node_before(new_node, focus_node_id)?;
+                state.trim_leaf_node_right(anchor_node_id, anchor_offset)?;
+                state.trim_leaf_node_left(focus_node_id, focus_offset)?;
                 node_id
             } else {
                 // right to left selection
-                let node_id = state.insert_node_after(new_node, focus_node_id);
-                state.trim_leaf_node_left(anchor_node_id, anchor_offset);
-                state.trim_leaf_node_right(focus_node_id, focus_offset);
+                let node_id =
+                    state.insert_node_after(new_node, focus_node_id)?;
+                state.trim_leaf_node_left(anchor_node_id, anchor_offset)?;
+                state.trim_leaf_node_right(focus_node_id, focus_offset)?;
                 node_id
             };
             state.set_selection(SelectionRange::new_at(
@@ -125,6 +127,6 @@ impl EditorCommand for InsertTextCommand {
                 self.text.len(),
             ));
         }
-        Some(())
+        Ok(())
     }
 }
