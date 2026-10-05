@@ -7,11 +7,10 @@ impl EditorState {
         &self,
         node_id: usize,
         offset: usize,
-    ) -> Vec<EditorWhitespace> {
-        let end_selected =
-            self.get_leaf_node(node_id).expect("leaf node").length() == offset;
+    ) -> Result<Vec<EditorWhitespace>, crate::Error> {
+        let end_selected = self.get_leaf_node(node_id)?.length() == offset;
 
-        let mut node_ids = self.get_all_leaf_node_ids_after(node_id);
+        let mut node_ids = self.get_all_leaf_node_ids_after(node_id)?;
         if !end_selected {
             node_ids.insert(0, node_id);
         }
@@ -19,7 +18,7 @@ impl EditorState {
         let mut result = Vec::<EditorWhitespace>::new();
 
         for (index, id) in node_ids.into_iter().enumerate() {
-            if let Some(whitespaces) = self.get_whitespaces(id) {
+            if let Ok(whitespaces) = self.get_whitespaces(id) {
                 for whitespace in whitespaces {
                     if whitespace.node_id == node_id {
                         if whitespace.start_offset > offset {
@@ -38,6 +37,6 @@ impl EditorState {
             }
         }
 
-        result
+        Ok(result)
     }
 }

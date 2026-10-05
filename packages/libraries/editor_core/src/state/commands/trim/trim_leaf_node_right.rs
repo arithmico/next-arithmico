@@ -5,7 +5,7 @@ impl EditorState {
         &mut self,
         node_id: usize,
         position: usize,
-    ) -> Option<()> {
+    ) -> Result<(), crate::Error> {
         self.trim_leaf_node_right_with_delete_option(node_id, position, true)
     }
 
@@ -14,13 +14,13 @@ impl EditorState {
         node_id: usize,
         position: usize,
         delete_empty: bool,
-    ) -> Option<()> {
+    ) -> Result<(), crate::Error> {
         let node = self.get_leaf_node(node_id)?;
         if position >= node.length() && delete_empty {
-            self.delete_node(node_id);
+            self.delete_node(node_id)?;
         } else {
-            self.replace_node(node_id, node.slice(0, position));
+            self.replace_node(node_id, node.slice(0, position))?;
         }
-        Some(())
+        Ok(())
     }
 }

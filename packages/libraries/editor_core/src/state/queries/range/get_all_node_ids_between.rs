@@ -5,32 +5,30 @@ impl EditorState {
         &self,
         from_node_id: usize,
         to_node_id: usize,
-    ) -> Vec<usize> {
+    ) -> Result<Vec<usize>, crate::Error> {
         let node_ids = self.get_all_node_ids_in_order();
         let from = node_ids
             .iter()
             .position(|node_id| *node_id == from_node_id)
-            .expect("from position");
+            .ok_or_else(|| crate::Error::NodeNotFound)?;
         let to = node_ids
             .iter()
             .position(|node_id| *node_id == to_node_id)
-            .expect("to position");
+            .ok_or_else(|| crate::Error::NodeNotFound)?;
+
         let start = from.min(to);
         let end = from.max(to);
-        node_ids
-            .into_iter()
-            .enumerate()
-            .filter_map(|(position, node_id)| {
-                if self.is_parent_of(node_id, from_node_id)
-                    || self.is_parent_of(node_id, to_node_id)
-                {
-                    None
-                } else if position > start && position < end {
-                    Some(node_id)
-                } else {
-                    None
-                }
-            })
-            .collect()
+
+        let mut node_ids_between = vec![];
+        for &node_id in &node_ids[start + 1..end] {
+            if self.is_parent_of(node_id, from_node_id)?
+                || self.is_parent_of(node_id, to_node_id)?
+            {
+                continue;
+            }
+            node_ids_between.push(node_id);
+        }
+
+        Ok(node_ids_between)
     }
 }

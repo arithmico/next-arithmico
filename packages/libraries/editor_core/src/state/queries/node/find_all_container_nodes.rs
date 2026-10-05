@@ -6,7 +6,7 @@ impl EditorState {
     pub fn find_all_container_nodes(&self) -> HashSet<usize> {
         let mut container_nodes = HashSet::<usize>::new();
         for node_id in self.editor_nodes.keys().copied() {
-            if self.is_container_node(node_id) {
+            if self.is_container_node(node_id).is_ok() {
                 container_nodes.insert(node_id);
             }
         }

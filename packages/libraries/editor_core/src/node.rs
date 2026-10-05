@@ -23,7 +23,7 @@ impl EditorNode {
         }
     }
 
-    pub fn create_node(&self) -> Node {
+    pub fn create_node(&self) -> Result<Node, crate::Error> {
         match self {
             EditorNode::Container(container) => container.create_node(),
             EditorNode::Leaf(leaf) => leaf.create_node(),
@@ -43,7 +43,7 @@ impl EditorNode {
 pub trait EditorContainerNode:
     std::fmt::Debug + Any + Send + Sync + 'static
 {
-    fn create_node(&self) -> Node;
+    fn create_node(&self) -> Result<Node, crate::Error>;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Arc<&dyn Any>;
     fn arc_clone(&self) -> Arc<dyn EditorContainerNode>;
@@ -54,7 +54,7 @@ pub trait EditorContainerNode:
 pub trait EditorLeafNode:
     std::fmt::Debug + Any + Send + Sync + 'static
 {
-    fn create_node(&self) -> Node;
+    fn create_node(&self) -> Result<Node, crate::Error>;
     fn requires_update(&self, dom_node: &Node) -> bool;
     fn as_any(&self) -> Arc<&dyn Any>;
     fn arc_clone(&self) -> Arc<dyn EditorLeafNode>;
@@ -62,5 +62,5 @@ pub trait EditorLeafNode:
     fn length(&self) -> usize;
     fn slice(&self, start: usize, end: usize) -> EditorNode;
     fn get_whitespaces(&self) -> Vec<(usize, usize)>;
-    fn serialize(&self) -> Option<String>;
+    fn serialize(&self) -> String;
 }

@@ -6,9 +6,10 @@ use crate::state::EditorState;
 impl EditorState {
     fn get_selection_data(&self) -> Option<(Node, usize, Node, usize)> {
         let range = self.get_selection()?;
-        let focus_node = self.get_dom_node(range.get_focus().get_node_id())?;
+        let focus_node =
+            self.get_dom_node(range.get_focus().get_node_id()).ok()?;
         let anchor_node =
-            self.get_dom_node(range.get_anchor().get_node_id())?;
+            self.get_dom_node(range.get_anchor().get_node_id()).ok()?;
         Some((
             anchor_node,
             range.get_anchor().get_offset(),

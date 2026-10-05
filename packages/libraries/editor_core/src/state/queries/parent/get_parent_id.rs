@@ -1,9 +1,13 @@
 use crate::state::EditorState;
 
 impl EditorState {
-    pub fn get_parent_id(&self, node_id: usize) -> Option<usize> {
+    pub fn get_parent_id(
+        &self,
+        node_id: usize,
+    ) -> Result<Option<usize>, crate::Error> {
         self.parent
             .get(&node_id)
-            .and_then(|parent| parent.as_ref().copied())
+            .ok_or_else(|| crate::Error::NodeNotFound)
+            .copied()
     }
 }
