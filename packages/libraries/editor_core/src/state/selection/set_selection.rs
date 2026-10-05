@@ -11,7 +11,7 @@ impl EditorState {
         &mut self,
         selection: AbsoluteSelectionRange,
     ) {
-        if let Some(selection) =
+        if let Ok(selection) =
             self.convert_absolute_selection_to_selection(selection)
         {
             self.set_selection(selection);

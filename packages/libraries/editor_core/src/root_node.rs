@@ -15,12 +15,11 @@ impl Default for RootNode {
 }
 
 impl EditorContainerNode for RootNode {
-    fn create_node(&self) -> web_sys::Node {
+    fn create_node(&self) -> Result<web_sys::Node, crate::Error> {
         document()
-            .create_element("div")
-            .expect("root element")
+            .create_element("div")?
             .dyn_into()
-            .expect("root node")
+            .map_err(crate::Error::FailedToCreateElement)
     }
 
     fn requires_update(&self, _dom_node: &web_sys::Node) -> bool {

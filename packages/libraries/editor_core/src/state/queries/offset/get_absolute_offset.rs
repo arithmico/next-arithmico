@@ -5,19 +5,19 @@ impl EditorState {
         &self,
         node_id: usize,
         offset: usize,
-    ) -> Option<usize> {
+    ) -> Result<usize, crate::Error> {
         if !self.is_leaf_node(node_id) {
-            return None;
+            return Err(crate::Error::NotALeafNode);
         }
         let previous_offset = self
-            .get_all_leaf_node_ids_before(node_id)
+            .get_all_leaf_node_ids_before(node_id)?
             .into_iter()
-            .map(|node_id| {
-                let node = self.get_leaf_node(node_id).expect("leaf node");
-                node.length()
+            .filter_map(|node_id| {
+                let node = self.get_leaf_node(node_id).ok()?;
+                Some(node.length())
             })
             .sum::<usize>();
 
-        Some(previous_offset + offset)
+        Ok(previous_offset + offset)
     }
 }
