@@ -446,6 +446,7 @@ dependencies = [
  "leptos",
  "leptos_dom",
  "send_wrapper",
+ "thiserror 2.0.21",
  "web-sys",
 ]
 

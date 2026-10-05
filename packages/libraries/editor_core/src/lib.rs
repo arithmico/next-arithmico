@@ -1,7 +1,5 @@
-#![allow(clippy::expect_used)]
-#![allow(clippy::unwrap_used)]
-
 mod command;
+mod error;
 mod node;
 mod root_node;
 mod state;
@@ -13,3 +11,5 @@ pub use node::*;
 pub use root_node::*;
 pub use state::*;
 pub use transform::*;
+
+pub use error::Error;
