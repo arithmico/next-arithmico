@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { CfnOutput } from 'aws-cdk-lib';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
@@ -52,6 +53,10 @@ export class StaticWebsiteDeployment extends Construct {
                     responsePagePath: "/index.html"
                 }
             ]
+        });
+
+        new CfnOutput(this, `${id}-distribution-url`, {
+            value: `https://${distribution.distributionDomainName}`,
         });
 
         new BucketDeployment(this, "BucketDeployment", {
