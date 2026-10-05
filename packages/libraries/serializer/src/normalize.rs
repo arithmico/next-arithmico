@@ -34,7 +34,7 @@ fn normalize_number(
 
             let decimal_places = usize::from(options.decimal_places);
 
-            let magnitude = number.value.abs().log10().round() as i64;
+            let magnitude = number.value.abs().log10().floor() as i64;
             let magnitude_abs =
                 if magnitude < 0 { -magnitude } else { magnitude };
             if magnitude_abs <= decimal_places as i64 {
