@@ -13,24 +13,23 @@ const artifact = getStringParameterOrThrow("CDK_DEPLOY_ARTIFACT");
 const app = new App();
 let artifacts: Stack | undefined;
 
+const env = {
+    account,
+    region
+};
+
 if (environment === "main") {
     artifacts = new ArtifactsStack(app, 'Artifacts', {
-        env: {
-            account,
-            region
-        }
+        env
     });
 }
 
 const applications = new ApplicationsStack(app, `applications-${environment}`, {
-    env: {
-        account,
-        region
-    },
+    env,
     artifact,
     environment
 })
 
 if (artifacts) {
-    applications.addDependency(artifacts)
+    applications.addStackDependency(artifacts)
 }
