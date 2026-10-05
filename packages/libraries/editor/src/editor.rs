@@ -115,8 +115,7 @@ pub fn Editor(
         update_editor_state.run(EditorStateMutation::new(move |state| {
             if state.get_selection().is_none() {
                 if let Some(node_id) = state.get_all_leaf_node_ids().last() {
-                    let length =
-                        state.get_leaf_node(*node_id).expect("node").length();
+                    let length = state.get_leaf_node(*node_id)?.length();
                     state.set_selection(SelectionRange::new_at(
                         *node_id,
                         length.saturating_sub(1),

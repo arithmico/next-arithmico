@@ -6,12 +6,15 @@ use crate::node::TextNode;
 
 pub struct InsertTextCommand {
     text: String,
+    chars: usize,
 }
 
 impl InsertTextCommand {
-    pub fn new<T: ToString>(from: T) -> Self {
+    pub fn new<T: ToString>(text: T) -> Self {
+        let text = text.to_string();
         Self {
-            text: from.to_string(),
+            chars: text.chars().count(),
+            text,
         }
     }
 
@@ -35,7 +38,7 @@ impl InsertTextCommand {
             TextNode::new_with_content(&self.text).into_editor_node(),
         )?;
 
-        state.set_selection(SelectionRange::new_at(node_id, self.text.len()));
+        state.set_selection(SelectionRange::new_at(node_id, self.chars));
 
         if end_offset < node.length() {
             state.insert_node_after(
@@ -62,10 +65,7 @@ impl InsertTextCommand {
             Some(node_id),
             Some(focus_offset),
         )?;
-        state.set_selection(SelectionRange::new_at(
-            new_node_id,
-            self.text.len(),
-        ));
+        state.set_selection(SelectionRange::new_at(new_node_id, self.chars));
         Ok(())
     }
 }
@@ -124,7 +124,7 @@ impl EditorCommand for InsertTextCommand {
             };
             state.set_selection(SelectionRange::new_at(
                 node_id,
-                self.text.len(),
+                self.text.chars().count(),
             ));
         }
         Ok(())

@@ -8,6 +8,7 @@ use web_sys::{Text, wasm_bindgen::JsCast};
 #[derive(Debug, Clone)]
 pub struct TextNode {
     content: String,
+    chars: usize,
 }
 
 impl Default for TextNode {
@@ -18,8 +19,11 @@ impl Default for TextNode {
 
 impl TextNode {
     pub fn new_with_content<T: ToString>(content: T) -> Self {
+        let content = content.to_string();
+
         Self {
-            content: content.to_string(),
+            chars: content.chars().count(),
+            content,
         }
     }
 
@@ -29,17 +33,24 @@ impl TextNode {
         start_index: usize,
         end_index: usize,
     ) -> Self {
-        let mut new_content = self.content.clone();
-        new_content.replace_range(start_index..end_index, &text);
-        Self {
-            content: new_content,
+        let mut new_content = String::with_capacity(
+            (self.content.len() + text.len())
+                .saturating_sub(end_index.abs_diff(start_index)),
+        );
+        let mut inserted = false;
+        for (i, c) in self.content.char_indices() {
+            if i < start_index || i >= end_index {
+                new_content.push(c);
+            } else if !inserted {
+                new_content.push_str(&text);
+                inserted = true;
+            }
         }
+        Self::new_with_content(new_content)
     }
 
     pub fn append(&self, other: &Self) -> Self {
-        Self {
-            content: format!("{}{}", self.content, other.content),
-        }
+        Self::new_with_content(format!("{}{}", self.content, other.content))
     }
 }
 
@@ -73,20 +84,24 @@ impl EditorLeafNode for TextNode {
     }
 
     fn length(&self) -> usize {
-        self.content.len()
+        // TODO: consider caching
+        self.chars
     }
 
     fn slice(&self, start: usize, end: usize) -> EditorNode {
-        let new_content = &self.content[start..end];
+        let new_content = self.content.graphemes(true).collect::<Vec<_>>()
+            [start..end]
+            .join("");
+
         TextNode::new_with_content(new_content).into_editor_node()
     }
 
     fn get_whitespaces(&self) -> Vec<(usize, usize)> {
         self.content
-            .grapheme_indices(true)
+            .char_indices()
             .filter_map(
-                |(index, grapheme)| {
-                    if grapheme == " " { Some(index) } else { None }
+                |(index, char)| {
+                    if char == ' ' { Some(index) } else { None }
                 },
             )
             .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {
