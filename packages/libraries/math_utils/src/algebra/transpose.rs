@@ -239,7 +239,7 @@ fn row_transpose(matrix: &mut [f64], n: usize, m: usize) -> usize {
 }
 
 /// Algorithm 9: `join`.
-fn  join(matrix: &mut [f64], q: usize, n: usize) -> usize {
+fn join(matrix: &mut [f64], q: usize, n: usize) -> usize {
     if q == 1 {
         return square_transpose(matrix, n);
     }

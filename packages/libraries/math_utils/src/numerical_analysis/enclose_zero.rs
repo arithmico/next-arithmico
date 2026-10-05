@@ -625,8 +625,6 @@ mod tests {
     fn func(nprob: usize, x: f64, n: i32) -> f64 {
         let dn = n as f64;
 
-        
-
         match nprob {
             1 => x.sin() - x / 2.0,
             2..=11 => {

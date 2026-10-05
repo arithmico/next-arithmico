@@ -41,9 +41,11 @@ pub fn Definitions() -> impl IntoView {
                             .override_decimal_format
                             .decimal_format()
                             .unwrap_or(settings.get_language());
+                        let number_representation = settings.number_representation;
                         let options = SerializeOptions::new(
                             language,
                             decimal_places,
+                            number_representation,
                         );
                         let key_string = key_node.serialize(options)?;
                         let value_string = value_node.serialize(options)?;

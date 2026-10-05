@@ -160,6 +160,7 @@ impl DocumentationItem {
                         .serialize(serializer::Options::new(
                             Language::English,
                             Default::default(),
+                            Default::default(),
                         ))
                         .unwrap_or_else(|_| {
                             String::from("Serialization failed")
@@ -170,6 +171,7 @@ impl DocumentationItem {
                     Ok(synopsis_expression
                         .serialize(serializer::Options::new(
                             Language::German,
+                            Default::default(),
                             Default::default(),
                         ))
                         .unwrap_or_else(|_| {
@@ -189,6 +191,7 @@ impl DocumentationItem {
                         .serialize(serializer::Options::new(
                             Language::English,
                             Default::default(),
+                            Default::default(),
                         ))
                         .unwrap_or_else(|_| {
                             String::from("Serialization failed")
@@ -199,6 +202,7 @@ impl DocumentationItem {
                     Ok(synopsis_expression
                         .serialize(serializer::Options::new(
                             Language::German,
+                            Default::default(),
                             Default::default(),
                         ))
                         .unwrap_or_else(|_| {
