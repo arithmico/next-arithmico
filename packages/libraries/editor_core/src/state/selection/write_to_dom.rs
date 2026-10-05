@@ -17,26 +17,23 @@ impl EditorState {
         ))
     }
 
-    pub fn write_selection_to_dom(&self) {
+    pub fn write_selection_to_dom(&self) -> Result<(), crate::Error> {
         let selection = document()
-            .get_selection()
-            .expect("selection")
-            .expect("selection");
+            .get_selection()?
+            .ok_or(crate::Error::MissingSelection)?;
 
         match self.get_selection_data() {
             Some((anchor_node, anchor_offset, focus_node, focus_offset)) => {
-                selection
-                    .set_base_and_extent(
-                        &anchor_node,
-                        anchor_offset as u32,
-                        &focus_node,
-                        focus_offset as u32,
-                    )
-                    .expect("set selection");
+                selection.set_base_and_extent(
+                    &anchor_node,
+                    anchor_offset as u32,
+                    &focus_node,
+                    focus_offset as u32,
+                )?;
             }
-            None => {
-                selection.remove_all_ranges().expect("clear selection");
-            }
+            None => selection.remove_all_ranges()?,
         }
+
+        Ok(())
     }
 }
