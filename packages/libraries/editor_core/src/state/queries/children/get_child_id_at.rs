@@ -5,7 +5,10 @@ impl EditorState {
         &self,
         node_id: usize,
         position: usize,
-    ) -> Option<usize> {
-        self.get_children_ids(node_id).get(position).copied()
+    ) -> Result<usize, crate::Error> {
+        self.get_children_ids(node_id)
+            .get(position)
+            .copied()
+            .ok_or_else(|| crate::Error::NodeNotFound)
     }
 }

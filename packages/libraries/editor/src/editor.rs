@@ -19,17 +19,23 @@ use crate::{
 };
 
 pub struct EditorStateMutation {
-    mutation: Box<dyn Fn(&mut EditorState)>,
+    #[allow(clippy::type_complexity)]
+    mutation: Box<dyn Fn(&mut EditorState) -> Result<(), editor_core::Error>>,
 }
 
 impl EditorStateMutation {
-    pub fn new(f: impl Fn(&mut EditorState) + 'static) -> Self {
+    pub fn new(
+        f: impl Fn(&mut EditorState) -> Result<(), editor_core::Error> + 'static,
+    ) -> Self {
         Self {
             mutation: Box::new(f),
         }
     }
 
-    pub fn run(&self, state: &mut EditorState) {
+    pub fn run(
+        &self,
+        state: &mut EditorState,
+    ) -> Result<(), editor_core::Error> {
         (self.mutation)(state)
     }
 }
@@ -89,6 +95,7 @@ pub fn Editor(
         move |_: web_sys::Event| {
             update_editor_state.run(EditorStateMutation::new(move |state| {
                 state.read_selection_from_dom();
+                Ok(())
             }));
         },
     ));
@@ -120,14 +127,15 @@ pub fn Editor(
                         TextNode::default().into_editor_node(),
                         Some(root_id),
                         None,
-                    );
+                    )?;
                     state.set_selection(SelectionRange::new_at(node_id, 0));
                 }
             }
 
-            state.apply_transforms();
-            state.mount_to_root(node.clone());
-            state.write_selection_to_dom();
+            state.apply_transforms()?;
+            state.mount_to_root(node.clone())?;
+            state.write_selection_to_dom()?;
+            Ok(())
         }));
     });
 
@@ -139,19 +147,19 @@ pub fn Editor(
                 "insertText" => {
                     let command =
                         InsertTextCommand::new(event.data().expect("data"));
-                    state.execute_command(command.into());
+                    state.execute_command(command.into())
                 }
                 "deleteContentBackward" => {
-                    state.execute_command(DeleteContentBackwardCommand.into());
+                    state.execute_command(DeleteContentBackwardCommand.into())
                 }
                 "deleteContentForward" => {
-                    state.execute_command(DeleteContentForwardCommand.into());
+                    state.execute_command(DeleteContentForwardCommand.into())
                 }
                 "deleteWordBackward" => {
-                    state.execute_command(DeleteWordBackwardCommand.into());
+                    state.execute_command(DeleteWordBackwardCommand.into())
                 }
                 "deleteWordForward" => {
-                    state.execute_command(DeleteWordForwardCommand.into());
+                    state.execute_command(DeleteWordForwardCommand.into())
                 }
                 "insertFromPaste" => {
                     let data = event
@@ -160,9 +168,9 @@ pub fn Editor(
                         .get_data("text/plain")
                         .expect("data");
 
-                    state.execute_command(InsertTextCommand::new(data).into());
+                    state.execute_command(InsertTextCommand::new(data).into())
                 }
-                _ => (),
+                _ => Ok(()),
             }
         }));
     };
@@ -177,9 +185,10 @@ pub fn Editor(
                     state.set_absolute_selection(selection);
                 }
                 let command = InsertTextCommand::new(data);
-                state.execute_command(command.into());
+                state.execute_command(command.into())?;
                 selection_before_composition.set(None);
             }
+            Ok(())
         }));
     });
 
@@ -197,7 +206,8 @@ pub fn Editor(
                     .run(
                         EditorStateMutation::new(move |state| {
                             selection_before_composition
-                                .set(state.get_absolute_selection());
+                                .set(Some(state.get_absolute_selection()?));
+                            Ok(())
                         }),
                     );
             }

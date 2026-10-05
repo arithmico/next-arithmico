@@ -5,6 +5,7 @@ use crate::state::EditorState;
 use super::{SelectionRange, SelectionRangePoint};
 
 impl EditorState {
+    // TODO: consider Result<Option<...>>
     fn get_selection_from_dom(&self) -> Option<SelectionRange> {
         let selection = document().get_selection().ok()??;
         let focus_node_id =

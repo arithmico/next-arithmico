@@ -4,9 +4,7 @@ impl EditorState {
     pub fn delete_selection_and_preserve_focus_node(
         &mut self,
     ) -> Result<(), crate::Error> {
-        let selection = self
-            .get_selection()
-            .ok_or_else(|| crate::Error::MissingSelection)?;
+        let selection = self.get_selection_or_err()?;
 
         if selection.is_collapsed() {
             return Err(crate::Error::SelectionCollapsed);

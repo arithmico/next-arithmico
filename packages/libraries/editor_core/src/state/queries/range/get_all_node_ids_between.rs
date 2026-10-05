@@ -16,11 +16,15 @@ impl EditorState {
             .position(|node_id| *node_id == to_node_id)
             .ok_or_else(|| crate::Error::NodeNotFound)?;
 
-        let start = from.min(to);
+        let start = from.min(to) + 1;
         let end = from.max(to);
 
+        if start > end {
+            return Ok(vec![]);
+        }
+
         let mut node_ids_between = vec![];
-        for &node_id in &node_ids[start + 1..end] {
+        for &node_id in &node_ids[start..end] {
             if self.is_parent_of(node_id, from_node_id)?
                 || self.is_parent_of(node_id, to_node_id)?
             {
