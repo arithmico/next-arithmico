@@ -2,13 +2,13 @@ use std::{any::Any, sync::Arc};
 
 use editor_core::{EditorLeafNode, EditorNode};
 use leptos::prelude::document;
-use unicode_segmentation::UnicodeSegmentation;
 use web_sys::{Text, wasm_bindgen::JsCast};
 
 #[derive(Debug, Clone)]
 pub struct TextNode {
     content: String,
-    chars: usize,
+    /// UTF16 length!
+    length: usize,
 }
 
 impl Default for TextNode {
@@ -22,7 +22,7 @@ impl TextNode {
         let content = content.to_string();
 
         Self {
-            chars: content.chars().count(),
+            length: content.encode_utf16().count(),
             content,
         }
     }
@@ -33,20 +33,13 @@ impl TextNode {
         start_index: usize,
         end_index: usize,
     ) -> Self {
-        let mut new_content = String::with_capacity(
-            (self.content.len() + text.len())
-                .saturating_sub(end_index.abs_diff(start_index)),
-        );
-        let mut inserted = false;
-        for (i, c) in self.content.char_indices() {
-            if i < start_index || i >= end_index {
-                new_content.push(c);
-            } else if !inserted {
-                new_content.push_str(&text);
-                inserted = true;
-            }
-        }
-        Self::new_with_content(new_content)
+        let mut new_content = self.content.encode_utf16().collect::<Vec<_>>();
+        let new_content = new_content
+            .splice(start_index..end_index, text.encode_utf16())
+            .collect::<Vec<_>>();
+        Self::new_with_content(
+            String::from_utf16(&new_content).unwrap_or_default(),
+        )
     }
 
     pub fn append(&self, other: &Self) -> Self {
@@ -85,25 +78,27 @@ impl EditorLeafNode for TextNode {
 
     fn length(&self) -> usize {
         // TODO: consider caching
-        self.chars
+        self.length
     }
 
     fn slice(&self, start: usize, end: usize) -> EditorNode {
-        let new_content = self.content.graphemes(true).collect::<Vec<_>>()
-            [start..end]
-            .join("");
+        let new_content = String::from_utf16_lossy(
+            &self.content.encode_utf16().collect::<Vec<_>>()[start..end],
+        );
 
         TextNode::new_with_content(new_content).into_editor_node()
     }
 
     fn get_whitespaces(&self) -> Vec<(usize, usize)> {
         self.content
-            .char_indices()
-            .filter_map(
-                |(index, char)| {
-                    if char == ' ' { Some(index) } else { None }
-                },
-            )
+            .encode_utf16()
+            .enumerate()
+            .filter_map(|(index, code)| {
+                let s = String::from_utf16_lossy(&[code]);
+                s.chars().next().and_then(|s| {
+                    if s.is_whitespace() { Some(index) } else { None }
+                })
+            })
             .fold(Vec::<(usize, usize)>::new(), |mut whitespaces, pos| {
                 if let Some(last) = whitespaces.last_mut() {
                     if last.1 + 1 == pos {
