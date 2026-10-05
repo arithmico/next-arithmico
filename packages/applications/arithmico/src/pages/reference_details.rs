@@ -72,6 +72,8 @@ fn ItemSection(
     let state = State::expect_state();
     let language = state.select(|state| state.settings.get_language());
     let decimal_format = state.select(|state| state.get_decimal_format());
+    let number_representation =
+        state.select(|state| state.settings.number_representation);
     let synopsis = Signal::derive({
         let item = item.clone();
         move || item.get_synopsis(language.get())
@@ -141,6 +143,7 @@ fn ItemSection(
                                                     let param = param.clone();
                                                     move || {
                                                         let decimal_format = decimal_format.get();
+                                                        let number_representation = number_representation.get();
                                                         match param.get_requirement() {
                                                             node::Cardinality::Required => {
                                                                 view! {
@@ -160,7 +163,11 @@ fn ItemSection(
                                                                     "default".to_string(),
                                                                     default
                                                                         .serialize(
-                                                                            SerializeOptions::new(decimal_format, Default::default()),
+                                                                            SerializeOptions::new(
+                                                                                decimal_format,
+                                                                                Default::default(),
+                                                                                number_representation,
+                                                                            ),
                                                                         )
                                                                         .unwrap_or_else(|_| String::from("Serialization failed")),
                                                                 );

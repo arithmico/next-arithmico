@@ -138,7 +138,6 @@ fn ndtr(a: f64) -> f64 {
     let z = x.abs();
 
     /* if( z < SQRTH ) */
-    
 
     if z < 1.0 {
         0.5 + 0.5 * erf(x)
@@ -255,7 +254,7 @@ fn erf(x: f64) -> f64 {
         return 1.0 - erfc(x);
     }
     let z = x * x;
-    
+
     x * polevl(z, &T) / p1evl(z, &U)
 }
 

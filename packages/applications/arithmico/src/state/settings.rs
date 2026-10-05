@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use common::{AngleUnit, Language};
+use common::{AngleUnit, Language, NumberRepresentation};
 use engine::DecimalPlaces;
 use gloo_storage::{LocalStorage, Storage};
 use leptos::{logging::error, prelude::window};
@@ -23,6 +23,7 @@ pub struct Settings {
     pub override_decimal_format: OverrideDecimalFormat,
     pub theme: Theme,
     pub angle_unit: AngleUnit,
+    pub number_representation: NumberRepresentation,
 }
 
 impl Settings {
@@ -72,6 +73,7 @@ impl Default for Settings {
             override_decimal_format: OverrideDecimalFormat::new(),
             theme: Theme::System,
             angle_unit: AngleUnit::Degree,
+            number_representation: NumberRepresentation::Number,
         }
     }
 }

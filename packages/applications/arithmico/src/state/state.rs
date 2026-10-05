@@ -37,10 +37,12 @@ impl State {
     pub fn create_serialize_options(&self) -> SerializeOptions {
         let decimal_places = self.settings.decimal_places;
         let language = self.get_decimal_format();
+        let number_representation = self.settings.number_representation;
 
         SerializeOptions {
             language,
             decimal_places,
+            number_representation,
         }
     }
 
