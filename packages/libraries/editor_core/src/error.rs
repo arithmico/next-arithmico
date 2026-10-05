@@ -3,7 +3,7 @@ use web_sys::{Element, wasm_bindgen::JsValue};
 
 #[derive(Debug, Clone, Error)]
 pub enum Error {
-    #[error("JsValue error")]
+    #[error("JsValue error {0:?}")]
     Js(JsValue),
 
     #[error("Failed to create element")]
