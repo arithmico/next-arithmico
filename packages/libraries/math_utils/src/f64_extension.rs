@@ -9,6 +9,7 @@ pub trait F64Extension {
     fn is_in_closed_interval(&self, lower: f64, upper: f64) -> bool;
     fn is_in_open_interval(&self, lower: f64, upper: f64) -> bool;
     fn is_integer(&self) -> bool;
+    fn as_integer_ratio(&self) -> Option<(i128, u128)>;
 }
 
 impl F64Extension for f64 {
@@ -121,6 +122,95 @@ impl F64Extension for f64 {
 
         self.is_close_to(self.round())
     }
+
+    /// Converts a `f64` into an exact integer ratio `Option<(i128, u128)>)`
+    /// of its binary representation.
+    ///
+    /// # Reference:
+    /// Code: <https://github.com/python/cpython/blob/main/Objects/floatobject.c#L1475-L1553>
+    /// * `.float_as_integer_ratio_impl(PyObject *self)`
+    ///
+    /// # Tests
+    ///
+    /// ```
+    /// use math_utils::F64Extension;
+    ///
+    /// assert_eq!((10.0_f64).as_integer_ratio(), Some((10, 1)));
+    /// assert_eq!((-0.25_f64).as_integer_ratio(), Some((-1, 4)));
+    /// assert_eq!(
+    ///     (0.1_f64).as_integer_ratio(),
+    ///     Some((3602879701896397, 36028797018963968))
+    /// );
+    /// ```
+    fn as_integer_ratio(&self) -> Option<(i128, u128)> {
+        if self.is_infinite() {
+            // cannot convert Infinity to integer ratio
+            return None;
+        }
+
+        if self.is_nan() {
+            // cannot convert NaN to integer ratio
+            return None;
+        }
+
+        if 0.0 == *self {
+            return Some((0, 1));
+        }
+
+        // float_part = frexp(self_double, &exponent);
+        // self_double == float_part * 2**exponent exactly
+        let bits = self.to_bits();
+
+        let sign = if (bits >> 63) == 0 { 1i128 } else { -1i128 };
+        let exponent_bits = ((bits >> 52) & 0x7ff) as i32;
+        let fraction_bits = bits & ((1u64 << 52) - 1);
+
+        let (mantissa, exponent) = if exponent_bits == 0 {
+            // Subnormal:
+            //
+            // x = (-1)^sign * fraction_bits * 2^-1074
+            //
+            // because subnormal numbers have no implicit leading 1 bit and
+            // their effective exponent is -1022 - 52.
+            (fraction_bits, -1074)
+        } else {
+            // Normal:
+            //
+            // x = (-1)^sign * (2^52 + fraction_bits)
+            //     * 2^(exponent_bits - 1023 - 52)
+            //
+            // because normal numbers have an implicit leading 1 bit.
+            (((1u64 << 52) | fraction_bits), exponent_bits - 1023 - 52)
+        };
+
+        let mut numerator = sign.checked_mul(mantissa as i128)?;
+        let mut denominator = 1u128;
+
+        // Fold in 2**exponent.
+        if exponent >= 0 {
+            numerator = numerator.checked_shl(exponent as u32)?;
+        } else {
+            denominator = denominator.checked_shl((-exponent) as u32)?;
+        }
+
+        // normalizes output
+        let divisor = {
+            let mut a = numerator as u128;
+            let mut b = denominator;
+
+            if a == 0 {
+                b
+            } else {
+                while b != 0 {
+                    (a, b) = (b, a % b);
+                }
+
+                a
+            }
+        };
+
+        Some((numerator / divisor as i128, denominator / divisor))
+    }
 }
 
 #[cfg(test)]
@@ -171,5 +261,17 @@ mod tests {
     #[test]
     fn rejects_non_integer() {
         assert!(!2.1.is_integer());
+    }
+
+    #[test]
+    fn test_as_integer_ratio() {
+        assert_eq!((10.0).as_integer_ratio(), Some((10, 1)));
+        assert_eq!((0.0).as_integer_ratio(), Some((0, 1)));
+        assert_eq!((-0.25).as_integer_ratio(), Some((-1, 4)));
+        assert_ne!((0.3).as_integer_ratio(), Some((3, 10)));
+        assert_eq!(
+            (0.1).as_integer_ratio(),
+            Some((3602879701896397, 36028797018963968))
+        );
     }
 }
