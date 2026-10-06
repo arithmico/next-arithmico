@@ -1,4 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { AxeBuilder } from "@axe-core/playwright";
+
+test("accessiblity checks", async ({ page }) => {
+  await page.goto("/");
+  await new AxeBuilder({ page }).analyze();
+});
 
 test("has title", async ({ page }) => {
   await page.goto("/");
