@@ -64,6 +64,7 @@ operators = [
     "operator_less_than_or_equals_number_number",
     "operator_greater_than_or_equals_number_number",
     "operator_factorial_number",
+    "operator_power_matrix_number"
 ]
 
 # data type features
@@ -101,6 +102,7 @@ operator_greater_than_number_number = ["evaluator/operator_greater_than_number_n
 operator_less_than_or_equals_number_number = ["evaluator/operator_less_than_or_equals_number_number"]
 operator_greater_than_or_equals_number_number = ["evaluator/operator_greater_than_or_equals_number_number"]
 operator_factorial_number = ["evaluator/operator_factorial_number"]
+operator_power_matrix_number = ["evaluator/operator_power_matrix_number"]
 
 # api modules
 api_modules = [

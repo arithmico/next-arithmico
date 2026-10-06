@@ -20,6 +20,8 @@ pub enum ErrorKind {
     TooManyParameters,
     InvalidParameterValue,
     UnexpectedNodeType,
+    NotAnInteger,
+    NotPositive,
 }
 
 impl Translatable for ErrorKind {
@@ -69,6 +71,12 @@ impl Translatable for ErrorKind {
             }
             ErrorKind::UnexpectedNodeType => {
                 "engine.evaluate.error.unexpected_node_type.error_kind"
+            }
+            ErrorKind::NotAnInteger => {
+                "engine.evaluate.error.not_and_integer.error_kind"
+            }
+            ErrorKind::NotPositive => {
+                "engine.evaluate.error.not_positive.error_kind"
             }
         };
 
