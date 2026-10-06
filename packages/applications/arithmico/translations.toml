@@ -18,6 +18,10 @@ German = "Über"
 English = "Calculator"
 German = "Rechner"
 
+[calculator.input.label]
+English = "Input"
+German = "Eingabe"
+
 [calculator.error.description]
 English = "Description"
 German = "Beschreibung"

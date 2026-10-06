@@ -8,6 +8,7 @@ use editor_core::{
 };
 use leptos::prelude::*;
 use trace::Trace;
+use translate::use_translate;
 use web_state::WebState;
 
 use crate::state::{EvaluateAction, State, UpdateInputEditorAction};
@@ -132,11 +133,16 @@ fn CalculatorInputEditor() -> impl IntoView {
             state.dispatch_untracked(&UpdateInputEditorAction::new(mutation));
         });
 
+    let translate = use_translate();
+
     view! {
         <Editor
             id="calculator-input"
             autofocus=true
             data_test_id="calculator-input"
+            attr:aria-label=move || {
+                translate("calculator.input.label", None).unwrap_or_default()
+            }
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();
