@@ -3,7 +3,8 @@ import { AxeBuilder } from "@axe-core/playwright";
 
 test("accessiblity checks", async ({ page }) => {
   await page.goto("/");
-  await new AxeBuilder({ page }).analyze();
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
 });
 
 test("has title", async ({ page }) => {
