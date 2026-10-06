@@ -40,6 +40,7 @@ default = [
     "operator_division_number_number",
     "operator_division_tensor_number",
     "operator_power_number_number",
+    "operator_power_matrix_number",
     "operator_function_call",
     "operator_definition",
     "operator_product_matrix_matrix",
@@ -74,13 +75,19 @@ operator_sum_tensor_tensor = ["datatype_tensor"]
 operator_product_number_number = ["datatype_number"]
 operator_product_number_tensor = ["datatype_number", "datatype_tensor"]
 operator_product_vector_vector = ["datatype_tensor"]
+operator_product_matrix_matrix = ["datatype_tensor"]
 operator_division_number_number = ["datatype_number"]
 operator_division_tensor_number = ["datatype_tensor", "datatype_number"]
 operator_power_number_number = ["datatype_number"]
+operator_power_matrix_number = [
+    "datatype_number", 
+    "datatype_tensor", 
+    "operator_product_matrix_matrix"
+]
+
 operator_function_call = [
 ] # this feature does not depend on "datatype_function" because the call target can be a HostApiEndpoint
 operator_definition = ["datatype_symbol"]
-operator_product_matrix_matrix = ["datatype_tensor"]
 operator_and_boolean_boolean = ["datatype_boolean"]
 operator_or_boolean_boolean = ["datatype_boolean"]
 operator_equals_number_number = ["datatype_boolean", "datatype_number"]

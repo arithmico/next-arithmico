@@ -48,6 +48,16 @@ impl Error {
         )
     }
 
+    pub fn not_a_square_matrix() -> Self {
+        Self::new(
+            ErrorKind::IncompatibleMatrixDimensions,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.not_a_square_matrix",
+                translation_resolver,
+            ),
+        )
+    }
+
     pub fn incompatible_matrix_dimensions(
         left: Vec<usize>,
         right: Vec<usize>,
@@ -247,6 +257,26 @@ impl Error {
             ErrorKind::RuntimeError,
             &TranslatedMessage::new(
                 "engine.evaluate.error.overflow",
+                translation_resolver,
+            ),
+        )
+    }
+
+    pub fn not_an_integer() -> Self {
+        Self::new(
+            ErrorKind::NotAnInteger,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.not_an_integer",
+                translation_resolver,
+            ),
+        )
+    }
+
+    pub fn not_positive() -> Self {
+        Self::new(
+            ErrorKind::NotPositive,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.not_positive",
                 translation_resolver,
             ),
         )

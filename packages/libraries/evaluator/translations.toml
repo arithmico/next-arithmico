@@ -54,6 +54,10 @@ German = "Inkompatible Tensordimensionen: {left} und {right}"
 English = "Incompatible tensor dimensions"
 German = "Inkompatible Tensordimensionen"
 
+[engine.evaluate.error.not_a_square_matrix]
+English = "Matrix must be a square matrix."
+German = "Die Matrix muss eine quadratische Matrix sein."
+
 [engine.evaluate.error.incompatible_matrix_dimensions]
 English = "Incompatible matrix dimensions: {left} and {right}"
 German = "Inkompatible Matrixdimensionen: {left} und {right}"
@@ -117,3 +121,19 @@ German = "Interner Fehler"
 [engine.evaluate.error.overflow]
 English = "The result exceeds the supported numeric range (overflow)."
 German = "Das Ergebnis überschreitet den unterstützten Zahlenbereich (Overflow)."
+
+[engine.evaluate.error.not_and_integer.error_kind]
+English = "Not an integer"
+German = "Keine ganze Zahl"
+
+[engine.evaluate.error.not_and_integer]
+English = "Value must be an integer."
+German = "Wert muss eine ganze Zahl sein."
+
+[engine.evaluate.error.not_positive.error_kind]
+English = "Not positive"
+German = "Nicht positiv"
+
+[engine.evaluate.error.not_positive]
+English = "Value must be positive."
+German = "Wert muss positiv sein."
