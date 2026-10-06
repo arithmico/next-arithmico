@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use translate::FormattedMessage;
+use translate::{FormattedMessage, use_translate};
 use ui::{
     common::page_title::PageTitle,
     container::page_header::PageHeader,
@@ -67,8 +67,15 @@ pub fn CalculatorHeader() -> impl IntoView {
 
 #[component]
 fn ToolbarNavigation(children: Children) -> impl IntoView {
+    let translate = use_translate();
+
     view! {
-        <nav class="calculator-toolbar">
+        <nav
+            class="calculator-toolbar"
+            aria-label=move || {
+                translate("calculator.toolbar.label", None).unwrap_or_default()
+            }
+        >
             <ul>{children()}</ul>
         </nav>
     }
