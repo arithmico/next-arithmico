@@ -3,6 +3,8 @@ import { AxeBuilder } from "@axe-core/playwright";
 
 test("accessiblity checks", async ({ page }) => {
   await page.goto("/");
+  // wait until leptos finished rendering
+  await expect(page.getByTestId("calculator-input")).toBeAttached();
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
