@@ -106,8 +106,7 @@ impl EditorCommand for InsertTextCommand {
             let new_node =
                 TextNode::new_with_content(&self.text).into_editor_node();
             let node_id = if state
-                .is_node_before(anchor_node_id, focus_node_id)
-                .unwrap()
+                .is_node_before(anchor_node_id, focus_node_id)?
             {
                 // left to right selection
                 let node_id =
