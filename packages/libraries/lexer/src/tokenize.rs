@@ -199,7 +199,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                                         head_digits, trailing_digits
                                     )
                                     .parse()
-                                    .expect("Float");
+                                    .unwrap_or_default();
 
                                     tokens.push(Token::Number(NumberToken {
                                         span,
@@ -214,9 +214,8 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                             }
                         } else {
                             let span = Span::new(position, head_digits_span.to);
-                            let value: f64 = head_digits
-                                .parse()
-                                .expect("Multi digit integer");
+                            let value: f64 =
+                                head_digits.parse().unwrap_or_default();
 
                             tokens.push(Token::Number(NumberToken {
                                 span,
