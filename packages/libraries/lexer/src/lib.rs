@@ -1,6 +1,3 @@
-#![allow(clippy::expect_used)]
-#![allow(clippy::unwrap_used)]
-
 mod cursor;
 mod error;
 mod position;
