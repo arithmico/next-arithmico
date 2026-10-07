@@ -38,7 +38,7 @@ fn CalculatorInputEditor() -> impl IntoView {
             };
             let mut segments = Vec::<(String, bool)>::new();
             let mut pos = 0;
-            for span in trace.first_spans().into_iter().flatten() {
+            for span in trace.first_spans() {
                 let start = span.from_byte_offset();
                 let end = span.to_byte_offset();
                 if start < pos || start >= content.len() {
