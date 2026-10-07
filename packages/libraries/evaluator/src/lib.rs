@@ -1,5 +1,3 @@
-#![allow(clippy::unwrap_used)]
-
 mod api;
 mod argument_mapping;
 mod error;

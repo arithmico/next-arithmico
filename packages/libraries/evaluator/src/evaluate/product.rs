@@ -18,8 +18,9 @@ impl EvaluateNode for Product {
             .iter()
             .map(|element| element.evaluate(context));
 
-        // Safety: this can not panic due to the previous length check
-        let mut accumulator = elements.next().unwrap()?;
+        let mut accumulator = elements
+            .next()
+            .ok_or_else(|| Error::invalid_node(self.node_type()))??;
         for current_element in elements {
             accumulator = multiply_product_elements(
                 &accumulator,
@@ -120,40 +121,45 @@ fn multiply_matrices(
     right: &Tensor,
     context: Options,
 ) -> Result<Node, Error> {
-    debug_assert_eq!(left.get_rank(), 2);
-    debug_assert_eq!(right.get_rank(), 2);
+    if left.get_rank() != 2 || right.get_rank() != 2 {
+        return Err(Error::unreachable());
+    }
 
-    if left.shape.get(1).unwrap() != right.shape.first().unwrap() {
+    if left.shape.get(1) != right.shape.first() {
         return Err(Error::incompatible_matrix_dimensions(
             left.shape.clone(),
             right.shape.clone(),
         ));
     }
 
-    let x = *left.shape.get(1).unwrap();
-    let dim0 = *left.shape.first().unwrap();
-    let dim1 = *right.shape.get(1).unwrap();
+    let x = *left.shape.get(1).ok_or_else(Error::unreachable)?;
+    let dim0 = *left.shape.first().ok_or_else(Error::unreachable)?;
+    let dim1 = *right.shape.get(1).ok_or_else(Error::unreachable)?;
     let result_shape = vec![dim0, dim1];
 
     let elements = (0usize..(dim0 * dim1))
         .map(|index| {
-            let outer_index =
-                convert_to_outer_index(&result_shape, index).unwrap();
-            let i = *outer_index.first().unwrap();
-            let k = *outer_index.get(1).unwrap();
+            let outer_index = convert_to_outer_index(&result_shape, index)
+                .ok_or_else(Error::unreachable)?;
+            let i = *outer_index.first().ok_or_else(Error::unreachable)?;
+            let k = *outer_index.get(1).ok_or_else(Error::unreachable)?;
 
-            Sum::new(
-                (0usize..x)
-                    .map(|j| {
-                        Product::new(vec![
-                            left.get_element(&[i, j]).unwrap().clone(),
-                            right.get_element(&[j, k]).unwrap().clone(),
-                        ])
-                    })
-                    .collect(),
-            )
+            let mut elements = Vec::with_capacity(x);
+            for j in 0..x {
+                elements.push(Product::new(vec![
+                    left.get_element(&[i, j])
+                        .ok_or_else(Error::unreachable)?
+                        .clone(),
+                    right
+                        .get_element(&[j, k])
+                        .ok_or_else(Error::unreachable)?
+                        .clone(),
+                ]));
+            }
+
+            Ok(Sum::new(elements))
         })
-        .collect();
+        .collect::<Result<Vec<_>, _>>()?;
 
     Tensor::new_with_shape(result_shape, elements).evaluate(context)
 }
