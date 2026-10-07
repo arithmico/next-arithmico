@@ -1,6 +1,4 @@
 #![allow(clippy::excessive_precision)]
-#![allow(clippy::expect_used)]
-#![allow(clippy::unwrap_used)]
 
 mod algebra;
 mod descriptive_statistics;
