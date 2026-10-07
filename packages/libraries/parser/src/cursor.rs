@@ -89,6 +89,10 @@ impl<'a> Cursor<'a> {
         self.current().map(|token| token.get_span().from)
     }
 
+    pub fn current_position_or_err(&self) -> Result<Position, Error> {
+        self.current_position().ok_or(Error::UnexpectedEndOfInput)
+    }
+
     pub fn peek(&self) -> Option<&'a Token> {
         self.tokens.get(self.position)
     }
@@ -99,5 +103,9 @@ impl<'a> Cursor<'a> {
 
     pub fn peek_position(&self) -> Option<Position> {
         self.peek().map(|token| token.get_span().from)
+    }
+
+    pub fn peek_position_or_err(&self) -> Result<Position, Error> {
+        self.peek_position().ok_or(Error::UnexpectedEndOfInput)
     }
 }
