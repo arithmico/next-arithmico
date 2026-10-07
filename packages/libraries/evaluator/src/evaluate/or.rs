@@ -14,7 +14,9 @@ impl EvaluateNode for Or {
             .iter()
             .map(|element| element.evaluate(context));
 
-        let mut accumulator = elements.next().unwrap()?;
+        let mut accumulator = elements
+            .next()
+            .ok_or_else(|| Error::invalid_node(self.node_type()))??;
         for current_element in elements {
             accumulator = combine_or_elements(&accumulator, &current_element?)?;
         }

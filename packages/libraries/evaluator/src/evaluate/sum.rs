@@ -15,7 +15,9 @@ impl EvaluateNode for Sum {
             .iter()
             .map(|element| element.evaluate(context));
 
-        let mut accumulator = elements.next().unwrap()?;
+        let mut accumulator = elements
+            .next()
+            .ok_or_else(|| Error::invalid_node(self.node_type()))??;
         for current_element in elements {
             accumulator =
                 add_sum_elements(&accumulator, &current_element?, context)?;
