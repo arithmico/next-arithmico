@@ -6,7 +6,10 @@ use editor_core::{
     EditorContainerNode, EditorLeafNode,
     selection::{SelectionRange, SelectionRangePoint},
 };
-use leptos::prelude::*;
+use leptos::{
+    logging::{error, warn},
+    prelude::*,
+};
 use trace::Trace;
 use translate::use_translate;
 use web_state::WebState;
@@ -27,16 +30,21 @@ fn CalculatorInputEditor() -> impl IntoView {
     Effect::new(move |_| {
         if let Option::<&Trace>::Some(trace) = error_trace.read().as_ref() {
             let editor_state = state.get().input_editor_state;
-            let content = editor_state
-                .serialize_node(editor_state.get_root_id())
-                .expect("field content");
+            let Some(content) =
+                editor_state.serialize_node(editor_state.get_root_id())
+            else {
+                warn!("No node to serialize.");
+                return;
+            };
             let mut segments = Vec::<(String, bool)>::new();
             let mut pos = 0;
             for span in trace.first_spans().into_iter().flatten() {
                 let start = span.from_byte_offset();
                 let end = span.to_byte_offset();
-                assert!(start >= pos);
-                assert!(start < content.len());
+                if start < pos || start >= content.len() {
+                    error!("Start offset out of bounds!");
+                    return;
+                }
                 if pos < start {
                     segments.push((content[pos..start].to_string(), false));
                     pos = start;
@@ -96,14 +104,12 @@ fn CalculatorInputEditor() -> impl IntoView {
                         let (anchor_node_id, anchor_offset) = state
                             .get_node_id_and_offset_from_absolute_offset(
                                 anchor_pos,
-                            )
-                            .expect("anchor pos");
+                            )?;
 
                         let (focus_node_id, focus_offset) = state
                             .get_node_id_and_offset_from_absolute_offset(
                                 focus_pos,
-                            )
-                            .expect("focus pos");
+                            )?;
 
                         state.set_selection(SelectionRange::new(
                             SelectionRangePoint::new(

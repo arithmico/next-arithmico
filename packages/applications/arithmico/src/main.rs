@@ -1,6 +1,3 @@
-#![allow(clippy::expect_used)]
-#![allow(clippy::unwrap_used)]
-
 use app::App;
 use leptos::prelude::*;
 

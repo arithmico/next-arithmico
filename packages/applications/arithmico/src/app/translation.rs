@@ -13,10 +13,12 @@ pub fn TranslationProvider(children: Children) -> impl IntoView {
     let state = State::expect_state();
     let browser_language_trigger = Trigger::new();
     let language = state.select(|state| state.settings.get_language());
-    let translations = TranslationTemplateProvider::try_from_toml(
+    let Some(translations) = TranslationTemplateProvider::try_from_toml(
         include_str!("../../translations.toml"),
-    )
-    .expect("translations");
+    ) else {
+        return view! { <p>{"Failed to initialize translation provider!"}</p> }
+            .into_any();
+    };
 
     let event_handler = Closure::wrap(Box::new(move |_: Event| {
         browser_language_trigger.notify();
@@ -57,4 +59,5 @@ pub fn TranslationProvider(children: Children) -> impl IntoView {
             {children()}
         </Provider>
     }
+    .into_any()
 }

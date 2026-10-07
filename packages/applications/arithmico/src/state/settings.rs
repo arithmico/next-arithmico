@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use common::{AngleUnit, Language};
 use engine::DecimalPlaces;
 use gloo_storage::{LocalStorage, Storage};
-use leptos::prelude::window;
+use leptos::{logging::error, prelude::window};
 use override_decimal_format::OverrideDecimalFormat;
 use serde::{Deserialize, Serialize};
 use theme::Theme;
@@ -38,11 +38,17 @@ impl Settings {
     }
 
     pub fn save(&self) {
-        LocalStorage::set(
-            SETTINGS_STORAGE_KEY,
-            serde_json::to_string(&self).expect("serialized settings"),
-        )
-        .expect("localstorage");
+        let data = match serde_json::to_string(&self) {
+            Ok(data) => data,
+            Err(err) => {
+                error!("Failed to serialize settings: {}", err);
+                return;
+            }
+        };
+
+        if let Err(err) = LocalStorage::set(SETTINGS_STORAGE_KEY, data) {
+            error!("Failed to save settings to local storage: {}", err);
+        }
     }
 
     pub fn get_language(&self) -> Language {
