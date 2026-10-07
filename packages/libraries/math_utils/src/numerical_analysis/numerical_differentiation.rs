@@ -130,8 +130,10 @@ where
             MAX_RICHARDSON_LEVELS,
         );
 
-        let extrapolated =
-            *richardson_row.last().expect("Richardson row is non-empty");
+        let extrapolated = richardson_row
+            .last()
+            .copied()
+            .unwrap_or(initial_approximation);
 
         let error = if richardson_row.len() >= MAX_RICHARDSON_LEVELS - 1 {
             let last = richardson_row.len() - 1;
