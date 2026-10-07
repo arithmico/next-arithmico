@@ -254,16 +254,12 @@ impl From<&Api> for Documentation {
             let module_id = endpoint.module_id();
             let module = match modules.get_mut(module_id) {
                 Some(module) => module,
-                None => {
-                    modules.insert(
-                        module_id.to_string(),
-                        DocumentationModule {
-                            name: endpoint.module_name().clone(),
-                            items: vec![],
-                        },
-                    );
-                    modules.get_mut(module_id).expect("module")
-                }
+                None => modules.entry(module_id.to_string()).or_insert(
+                    DocumentationModule {
+                        name: endpoint.module_name().clone(),
+                        items: vec![],
+                    },
+                ),
             };
 
             let item = DocumentationItem::from_endpoint(name, endpoint);
