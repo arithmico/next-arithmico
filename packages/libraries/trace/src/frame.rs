@@ -2,97 +2,74 @@ use lexer::Span;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Frame {
-    spans: Vec<Span>,
+    first: Span,
+    rest: Vec<Span>,
 }
 
 impl Frame {
     pub fn new(span: Span) -> Self {
-        Self { spans: vec![span] }
+        Self {
+            first: span,
+            rest: vec![],
+        }
     }
 
     pub fn push(&mut self, mut span: Span) {
-        let start_idx = self
-            .spans
-            .partition_point(|s| s.to.char_index + 1 < span.from.char_index);
-        let end_idx = self
-            .spans
-            .partition_point(|s| s.from.char_index <= span.to.char_index + 1);
+        if self.first.from.char_index > span.to.char_index + 1 {
+            // span is left from first with no overlap
+            std::mem::swap(&mut self.first, &mut span);
+            self.rest.insert(0, span);
+        } else if self.first.overlap_or_meets(&span) {
+            self.first.to = self.first.to.max(span.to);
+            self.first.from = self.first.from.min(span.from);
 
-        if start_idx < end_idx {
-            span.from = span.from.min(self.spans[start_idx].from);
-            span.to = span.to.max(self.spans[end_idx - 1].to);
-            self.spans[start_idx] = span;
-            if start_idx + 1 < end_idx {
-                self.spans.drain((start_idx + 1)..end_idx);
+            while let Some(next) = self.rest.first()
+                && next.from.char_index <= self.first.to.char_index + 1
+            {
+                self.first.to = next.to.max(self.first.to);
+                self.rest.remove(0);
             }
         } else {
-            self.spans.insert(start_idx, span);
+            let start_idx = self.rest.partition_point(|s| {
+                s.to.char_index + 1 < span.from.char_index
+            });
+            let end_idx = self.rest.partition_point(|s| {
+                s.from.char_index <= span.to.char_index + 1
+            });
+
+            if start_idx < end_idx {
+                span.from = span.from.min(self.rest[start_idx].from);
+                span.to = span.to.max(self.rest[end_idx - 1].to);
+                self.rest[start_idx] = span;
+                if start_idx + 1 < end_idx {
+                    self.rest.drain((start_idx + 1)..end_idx);
+                }
+            } else {
+                self.rest.insert(start_idx, span);
+            }
         }
     }
 
     pub fn hull(&self) -> Span {
-        // Safety: frames are always initialized with at least one span
-        #[allow(clippy::unwrap_used)]
-        let first = self.spans.first().unwrap();
-        if self.spans.len() == 1 {
-            return *first;
+        let first = self.first;
+        if self.rest.is_empty() {
+            return first;
         }
-        #[allow(clippy::unwrap_used)]
-        let last = self.spans.last().unwrap();
+        let last = self.rest.last().unwrap_or(&self.first);
         Span::new(first.from.min(last.from), first.to.max(last.to))
     }
 
     pub fn is_hull(&self) -> bool {
-        self.spans.len() == 1
+        self.rest.is_empty()
     }
 
     pub fn merge(&mut self, frame: Frame) {
-        let new_len = self.spans.len() + frame.spans.len();
-        let mut left_iter = std::mem::replace(
-            &mut self.spans,
-            Vec::<Span>::with_capacity(new_len),
-        )
-        .into_iter();
-        let mut right_iter = frame.spans.into_iter();
-
-        let mut left = left_iter.next();
-        let mut right = right_iter.next();
-
-        loop {
-            let next_span = match (left, right) {
-                (Some(l), Some(r)) => {
-                    if l.from.char_index <= r.from.char_index {
-                        left = left_iter.next();
-                        l
-                    } else {
-                        right = right_iter.next();
-                        r
-                    }
-                }
-                (Some(l), None) => {
-                    left = left_iter.next();
-                    l
-                }
-                (None, Some(r)) => {
-                    right = right_iter.next();
-                    r
-                }
-                (None, None) => break,
-            };
-
-            match self.spans.last_mut() {
-                Some(last)
-                    if last.to.char_index + 1 >= next_span.from.char_index =>
-                {
-                    last.to = last.to.max(next_span.to);
-                }
-                _ => self.spans.push(next_span),
-            }
-        }
+        self.push(frame.first);
+        frame.rest.into_iter().for_each(|span| self.push(span));
     }
 
-    pub fn spans(&self) -> &[Span] {
-        &self.spans
+    pub fn spans(&self) -> impl Iterator<Item = Span> {
+        [self.first].into_iter().chain(self.rest.iter().copied())
     }
 }
 
@@ -104,6 +81,8 @@ impl From<Span> for Frame {
 
 #[cfg(test)]
 mod tests {
+    use std::vec;
+
     use lexer::Position;
 
     use super::*;
@@ -116,8 +95,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![
-                    Span::new(Position::new(0, 0), Position::new(1, 1)),
+                first: Span::new(Position::new(0, 0), Position::new(1, 1)),
+                rest: vec![
                     Span::new(Position::new(3, 3), Position::new(3, 3),)
                 ]
             }
@@ -132,10 +111,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![
-                    Span::new(Position::new(0, 0), Position::new(1, 1)),
-                    Span::new(Position::new(3, 3), Position::new(4, 4)),
-                ]
+                first: Span::new(Position::new(0, 0), Position::new(1, 1)),
+                rest: vec![Span::new(Position::new(3, 3), Position::new(4, 4)),]
             }
         );
     }
@@ -149,8 +126,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![
-                    Span::new(Position::new(0, 0), Position::new(1, 1)),
+                first: Span::new(Position::new(0, 0), Position::new(1, 1)),
+                rest: vec![
                     Span::new(Position::new(3, 3), Position::new(3, 3)),
                     Span::new(Position::new(5, 5), Position::new(6, 6)),
                 ]
@@ -166,10 +143,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(1, 1),
-                    Position::new(4, 4)
-                ),]
+                first: Span::new(Position::new(1, 1), Position::new(4, 4)),
+                rest: vec![]
             }
         );
     }
@@ -182,10 +157,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(1, 1),
-                    Position::new(4, 4)
-                ),]
+                first: Span::new(Position::new(1, 1), Position::new(4, 4)),
+                rest: vec![]
             }
         );
     }
@@ -198,10 +171,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(1, 1),
-                    Position::new(4, 4)
-                ),]
+                first: Span::new(Position::new(1, 1), Position::new(4, 4)),
+                rest: vec![]
             }
         );
     }
@@ -214,10 +185,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(1, 1),
-                    Position::new(4, 4)
-                ),]
+                first: Span::new(Position::new(1, 1), Position::new(4, 4)),
+                rest: vec![]
             }
         );
     }
@@ -234,10 +203,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(0, 0),
-                    Position::new(7, 7)
-                ),]
+                first: Span::new(Position::new(0, 0), Position::new(7, 7)),
+                rest: vec![]
             }
         );
     }
@@ -250,10 +217,8 @@ mod tests {
         assert_eq!(
             frame,
             Frame {
-                spans: vec![Span::new(
-                    Position::new(1, 1),
-                    Position::new(2, 2)
-                ),]
+                first: Span::new(Position::new(1, 1), Position::new(2, 2)),
+                rest: vec![]
             }
         );
     }
@@ -261,16 +226,16 @@ mod tests {
     #[test]
     fn merge_frames() {
         let mut frame1 = Frame {
-            spans: vec![
-                Span::new(Position::new(0, 0), Position::new(2, 2)),
+            first: Span::new(Position::new(0, 0), Position::new(2, 2)),
+            rest: vec![
                 Span::new(Position::new(6, 6), Position::new(8, 8)),
                 Span::new(Position::new(14, 14), Position::new(15, 15)),
             ],
         };
 
         let frame2 = Frame {
-            spans: vec![
-                Span::new(Position::new(1, 1), Position::new(4, 4)),
+            first: Span::new(Position::new(1, 1), Position::new(4, 4)),
+            rest: vec![
                 Span::new(Position::new(9, 9), Position::new(10, 10)),
                 Span::new(Position::new(12, 12), Position::new(12, 12)),
             ],
@@ -281,8 +246,8 @@ mod tests {
         assert_eq!(
             frame1,
             Frame {
-                spans: vec![
-                    Span::new(Position::new(0, 0), Position::new(4, 4)),
+                first: Span::new(Position::new(0, 0), Position::new(4, 4)),
+                rest: vec![
                     Span::new(Position::new(6, 6), Position::new(10, 10)),
                     Span::new(Position::new(12, 12), Position::new(12, 12)),
                     Span::new(Position::new(14, 14), Position::new(15, 15)),
@@ -294,8 +259,8 @@ mod tests {
     #[test]
     fn hull() {
         let frame = Frame {
-            spans: vec![
-                Span::new(Position::new(2, 2), Position::new(5, 5)),
+            first: Span::new(Position::new(2, 2), Position::new(5, 5)),
+            rest: vec![
                 Span::new(Position::new(8, 8), Position::new(10, 10)),
                 Span::new(Position::new(15, 15), Position::new(20, 20)),
             ],

@@ -65,6 +65,11 @@ impl Span {
     pub fn to_byte_offset(&self) -> usize {
         self.to.byte_index
     }
+
+    pub fn overlap_or_meets(&self, other: &Self) -> bool {
+        self.to.char_index + 1 >= other.from.char_index
+            && self.from.char_index <= other.to.char_index + 1
+    }
 }
 
 pub trait GetTokenSpan {
