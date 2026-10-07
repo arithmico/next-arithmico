@@ -1,6 +1,3 @@
-#![allow(clippy::unwrap_used)]
-#![allow(clippy::expect_used)]
-
 pub mod command;
 pub mod editor;
 pub mod node;

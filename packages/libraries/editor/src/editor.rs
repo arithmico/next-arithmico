@@ -5,9 +5,10 @@ use editor_core::{
     selection::{AbsoluteSelectionRange, SelectionRange},
 };
 use leptos::{html::Div, prelude::*};
+use leptos_dom::error;
 use web_sys::{
-    Event, Node,
-    wasm_bindgen::{JsCast, prelude::Closure},
+    Event, EventTarget, Node,
+    wasm_bindgen::{JsCast, JsValue, prelude::Closure},
 };
 
 use crate::{
@@ -48,32 +49,34 @@ struct Listener {
 }
 
 impl Listener {
-    fn new<F>(element: web_sys::EventTarget, name: impl ToString, cb: F) -> Self
+    fn new<F>(
+        element: web_sys::EventTarget,
+        name: impl ToString,
+        cb: F,
+    ) -> Result<Self, JsValue>
     where
         F: Fn(Event) + 'static,
     {
         let cb = Closure::new(cb);
         let name = name.to_string();
 
-        element
-            .add_event_listener_with_callback(
-                &name,
-                cb.as_ref().unchecked_ref(),
-            )
-            .unwrap();
+        element.add_event_listener_with_callback(
+            &name,
+            cb.as_ref().unchecked_ref(),
+        )?;
 
-        Self { element, name, cb }
+        Ok(Self { element, name, cb })
     }
 }
 
 impl Drop for Listener {
     fn drop(&mut self) {
-        self.element
-            .remove_event_listener_with_callback(
-                &self.name,
-                self.cb.as_ref().unchecked_ref(),
-            )
-            .unwrap();
+        if let Err(err) = self.element.remove_event_listener_with_callback(
+            &self.name,
+            self.cb.as_ref().unchecked_ref(),
+        ) {
+            error!("Failed to remove event listener: {:?}", err);
+        }
     }
 }
 
@@ -90,8 +93,16 @@ pub fn Editor(
     let selection_before_composition =
         RwSignal::<Option<AbsoluteSelectionRange>>::new(None);
 
+    let document_element = match document().dyn_into::<EventTarget>() {
+        Ok(element) => element,
+        Err(err) => {
+            error!("Failed to cast Document into EventTarget: {:?}", err);
+            return ().into_any();
+        }
+    };
+
     RwSignal::new_local(Listener::new(
-        document().dyn_into().expect("event target"),
+        document_element,
         "selectionchange",
         move |_: web_sys::Event| {
             update_editor_state.run(EditorStateMutation::new(move |state| {
@@ -103,15 +114,21 @@ pub fn Editor(
 
     Effect::new(move |_| {
         let node_ref = editor_ref.get();
-        if node_ref.is_none() {
+        let Some(div) = node_ref else {
             return;
-        }
-        let div = node_ref.unwrap();
-        if autofocus {
-            div.focus().expect("focus");
+        };
+
+        if autofocus && let Err(err) = div.focus() {
+            error!("Failed to focus element: {:?}", err);
         }
 
-        let node = div.deref().clone().dyn_into::<Node>().expect("node");
+        let node = match div.deref().clone().dyn_into::<Node>() {
+            Ok(node) => node,
+            Err(err) => {
+                error!("Failed to cast Div into Node: {:?}", err);
+                return;
+            }
+        };
 
         update_editor_state.run(EditorStateMutation::new(move |state| {
             if state.get_selection().is_none() {
@@ -145,8 +162,9 @@ pub fn Editor(
         update_editor_state.run(EditorStateMutation::new(move |state| {
             match event.input_type().as_str() {
                 "insertText" => {
-                    let command =
-                        InsertTextCommand::new(event.data().expect("data"));
+                    let command = InsertTextCommand::new(
+                        event.data().unwrap_or_default(),
+                    );
                     state.execute_command(command.into())
                 }
                 "deleteContentBackward" => {
@@ -162,11 +180,17 @@ pub fn Editor(
                     state.execute_command(DeleteWordForwardCommand.into())
                 }
                 "insertFromPaste" => {
-                    let data = event
-                        .data_transfer()
-                        .expect("data transfer")
-                        .get_data("text/plain")
-                        .expect("data");
+                    let Some(data_transfer) = event.data_transfer() else {
+                        error!("InputEvent does not contain DataTransfer.");
+                        return Ok(());
+                    };
+                    let data = match data_transfer.get_data("text/plain") {
+                        Ok(data) => data,
+                        Err(err) => {
+                            error!("Failed to read text/plain from DataTransfer: {:?}", err);
+                            return Ok(())
+                        },
+                    };
 
                     state.execute_command(InsertTextCommand::new(data).into())
                 }
@@ -220,4 +244,5 @@ pub fn Editor(
             }
         ></div>
     }
+    .into_any()
 }
