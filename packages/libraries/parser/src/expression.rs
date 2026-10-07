@@ -51,12 +51,9 @@ fn parse_expression_pratt<'a>(
         ) = (cursor.current_token_kind(), cursor.peek_token_kind())
         {
             return Err(Error::MissingMultiplyBetween {
-                #[allow(clippy::unwrap_used)]
                 span: Span::new(
-                    // Safety: the match pattern garantees that this is always Some(_)
-                    cursor.current_position().unwrap(),
-                    // Safety: the match pattern garantees that this is always Some(_)
-                    cursor.peek_position().unwrap(),
+                    cursor.current_position_or_err()?,
+                    cursor.peek_position_or_err()?,
                 ),
             });
         };
@@ -205,13 +202,10 @@ fn parse_expression_pratt<'a>(
             | TokenKind::GreaterThanOrEquals
             | TokenKind::Equals => {
                 let mut items = Vec::<(RelationType, Node)>::new();
-                // Safety: unwrap can not fail in this context
-                #[allow(clippy::unwrap_used)]
-                let relation_type =
-                    RelationType::try_from_token(operator).unwrap();
+                let relation_type = RelationType::try_from_token(operator)?;
                 items.push((relation_type, right));
                 while let Some(token) = cursor.peek()
-                    && let Some(relation_type) =
+                    && let Ok(relation_type) =
                         RelationType::try_from_token(token)
                 {
                     cursor.next();
@@ -319,16 +313,25 @@ enum RelationType {
 }
 
 impl RelationType {
-    fn try_from_token(token: &Token) -> Option<Self> {
+    fn try_from_token(token: &Token) -> Result<Self, Error> {
         match token.token_kind() {
-            TokenKind::Equals => Some(RelationType::Equals),
-            TokenKind::LessThan => Some(RelationType::LessThan),
-            TokenKind::LessThanOrEquals => Some(RelationType::LessThanOrEquals),
-            TokenKind::GreaterThan => Some(RelationType::GreaterThan),
+            TokenKind::Equals => Ok(RelationType::Equals),
+            TokenKind::LessThan => Ok(RelationType::LessThan),
+            TokenKind::LessThanOrEquals => Ok(RelationType::LessThanOrEquals),
+            TokenKind::GreaterThan => Ok(RelationType::GreaterThan),
             TokenKind::GreaterThanOrEquals => {
-                Some(RelationType::GreaterThanOrEquals)
+                Ok(RelationType::GreaterThanOrEquals)
             }
-            _ => None,
+            _ => Err(Error::UnexpectedToken {
+                expected: vec![
+                    TokenKind::Equals,
+                    TokenKind::LessThan,
+                    TokenKind::LessThanOrEquals,
+                    TokenKind::GreaterThan,
+                    TokenKind::GreaterThanOrEquals,
+                ],
+                actual: token.clone(),
+            }),
         }
     }
 }
