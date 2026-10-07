@@ -12,8 +12,9 @@ use web_sys::{
 
 use crate::{
     command::{
-        DeleteContentBackwardCommand, DeleteContentForwardCommand,
-        DeleteWordBackwardCommand, DeleteWordForwardCommand, InsertTextCommand,
+        DeleteByCutCommand, DeleteContentBackwardCommand,
+        DeleteContentForwardCommand, DeleteWordBackwardCommand,
+        DeleteWordForwardCommand, InsertTextCommand,
     },
     node::TextNode,
 };
@@ -168,6 +169,9 @@ pub fn Editor(
                         .expect("data");
 
                     state.execute_command(InsertTextCommand::new(data).into())
+                }
+                "deleteByCut" => {
+                    state.execute_command(DeleteByCutCommand.into())
                 }
                 _ => Ok(()),
             }
