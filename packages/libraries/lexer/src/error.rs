@@ -16,6 +16,16 @@ pub enum Error {
     MissingDecimalPlaces { position: Position },
 }
 
+impl Error {
+    pub fn position(&self) -> Position {
+        match self {
+            Error::UnexpectedCharacter { position, .. } => *position,
+            Error::InvalidLeadingZero { position } => *position,
+            Error::MissingDecimalPlaces { position } => *position,
+        }
+    }
+}
+
 impl Translatable for Error {
     fn translate(
         &self,
