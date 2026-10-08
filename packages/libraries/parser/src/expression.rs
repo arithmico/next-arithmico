@@ -144,12 +144,13 @@ fn parse_expression_pratt<'a>(
                     }
                     Node::FunctionCall(function_call) => {
                         let mut signature = FunctionSignature::default();
-                        for argument in &function_call.arguments {
+                        for argument in function_call.arguments {
                             match argument {
                                 Node::Symbol(symbol) => {
                                     if signature.has_argument(&symbol.name) {
                                         return Err(Error::DuplicateFunctionArgumentName {
-                                            name: symbol.name.clone(),
+                                            span: symbol.hull().unwrap_or_default(),
+                                            name: symbol.name,
                                         });
                                     }
                                     signature.add_argument(
@@ -440,10 +441,10 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             if closing_cursor.peek_token_kind() == Some(TokenKind::Arrow) {
                 let mut span = token.get_span();
                 // parse inline function declaration
-                let mut parameters = Vec::<String>::new();
+                let mut parameters = Vec::<(String, Span)>::new();
                 // read function parameters e. g. (a, b, c)
                 while let Some(token) = cursor.next_if::<IdentifierToken>() {
-                    parameters.push(token.name.clone());
+                    parameters.push((token.name.clone(), token.get_span()));
                     cursor.next_if::<SeparatorToken>();
                 }
 
@@ -459,10 +460,11 @@ fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     TokenKind::Define.binding_power().unwrap_or_default() + 1,
                 )?;
                 let mut signature = FunctionSignature::default();
-                for param in parameters {
+                for (param, span) in parameters {
                     if signature.has_argument(&param) {
                         return Err(Error::DuplicateFunctionArgumentName {
                             name: param,
+                            span,
                         });
                     }
                     signature.add_argument(param, |arg| {
@@ -890,6 +892,21 @@ mod tests {
         assert_eq!(
             output,
             Error::InvalidFunctionArgumentDeclaration {
+                span: Span::new_between(5, 5)
+            }
+        );
+    }
+
+    #[test]
+    fn define_function_err_duplicate_parameter_name() {
+        let tokens =
+            tokenize("f(x, x) := x", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap_err();
+        assert_eq!(
+            output,
+            Error::DuplicateFunctionArgumentName {
+                name: String::from("x"),
                 span: Span::new_between(5, 5)
             }
         );

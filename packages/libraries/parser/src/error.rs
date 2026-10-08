@@ -8,7 +8,6 @@ use translate_core::{
 
 use crate::translations::translation_resolver;
 
-// TODO: add input spans for tracing
 #[derive(Debug, Clone, Error, PartialEq)]
 #[error("ParseError")]
 pub enum Error {
@@ -31,6 +30,7 @@ pub enum Error {
     },
     DuplicateFunctionArgumentName {
         name: String,
+        span: Span,
     },
     InvalidFunctionName {
         span: Span,
@@ -105,7 +105,7 @@ impl Translatable for Error {
                 .key("pos", span.from.char_index + 1)
                 .translate(language)
             }
-            Error::DuplicateFunctionArgumentName { name } => {
+            Error::DuplicateFunctionArgumentName { name, .. } => {
                 TranslatedMessage::new(
                     "error.duplicate_function_argument_name",
                     translation_resolver,
