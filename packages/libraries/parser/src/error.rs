@@ -41,6 +41,24 @@ pub enum Error {
     Lexer(lexer::Error),
 }
 
+impl Error {
+    pub fn get_span(&self) -> Span {
+        match self {
+            Error::UnexpectedToken { actual, .. } => actual.get_span(),
+            Error::UnexpectedEndOfInput { span } => *span,
+            Error::UnexpectedLeftSideOfDefinition { span, .. } => *span,
+            Error::MissingMultiplyBetween { span } => *span,
+            Error::InvalidFunctionArgumentDeclaration { span } => *span,
+            Error::DuplicateFunctionArgumentName { span, .. } => *span,
+            Error::InvalidFunctionName { span } => *span,
+            Error::MissingClosingParenthesis { span } => *span,
+            Error::Lexer(error) => {
+                Span::new(error.position(), error.position())
+            }
+        }
+    }
+}
+
 impl From<lexer::Error> for Error {
     fn from(value: lexer::Error) -> Self {
         Self::Lexer(value)
