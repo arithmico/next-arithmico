@@ -28,42 +28,7 @@ fn normalize_number(
 ) -> Result<Node, crate::Error> {
     match options.number_representation {
         NumberRepresentation::Number => {
-            if number.value == 0.0 {
-                return Ok(Number::new_node(number.value));
-            }
-
-            let decimal_places = usize::from(options.decimal_places);
-
-            let magnitude = number.value.abs().log10().floor() as i64;
-            let magnitude_abs =
-                if magnitude < 0 { -magnitude } else { magnitude };
-            if magnitude_abs <= decimal_places as i64 {
-                return if number.value < 0.0 {
-                    Ok(Negate::new(Number::new_node(number.value.abs())))
-                } else {
-                    Ok(Number::new_node(number.value))
-                };
-            }
-
-            let sign = number.value.signum();
-            let factor = number.value.abs() * 10_f64.powi(-magnitude as i32);
-            let scientific_notation = Product::new(vec![
-                Number::new_node(factor),
-                Power::new(
-                    Number::new_node(10.0),
-                    if magnitude < 0 {
-                        Negate::new(Number::new_node(magnitude.abs() as f64))
-                    } else {
-                        Number::new_node(magnitude.abs() as f64)
-                    },
-                ),
-            ]);
-
-            Ok(if sign > 0.0 {
-                scientific_notation
-            } else {
-                Negate::new(scientific_notation)
-            })
+            Ok(scientific_notation(number, options))
         }
 
         NumberRepresentation::Fraction => {
@@ -94,11 +59,7 @@ fn normalize_number(
             }
 
             // Fallback
-            if number.value < 0.0 {
-                Ok(Negate::new(Number::new_node(number.value.abs())))
-            } else {
-                Ok(Number::new_node(number.value))
-            }
+            Ok(scientific_notation(number, options))
         }
 
         NumberRepresentation::MixedFraction => {
@@ -136,11 +97,45 @@ fn normalize_number(
             }
 
             // Fallback
-            if number.value < 0.0 {
-                Ok(Negate::new(Number::new_node(number.value.abs())))
-            } else {
-                Ok(Number::new_node(number.value))
-            }
+            Ok(scientific_notation(number, options))
         }
+    }
+}
+
+fn scientific_notation(number: &Number, options: crate::Options) -> Node {
+    if number.value == 0.0 {
+        return Number::new_node(number.value);
+    }
+
+    let decimal_places = usize::from(options.decimal_places);
+
+    let magnitude = number.value.abs().log10().floor() as i64;
+    let magnitude_abs = magnitude.abs();
+    if magnitude_abs <= decimal_places as i64 {
+        return if number.value < 0.0 {
+            Negate::new(Number::new_node(number.value.abs()))
+        } else {
+            Number::new_node(number.value)
+        };
+    }
+
+    let sign = number.value.signum();
+    let factor = number.value.abs() * 10_f64.powi(-magnitude as i32);
+    let scientific_notation = Product::new(vec![
+        Number::new_node(factor),
+        Power::new(
+            Number::new_node(10.0),
+            if magnitude < 0 {
+                Negate::new(Number::new_node(magnitude_abs as f64))
+            } else {
+                Number::new_node(magnitude_abs as f64)
+            },
+        ),
+    ]);
+
+    if sign > 0.0 {
+        scientific_notation
+    } else {
+        Negate::new(scientific_notation)
     }
 }
