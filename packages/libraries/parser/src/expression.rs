@@ -167,16 +167,20 @@ fn parse_expression_pratt<'a>(
                             }
                         }
                     }
-                    if let Node::Symbol(symbol) = function_call.target.as_ref()
-                    {
-                        left = Definition::new(
-                            &symbol.name,
-                            Function::new(signature, right)
-                                .with_optional_span(span),
-                        )
-                        .with_optional_span(span)
-                    } else {
-                        return Err(InvalidFunctionName);
+                    match function_call.target.as_ref() {
+                        Node::Symbol(symbol) => {
+                            left = Definition::new(
+                                &symbol.name,
+                                Function::new(signature, right)
+                                    .with_optional_span(span),
+                            )
+                            .with_optional_span(span)
+                        }
+                        node => {
+                            return Err(InvalidFunctionName {
+                                span: node.hull().unwrap_or_default(),
+                            });
+                        }
                     }
                 } else {
                     return Err(Error::UnexpectedLeftSideOfDefinition {

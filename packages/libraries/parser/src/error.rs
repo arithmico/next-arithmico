@@ -32,7 +32,9 @@ pub enum Error {
     DuplicateFunctionArgumentName {
         name: String,
     },
-    InvalidFunctionName,
+    InvalidFunctionName {
+        span: Span,
+    },
     MissingClosingParenthesis {
         span: Span,
     },
@@ -82,7 +84,7 @@ impl Translatable for Error {
                 )
                 .translate(language)
             }
-            Error::InvalidFunctionName => TranslatedMessage::new(
+            Error::InvalidFunctionName { .. } => TranslatedMessage::new(
                 "error.invalid_function_name",
                 translation_resolver,
             )
