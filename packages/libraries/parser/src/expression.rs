@@ -136,57 +136,62 @@ fn parse_expression_pratt<'a>(
             }
             TokenKind::Define => {
                 let span = (&left, &right).combine_hulls();
-                if let Node::Symbol(symbol) = left {
-                    left = Definition::new(symbol.name, right)
-                        .with_optional_span(span);
-                } else if let Node::FunctionCall(function_call) = &left {
-                    let mut signature = FunctionSignature::default();
-                    for argument in &function_call.arguments {
-                        match argument {
-                            Node::Symbol(symbol) => {
-                                if signature.has_argument(&symbol.name) {
-                                    return Err(
-                                        Error::DuplicateFunctionArgumentName {
+
+                match left {
+                    Node::Symbol(symbol) => {
+                        left = Definition::new(symbol.name, right)
+                            .with_optional_span(span);
+                    }
+                    Node::FunctionCall(function_call) => {
+                        let mut signature = FunctionSignature::default();
+                        for argument in &function_call.arguments {
+                            match argument {
+                                Node::Symbol(symbol) => {
+                                    if signature.has_argument(&symbol.name) {
+                                        return Err(Error::DuplicateFunctionArgumentName {
                                             name: symbol.name.clone(),
+                                        });
+                                    }
+                                    signature.add_argument(
+                                        &symbol.name,
+                                        |argument| {
+                                            argument.node_type(NodeType::Any)
                                         },
                                     );
                                 }
-                                signature.add_argument(
+                                node => {
+                                    return Err(
+                                        InvalidFunctionArgumentDeclaration {
+                                            span: node
+                                                .hull()
+                                                .unwrap_or_default(),
+                                        },
+                                    );
+                                }
+                            }
+                        }
+                        match function_call.target.as_ref() {
+                            Node::Symbol(symbol) => {
+                                left = Definition::new(
                                     &symbol.name,
-                                    |argument| {
-                                        argument.node_type(NodeType::Any)
-                                    },
-                                );
+                                    Function::new(signature, right)
+                                        .with_optional_span(span),
+                                )
+                                .with_optional_span(span)
                             }
                             node => {
-                                return Err(
-                                    InvalidFunctionArgumentDeclaration {
-                                        span: node.hull().unwrap_or_default(),
-                                    },
-                                );
+                                return Err(InvalidFunctionName {
+                                    span: node.hull().unwrap_or_default(),
+                                });
                             }
                         }
                     }
-                    match function_call.target.as_ref() {
-                        Node::Symbol(symbol) => {
-                            left = Definition::new(
-                                &symbol.name,
-                                Function::new(signature, right)
-                                    .with_optional_span(span),
-                            )
-                            .with_optional_span(span)
-                        }
-                        node => {
-                            return Err(InvalidFunctionName {
-                                span: node.hull().unwrap_or_default(),
-                            });
-                        }
+                    node => {
+                        return Err(Error::UnexpectedLeftSideOfDefinition {
+                            node_type: node.node_type(),
+                            span: node.hull().unwrap_or(operator.get_span()),
+                        });
                     }
-                } else {
-                    return Err(Error::UnexpectedLeftSideOfDefinition {
-                        node_type: left.node_type(),
-                        span: left.hull().unwrap_or(operator.get_span()),
-                    });
                 }
             }
             TokenKind::Or => {
