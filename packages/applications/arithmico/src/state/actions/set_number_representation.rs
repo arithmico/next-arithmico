@@ -1,5 +1,5 @@
 use common::NumberRepresentation;
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -15,7 +15,7 @@ impl SetNumberRepresentationAction {
     }
 }
 
-impl WebStateAction<State> for SetNumberRepresentationAction {
+impl StateMutation<State> for SetNumberRepresentationAction {
     fn apply(&self, state: &mut State) {
         state.settings.number_representation = self.value;
         state.settings.save();
