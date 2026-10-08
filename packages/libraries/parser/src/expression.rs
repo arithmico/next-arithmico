@@ -142,20 +142,29 @@ fn parse_expression_pratt<'a>(
                 } else if let Node::FunctionCall(function_call) = &left {
                     let mut signature = FunctionSignature::default();
                     for argument in &function_call.arguments {
-                        if let Node::Symbol(symbol) = argument {
-                            if signature.has_argument(&symbol.name) {
-                                return Err(
-                                    Error::DuplicateFunctionArgumentName {
-                                        name: symbol.name.clone(),
+                        match argument {
+                            Node::Symbol(symbol) => {
+                                if signature.has_argument(&symbol.name) {
+                                    return Err(
+                                        Error::DuplicateFunctionArgumentName {
+                                            name: symbol.name.clone(),
+                                        },
+                                    );
+                                }
+                                signature.add_argument(
+                                    &symbol.name,
+                                    |argument| {
+                                        argument.node_type(NodeType::Any)
                                     },
                                 );
                             }
-                            signature.add_argument(&symbol.name, |argument| {
-                                argument.node_type(NodeType::Any)
-                            });
-                        } else {
-                            // TODO: add span to error
-                            return Err(InvalidFunctionArgumentDeclaration);
+                            node => {
+                                return Err(
+                                    InvalidFunctionArgumentDeclaration {
+                                        span: node.hull().unwrap_or_default(),
+                                    },
+                                );
+                            }
                         }
                     }
                     if let Node::Symbol(symbol) = function_call.target.as_ref()
@@ -860,6 +869,20 @@ mod tests {
                 .with_span(Span::new_between(0, 8))
             )
             .with_span(Span::new_between(0, 8))
+        );
+    }
+
+    #[test]
+    fn define_function_err_invalid_argument_declaration() {
+        let tokens =
+            tokenize("f(x, 2) := x", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        let output = parse_expression(cursor).unwrap_err();
+        assert_eq!(
+            output,
+            Error::InvalidFunctionArgumentDeclaration {
+                span: Span::new_between(5, 5)
+            }
         );
     }
 

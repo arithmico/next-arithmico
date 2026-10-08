@@ -26,7 +26,9 @@ pub enum Error {
     MissingMultiplyBetween {
         span: Span,
     },
-    InvalidFunctionArgumentDeclaration,
+    InvalidFunctionArgumentDeclaration {
+        span: Span,
+    },
     DuplicateFunctionArgumentName {
         name: String,
     },
@@ -73,7 +75,7 @@ impl Translatable for Error {
                 )
                 .translate(language)
             }
-            Error::InvalidFunctionArgumentDeclaration => {
+            Error::InvalidFunctionArgumentDeclaration { .. } => {
                 TranslatedMessage::new(
                     "error.invalid_function_argument_declaration",
                     translation_resolver,
