@@ -16,9 +16,12 @@ pub enum Error {
         expected: Vec<TokenKind>,
         actual: Token,
     },
-    UnexpectedEndOfInput,
+    UnexpectedEndOfInput {
+        span: Span,
+    },
     UnexpectedLeftSideOfDefinition {
         node_type: NodeType,
+        span: Span,
     },
     MissingMultiplyBetween {
         span: Span,
@@ -58,7 +61,7 @@ impl Translatable for Error {
                 .key("position", actual.get_span().from.char_index + 1)
                 .translate(language)
             }
-            Error::UnexpectedEndOfInput => TranslatedMessage::new(
+            Error::UnexpectedEndOfInput { .. } => TranslatedMessage::new(
                 "error.unexpected_end_of_input",
                 translation_resolver,
             )

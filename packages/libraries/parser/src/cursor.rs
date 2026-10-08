@@ -32,6 +32,15 @@ impl<'a> Cursor<'a> {
         token
     }
 
+    pub fn next_or_err(&mut self) -> Result<&'a Token, Error> {
+        self.next().ok_or_else(|| Error::UnexpectedEndOfInput {
+            span: self
+                .current()
+                .map(|token| token.get_span())
+                .unwrap_or_default(),
+        })
+    }
+
     pub fn next_if<T: GetStaticTokenKind + DowncastToken>(
         &mut self,
     ) -> Option<&'a T> {
@@ -55,7 +64,12 @@ impl<'a> Cursor<'a> {
                 })
             }
         } else {
-            Err(Error::UnexpectedEndOfInput)
+            Err(Error::UnexpectedEndOfInput {
+                span: self
+                    .current()
+                    .map(|token| token.get_span())
+                    .unwrap_or_default(),
+            })
         }
     }
 
@@ -73,7 +87,12 @@ impl<'a> Cursor<'a> {
                 })
             }
         } else {
-            Err(Error::UnexpectedEndOfInput)
+            Err(Error::UnexpectedEndOfInput {
+                span: self
+                    .current()
+                    .map(|token| token.get_span())
+                    .unwrap_or_default(),
+            })
         }
     }
 
@@ -90,7 +109,12 @@ impl<'a> Cursor<'a> {
     }
 
     pub fn current_position_or_err(&self) -> Result<Position, Error> {
-        self.current_position().ok_or(Error::UnexpectedEndOfInput)
+        self.current_position().ok_or(Error::UnexpectedEndOfInput {
+            span: self
+                .current()
+                .map(|token| token.get_span())
+                .unwrap_or_default(),
+        })
     }
 
     pub fn peek(&self) -> Option<&'a Token> {
@@ -106,6 +130,11 @@ impl<'a> Cursor<'a> {
     }
 
     pub fn peek_position_or_err(&self) -> Result<Position, Error> {
-        self.peek_position().ok_or(Error::UnexpectedEndOfInput)
+        self.peek_position().ok_or(Error::UnexpectedEndOfInput {
+            span: self
+                .current()
+                .map(|token| token.get_span())
+                .unwrap_or_default(),
+        })
     }
 }
