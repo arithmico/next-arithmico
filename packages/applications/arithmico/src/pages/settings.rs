@@ -9,6 +9,7 @@ use crate::{
     components::*,
     pages::settings::{
         angle_unit::AngleUnitSetting, language::LanguageSetting,
+        number_representation::NumberRepresentationSetting,
         override_decimal_format::OverrideDecimalFormatSetting,
         theme::ThemeSetting,
     },
@@ -18,6 +19,7 @@ use crate::{
 mod angle_unit;
 mod decimal_places;
 mod language;
+mod number_representation;
 mod override_decimal_format;
 mod settings_section;
 mod theme;
@@ -38,6 +40,7 @@ pub fn SettingsPage() -> impl IntoView {
             </SettingsSection>
 
             <SettingsSection title="settings.section.calculator">
+                <NumberRepresentationSetting />
                 <OverrideDecimalFormatSetting />
                 <DecimalPlacesSetting />
                 <AngleUnitSetting />

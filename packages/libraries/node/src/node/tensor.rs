@@ -189,9 +189,11 @@ mod tests {
     #[test]
     fn tensor_shape_rank2() {
         assert_eq!(
-            Tensor::get_shape(&[Tensor::new_node(vec![Number::new_node(1.)]),
+            Tensor::get_shape(&[
+                Tensor::new_node(vec![Number::new_node(1.)]),
                 Tensor::new_node(vec![Number::new_node(2.)]),
-                Tensor::new_node(vec![Number::new_node(3.)])]),
+                Tensor::new_node(vec![Number::new_node(3.)])
+            ]),
             vec![3, 1]
         )
     }

@@ -25,7 +25,7 @@ impl SerializeNode for Node {
 
 #[cfg(test)]
 mod test {
-    use common::Language;
+    use common::{Language, NumberRepresentation};
     use node::{
         And, Boolean, Definition, Division, Equals, Factorial, Function,
         FunctionCall, FunctionSignature, GreaterThan, GreaterThanOrEquals,
@@ -57,8 +57,12 @@ mod test {
     fn serialize_number_float_comma() {
         let node = Number::new_node(1.23);
         assert_eq!(
-            node.serialize(Options::new(Language::German, Default::default()))
-                .unwrap(),
+            node.serialize(Options::new(
+                Language::German,
+                Default::default(),
+                NumberRepresentation::Number
+            ))
+            .unwrap(),
             "1,23"
         );
     }
@@ -73,11 +77,175 @@ mod test {
     }
 
     #[test]
+    fn serialize_number_scientific_notation_edge_case() {
+        let node = Number::new_node(4_000_000.);
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::German,
+                Default::default(),
+                NumberRepresentation::Number
+            ))
+            .unwrap(),
+            "4 * 10 ^ 6"
+        );
+    }
+
+    #[test]
     fn serialize_number_scientific_notation_negative() {
         let node = Number::new_node(-112345678.);
         assert_eq!(
             node.serialize(Default::default()).unwrap(),
             "-1.12346 * 10 ^ 8"
+        );
+    }
+
+    #[test]
+    fn serialize_number_fraction() {
+        let node = Number::new_node(0.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::Fraction,
+            ))
+            .unwrap(),
+            "3 / 4"
+        );
+    }
+
+    #[test]
+    fn serialize_number_fraction_negative() {
+        let node = Number::new_node(-0.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::Fraction,
+            ))
+            .unwrap(),
+            "-3 / 4"
+        );
+    }
+
+    #[test]
+    fn serialize_number_fraction_integer() {
+        let node = Number::new_node(3.0);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::Fraction,
+            ))
+            .unwrap(),
+            "3"
+        );
+    }
+
+    #[test]
+    fn serialize_number_fraction_negative_integer() {
+        let node = Number::new_node(-3.0);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::Fraction,
+            ))
+            .unwrap(),
+            "-3"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction() {
+        let node = Number::new_node(2.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "2 + 3 / 4"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction_negative() {
+        let node = Number::new_node(-2.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "-(2 + 3 / 4)"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction_without_integer_part() {
+        let node = Number::new_node(0.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "3 / 4"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction_without_integer_part_negative() {
+        let node = Number::new_node(-0.75);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "-3 / 4"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction_integer() {
+        let node = Number::new_node(3.0);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "3"
+        );
+    }
+
+    #[test]
+    fn serialize_number_mixed_fraction_negative_integer() {
+        let node = Number::new_node(-3.0);
+
+        assert_eq!(
+            node.serialize(Options::new(
+                Language::English,
+                Default::default(),
+                NumberRepresentation::MixedFraction,
+            ))
+            .unwrap(),
+            "-3"
         );
     }
 

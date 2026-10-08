@@ -1985,6 +1985,7 @@ name = "serializer"
 version = "0.1.0"
 dependencies = [
  "common",
+ "math_utils",
  "node",
  "serde",
  "thiserror 2.0.21",

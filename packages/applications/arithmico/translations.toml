@@ -122,6 +122,22 @@ German = "Bogenmaß"
 English = "Degrees"
 German = "Gradmaß"
 
+[settings.number]
+English = "Number representation"
+German = "Zahlendarstellung"
+
+[settings.number.float]
+English = "Number"
+German = "Zahl"
+
+[settings.number.fraction]
+English = "Fraction"
+German = "Bruch"
+
+[settings.number.mixed_fraction]
+English = "Mixed fraction"
+German = "Gemischter Bruch"
+
 [settings.section.misc]
 English = "Miscellaneous"
 German = "Verschiedenes"
