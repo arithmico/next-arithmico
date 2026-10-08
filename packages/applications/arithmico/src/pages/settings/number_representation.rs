@@ -5,17 +5,18 @@ use ui::{
     form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
+use web_state::use_state;
 
 use crate::state::{SetNumberRepresentationAction, State};
 
 #[component]
 pub fn NumberRepresentationSetting() -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
     let number_representation =
-        state.select(|state| state.settings.number_representation);
+        state.query(|state| state.settings.number_representation);
     let on_change =
         Callback::new(move |number_representation: NumberRepresentation| {
-            state.dispatch(&SetNumberRepresentationAction::new(
+            state.dispatch(SetNumberRepresentationAction::new(
                 number_representation,
             ));
         });
