@@ -5,7 +5,7 @@ use editor::transform::{
 use editor_core::EditorState;
 use engine::{SerializeOptions, Session, SessionError};
 use node::Node;
-use trace::Trace;
+use trace::Span;
 use web_state::WebState;
 
 use super::Settings;
@@ -15,7 +15,7 @@ pub struct State {
     pub session: Session,
     pub settings: Settings,
     pub current_output: Option<Result<Node, SessionError>>,
-    pub current_error_trace: Option<Trace>,
+    pub error_spans: Vec<Span>,
     pub input_editor_state: EditorState,
 }
 
@@ -29,7 +29,7 @@ impl State {
             session: Session::new(),
             settings: Settings::load(),
             current_output: None,
-            current_error_trace: None,
+            error_spans: vec![],
             input_editor_state: editor_state,
         }
     }
