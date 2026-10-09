@@ -1,4 +1,3 @@
-use engine::SessionError;
 use web_state::WebStateAction;
 
 use crate::state::State;
@@ -26,20 +25,11 @@ impl WebStateAction<State> for EvaluateAction {
             .last_entry()
             .map(|statement| statement.output.clone());
 
-        state.current_error_trace = state
+        state.error_spans = state
             .current_output
             .as_ref()
-            .and_then(|output| {
-                output
-                    .as_ref()
-                    .err()
-                    .map(|session_error| match session_error {
-                        SessionError::EvaluateNodeError(
-                            evaluate_node_error,
-                        ) => Some(evaluate_node_error.stack_trace().clone()),
-                        _ => None,
-                    })
-            })
-            .flatten();
+            .and_then(|output| output.as_ref().err())
+            .map(|output| output.get_spans())
+            .unwrap_or_default()
     }
 }
