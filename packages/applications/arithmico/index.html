@@ -6,5 +6,11 @@
         <link data-trunk rel="copy-dir" href="../../../fonts"/>
         <title>Arithmico</title>
     </head>
-    <body></body>
+    <body>
+        <link 
+            data-trunk rel="rust"
+            data-wasm-opt-params="-Oz --converge --strip-debug --strip-producers --enable-bulk-memory --enable-nontrapping-float-to-int"
+            href="Cargo.toml"
+        />
+    </body>
 </html>
