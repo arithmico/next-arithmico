@@ -165,6 +165,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
             // number
             '0'..='9' => {
                 // catch invalid leading zeros e. g. "01"
+                #[allow(clippy::single_range_in_vec_init)]
                 let head_digits_span =
                     cursor.match_many_of_and_advance(&['0'..='9']);
 
@@ -185,6 +186,7 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                                 Language::English => ".",
                             })
                         {
+                            #[allow(clippy::single_range_in_vec_init)]
                             match cursor.match_many_of_and_advance(&['0'..='9'])
                             {
                                 Some(trailing_digits_span) => {

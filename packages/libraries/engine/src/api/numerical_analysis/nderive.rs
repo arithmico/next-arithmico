@@ -1,4 +1,3 @@
-use core::f64;
 use std::{collections::HashSet, sync::LazyLock};
 
 use common::Language;

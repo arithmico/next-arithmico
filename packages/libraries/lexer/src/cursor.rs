@@ -110,6 +110,7 @@ impl<'a> LexerCursor<'a> {
     }
 }
 
+#[allow(clippy::single_range_in_vec_init)]
 #[cfg(test)]
 mod tests {
     use super::*;

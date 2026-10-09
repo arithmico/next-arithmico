@@ -1,5 +1,3 @@
-use core::f64;
-
 use crate::DistributionError::{self, NonNegativeStandardDeviation};
 
 /// Computes the quantile (inverse cumulative distribution function, inverse CDF)
