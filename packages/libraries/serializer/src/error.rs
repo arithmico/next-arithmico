@@ -1,6 +1,6 @@
 use node::{GetNodeType, Node, NodeType};
 use thiserror::Error;
-use trace::{Tracable, Trace};
+use trace::{Span, Tracable, Trace};
 
 #[derive(Debug, Clone, PartialEq, Error)]
 pub enum Error {
@@ -22,6 +22,13 @@ impl Error {
         Self::MalformedNode {
             node_type: node.node_type(),
             trace: node.trace().clone(),
+        }
+    }
+
+    pub fn get_spans(&self) -> impl Iterator<Item = Span> {
+        match self {
+            Error::UnsupportedNode { trace, .. } => trace.first_spans(),
+            Error::MalformedNode { trace, .. } => trace.first_spans(),
         }
     }
 }
