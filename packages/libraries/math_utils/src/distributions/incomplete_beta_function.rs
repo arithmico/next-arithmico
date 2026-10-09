@@ -1,5 +1,4 @@
-use core::f64;
-use std::f64::consts::{FRAC_2_SQRT_PI, FRAC_PI_4, LN_2};
+use std::f64::consts::{EULER_GAMMA, FRAC_2_SQRT_PI, FRAC_PI_4, LN_2};
 
 use thiserror::Error;
 
@@ -357,15 +356,13 @@ fn fpser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
 /// a <= min(eps, eps * b), b * x <= 1, and x <= 0.5. Used when
 /// a is very small. Use only if above inequalities are satisfied.
 fn apser(a: f64, b: f64, x: f64, eps: f64) -> f64 {
-    const G: f64 = 0.577215664901533;
-
     let bx = b * x;
     let mut t = x - bx;
 
     let c = if b * eps > 2e-2 {
-        bx.ln() + G + t
+        bx.ln() + EULER_GAMMA + t
     } else {
-        x.ln() + psi(b) + G + t
+        x.ln() + psi(b) + EULER_GAMMA + t
     };
 
     let tol = 5.0 * eps * c.abs();
