@@ -1,11 +1,12 @@
 use common::Language;
+use serde::{Deserialize, Serialize};
 use translate_core::{
     Quoted, Translatable, TranslatedMessage, TranslationError,
 };
 
 use crate::translations::translation_resolver;
 
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum TokenKind {
     /// any variable or function name
     Identifier,

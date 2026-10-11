@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use node::NodeType;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use trace::Trace;
 use translate_core::{
@@ -9,7 +10,7 @@ use translate_core::{
 
 use crate::{ErrorKind, translation_provider::translation_resolver};
 
-#[derive(Error, Debug, PartialEq, Clone)]
+#[derive(Error, Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[error("{kind:?}")]
 pub struct Error {
     kind: ErrorKind,

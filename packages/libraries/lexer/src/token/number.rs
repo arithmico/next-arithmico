@@ -1,8 +1,10 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
     DowncastToken, GetStaticTokenKind, GetTokenKind, GetTokenSpan, Span,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NumberToken {
     pub value: f64,
     pub span: Span,

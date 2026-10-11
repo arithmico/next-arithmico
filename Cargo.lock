@@ -486,6 +486,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "engine-protocol"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "engine",
+ "node",
+ "serde",
+]
+
+[[package]]
 name = "engine_derive"
 version = "0.1.0"
 dependencies = [
@@ -516,6 +526,7 @@ dependencies = [
  "lexer",
  "math_utils",
  "node",
+ "serde",
  "thiserror 2.0.21",
  "trace",
  "translate_core",
@@ -1265,6 +1276,7 @@ version = "0.1.0"
 dependencies = [
  "common",
  "itertools 0.15.0",
+ "serde",
  "thiserror 2.0.21",
  "translate_core",
 ]
@@ -1412,6 +1424,7 @@ checksum = "60993920e071b0c9b66f14e2b32740a4e27ffc82854dcd72035887f336a09a28"
 name = "node"
 version = "0.1.0"
 dependencies = [
+ "serde",
  "thiserror 2.0.21",
  "trace",
  "translate_core",
@@ -1521,6 +1534,7 @@ dependencies = [
  "common",
  "lexer",
  "node",
+ "serde",
  "thiserror 2.0.21",
  "trace",
  "translate_core",
@@ -2298,6 +2312,7 @@ name = "trace"
 version = "0.1.0"
 dependencies = [
  "lexer",
+ "serde",
 ]
 
 [[package]]

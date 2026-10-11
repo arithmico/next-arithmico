@@ -1,7 +1,8 @@
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use trace::{Span, Tracable};
 
-#[derive(Error, Debug, Clone)]
+#[derive(Error, Debug, Clone, Serialize, Deserialize)]
 pub enum SessionError {
     #[error("ParseError: {0:?}")]
     ParseNodeError(#[from] parser::Error),

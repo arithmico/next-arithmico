@@ -1,6 +1,7 @@
 use lexer::Span;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Frame {
     first: Span,
     rest: Vec<Span>,

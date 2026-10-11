@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::Node;
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum NodeType {
     Any, // required for user defined functions without type signature
     Boolean,

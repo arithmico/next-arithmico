@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 
 use common::Language;
+use serde::{Deserialize, Serialize};
 
 use crate::{Translatable, TranslationError};
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct RenderedTranslatedMessage {
     messages: HashMap<Language, Result<String, TranslationError>>,
 }

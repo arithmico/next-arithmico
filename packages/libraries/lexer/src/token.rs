@@ -46,11 +46,12 @@ pub use plus::*;
 pub use right_bracket::*;
 pub use right_parenthesis::*;
 pub use separator::*;
+use serde::{Deserialize, Serialize};
 pub use slash::*;
 
 use crate::{GetTokenKind, GetTokenSpan};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Token {
     Identifier(IdentifierToken),
     Number(NumberToken),

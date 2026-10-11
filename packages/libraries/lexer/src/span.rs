@@ -1,6 +1,10 @@
+use serde::{Deserialize, Serialize};
+
 use crate::Position;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize,
+)]
 pub struct Span {
     /// from index
     pub from: Position,

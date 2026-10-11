@@ -1,10 +1,11 @@
 use common::Language;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use translate_core::{Translatable, TranslatedMessage, TranslationError};
 
 use crate::{Position, translations::translation_resolver};
 
-#[derive(Debug, Clone, Error, PartialEq)]
+#[derive(Debug, Clone, Error, PartialEq, Serialize, Deserialize)]
 pub enum Error {
     #[error("UnexpectedCharacter")]
     UnexpectedCharacter { character: char, position: Position },

@@ -1,10 +1,11 @@
+use serde::{Deserialize, Serialize};
 use translate_core::{
     Language, Translatable, TranslatedMessage, TranslationError,
 };
 
 use crate::translation_provider::translation_resolver;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum ErrorKind {
     UnsupportedOperation,
     UnsupportedDataType,
