@@ -1,0 +1,13 @@
+[package]
+name = "engine-protocol"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+common = { version = "0.1.0", path = "../common" }
+engine = { version = "0.1.0", path = "../engine", default-features = false }
+node = { version = "0.1.0", path = "../node" }
+serde = { workspace = true, features = ["derive"] }
+
+[lints]
+workspace = true
