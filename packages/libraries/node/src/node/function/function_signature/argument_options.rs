@@ -1,8 +1,10 @@
 use std::collections::HashSet;
 
+use serde::{Deserialize, Serialize};
+
 use crate::{Node, NodeType};
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ArgumentOptions {
     preprocess: Preprocess,
     cardinality: Cardinality,
@@ -35,7 +37,7 @@ impl ArgumentOptions {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub enum Preprocess {
     #[default]
     None,
@@ -43,7 +45,7 @@ pub enum Preprocess {
     // TODO: Reduce
 }
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub enum Cardinality {
     #[default]
     Required,

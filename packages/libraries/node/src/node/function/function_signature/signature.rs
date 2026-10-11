@@ -1,10 +1,12 @@
 use std::collections::HashSet;
 
+use serde::{Deserialize, Serialize};
+
 use crate::NodeType;
 
 use super::argument::Argument;
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct FunctionSignature {
     arguments: Vec<Argument>,
     return_type: HashSet<NodeType>,

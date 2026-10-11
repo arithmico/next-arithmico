@@ -1,5 +1,6 @@
 use std::ops::Rem;
 
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use trace::Trace;
 
@@ -8,7 +9,7 @@ use crate::{CreateNodeError, Node, NodeType, impl_node_traits};
 #[error("PushRowError")]
 pub struct PushRowError;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct DataFrame {
     pub headers: Vec<Option<Node>>,
     pub data: Vec<Option<Node>>,

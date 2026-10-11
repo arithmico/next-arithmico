@@ -1,10 +1,11 @@
+use serde::{Deserialize, Serialize};
 use translate_core::{Language, RenderedTranslatedMessage};
 
 use crate::{Node, NodeType};
 
 use super::argument_options::{ArgumentOptions, Cardinality, Preprocess};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Argument {
     name: String,
     description: RenderedTranslatedMessage,

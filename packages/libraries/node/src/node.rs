@@ -40,11 +40,12 @@ pub use number::*;
 pub use or::*;
 pub use power::*;
 pub use product::*;
+use serde::{Deserialize, Serialize};
 pub use sum::*;
 pub use symbol::*;
 pub use tensor::*;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Node {
     Boolean(Boolean),
     Sum(Sum),

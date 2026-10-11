@@ -1,8 +1,10 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
     DowncastToken, GetStaticTokenKind, GetTokenKind, GetTokenSpan, Span,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RightBracketToken {
     pub span: Span,
 }

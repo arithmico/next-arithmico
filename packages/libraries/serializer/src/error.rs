@@ -1,8 +1,9 @@
 use node::{GetNodeType, Node, NodeType};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use trace::{Span, Tracable, Trace};
 
-#[derive(Debug, Clone, PartialEq, Error)]
+#[derive(Debug, Clone, PartialEq, Error, Serialize, Deserialize)]
 pub enum Error {
     #[error("unsupported node type {node_type}")]
     UnsupportedNode { node_type: NodeType, trace: Trace },

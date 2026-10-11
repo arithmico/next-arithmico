@@ -7,7 +7,7 @@ use serializer::SerializeNode;
 use translate::{RenderedTranslatedMessage, Translatable};
 use translate_core::TranslationError;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ParameterDocumentationItem {
     name: String,
     parameter_types: Vec<NodeType>,
@@ -62,13 +62,15 @@ impl From<&Argument> for ParameterDocumentationItem {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize,
+)]
 pub enum DocumentationItemType {
     Function,
     Constant,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DocumentationItem {
     endpoint_name: String,
     documentation_type: DocumentationItemType,
@@ -209,7 +211,7 @@ impl DocumentationItem {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DocumentationModule {
     name: RenderedTranslatedMessage,
     items: Vec<DocumentationItem>,

@@ -1,10 +1,11 @@
 use std::iter::zip;
 
+use serde::{Deserialize, Serialize};
 use trace::Trace;
 
 use crate::{Node, impl_node_traits};
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct Tensor {
     pub elements: Vec<Node>,
     pub shape: Vec<usize>,
@@ -189,9 +190,11 @@ mod tests {
     #[test]
     fn tensor_shape_rank2() {
         assert_eq!(
-            Tensor::get_shape(&[Tensor::new_node(vec![Number::new_node(1.)]),
+            Tensor::get_shape(&[
+                Tensor::new_node(vec![Number::new_node(1.)]),
                 Tensor::new_node(vec![Number::new_node(2.)]),
-                Tensor::new_node(vec![Number::new_node(3.)])]),
+                Tensor::new_node(vec![Number::new_node(3.)])
+            ]),
             vec![3, 1]
         )
     }

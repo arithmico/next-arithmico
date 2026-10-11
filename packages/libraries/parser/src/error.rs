@@ -1,6 +1,7 @@
 use common::Language;
 use lexer::{GetTokenSpan, Span, Token, TokenKind};
 use node::NodeType;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use translate_core::{
     Quoted, Translatable, TranslatableList, TranslatedMessage, TranslationError,
@@ -8,7 +9,7 @@ use translate_core::{
 
 use crate::translations::translation_resolver;
 
-#[derive(Debug, Clone, Error, PartialEq)]
+#[derive(Debug, Clone, Error, PartialEq, Serialize, Deserialize)]
 #[error("ParseError")]
 pub enum Error {
     UnexpectedToken {

@@ -9,6 +9,7 @@ itertools = "0.15.0"
 common = { version = "0.1.0", path = "../common" }
 thiserror.workspace = true
 translate_core = { version = "0.1.0", path = "../translate_core" }
+serde = { workspace = true, features = ["derive"] }
 
 [lints]
 workspace = true

@@ -11,6 +11,7 @@ thiserror.workspace = true
 translate_core = { version = "0.1.0", path = "../translate_core" }
 common = { version = "0.1.0", path = "../common" }
 math_utils = { version = "0.1.0", path = "../math_utils" }
+serde = { workspace = true, features = ["derive"] }
 
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }

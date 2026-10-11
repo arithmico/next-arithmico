@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use trace::Trace;
 
 use crate::{Node, impl_node_traits};
@@ -6,7 +7,7 @@ mod function_signature;
 
 pub use function_signature::*;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct Function {
     pub signature: FunctionSignature,
     pub expression: Box<Node>,

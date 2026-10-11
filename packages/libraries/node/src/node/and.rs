@@ -1,8 +1,9 @@
+use serde::{Deserialize, Serialize};
 use trace::Trace;
 
 use crate::{Node, impl_node_traits};
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct And {
     pub elements: Vec<Node>,
     pub trace: Trace,

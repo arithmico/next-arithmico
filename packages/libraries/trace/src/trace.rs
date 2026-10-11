@@ -1,8 +1,9 @@
 use lexer::Span;
+use serde::{Deserialize, Serialize};
 
 use crate::frame::Frame;
 
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct Trace {
     frames: Vec<Frame>,
 }
