@@ -22,7 +22,8 @@
         "editor_core",
         "algebra",
         "serializer",
-        "math_utils"
+        "math_utils",
+        "engine-protocol"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "rust-analyzer.check.command": "clippy",
