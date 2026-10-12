@@ -37,6 +37,10 @@ fn handler(command: &Command, state: &mut State) {
                 state
                     .stack
                     .insert(&node.symbol, node.expression.as_ref().clone());
+                state.channel.send_event(Event::StackItemUpdated {
+                    name: node.symbol.clone(),
+                    value: node.expression.as_ref().clone(),
+                });
             }
             state
                 .channel
