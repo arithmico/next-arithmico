@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommandEnvelope {
-    pub correlation_id: usize,
+    pub correlation_id: Option<usize>,
     pub payload: Command,
 }
 

@@ -1,3 +1,4 @@
+use engine_protocol::Command;
 use leptos::logging::error;
 use web_state::StateMutation;
 
@@ -23,5 +24,7 @@ impl StateMutation<State> for ResetSessionAction {
             error!("Failed to clear input field: {}", err);
         }
         state.current_output = None;
+        state.error_spans = vec![];
+        state.worker_client.send_command(None, Command::ClearStack);
     }
 }
