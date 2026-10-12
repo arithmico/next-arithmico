@@ -1,4 +1,4 @@
-use engine::{DocumentationModule, SessionError};
+use engine::{Documentation, SessionError};
 use node::Node;
 use serde::{Deserialize, Serialize};
 
@@ -10,15 +10,8 @@ pub struct EventEnvelope {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
-    Ready {
-        documentation: Vec<DocumentationModule>,
-    },
-    EvaluationComplete {
-        output: Result<Node, SessionError>,
-    },
-    StackItemUpdated {
-        name: String,
-        value: Node,
-    },
+    Ready { documentation: Documentation },
+    EvaluationComplete { output: Result<Node, SessionError> },
+    StackItemUpdated { name: String, value: Node },
     StackCleared,
 }

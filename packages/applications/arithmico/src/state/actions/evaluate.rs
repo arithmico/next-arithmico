@@ -1,3 +1,4 @@
+use engine_protocol::Command;
 use web_state::StateMutation;
 
 use crate::state::State;
@@ -18,19 +19,22 @@ impl StateMutation<State> for EvaluateAction {
     fn apply(&self, state: &mut State) {
         let language = state.get_decimal_format();
         let angle_unit = state.settings.angle_unit;
+        let correlation_id = state.worker_client.reserve_correlation_id();
 
-        state.log.push(language, angle_unit, self.input.clone());
-        state.current_output = state
-            .log
-            .entries()
-            .last()
-            .and_then(|statement| statement.output.clone());
+        state.log.push(
+            correlation_id,
+            language,
+            angle_unit,
+            self.input.clone(),
+        );
 
-        state.error_spans = state
-            .current_output
-            .as_ref()
-            .and_then(|output| output.as_ref().err())
-            .map(|output| output.get_spans())
-            .unwrap_or_default()
+        state.worker_client.send_command(
+            correlation_id,
+            Command::Evaluate {
+                input: self.input.clone(),
+                language,
+                angle_unit,
+            },
+        );
     }
 }

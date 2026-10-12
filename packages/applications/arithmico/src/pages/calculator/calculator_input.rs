@@ -23,20 +23,26 @@ pub fn CaluclatorInput() -> impl IntoView {
 #[component]
 fn CalculatorInputEditor() -> impl IntoView {
     let state = use_state::<State>();
-    let error_spans = state.query(|state| state.error_spans.clone());
-    let editor_state = state.query(|state| state.input_editor_state.clone());
+    let error_spans = state.query_memo(|state| state.error_spans.clone());
 
     Effect::new(move |_| {
-        let editor_state = editor_state.get();
+        let error_spans = error_spans.get();
+
+        let s = state.0.read_untracked();
+        let editor_state = &s.input_editor_state;
+
         let Some(content) =
             editor_state.serialize_node(editor_state.get_root_id())
         else {
             warn!("No node to serialize.");
             return;
         };
+        if content.is_empty() {
+            return;
+        }
         let mut segments = Vec::<(String, bool)>::new();
         let mut pos = 0;
-        for span in error_spans.read().iter() {
+        for span in error_spans.iter() {
             let start = span.from_byte_offset();
             let end = span.to_byte_offset();
             if start < pos || start >= content.len() {
@@ -55,8 +61,10 @@ fn CalculatorInputEditor() -> impl IntoView {
             segments.push((content[pos..].to_string(), false));
         }
 
-        state.dispatch_untracked(UpdateInputEditorAction::new(
-            EditorStateMutation::new(move |state| {
+        drop(s);
+
+        state.dispatch(UpdateInputEditorAction::new(EditorStateMutation::new(
+            move |state| {
                 let selection_pos =
                     state.get_selection().and_then(|selection| {
                         let anchor_pos = state
@@ -121,8 +129,8 @@ fn CalculatorInputEditor() -> impl IntoView {
                 state.write_selection_to_dom()?;
 
                 Ok(())
-            }),
-        ));
+            },
+        )));
     });
 
     let update_editor_state: Callback<EditorStateMutation> =
@@ -143,9 +151,11 @@ fn CalculatorInputEditor() -> impl IntoView {
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();
-                    let editor_state = editor_state.get();
+                    let s = state.0.read();
+                    let editor_state = &s.input_editor_state;
                     let content: Option<String> = editor_state
                         .serialize_node(editor_state.get_root_id());
+                    drop(s);
                     if let Some(content) = content {
                         state.dispatch(EvaluateAction::new(content));
                     }
