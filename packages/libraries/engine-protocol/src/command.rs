@@ -2,7 +2,7 @@ use common::AngleUnit;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CommandEvenlope {
+pub struct CommandEnvelope {
     pub correlation_id: usize,
     pub payload: Command,
 }
