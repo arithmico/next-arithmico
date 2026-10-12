@@ -1,15 +1,15 @@
 use engine::{SerializeError, SerializeNode, SerializeOptions};
 use leptos::prelude::*;
 use node::{FunctionCall, Node, Symbol};
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::State;
 
 #[component]
 pub fn Definitions() -> impl IntoView {
-    let state = State::expect_state();
-    let settings = state.select(|state| state.settings);
-    let definitions = state.select(|state| state.session.stack_entries());
+    let state = use_state::<State>();
+    let settings = state.query(|state| state.settings.clone());
+    let definitions = state.query(|state| state.symbols.clone());
 
     move || {
         let settings = settings.get();

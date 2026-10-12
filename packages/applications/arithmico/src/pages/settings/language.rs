@@ -5,16 +5,16 @@ use ui::{
     form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{SetLanguageAction, State, language::LanguageValue};
 
 #[component]
 pub fn LanguageSetting() -> impl IntoView {
-    let state = State::expect_state();
-    let language = state.select(|state| state.settings.language);
+    let state = use_state::<State>();
+    let language = state.query(|state| state.settings.language);
     let on_change = Callback::new(move |language: LanguageValue| {
-        state.dispatch(&SetLanguageAction::new(language));
+        state.dispatch(SetLanguageAction::new(language));
     });
 
     let listbox_definition = ListboxDefinition::new()

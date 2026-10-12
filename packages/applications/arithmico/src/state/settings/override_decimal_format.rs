@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use common::Language;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub struct OverrideDecimalFormat(Option<Language>);
 
 impl OverrideDecimalFormat {

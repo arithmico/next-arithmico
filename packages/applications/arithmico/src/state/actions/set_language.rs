@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::{State, language::LanguageValue};
 
@@ -14,9 +14,9 @@ impl SetLanguageAction {
     }
 }
 
-impl WebStateAction<State> for SetLanguageAction {
+impl StateMutation<State> for SetLanguageAction {
     fn apply(&self, state: &mut State) {
-        state.settings.language = self.value.clone();
+        state.settings.language = self.value;
         state.settings.save();
     }
 }

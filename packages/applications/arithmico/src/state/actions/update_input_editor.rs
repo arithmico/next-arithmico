@@ -1,6 +1,6 @@
 use editor::editor::EditorStateMutation;
 use leptos::logging::error;
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -14,7 +14,7 @@ impl UpdateInputEditorAction {
     }
 }
 
-impl WebStateAction<State> for UpdateInputEditorAction {
+impl StateMutation<State> for UpdateInputEditorAction {
     fn apply(&self, state: &mut State) {
         if let Err(err) = self.command.run(&mut state.input_editor_state) {
             error!("Failed to update input field: {}", err);

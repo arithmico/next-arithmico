@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -14,16 +14,17 @@ impl EvaluateAction {
     }
 }
 
-impl WebStateAction<State> for EvaluateAction {
+impl StateMutation<State> for EvaluateAction {
     fn apply(&self, state: &mut State) {
         let language = state.get_decimal_format();
         let angle_unit = state.settings.angle_unit;
 
-        state.session.push(&self.input, language, angle_unit);
+        state.log.push(language, angle_unit, self.input.clone());
         state.current_output = state
-            .session
-            .last_entry()
-            .map(|statement| statement.output.clone());
+            .log
+            .entries()
+            .last()
+            .and_then(|statement| statement.output.clone());
 
         state.error_spans = state
             .current_output

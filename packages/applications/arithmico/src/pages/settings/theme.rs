@@ -4,16 +4,16 @@ use ui::{
     form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{SetThemeAction, State, theme::Theme};
 
 #[component]
 pub fn ThemeSetting() -> impl IntoView {
-    let state = State::expect_state();
-    let theme = state.select(|state| state.settings.theme);
+    let state = use_state::<State>();
+    let theme = state.query(|state| state.settings.theme);
     let on_change = Callback::new(move |theme: Theme| {
-        state.dispatch(&SetThemeAction::new(theme));
+        state.dispatch(SetThemeAction::new(theme));
     });
 
     let listbox_definition = ListboxDefinition::new()

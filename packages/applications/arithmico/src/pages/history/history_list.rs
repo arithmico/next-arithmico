@@ -1,10 +1,13 @@
-use engine::SessionEntry;
 use leptos::prelude::*;
+use web_state::use_state;
 
-use crate::pages::history::history_item::HistoryItem;
+use crate::{pages::history::history_item::HistoryItem, state::State};
 
 #[component]
-pub fn HistoryList(items: Signal<Vec<SessionEntry>>) -> impl IntoView {
+pub fn HistoryList() -> impl IntoView {
+    let state = use_state::<State>();
+    let items = state.query(|state| state.log.entries().to_vec());
+
     view! {
         <ul class="history-list">
             {move || {

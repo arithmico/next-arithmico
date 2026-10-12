@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -10,7 +10,7 @@ impl ClearOutputAction {
     }
 }
 
-impl WebStateAction<State> for ClearOutputAction {
+impl StateMutation<State> for ClearOutputAction {
     fn apply(&self, state: &mut State) {
         state.current_output = None;
     }

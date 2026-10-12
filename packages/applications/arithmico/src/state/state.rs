@@ -1,18 +1,23 @@
+use std::collections::BTreeMap;
+
 use common::Language;
 use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{SerializeOptions, Session, SessionError};
+use engine::{Documentation, SerializeOptions, SessionError};
 use node::Node;
 use trace::Span;
-use web_state::WebState;
+
+use crate::state::log::Log;
 
 use super::Settings;
 
 #[derive(Clone)]
 pub struct State {
-    pub session: Session,
+    pub log: Log,
+    pub symbols: BTreeMap<String, Node>,
+    pub documentation: Documentation,
     pub settings: Settings,
     pub current_output: Option<Result<Node, SessionError>>,
     pub error_spans: Vec<Span>,
@@ -26,7 +31,9 @@ impl State {
         editor_state.add_transform(RemoveEmptyContainerNodesTransform);
 
         Self {
-            session: Session::new(),
+            log: Log::default(),
+            symbols: BTreeMap::new(),
+            documentation: Documentation::default(),
             settings: Settings::load(),
             current_output: None,
             error_spans: vec![],
@@ -51,5 +58,3 @@ impl State {
             .unwrap_or_else(|| self.settings.get_language())
     }
 }
-
-impl WebState for State {}

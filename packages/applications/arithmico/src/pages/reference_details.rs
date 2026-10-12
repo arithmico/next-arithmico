@@ -11,7 +11,7 @@ use ui::{
     container::page_header::PageHeader,
     icon::chevron_right_icon::ChevronRightIcon,
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::{components::PageWithSidebar, state::State};
 
@@ -36,10 +36,10 @@ pub fn ReferenceDetailsPage() -> impl IntoView {
 
 #[component]
 fn Inner(endpoint_name: String) -> impl IntoView {
-    let state = State::expect_state();
-    let item = state.select({
+    let state = use_state::<State>();
+    let item = state.query({
         let endpoint_name = endpoint_name.clone();
-        move |state| state.session.documentation().find_endpoint(&endpoint_name)
+        move |state| state.documentation.find_endpoint(&endpoint_name)
     });
 
     view! {
@@ -69,9 +69,9 @@ fn ItemSection(
     item: DocumentationItem,
     endpoint_name: String,
 ) -> impl IntoView {
-    let state = State::expect_state();
-    let language = state.select(|state| state.settings.get_language());
-    let decimal_format = state.select(|state| state.get_decimal_format());
+    let state = use_state::<State>();
+    let language = state.query(|state| state.settings.get_language());
+    let decimal_format = state.query(|state| state.get_decimal_format());
     let synopsis = Signal::derive({
         let item = item.clone();
         move || item.get_synopsis(language.get())

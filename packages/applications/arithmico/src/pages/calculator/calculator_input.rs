@@ -11,7 +11,7 @@ use leptos::{
     prelude::*,
 };
 use translate::use_translate;
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{EvaluateAction, State, UpdateInputEditorAction};
 
@@ -22,11 +22,12 @@ pub fn CaluclatorInput() -> impl IntoView {
 
 #[component]
 fn CalculatorInputEditor() -> impl IntoView {
-    let state = State::expect_state();
-    let error_spans = state.select(|state| state.error_spans);
+    let state = use_state::<State>();
+    let error_spans = state.query(|state| state.error_spans.clone());
+    let editor_state = state.query(|state| state.input_editor_state.clone());
 
     Effect::new(move |_| {
-        let editor_state = state.get().input_editor_state;
+        let editor_state = editor_state.get();
         let Some(content) =
             editor_state.serialize_node(editor_state.get_root_id())
         else {
@@ -54,7 +55,7 @@ fn CalculatorInputEditor() -> impl IntoView {
             segments.push((content[pos..].to_string(), false));
         }
 
-        state.dispatch_untracked(&UpdateInputEditorAction::new(
+        state.dispatch_untracked(UpdateInputEditorAction::new(
             EditorStateMutation::new(move |state| {
                 let selection_pos =
                     state.get_selection().and_then(|selection| {
@@ -126,7 +127,7 @@ fn CalculatorInputEditor() -> impl IntoView {
 
     let update_editor_state: Callback<EditorStateMutation> =
         Callback::new(move |mutation| {
-            state.dispatch_untracked(&UpdateInputEditorAction::new(mutation));
+            state.dispatch_untracked(UpdateInputEditorAction::new(mutation));
         });
 
     let translate = use_translate();
@@ -142,11 +143,11 @@ fn CalculatorInputEditor() -> impl IntoView {
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();
-                    let editor_state = state.get().input_editor_state;
+                    let editor_state = editor_state.get();
                     let content: Option<String> = editor_state
                         .serialize_node(editor_state.get_root_id());
                     if let Some(content) = content {
-                        state.dispatch(&EvaluateAction::new(content));
+                        state.dispatch(EvaluateAction::new(content));
                     }
                 }
             }

@@ -5,16 +5,16 @@ use ui::{
     form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{SetAngleUnitAction, State};
 
 #[component]
 pub fn AngleUnitSetting() -> impl IntoView {
-    let state = State::expect_state();
-    let angle_unit = state.select(|state| state.settings.angle_unit);
+    let state = use_state::<State>();
+    let angle_unit = state.query(|state| state.settings.angle_unit);
     let on_change = Callback::new(move |angle_unit: AngleUnit| {
-        state.dispatch(&SetAngleUnitAction::new(angle_unit));
+        state.dispatch(SetAngleUnitAction::new(angle_unit));
     });
 
     let listbox_definition = ListboxDefinition::new()

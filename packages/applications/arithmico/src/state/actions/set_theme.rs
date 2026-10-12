@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::{State, theme::Theme};
 
@@ -14,9 +14,9 @@ impl SetThemeAction {
     }
 }
 
-impl WebStateAction<State> for SetThemeAction {
+impl StateMutation<State> for SetThemeAction {
     fn apply(&self, state: &mut State) {
-        state.settings.theme = self.value.clone();
+        state.settings.theme = self.value;
         state.settings.save();
     }
 }
