@@ -10,6 +10,7 @@ pub struct EventEnvelope {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
+    Ready,
     EvaluationComplete { result: Result<Node, SessionError> },
     StackItemUpdated { name: String, value: Node },
     StackCleared,
