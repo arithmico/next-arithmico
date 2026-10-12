@@ -33,9 +33,7 @@ impl Server {
         match self.state.read() {
             Ok(state) => {
                 let documentation = Documentation::from(&state.host_api);
-                state.channel.send_event(Event::Ready {
-                    documentation: documentation.modules,
-                });
+                state.channel.send_event(Event::Ready { documentation });
             }
             Err(err) => {
                 console::error_1(

@@ -228,7 +228,7 @@ impl DocumentationModule {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct Documentation {
     pub modules: Vec<DocumentationModule>,
 }

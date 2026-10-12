@@ -16,7 +16,6 @@ pub mod commands;
 pub mod queries;
 pub mod selection;
 
-#[derive(Clone)]
 pub struct EditorState {
     editor_nodes: HashMap<usize, EditorNode>,
     dom_nodes: HashMap<usize, Option<SendWrapper<Node>>>,

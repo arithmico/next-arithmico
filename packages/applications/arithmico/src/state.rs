@@ -13,11 +13,14 @@ use trace::Span;
 mod actions;
 mod log;
 mod settings;
+mod worker_client;
 
 pub use log::*;
 pub use settings::*;
+use web_sys::Worker;
 
-#[derive(Clone)]
+use crate::state::worker_client::WorkerClient;
+
 pub struct State {
     pub log: Log,
     pub symbols: BTreeMap<String, Node>,
@@ -26,10 +29,11 @@ pub struct State {
     pub current_output: Option<Result<Node, SessionError>>,
     pub error_spans: Vec<Span>,
     pub input_editor_state: EditorState,
+    pub worker_client: WorkerClient,
 }
 
 impl State {
-    pub fn new() -> Self {
+    pub fn new(worker: Worker) -> Self {
         let mut editor_state = EditorState::default();
         editor_state.add_transform(MergeTextNodesTransform);
         editor_state.add_transform(RemoveEmptyContainerNodesTransform);
@@ -42,6 +46,7 @@ impl State {
             current_output: None,
             error_spans: vec![],
             input_editor_state: editor_state,
+            worker_client: WorkerClient::new(worker),
         }
     }
 

@@ -25,7 +25,9 @@ where
     T: 'static + Send + Sync,
 {
     pub fn dispatch<M: StateMutation<T> + Send + Sync>(&self, mutation: M) {
-        let mut state = self.0.write();
+        let Some(mut state) = self.0.try_write() else {
+            return;
+        };
         mutation.apply(state.deref_mut());
     }
 
@@ -33,7 +35,9 @@ where
         &self,
         mutation: M,
     ) {
-        let mut state = self.0.write_untracked();
+        let Some(mut state) = self.0.try_write_untracked() else {
+            return;
+        };
         mutation.apply(state.deref_mut());
     }
 
@@ -44,6 +48,18 @@ where
     {
         let state = self.0;
         Signal::derive(move || {
+            let state = state.read();
+            query(state.deref())
+        })
+    }
+
+    pub fn query_memo<O, Q>(&self, query: Q) -> Memo<O>
+    where
+        O: PartialEq + Send + Sync + 'static,
+        Q: Fn(&T) -> O + Send + Sync + 'static,
+    {
+        let state = self.0;
+        Memo::new(move |_| {
             let state = state.read();
             query(state.deref())
         })
