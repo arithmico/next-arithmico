@@ -11,7 +11,7 @@ pub struct EventEnvelope {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
     Ready,
-    EvaluationComplete { result: Result<Node, SessionError> },
+    EvaluationComplete { output: Result<Node, SessionError> },
     StackItemUpdated { name: String, value: Node },
     StackCleared,
     DocumentatonLoaded { modules: Vec<DocumentationModule> },
