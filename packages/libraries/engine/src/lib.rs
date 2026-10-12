@@ -3,6 +3,7 @@ mod documentation;
 mod session;
 mod translation_provider;
 
+pub use api::load_host_api;
 pub use documentation::{
     Documentation, DocumentationItem, DocumentationItemType,
     DocumentationModule,

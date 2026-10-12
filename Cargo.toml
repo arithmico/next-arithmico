@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "packages/applications/arithmico", 
     "packages/applications/create_version", 
+    "packages/applications/engine-worker", 
     "packages/libraries/*",
 ]
 
@@ -11,6 +12,7 @@ thiserror = "2.0.18"
 serde = { version = "1.0.228", features = ["derive"] }
 leptos = { version = "0.8.19", features = ["csr"] }
 leptos_dom = { version = "0.8.7" }
+console_error_panic_hook = "0.1.7"
 
 [workspace.lints.clippy]
 module_inception = "allow"
