@@ -67,4 +67,8 @@ impl Stack {
         }
         output
     }
+
+    pub fn clear(&mut self) {
+        self.frames = vec![HashMap::new()];
+    }
 }
