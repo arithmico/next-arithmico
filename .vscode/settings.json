@@ -23,7 +23,8 @@
         "algebra",
         "serializer",
         "math_utils",
-        "engine-protocol"
+        "engine-protocol",
+        "engine-worker"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "rust-analyzer.check.command": "clippy",
