@@ -228,6 +228,7 @@ impl DocumentationModule {
     }
 }
 
+#[derive(Debug, Clone, Default)]
 pub struct Documentation {
     pub modules: Vec<DocumentationModule>,
 }

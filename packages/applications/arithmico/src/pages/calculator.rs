@@ -1,7 +1,7 @@
 use calculator_header::CalculatorHeader;
 use calculator_input::CaluclatorInput;
 use leptos::prelude::*;
-use web_state::WebState;
+use web_state::use_state;
 
 mod calculator_header;
 mod calculator_input;
@@ -13,9 +13,9 @@ use crate::{
 
 #[component]
 pub fn CalculatorPage() -> impl IntoView {
-    let state = State::expect_state();
-    let current_output = state.select(|state| state.current_output);
-    let context = state.select(|state| state.create_serialize_options());
+    let state = use_state::<State>();
+    let current_output = state.query(|state| state.current_output.clone());
+    let context = state.query(|state| state.create_serialize_options());
 
     view! {
         <PageWithSidebar class="calculator">

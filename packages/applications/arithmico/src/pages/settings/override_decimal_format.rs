@@ -5,7 +5,7 @@ use ui::{
     form::listbox::{Listbox, ListboxDefinition, use_listbox_is_open},
     icon::menu_icon::MenuIcon,
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{
     SetOverrideDecimalFormatAction, State,
@@ -14,12 +14,12 @@ use crate::state::{
 
 #[component]
 pub fn OverrideDecimalFormatSetting() -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
     let override_decimal_format =
-        state.select(|state| state.settings.override_decimal_format);
+        state.query(|state| state.settings.override_decimal_format);
 
     let on_change = Callback::new(move |override_decimal_format| {
-        state.dispatch(&SetOverrideDecimalFormatAction::new(
+        state.dispatch(SetOverrideDecimalFormatAction::new(
             override_decimal_format,
         ));
     });

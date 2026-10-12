@@ -3,16 +3,16 @@ use js_sys::wasm_bindgen::{JsCast, prelude::Closure};
 use leptos::{logging::warn, prelude::*};
 use leptos_meta::{Html, provide_meta_context};
 use translate::{TranslateProvider as Provider, TranslationTemplateProvider};
-use web_state::WebState;
+use web_state::use_state;
 use web_sys::Event;
 
 use crate::state::State;
 
 #[component]
 pub fn TranslationProvider(children: Children) -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
     let browser_language_trigger = Trigger::new();
-    let language = state.select(|state| state.settings.get_language());
+    let language = state.query(|state| state.settings.get_language());
     let Some(translations) = TranslationTemplateProvider::try_from_toml(
         include_str!("../../translations.toml"),
     ) else {

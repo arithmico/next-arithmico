@@ -22,13 +22,21 @@ use crate::{
 
 pub struct EditorStateMutation {
     #[allow(clippy::type_complexity)]
-    mutation: Box<dyn Fn(&mut EditorState) -> Result<(), editor_core::Error>>,
+    mutation: Box<
+        dyn Fn(&mut EditorState) -> Result<(), editor_core::Error>
+            + Send
+            + Sync,
+    >,
 }
 
 impl EditorStateMutation {
-    pub fn new(
-        f: impl Fn(&mut EditorState) -> Result<(), editor_core::Error> + 'static,
-    ) -> Self {
+    pub fn new<F>(f: F) -> Self
+    where
+        F: Fn(&mut EditorState) -> Result<(), editor_core::Error>
+            + Send
+            + Sync
+            + 'static,
+    {
         Self {
             mutation: Box::new(f),
         }

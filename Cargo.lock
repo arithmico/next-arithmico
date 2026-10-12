@@ -73,6 +73,7 @@ dependencies = [
  "editor",
  "editor_core",
  "engine",
+ "engine-protocol",
  "frizbee",
  "gloo-storage",
  "js-sys",
@@ -2594,6 +2595,7 @@ name = "web_state"
 version = "0.1.0"
 dependencies = [
  "leptos",
+ "thiserror 2.0.21",
 ]
 
 [[package]]

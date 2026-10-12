@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use web_state::WebState;
+use web_state::use_state;
 use web_sys::{
     MediaQueryListEvent,
     wasm_bindgen::{JsCast, closure::Closure},
@@ -9,7 +9,7 @@ use crate::state::State;
 
 #[component]
 pub fn ThemeProvider(children: Children) -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
 
     let (prefers_dark, set_prefers_dark) = signal(false);
 
@@ -37,7 +37,7 @@ pub fn ThemeProvider(children: Children) -> impl IntoView {
         <div
             data-testid="theme-div"
             class=move || {
-                let theme = state.select(|state| state.settings.theme).get();
+                let theme = state.query(|state| state.settings.theme).get();
                 theme.get_class(prefers_dark.get()).to_string()
             }
         >

@@ -1,7 +1,7 @@
 use editor::node::TextNode;
 use editor_core::{EditorCommand, EditorLeafNode, selection::SelectionRange};
 use leptos::logging::error;
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -32,7 +32,7 @@ impl EditorCommand for ClearInputAction {
     }
 }
 
-impl WebStateAction<State> for ClearInputAction {
+impl StateMutation<State> for ClearInputAction {
     fn apply(&self, state: &mut State) {
         if let Err(err) = state
             .input_editor_state

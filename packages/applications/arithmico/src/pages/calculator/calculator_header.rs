@@ -8,7 +8,7 @@ use ui::{
         history_icon::HistoryIcon, list_icon::ListIcon, menu_icon::MenuIcon,
     },
 };
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::state::{
     ClearInputAction, ClearOutputAction, ResetSessionAction, State,
@@ -16,7 +16,7 @@ use crate::state::{
 
 #[component]
 pub fn CalculatorHeader() -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
 
     let menu_definition = MenuDefinition::new()
         .button(|| {
@@ -31,17 +31,17 @@ pub fn CalculatorHeader() -> impl IntoView {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-input" />
             </>
-        }, move || state.dispatch(&ClearInputAction::new()))
+        }, move || state.dispatch(ClearInputAction::new()))
         .item(|| view! {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.clear-output" />
             </>
-        }, move || state.dispatch(&ClearOutputAction::new()))
+        }, move || state.dispatch(ClearOutputAction::new()))
         .item(|| view! {
             <>
                 <FormattedMessage id="calculator.toolbar.actions.reset-session" />
             </>
-        }, move || state.dispatch(&ResetSessionAction::new()));
+        }, move || state.dispatch(ResetSessionAction::new()));
 
     view! {
         <PageHeader>

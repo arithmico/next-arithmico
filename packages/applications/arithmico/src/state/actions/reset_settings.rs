@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::{Settings, State};
 
@@ -10,7 +10,7 @@ impl ResetSettingsAction {
     }
 }
 
-impl WebStateAction<State> for ResetSettingsAction {
+impl StateMutation<State> for ResetSettingsAction {
     fn apply(&self, state: &mut State) {
         state.settings = Settings::default();
         state.settings.save();

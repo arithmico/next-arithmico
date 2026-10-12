@@ -3,7 +3,7 @@ use leptos::prelude::*;
 use settings_section::SettingsSection;
 use translate::FormattedMessage;
 use ui::common::page_title::PageTitle;
-use web_state::WebState;
+use web_state::use_state;
 
 use crate::{
     components::*,
@@ -24,7 +24,7 @@ mod theme;
 
 #[component]
 pub fn SettingsPage() -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
 
     view! {
         <PageWithSidebar class="settings-page">
@@ -51,7 +51,7 @@ pub fn SettingsPage() -> impl IntoView {
                     <button
                         class="reset-settings-button"
                         on:click=move |_| {
-                            state.dispatch(&ResetSettingsAction::new());
+                            state.dispatch(ResetSettingsAction::new());
                         }
                     >
                         <FormattedMessage id="settings.section.reset-settings.reset" />

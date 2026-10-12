@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use translate::GetTranslationId;
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum Theme {
     Light,
     Dark,

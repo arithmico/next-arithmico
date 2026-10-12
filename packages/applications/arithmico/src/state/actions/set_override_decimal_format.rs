@@ -1,4 +1,4 @@
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::{State, override_decimal_format::OverrideDecimalFormat};
 
@@ -14,9 +14,9 @@ impl SetOverrideDecimalFormatAction {
     }
 }
 
-impl WebStateAction<State> for SetOverrideDecimalFormatAction {
+impl StateMutation<State> for SetOverrideDecimalFormatAction {
     fn apply(&self, state: &mut State) {
-        state.settings.override_decimal_format = self.value.clone();
+        state.settings.override_decimal_format = self.value;
         state.settings.save();
     }
 }

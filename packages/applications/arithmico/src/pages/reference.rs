@@ -6,7 +6,7 @@ use leptos::prelude::*;
 use reference_header::ReferenceHeader;
 use reference_section::ReferenceSection;
 use translate::use_language;
-use web_state::WebState;
+use web_state::use_state;
 
 mod matching;
 mod reference_header;
@@ -15,11 +15,11 @@ mod reference_section;
 
 #[component]
 pub fn ReferencePage() -> impl IntoView {
-    let state = State::expect_state();
+    let state = use_state::<State>();
     let language = use_language();
     let search_query = RwSignal::new(String::new());
-    let modules = state.select(move |state| {
-        let mut items = state.session.documentation().modules().to_vec();
+    let modules = state.query(move |state| {
+        let mut items = state.documentation.modules().to_vec();
 
         let language = language.get();
         items.sort_by_key(|a| a.name(language));

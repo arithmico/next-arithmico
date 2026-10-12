@@ -1,14 +1,16 @@
-use engine::SessionEntry;
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use web_state::WebState;
+use web_state::use_state;
 
-use crate::{components::CalculatorOutput, state::State};
+use crate::{
+    components::CalculatorOutput,
+    state::{LogEntry, State},
+};
 
 #[component]
-pub fn HistoryItem(item: SessionEntry, position: usize) -> impl IntoView {
-    let state = State::expect_state();
-    let context = state.select(|state| state.create_serialize_options());
+pub fn HistoryItem(item: LogEntry, position: usize) -> impl IntoView {
+    let state = use_state::<State>();
+    let context = state.query(|state| state.create_serialize_options());
 
     view! {
         <li class="history-item">
@@ -28,7 +30,7 @@ pub fn HistoryItem(item: SessionEntry, position: usize) -> impl IntoView {
                             let context = context.get();
                             view! {
                                 <CalculatorOutput
-                                    value=Some(item.output.clone())
+                                    value=item.output.clone()
                                     options=context
                                 />
                             }

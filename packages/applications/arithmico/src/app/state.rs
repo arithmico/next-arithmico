@@ -6,7 +6,7 @@ use leptos::{
     logging::{error, log},
     prelude::*,
 };
-use web_state::WebStateProvider;
+use web_state::StateProvider as WebStateProvider;
 use web_sys::{Blob, BlobPropertyBag, MessageEvent, Url, Worker};
 
 use crate::state::State;
@@ -47,7 +47,7 @@ pub fn StateProvider(children: Children) -> impl IntoView {
     worker.set_onmessage(Some(onmessage.as_ref().unchecked_ref()));
     onmessage.forget();
 
-    let state = State::new();
+    let state = RwSignal::new(State::new());
 
     view! { <WebStateProvider state=state>{children()}</WebStateProvider> }
         .into_any()

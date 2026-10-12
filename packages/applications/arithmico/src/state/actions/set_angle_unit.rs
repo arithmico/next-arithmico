@@ -1,5 +1,5 @@
 use common::AngleUnit;
-use web_state::WebStateAction;
+use web_state::StateMutation;
 
 use crate::state::State;
 
@@ -15,7 +15,7 @@ impl SetAngleUnitAction {
     }
 }
 
-impl WebStateAction<State> for SetAngleUnitAction {
+impl StateMutation<State> for SetAngleUnitAction {
     fn apply(&self, state: &mut State) {
         state.settings.angle_unit = self.value;
         state.settings.save();
