@@ -5,12 +5,12 @@ edition = "2024"
 license = "AGPL-3.0-or-later"
 
 [dependencies]
-console_error_panic_hook = "0.1.7"
-leptos = { workspace = true }
+console_error_panic_hook.workspace = true
+leptos.workspace = true
+serde.workspace = true
 leptos_router = { version = "0.8.13" }
 engine = { path = "../../libraries/engine" }
 ui = { version = "0.1.0", path = "../../libraries/ui" }
-serde = { workspace = true }
 gloo-storage = "0.4.0"
 serde_json = "1.0.150"
 web-sys = { version = "0.3.72", features = [
@@ -24,7 +24,9 @@ web-sys = { version = "0.3.72", features = [
     "NodeList",
     "MediaQueryList",
     "MediaQueryListEvent",
-    "Navigator"
+    "Navigator",
+    "Worker",
+    "BlobPropertyBag"
 ] }
 js-sys = "0.3.72"
 editor = { path = "../../libraries/editor" }
