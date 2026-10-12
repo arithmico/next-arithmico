@@ -8,9 +8,17 @@
     </head>
     <body>
         <link 
-            data-trunk rel="rust"
+            rel="rust"
+            data-trunk
             data-wasm-opt-params="-Oz --converge --strip-debug --strip-producers --enable-bulk-memory --enable-nontrapping-float-to-int"
             href="Cargo.toml"
+        />
+        <link 
+            rel="rust"
+            data-trunk
+            href="../engine-worker/Cargo.toml"
+            data-wasm-opt-params="-Oz --converge --strip-debug --strip-producers --enable-bulk-memory --enable-nontrapping-float-to-int"
+            data-type="worker"
         />
     </body>
 </html>
