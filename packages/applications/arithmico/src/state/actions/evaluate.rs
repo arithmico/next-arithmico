@@ -29,7 +29,7 @@ impl StateMutation<State> for EvaluateAction {
         );
 
         state.worker_client.send_command(
-            correlation_id,
+            Some(correlation_id),
             Command::Evaluate {
                 input: self.input.clone(),
                 language,

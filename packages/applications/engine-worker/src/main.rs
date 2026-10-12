@@ -48,6 +48,7 @@ fn handler(command: &Command, state: &mut State) {
         }
         Command::ClearStack => {
             state.stack.clear();
+            state.channel.send_event(Event::StackCleared);
         }
     }
 }

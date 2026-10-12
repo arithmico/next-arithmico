@@ -23,7 +23,11 @@ impl WorkerClient {
         correlation_id
     }
 
-    pub fn send_command(&mut self, correlation_id: usize, command: Command) {
+    pub fn send_command(
+        &mut self,
+        correlation_id: Option<usize>,
+        command: Command,
+    ) {
         let message = match serde_json::to_string(&CommandEnvelope {
             correlation_id,
             payload: command,

@@ -69,9 +69,7 @@ impl Server {
                 }
             };
 
-            state
-                .channel
-                .set_correlation_id(Some(command.correlation_id));
+            state.channel.set_correlation_id(command.correlation_id);
 
             handler(&command.payload, state.deref_mut());
 
