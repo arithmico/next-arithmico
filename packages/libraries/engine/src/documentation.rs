@@ -229,7 +229,7 @@ impl DocumentationModule {
 }
 
 pub struct Documentation {
-    modules: Vec<DocumentationModule>,
+    pub modules: Vec<DocumentationModule>,
 }
 
 impl Documentation {
