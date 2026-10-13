@@ -22,11 +22,6 @@ pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
                     })
                         .into_any()
                 }
-                SessionError::SerializeNodeError(_) => {
-
-                    view! { <>SerializationError</> }
-                        .into_any()
-                }
                 SessionError::EvaluateNodeError(error) => {
                     view! {
                         <>
