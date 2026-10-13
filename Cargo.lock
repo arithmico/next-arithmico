@@ -72,7 +72,6 @@ dependencies = [
  "console_error_panic_hook",
  "editor",
  "editor_core",
- "engine",
  "engine-protocol",
  "frizbee",
  "gloo-storage",
