@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use evaluator::Api;
 
 use crate::api::{
