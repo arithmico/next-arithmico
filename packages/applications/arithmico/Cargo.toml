@@ -42,6 +42,7 @@ leptos-md = "0.1.0"
 frizbee = "0.13.0"
 leptos_meta = "0.8.7"
 engine-protocol = { version = "0.1.0", path = "../../libraries/engine-protocol" }
+serializer = { version = "0.1.0", path = "../../libraries/serializer" }
 
 [build-dependencies]
 chrono = "0.4.45"

@@ -15,7 +15,6 @@ use crate::{
 pub fn CalculatorPage() -> impl IntoView {
     let state = use_state::<State>();
     let current_output = state.query(|state| state.current_output.clone());
-    let context = state.query(|state| state.create_serialize_options());
 
     view! {
         <PageWithSidebar class="calculator">
@@ -25,7 +24,6 @@ pub fn CalculatorPage() -> impl IntoView {
                 <CalculatorOutput
                     class="calculator-output-field"
                     value=current_output
-                    options=context
                 />
             </div>
         </PageWithSidebar>

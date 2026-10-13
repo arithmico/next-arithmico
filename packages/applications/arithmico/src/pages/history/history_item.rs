@@ -1,17 +1,10 @@
 use leptos::prelude::*;
 use translate::FormattedMessage;
-use web_state::use_state;
 
-use crate::{
-    components::CalculatorOutput,
-    state::{LogEntry, State},
-};
+use crate::{components::CalculatorOutput, state::LogEntry};
 
 #[component]
 pub fn HistoryItem(item: LogEntry, position: usize) -> impl IntoView {
-    let state = use_state::<State>();
-    let context = state.query(|state| state.create_serialize_options());
-
     view! {
         <li class="history-item">
             <span class="history-item-id">{format!("#{}", position)}</span>
@@ -27,13 +20,7 @@ pub fn HistoryItem(item: LogEntry, position: usize) -> impl IntoView {
                     {
                         let item = item.clone();
                         move || {
-                            let context = context.get();
-                            view! {
-                                <CalculatorOutput
-                                    value=item.output.clone()
-                                    options=context
-                                />
-                            }
+                            view! { <CalculatorOutput value=item.output.clone() /> }
                         }
                     }
                 </dd>

@@ -6,8 +6,7 @@ use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{Documentation, SerializeOptions};
-use engine_protocol::Error;
+use engine_protocol::{Documentation, Error};
 use node::Node;
 use trace::Span;
 
@@ -51,12 +50,12 @@ impl State {
         }
     }
 
-    pub fn create_serialize_options(&self) -> SerializeOptions {
+    pub fn create_serialize_options(&self) -> serializer::Options {
         let decimal_places = self.settings.decimal_places;
         let language = self.get_decimal_format();
         let number_representation = self.settings.number_representation;
 
-        SerializeOptions {
+        serializer::Options {
             language,
             decimal_places,
             number_representation,

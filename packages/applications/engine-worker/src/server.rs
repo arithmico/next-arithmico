@@ -3,8 +3,7 @@ use std::{
     sync::{Arc, RwLock},
 };
 
-use engine::Documentation;
-use engine_protocol::{Command, CommandEnvelope, Event};
+use engine_protocol::{Command, CommandEnvelope, Documentation, Event};
 use web_sys::{
     DedicatedWorkerGlobalScope, MessageEvent, console,
     wasm_bindgen::{JsCast, closure::Closure},

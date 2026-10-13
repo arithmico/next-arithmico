@@ -1,7 +1,8 @@
 use common::Language;
-use engine::DocumentationModule;
+use engine_protocol::DocumentationModule;
 use frizbee::{Matcher, Pattern};
 use leptos::reactive::{computed::Memo, traits::Get, wrappers::read::Signal};
+use serializer::SerializeNode;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ReferenceMatch {
@@ -22,11 +23,13 @@ pub fn match_reference_modules(
     modules: Signal<Vec<DocumentationModule>>,
     language: Signal<Language>,
     search_query: Signal<String>,
+    serializer_options: Signal<serializer::Options>,
 ) -> Memo<Vec<ReferenceModuleMatch>> {
     Memo::new(move |_| {
         let modules = modules.get();
         let language = language.get();
         let search_query = search_query.get();
+        let options = serializer_options.get();
         let mut matcher = Matcher::from_patterns(
             &[Pattern::new(&search_query, Default::default())],
             &Default::default(),
@@ -41,8 +44,10 @@ pub fn match_reference_modules(
                     .filter_map(|item| {
                         let description =
                             item.get_description(language).unwrap_or_default();
-                        let synopsis =
-                            item.get_synopsis(language).unwrap_or_default();
+                        let synopsis = item
+                            .get_synopsis()
+                            .serialize(options)
+                            .unwrap_or_default();
                         let description_score =
                             matcher.match_one(&description, 0);
                         let synopsis_score = matcher.match_one(&synopsis, 0);
