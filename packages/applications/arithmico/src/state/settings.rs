@@ -1,11 +1,11 @@
 use std::fmt::Debug;
 
 use common::{AngleUnit, Language, NumberRepresentation};
-use engine::DecimalPlaces;
 use gloo_storage::{LocalStorage, Storage};
 use leptos::{logging::error, prelude::window};
 use override_decimal_format::OverrideDecimalFormat;
 use serde::{Deserialize, Serialize};
+use serializer::DecimalPlaces;
 use theme::Theme;
 
 use crate::state::language::LanguageValue;

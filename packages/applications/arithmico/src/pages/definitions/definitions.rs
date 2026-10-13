@@ -1,27 +1,22 @@
-use engine::{SerializeError, SerializeNode, SerializeOptions};
 use leptos::prelude::*;
 use node::{FunctionCall, Node, Symbol};
 use web_state::use_state;
 
-use crate::state::State;
+use crate::{components::DisplayNode, state::State};
 
 #[component]
 pub fn Definitions() -> impl IntoView {
     let state = use_state::<State>();
-    let settings = state.query(|state| state.settings.clone());
     let definitions = state.query(|state| state.symbols.clone());
 
     move || {
-        let settings = settings.get();
         let definitions = definitions.get();
         view! {
             <ul class="definitions-list">
                 {definitions
                     .into_iter()
-                    .map(|
-                        (key, value),
-                    | -> Result<(String, String), SerializeError> {
-                        let (key_node, value_node) = if let Node::Function(node) = value {
+                    .map(|(key, value)| -> (Node, Node) {
+                        if let Node::Function(node) = value {
                             let key_node = FunctionCall::new(
                                 Symbol::new(&key),
                                 node
@@ -35,33 +30,21 @@ pub fn Definitions() -> impl IntoView {
                             (key_node, value_node)
                         } else {
                             (Symbol::new(&key), value)
-                        };
-                        let decimal_places = settings.decimal_places;
-                        let language = settings
-                            .override_decimal_format
-                            .decimal_format()
-                            .unwrap_or(settings.get_language());
-                        let number_representation = settings.number_representation;
-                        let options = SerializeOptions::new(
-                            language,
-                            decimal_places,
-                            number_representation,
-                        );
-                        let key_string = key_node.serialize(options)?;
-                        let value_string = value_node.serialize(options)?;
-                        Ok((key_string, value_string))
+                        }
                     })
-                    .map(|entry: Result<(String, String), _>| {
-                        entry
-                            .map(|(key, value)| {
-                                view! {
-                                    <li>
-                                        <span>{key}</span>
-                                        <span>{":="}</span>
-                                        <span>{value}</span>
-                                    </li>
-                                }
-                            })
+                    .map(|(key, value)| {
+
+                        view! {
+                            <li>
+                                <span>
+                                    <DisplayNode node=key />
+                                </span>
+                                <span>{":="}</span>
+                                <span>
+                                    <DisplayNode node=value />
+                                </span>
+                            </li>
+                        }
                     })
                     .collect_view()}
             </ul>
