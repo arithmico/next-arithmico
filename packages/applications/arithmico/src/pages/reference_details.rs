@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
-use engine::{
-    DocumentationItem, DocumentationItemType, SerializeNode, SerializeOptions,
-};
+use engine_protocol::{DocumentationItem, DocumentationItemType};
 use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
+use serializer::SerializeNode;
 use translate::FormattedMessage;
 use ui::{
     common::breadcrumbs::{Breadcrumbs, BreadcrumbsItem},
@@ -13,7 +12,10 @@ use ui::{
 };
 use web_state::use_state;
 
-use crate::{components::PageWithSidebar, state::State};
+use crate::{
+    components::{DisplayNode, PageWithSidebar},
+    state::State,
+};
 
 #[derive(Debug, Clone, PartialEq, Params)]
 struct ReferenceDetailsParams {
@@ -71,17 +73,16 @@ fn ItemSection(
 ) -> impl IntoView {
     let state = use_state::<State>();
     let language = state.query(|state| state.settings.get_language());
-    let decimal_format = state.query(|state| state.get_decimal_format());
-    let number_representation =
-        state.query(|state| state.settings.number_representation);
+    let options = state.query(|state| state.create_serialize_options());
     let synopsis = Signal::derive({
         let item = item.clone();
-        move || item.get_synopsis(language.get())
+        move || item.get_synopsis().clone()
     });
     let description = Signal::derive({
         let item = item.clone();
         move || item.get_description(language.get())
     });
+
     view! {
         <PageHeader>
             <Breadcrumbs>
@@ -93,7 +94,10 @@ fn ItemSection(
                     href=format!("/reference/{}", endpoint_name)
                     current=true
                 >
-                    {synopsis}
+                    {move || {
+                        let synopsis = synopsis.get();
+                        view! { <DisplayNode node=synopsis /> }
+                    }}
                 </BreadcrumbsItem>
             </Breadcrumbs>
         </PageHeader>
@@ -142,8 +146,7 @@ fn ItemSection(
                                                 {
                                                     let param = param.clone();
                                                     move || {
-                                                        let decimal_format = decimal_format.get();
-                                                        let number_representation = number_representation.get();
+                                                        let options = options.get();
                                                         match param.get_requirement() {
                                                             node::Cardinality::Required => {
                                                                 view! {
@@ -162,13 +165,7 @@ fn ItemSection(
                                                                 keys.insert(
                                                                     "default".to_string(),
                                                                     default
-                                                                        .serialize(
-                                                                            SerializeOptions::new(
-                                                                                decimal_format,
-                                                                                Default::default(),
-                                                                                number_representation,
-                                                                            ),
-                                                                        )
+                                                                        .serialize(options)
                                                                         .unwrap_or_else(|_| String::from("Serialization failed")),
                                                                 );
                                                                 view! {

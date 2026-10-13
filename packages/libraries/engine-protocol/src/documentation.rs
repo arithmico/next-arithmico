@@ -2,10 +2,10 @@ use std::collections::HashMap;
 
 use common::Language;
 use evaluator::{Api, Endpoint};
-use node::{Argument, Cardinality, FunctionCall, NodeType, Symbol};
-use serializer::SerializeNode;
-use translate::{RenderedTranslatedMessage, Translatable};
-use translate_core::TranslationError;
+use node::{Argument, Cardinality, FunctionCall, Node, NodeType, Symbol};
+use translate_core::{
+    RenderedTranslatedMessage, Translatable, TranslationError,
+};
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ParameterDocumentationItem {
@@ -74,47 +74,26 @@ pub enum DocumentationItemType {
 pub struct DocumentationItem {
     endpoint_name: String,
     documentation_type: DocumentationItemType,
-    synopsis: RenderedTranslatedMessage,
+    synopsis: Node,
     description: RenderedTranslatedMessage,
     parameters: Vec<ParameterDocumentationItem>,
     return_types: Vec<NodeType>,
 }
 
 impl DocumentationItem {
-    pub fn new_function(id: &str) -> Self {
-        Self {
-            documentation_type: DocumentationItemType::Function,
-            synopsis: RenderedTranslatedMessage::default(),
-            description: RenderedTranslatedMessage::default(),
-            parameters: Vec::new(),
-            return_types: Vec::new(),
-            endpoint_name: id.to_string(),
-        }
-    }
-
-    pub fn new_constant(id: &str) -> Self {
-        Self {
-            documentation_type: DocumentationItemType::Constant,
-            synopsis: RenderedTranslatedMessage::default(),
-            description: RenderedTranslatedMessage::default(),
-            parameters: Vec::new(),
-            return_types: Vec::new(),
-            endpoint_name: id.to_string(),
-        }
-    }
-
     pub fn get_documentation_type(&self) -> &DocumentationItemType {
         &self.documentation_type
     }
 
-    // TODO: return result
-    pub fn get_synopsis(&self, language: Language) -> Option<String> {
-        self.synopsis.translate(language).ok()
+    pub fn get_synopsis(&self) -> &Node {
+        &self.synopsis
     }
 
-    // TODO: return result
-    pub fn get_description(&self, language: Language) -> Option<String> {
-        self.description.translate(language).ok()
+    pub fn get_description(
+        &self,
+        language: Language,
+    ) -> Result<String, TranslationError> {
+        self.description.translate(language)
     }
 
     pub fn get_parameters(&self) -> &[ParameterDocumentationItem] {
@@ -136,17 +115,18 @@ impl DocumentationItem {
                 signature,
                 ..
             } => {
-                let mut item =
-                    DocumentationItem::new_function(metadata.endpoint_name());
-                item.description = metadata.description().clone();
-                item.parameters = signature
+                let description = metadata.description().clone();
+                let parameters = signature
                     .arguments()
                     .iter()
                     .map(ParameterDocumentationItem::from)
-                    .collect();
-                item.return_types =
-                    signature.get_return_type().iter().cloned().collect();
-                let synopsis_expression = FunctionCall::new(
+                    .collect::<Vec<_>>();
+                let return_types = signature
+                    .get_return_type()
+                    .iter()
+                    .cloned()
+                    .collect::<Vec<_>>();
+                let synopsis = FunctionCall::new(
                     Symbol::new(metadata.endpoint_name()),
                     signature
                         .argument_names()
@@ -154,62 +134,28 @@ impl DocumentationItem {
                         .map(|argument| Symbol::new(argument))
                         .collect(),
                 );
-                item.synopsis.add_message(
-                    Language::English,
-                    Ok(synopsis_expression
-                        .serialize(serializer::Options::new(
-                            Language::English,
-                            Default::default(),
-                            Default::default(),
-                        ))
-                        .unwrap_or_else(|_| {
-                            String::from("Serialization failed")
-                        })),
-                );
-                item.synopsis.add_message(
-                    Language::German,
-                    Ok(synopsis_expression
-                        .serialize(serializer::Options::new(
-                            Language::German,
-                            Default::default(),
-                            Default::default(),
-                        ))
-                        .unwrap_or_else(|_| {
-                            String::from("Serialization failed")
-                        })),
-                );
-                item
+
+                Self {
+                    endpoint_name: name.to_string(),
+                    documentation_type: DocumentationItemType::Function,
+                    synopsis,
+                    description,
+                    parameters,
+                    return_types,
+                }
             }
             Endpoint::Constant { metadata, .. } => {
-                let mut item =
-                    DocumentationItem::new_constant(metadata.endpoint_name());
-                item.description = metadata.description().clone();
-                let synopsis_expression = Symbol::new(name);
-                item.synopsis.add_message(
-                    Language::English,
-                    Ok(synopsis_expression
-                        .serialize(serializer::Options::new(
-                            Language::English,
-                            Default::default(),
-                            Default::default(),
-                        ))
-                        .unwrap_or_else(|_| {
-                            String::from("Serialization failed")
-                        })),
-                );
-                item.synopsis.add_message(
-                    Language::German,
-                    Ok(synopsis_expression
-                        .serialize(serializer::Options::new(
-                            Language::German,
-                            Default::default(),
-                            Default::default(),
-                        ))
-                        .unwrap_or_else(|_| {
-                            String::from("Serialization failed")
-                        })),
-                );
-                item
+                let description = metadata.description().clone();
+                let synopsis = Symbol::new(name);
+                Self {
+                    endpoint_name: name.to_string(),
+                    documentation_type: DocumentationItemType::Constant,
+                    synopsis,
+                    description,
+                    parameters: vec![],
+                    // TODO: get constant type
+                    return_types: vec![],
+                }
             }
         }
     }

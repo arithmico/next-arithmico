@@ -1,8 +1,7 @@
-use engine::Documentation;
 use node::Node;
 use serde::{Deserialize, Serialize};
 
-use crate::Error;
+use crate::{Documentation, Error};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EventEnvelope {

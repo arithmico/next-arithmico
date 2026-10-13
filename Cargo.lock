@@ -84,6 +84,7 @@ dependencies = [
  "node",
  "serde",
  "serde_json",
+ "serializer",
  "toml",
  "trace",
  "translate",
@@ -496,6 +497,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "trace",
+ "translate_core",
 ]
 
 [[package]]

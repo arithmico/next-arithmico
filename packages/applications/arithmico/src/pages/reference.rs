@@ -25,8 +25,13 @@ pub fn ReferencePage() -> impl IntoView {
         items.sort_by_key(|a| a.name(language));
         items
     });
-    let search_results =
-        match_reference_modules(modules, language, search_query.into());
+    let options = state.query(|state| state.create_serialize_options());
+    let search_results = match_reference_modules(
+        modules,
+        language,
+        search_query.into(),
+        options,
+    );
 
     view! {
         <PageWithSidebar>
