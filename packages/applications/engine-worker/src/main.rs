@@ -1,6 +1,5 @@
 use common::{AngleUnit, Language};
-use engine::SessionError;
-use engine_protocol::{Command, Event};
+use engine_protocol::{Command, Error, Event};
 use evaluator::{EvaluateNode, Options};
 use node::Node;
 use parser::parse;
@@ -58,7 +57,7 @@ fn evaluate(
     language: Language,
     angle_unit: AngleUnit,
     state: &State,
-) -> Result<Node, SessionError> {
+) -> Result<Node, Error> {
     let node = parse(input, language)?;
     let options = Options::new(&state.stack, &state.host_api, angle_unit);
     let output = node.evaluate(options)?;

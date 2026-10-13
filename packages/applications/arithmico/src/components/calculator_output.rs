@@ -1,13 +1,14 @@
+use engine_protocol::Error;
 use leptos::prelude::*;
 
-use engine::{SerializeNode, SerializeOptions, SessionError};
+use engine::{SerializeNode, SerializeOptions};
 use node::Node;
 
 use crate::components::CalculatorErrorOutput;
 
 #[component]
 pub fn CalculatorOutput(
-    #[prop(into)] value: Signal<Option<Result<Node, SessionError>>>,
+    #[prop(into)] value: Signal<Option<Result<Node, Error>>>,
     #[prop(into)] options: Signal<SerializeOptions>,
     #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView {

@@ -476,10 +476,8 @@ dependencies = [
  "lexer",
  "math_utils",
  "node",
- "parser",
  "serde",
  "serializer",
- "thiserror 2.0.21",
  "trace",
  "translate",
  "translate_core",
@@ -492,8 +490,12 @@ version = "0.1.0"
 dependencies = [
  "common",
  "engine",
+ "evaluator",
  "node",
+ "parser",
  "serde",
+ "thiserror 2.0.21",
+ "trace",
 ]
 
 [[package]]

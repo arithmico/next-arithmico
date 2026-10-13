@@ -3,7 +3,7 @@ use thiserror::Error;
 use trace::{Span, Tracable};
 
 #[derive(Error, Debug, Clone, Serialize, Deserialize)]
-pub enum SessionError {
+pub enum Error {
     #[error("ParseError: {0:?}")]
     ParseNodeError(#[from] parser::Error),
 
@@ -11,11 +11,11 @@ pub enum SessionError {
     EvaluateNodeError(#[from] evaluator::Error),
 }
 
-impl SessionError {
+impl Error {
     pub fn get_spans(&self) -> Vec<Span> {
         match self {
-            SessionError::ParseNodeError(error) => vec![error.get_span()],
-            SessionError::EvaluateNodeError(error) => {
+            Error::ParseNodeError(error) => vec![error.get_span()],
+            Error::EvaluateNodeError(error) => {
                 error.trace().first_spans().collect()
             }
         }

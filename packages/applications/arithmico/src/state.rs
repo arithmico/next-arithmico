@@ -6,7 +6,8 @@ use editor::transform::{
     MergeTextNodesTransform, RemoveEmptyContainerNodesTransform,
 };
 use editor_core::EditorState;
-use engine::{Documentation, SerializeOptions, SessionError};
+use engine::{Documentation, SerializeOptions};
+use engine_protocol::Error;
 use node::Node;
 use trace::Span;
 
@@ -26,7 +27,7 @@ pub struct State {
     pub symbols: BTreeMap<String, Node>,
     pub documentation: Documentation,
     pub settings: Settings,
-    pub current_output: Option<Result<Node, SessionError>>,
+    pub current_output: Option<Result<Node, Error>>,
     pub error_spans: Vec<Span>,
     pub input_editor_state: EditorState,
     pub worker_client: WorkerClient,
