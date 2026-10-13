@@ -1,4 +1,4 @@
-use engine::SessionError;
+use engine_protocol::Error;
 use node::Node;
 use web_state::StateMutation;
 
@@ -7,14 +7,11 @@ use crate::state::State;
 #[derive(Debug, Clone)]
 pub struct UpdateOutputAction {
     correlation_id: usize,
-    output: Result<Node, SessionError>,
+    output: Result<Node, Error>,
 }
 
 impl UpdateOutputAction {
-    pub fn new(
-        correlation_id: usize,
-        output: Result<Node, SessionError>,
-    ) -> Self {
+    pub fn new(correlation_id: usize, output: Result<Node, Error>) -> Self {
         Self {
             correlation_id,
             output,

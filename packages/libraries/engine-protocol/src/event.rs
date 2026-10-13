@@ -1,6 +1,8 @@
-use engine::{Documentation, SessionError};
+use engine::Documentation;
 use node::Node;
 use serde::{Deserialize, Serialize};
+
+use crate::Error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EventEnvelope {
@@ -11,7 +13,7 @@ pub struct EventEnvelope {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Event {
     Ready { documentation: Documentation },
-    EvaluationComplete { output: Result<Node, SessionError> },
+    EvaluationComplete { output: Result<Node, Error> },
     StackItemUpdated { name: String, value: Node },
     StackCleared,
 }

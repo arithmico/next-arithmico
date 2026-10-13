@@ -1,5 +1,5 @@
 use common::{AngleUnit, Language};
-use engine::SessionError;
+use engine_protocol::Error;
 use leptos::logging::warn;
 use node::Node;
 
@@ -35,7 +35,7 @@ impl Log {
     pub fn set_output(
         &mut self,
         correlation_id: usize,
-        output: Result<Node, SessionError>,
+        output: Result<Node, Error>,
     ) {
         if let Some(entry) = self
             .entries
@@ -68,7 +68,7 @@ pub struct LogEntry {
     #[allow(dead_code)]
     pub angle_unit: AngleUnit,
     pub input: String,
-    pub output: Option<Result<Node, SessionError>>,
+    pub output: Option<Result<Node, Error>>,
 }
 
 impl LogEntry {

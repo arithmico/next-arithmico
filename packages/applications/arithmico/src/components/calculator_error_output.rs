@@ -1,13 +1,13 @@
-use engine::SessionError;
+use engine_protocol::Error;
 use leptos::prelude::*;
 use translate::{FormattedMessage, TranslatableObject};
 
 #[component]
-pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
+pub fn CalculatorErrorOutput(error: Error) -> impl IntoView {
     view! {
         <>
             {match error {
-                SessionError::ParseNodeError(error) => {
+                Error::ParseNodeError(error) => {
                     (move || {
                         let error = error.clone();
 
@@ -22,7 +22,7 @@ pub fn CalculatorErrorOutput(error: SessionError) -> impl IntoView {
                     })
                         .into_any()
                 }
-                SessionError::EvaluateNodeError(error) => {
+                Error::EvaluateNodeError(error) => {
                     view! {
                         <>
                             <h2>
