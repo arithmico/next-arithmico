@@ -480,7 +480,7 @@ dependencies = [
  "serializer",
  "trace",
  "translate",
- "translate_core",
+ "translate-core",
  "validator",
 ]
 
@@ -506,7 +506,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "trace",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -548,7 +548,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "trace",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -1297,7 +1297,7 @@ dependencies = [
  "itertools 0.15.0",
  "serde",
  "thiserror 2.0.21",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -1383,7 +1383,7 @@ dependencies = [
  "nalgebra",
  "num-prime",
  "thiserror 2.0.21",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -1446,7 +1446,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "trace",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -1556,7 +1556,7 @@ dependencies = [
  "serde",
  "thiserror 2.0.21",
  "trace",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
@@ -2348,11 +2348,11 @@ name = "translate"
 version = "0.1.0"
 dependencies = [
  "leptos",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]
-name = "translate_core"
+name = "translate-core"
 version = "0.1.0"
 dependencies = [
  "common",
@@ -2462,7 +2462,7 @@ dependencies = [
  "node",
  "thiserror 2.0.21",
  "trace",
- "translate_core",
+ "translate-core",
 ]
 
 [[package]]

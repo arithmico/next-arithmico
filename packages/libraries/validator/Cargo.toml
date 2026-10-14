@@ -8,7 +8,7 @@ license = "AGPL-3.0-or-later"
 node = { version = "0.1.0", path = "../node" }
 trace = { version = "0.1.0", path = "../trace" }
 thiserror = { workspace = true }
-translate_core = { version = "0.1.0", path = "../translate_core" }
+translate-core = { version = "0.1.0", path = "../translate-core" }
 math-utils = { version = "0.1.0", path = "../math-utils" }
 
 [lints]
