@@ -9,7 +9,7 @@ trace = { path = "../trace" }
 translate_core = { version = "0.1.0", path = "../translate_core" }
 translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
-engine_derive = { path = "../engine_derive" }
+engine-derive = { path = "../engine-derive" }
 node = { version = "0.1.0", path = "../node" }
 math_utils = { path = "../math_utils" }
 validator = { version = "0.1.0", path = "../validator" }

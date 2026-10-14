@@ -471,7 +471,7 @@ name = "engine"
 version = "0.1.0"
 dependencies = [
  "common",
- "engine_derive",
+ "engine-derive",
  "evaluator",
  "lexer",
  "math_utils",
@@ -482,6 +482,16 @@ dependencies = [
  "translate",
  "translate_core",
  "validator",
+]
+
+[[package]]
+name = "engine-derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn 3.0.6",
 ]
 
 [[package]]
@@ -515,16 +525,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "engine_derive"
-version = "0.1.0"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn 3.0.6",
-]
-
-[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -541,7 +541,7 @@ name = "evaluator"
 version = "0.1.0"
 dependencies = [
  "common",
- "engine_derive",
+ "engine-derive",
  "lexer",
  "math_utils",
  "node",
