@@ -373,7 +373,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "create_version"
+name = "create-version"
 version = "0.1.0"
 dependencies = [
  "anyhow",
