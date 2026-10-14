@@ -15,7 +15,7 @@ serde = { workspace = true, features = ["derive"] }
 
 [dev-dependencies]
 lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
-engine_derive = { path = "../engine_derive" }
+engine-derive = { path = "../engine-derive" }
 
 [lints]
 workspace = true
