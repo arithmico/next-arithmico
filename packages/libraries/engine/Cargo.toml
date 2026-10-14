@@ -240,7 +240,9 @@ api_module_distributions = [
     "api_endpoint_distributions_qnormal",
     "api_endpoint_distributions_binom",
     "api_endpoint_distributions_cbinom",
-    "api_endpoint_distributions_qbinom"
+    "api_endpoint_distributions_qbinom",
+    "api_endpoint_distributions_pois",
+    "api_endpoint_distributions_cpois",
 ]
 
 api_module_loader_distributions = []
@@ -250,6 +252,8 @@ api_endpoint_distributions_qnormal = ["api_module_loader_distributions"]
 api_endpoint_distributions_binom = ["api_module_loader_distributions"]
 api_endpoint_distributions_cbinom = ["api_module_loader_distributions"]
 api_endpoint_distributions_qbinom = ["api_module_loader_distributions"]
+api_endpoint_distributions_pois = ["api_module_loader_distributions"]
+api_endpoint_distributions_cpois = ["api_module_loader_distributions"]
 
 # analysis
 api_module_analysis = [

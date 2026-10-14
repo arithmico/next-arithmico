@@ -43,6 +43,43 @@ pub fn calculate_binomial_pmf(
     Ok(dbinom(k, n, p))
 }
 
+/// Computes the probability mass function (PMF) of the Poisson distribution.
+///
+/// This is a thin wrapper around the internal `dpois` implementation,
+/// which uses a numerically stable saddlepoint approximation (Loader).
+///
+/// # Arguments
+///
+/// * `k` - Number of observed events (`k >= 0`)
+/// * `lambda` - Expected number of events (`lambda >= 0`)
+///
+/// # Returns
+///
+/// The probability `P(X = k)` for `X ~ Poisson(lambda)`.
+///
+/// # Errors
+///
+/// Returns [`DistributionError::OutOfRange`] if `lambda` is negative,
+/// non-finite, or NaN.
+///
+/// # Notes
+///
+/// Internally converts `k` to `f64` to match the numerical backend.
+pub fn calculate_poisson_pmf(
+    k: usize,
+    lambda: f64,
+) -> Result<f64, DistributionError> {
+    if !(0.0..=f64::MAX).contains(&lambda) {
+        return Err(DistributionError::OutOfRange {
+            min: 0.0,
+            max: f64::MAX,
+            actual: lambda,
+        });
+    }
+
+    Ok(dpois(k as f64, lambda))
+}
+
 /*
     Reference:
     Catherine Loader.
@@ -116,6 +153,7 @@ fn bd0(x: f64, np: f64) -> f64 {
             s = s1;
         }
     }
+
     x * (x / np).ln() + np - x
 }
 
@@ -142,7 +180,6 @@ fn dbinom(x: f64, n: f64, p: f64) -> f64 {
     lc.exp() * (n / (TAU * x * (n - x))).sqrt()
 }
 
-#[allow(dead_code)]
 fn dpois(x: f64, lb: f64) -> f64 {
     if lb == 0.0 {
         return if x == 0.0 { 1.0 } else { 0.0 };
@@ -150,6 +187,7 @@ fn dpois(x: f64, lb: f64) -> f64 {
     if x == 0.0 {
         return (-lb).exp();
     }
+
     (-stirlerr(x) - bd0(x, lb)).exp() / (TAU * x).sqrt()
 }
 
@@ -158,10 +196,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn binomial_pdf() {
+    fn binomial_pmf() {
         assert_eq!(
             calculate_binomial_pmf(10, 0.87, 9).unwrap(),
             0.37120740051593837
         )
+    }
+
+    #[test]
+    fn poisson_pmf() {
+        assert_eq!(calculate_poisson_pmf(3, 2.5).unwrap(), 0.21376301724973648);
     }
 }

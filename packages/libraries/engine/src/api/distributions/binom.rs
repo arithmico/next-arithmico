@@ -11,7 +11,7 @@ use validator::NumberValidator;
 #[name("binom")]
 #[description(
     Language::German,
-    "Berechnet die Wahrscheinlichkeitsfunktion der Binomialverteilung."
+    "Berechnet die Wahrscheinlichkeitsmassefunktion der Binomialverteilung."
 )]
 #[description(
     Language::English,

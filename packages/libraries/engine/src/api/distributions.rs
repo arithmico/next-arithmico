@@ -7,8 +7,12 @@ use crate::api::distributions::binom::BinomEndpoint;
 use crate::api::distributions::cbinom::CBinomEndpoint;
 #[cfg(feature = "api_endpoint_distributions_cnormal")]
 use crate::api::distributions::cnormal::CNormalEndpoint;
+#[cfg(feature = "api_endpoint_distributions_cpois")]
+use crate::api::distributions::cpois::CPoisEndpoint;
 #[cfg(feature = "api_endpoint_distributions_normal")]
 use crate::api::distributions::normal::NormalEndpoint;
+#[cfg(feature = "api_endpoint_distributions_pois")]
+use crate::api::distributions::pois::PoisEndpoint;
 #[cfg(feature = "api_endpoint_distributions_qbinom")]
 use crate::api::distributions::qbinom::QBinomEndpoint;
 #[cfg(feature = "api_endpoint_distributions_qnormal")]
@@ -17,7 +21,9 @@ use crate::api::distributions::qnormal::QNormalEndpoint;
 mod binom;
 mod cbinom;
 mod cnormal;
+mod cpois;
 mod normal;
+mod pois;
 mod qbinom;
 mod qnormal;
 
@@ -44,6 +50,12 @@ pub fn load_distributions_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_distributions_qbinom")]
     let module = module.function::<QBinomEndpoint>();
+
+    #[cfg(feature = "api_endpoint_distributions_pois")]
+    let module = module.function::<PoisEndpoint>();
+
+    #[cfg(feature = "api_endpoint_distributions_cpois")]
+    let module = module.function::<CPoisEndpoint>();
 
     module.build()
 }
