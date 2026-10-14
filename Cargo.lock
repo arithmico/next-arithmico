@@ -474,7 +474,7 @@ dependencies = [
  "engine-derive",
  "evaluator",
  "lexer",
- "math_utils",
+ "math-utils",
  "node",
  "serde",
  "serializer",
@@ -543,7 +543,7 @@ dependencies = [
  "common",
  "engine-derive",
  "lexer",
- "math_utils",
+ "math-utils",
  "node",
  "serde",
  "thiserror 2.0.21",
@@ -1375,7 +1375,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "math_utils"
+name = "math-utils"
 version = "0.1.0"
 dependencies = [
  "approx",
@@ -1994,7 +1994,7 @@ name = "serializer"
 version = "0.1.0"
 dependencies = [
  "common",
- "math_utils",
+ "math-utils",
  "node",
  "serde",
  "thiserror 2.0.21",
@@ -2458,7 +2458,7 @@ dependencies = [
 name = "validator"
 version = "0.1.0"
 dependencies = [
- "math_utils",
+ "math-utils",
  "node",
  "thiserror 2.0.21",
  "trace",

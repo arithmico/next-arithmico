@@ -11,7 +11,7 @@ translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 engine-derive = { path = "../engine-derive" }
 node = { version = "0.1.0", path = "../node" }
-math_utils = { path = "../math_utils" }
+math-utils = { path = "../math-utils" }
 validator = { version = "0.1.0", path = "../validator" }
 serializer = { version = "0.1.0", path = "../serializer" }
 common = { version = "0.1.0", path = "../common" }
