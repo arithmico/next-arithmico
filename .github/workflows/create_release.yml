@@ -24,16 +24,16 @@ jobs:
         with:
           fetch-depth: 0
       - uses: actions-rust-lang/setup-rust-toolchain@v2
-      - name: Install create_version
+      - name: Install create-version
         shell: bash
-        run: cargo install --path packages/applications/create_version
+        run: cargo install --path packages/applications/create-version
       - name: Create and push tag
         id: create-tag
         shell: bash
         env: 
           SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
         run: |
-          VERSION_TAG=$(create_version)
+          VERSION_TAG=$(create-version)
           git tag $VERSION_TAG
           git push origin $VERSION_TAG
           echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
