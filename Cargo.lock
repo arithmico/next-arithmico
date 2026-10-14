@@ -88,8 +88,8 @@ dependencies = [
  "trace",
  "translate",
  "ui",
+ "web-state",
  "web-sys",
- "web_state",
 ]
 
 [[package]]
@@ -2585,6 +2585,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "web-state"
+version = "0.1.0"
+dependencies = [
+ "leptos",
+ "thiserror 2.0.21",
+]
+
+[[package]]
 name = "web-sys"
 version = "0.3.106"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2592,14 +2600,6 @@ checksum = "88261b9deccee56594c11a3460c462c41f58d148598fe70ad77070126a68aba4"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
-]
-
-[[package]]
-name = "web_state"
-version = "0.1.0"
-dependencies = [
- "leptos",
- "thiserror 2.0.21",
 ]
 
 [[package]]
