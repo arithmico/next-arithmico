@@ -6,7 +6,7 @@ license = "AGPL-3.0-or-later"
 
 [dependencies]
 trace = { path = "../trace" }
-translate_core = { version = "0.1.0", path = "../translate_core" }
+translate-core = { version = "0.1.0", path = "../translate-core" }
 translate = { version = "0.1.0", path = "../translate" }
 serde = { workspace = true }
 engine-derive = { path = "../engine-derive" }

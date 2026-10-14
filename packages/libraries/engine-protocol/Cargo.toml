@@ -12,7 +12,7 @@ parser = { version = "0.1.0", path = "../parser" }
 serde = { workspace = true, features = ["derive"] }
 thiserror.workspace = true
 trace = { version = "0.1.0", path = "../trace" }
-translate_core = { version = "0.1.0", path = "../translate_core" }
+translate-core = { version = "0.1.0", path = "../translate-core" }
 
 [lints]
 workspace = true
