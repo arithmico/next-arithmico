@@ -63,7 +63,10 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     });
 
     view! {
-        <div class=format!("listbox {}", class.unwrap_or_default())>
+        <div
+            node_ref=container_ref
+            class=format!("listbox {}", class.unwrap_or_default())
+        >
             <label
                 id=move || {
                     format!(
@@ -78,11 +81,16 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
                     )
                 }
                 class="listbox-label"
+                on:mousedown=move |event| {
+                    if listbox_context.get().is_open() {
+                        event.prevent_default();
+                    }
+                }
             >
                 {definition.label.run()}
             </label>
 
-            <div node_ref=container_ref class="listbox-container">
+            <div class="listbox-container">
                 <ListboxButton
                     listbox_definition=definition.clone()
                     button_ref=button_ref
