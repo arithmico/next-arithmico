@@ -1,9 +1,20 @@
 import { test, expect } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
+import { setTheme } from "../utils/set-theme";
 
-test("accessiblity checks", async ({ page }) => {
+test("accessiblity checks (light theme)", async ({ page }) => {
+  await setTheme(page, "Light");
   await page.goto("/");
-  // wait until leptos finished rendering
+  await page.waitForSelector(".page-title");
+  await expect(page.getByTestId("calculator-input")).toBeAttached();
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations).toEqual([]);
+});
+
+test("accessiblity checks (dark theme)", async ({ page }) => {
+  await setTheme(page, "Dark");
+  await page.goto("/");
+  await page.waitForSelector(".page-title");
   await expect(page.getByTestId("calculator-input")).toBeAttached();
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
