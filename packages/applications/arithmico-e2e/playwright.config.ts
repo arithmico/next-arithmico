@@ -33,16 +33,12 @@ export default defineConfig({
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
     },
-
-    /*    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },*/
   ],
 
   webServer: {
     command: "cd ../arithmico && trunk serve",
-    timeout: 5000,
-    url: "http://127.0.0.1:8080"
+    timeout: 10000,
+    url: "http://127.0.0.1:8080",
+    reuseExistingServer: true,
   },
 });
