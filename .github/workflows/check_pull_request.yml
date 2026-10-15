@@ -40,13 +40,16 @@ jobs:
     - name: Install Playwright
       run: npx playwright install --with-deps
     
-    - name: Prebuild App
+    - name: Launch Web Server
       working-directory: packages/applications/arithmico
       shell: bash
       run: |
         touch index.css 
         ~/.cargo/bin/trunk build
-     
+        ~/.cargo/bin/trunk serve > /dev/null 2>&1 &
+        npm i -g wait-on@9.5.1
+        npx --no wait-on http://localhost:8080 --timeout 30000
+
     - name: Run E2E Tests
       working-directory: packages/applications/arithmico-e2e
       run: npx playwright test
