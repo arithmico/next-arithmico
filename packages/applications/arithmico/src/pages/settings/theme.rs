@@ -45,6 +45,7 @@ pub fn ThemeSetting() -> impl IntoView {
             definition=listbox_definition
             value=theme
             on_change=on_change
+            test_id="theme-setting"
         />
     }
 }

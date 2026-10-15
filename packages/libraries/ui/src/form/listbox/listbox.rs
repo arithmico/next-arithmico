@@ -20,6 +20,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
     #[prop(into)] on_change: Callback<V>,
     #[prop(into)] value: Signal<V>,
     #[prop(optional, into)] class: Option<String>,
+    #[prop(optional, into)] test_id: Option<String>,
 ) -> impl IntoView {
     let button_ref = NodeRef::<html::Button>::new();
     let container_ref = NodeRef::<html::Div>::new();
@@ -66,6 +67,7 @@ pub fn Listbox<V: Send + Sync + Clone + PartialEq + 'static>(
         <div
             node_ref=container_ref
             class=format!("listbox {}", class.unwrap_or_default())
+            data-testid=test_id
         >
             <label
                 id=move || {
