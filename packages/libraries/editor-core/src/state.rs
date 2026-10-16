@@ -25,6 +25,7 @@ pub struct EditorState {
     modified_nodes: HashSet<usize>,
     selection: Option<SelectionRange>,
     transforms: Vec<Arc<dyn EditorTransform>>,
+    revision: usize,
 }
 
 impl EditorState {
@@ -40,6 +41,7 @@ impl EditorState {
             modified_nodes: HashSet::new(),
             selection: None,
             transforms: Vec::new(),
+            revision: 0,
         };
         state.set_node_entries(
             root_node_id,

@@ -1,5 +1,6 @@
 pub mod add_transform;
 pub(super) mod apply_transform;
+pub mod bump_revision;
 pub mod clear_root_node;
 pub mod delete;
 pub mod execute_command;
