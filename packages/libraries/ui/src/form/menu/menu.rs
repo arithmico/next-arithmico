@@ -23,7 +23,11 @@ pub fn Menu(definition: MenuDefinition) -> impl IntoView {
     provide_context(context);
 
     view! {
-        <div class="menu-container" node_ref=container_ref>
+        <div
+            class="menu-container"
+            node_ref=container_ref
+            data-testid="calculator-actions"
+        >
             <button
                 id=move || {
                     format!("widget-{}-menu-button", context.get().widget_id())
