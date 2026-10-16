@@ -8,7 +8,7 @@ license = "AGPL-3.0-or-later"
 thiserror = { workspace = true }
 translate-core = { version = "0.1.0", path = "../translate-core" }
 approx = "0.5.1"
-num-prime = { version = "0.6.1", default-features = false }
+num-prime = { version = "0.7.0", default-features = false }
 nalgebra = "0.35.0"
 
 # necassary as peer dependency of num-prime
