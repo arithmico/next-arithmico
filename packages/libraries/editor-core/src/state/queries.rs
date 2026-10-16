@@ -1,4 +1,5 @@
 pub mod children;
+pub mod get_revision;
 pub mod leaf;
 pub mod log_node;
 pub mod node;

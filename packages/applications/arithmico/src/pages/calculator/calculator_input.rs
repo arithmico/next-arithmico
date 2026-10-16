@@ -135,10 +135,12 @@ fn CalculatorInputEditor() -> impl IntoView {
 
     let update_editor_state: Callback<EditorStateMutation> =
         Callback::new(move |mutation| {
-            state.dispatch_untracked(UpdateInputEditorAction::new(mutation));
+            state.dispatch(UpdateInputEditorAction::new(mutation));
         });
 
     let translate = use_translate();
+
+    let revision = state.query(|state| state.input_editor_state.get_revision());
 
     view! {
         <Editor
@@ -148,6 +150,7 @@ fn CalculatorInputEditor() -> impl IntoView {
             attr:aria-label=move || {
                 translate("calculator.input.label", None).unwrap_or_default()
             }
+            attr:data-revision=revision
             on:keydown=move |event| {
                 if event.key() == "Enter" {
                     event.prevent_default();

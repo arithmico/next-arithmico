@@ -46,7 +46,9 @@ impl EditorStateMutation {
         &self,
         state: &mut EditorState,
     ) -> Result<(), editor_core::Error> {
-        (self.mutation)(state)
+        let result = (self.mutation)(state);
+        state.bump_revision();
+        result
     }
 }
 
