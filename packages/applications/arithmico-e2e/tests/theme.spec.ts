@@ -1,13 +1,25 @@
 import { test, expect } from "@playwright/test";
 
-test("switch theme preference", async ({ page }) => {
+test("default light theme", async ({ page }) => {
     await page.goto("/");
+    await page.emulateMedia({ colorScheme: "no-preference" });
 
-    const testContainer = page.getByTestId("theme-provider").first();
-
-    await page.emulateMedia({ colorScheme: "light" });
-    await expect(testContainer).toHaveClass("theme-light");
-
-    await page.emulateMedia({ colorScheme: "dark" });
-    await expect(testContainer).toHaveClass("theme-dark");
+    const themeProvider = page.getByTestId("theme-provider");
+    await expect(themeProvider).toHaveClass("theme-light");
 });
+
+test("detect light theme", async ({ page }) => {
+    await page.goto("/");
+    await page.emulateMedia({ colorScheme: "light" });
+
+    const themeProvider = page.getByTestId("theme-provider");
+    await expect(themeProvider).toHaveClass("theme-light");
+});
+
+test("detect dark theme", async ({ page }) => {
+    await page.goto("/");
+    await page.emulateMedia({ colorScheme: "dark" });
+
+    const themeProvider = page.getByTestId("theme-provider");
+    await expect(themeProvider).toHaveClass("theme-dark");
+})
