@@ -330,6 +330,10 @@ api_module_descriptive_statistics = [
     "api_endpoint_descriptive_statistics_quantile",
     "api_endpoint_descriptive_statistics_cov",
     "api_endpoint_descriptive_statistics_corr",
+    "api_endpoint_descriptive_statistics_count",
+    "api_endpoint_descriptive_statistics_total",
+    "api_endpoint_descriptive_statistics_sum_squares",
+    "api_endpoint_descriptive_statistics_sum_products",
 ]
 
 api_module_loader_descriptive_statistics = []
@@ -344,6 +348,10 @@ api_endpoint_descriptive_statistics_median = ["api_module_loader_descriptive_sta
 api_endpoint_descriptive_statistics_quantile = ["api_module_loader_descriptive_statistics"]
 api_endpoint_descriptive_statistics_cov = ["api_module_loader_descriptive_statistics"]
 api_endpoint_descriptive_statistics_corr = ["api_module_loader_descriptive_statistics"]
+api_endpoint_descriptive_statistics_count = ["api_module_loader_descriptive_statistics"]
+api_endpoint_descriptive_statistics_total = ["api_module_loader_descriptive_statistics"]
+api_endpoint_descriptive_statistics_sum_squares = ["api_module_loader_descriptive_statistics"]
+api_endpoint_descriptive_statistics_sum_products = ["api_module_loader_descriptive_statistics"]
 
 # discrete mathematics
 api_module_discrete_mathematics = [
