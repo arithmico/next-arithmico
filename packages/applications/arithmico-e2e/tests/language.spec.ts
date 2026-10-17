@@ -9,7 +9,7 @@ test("load german system langauge", async ({ browser }) => {
 
     await page.goto("/settings");
 
-    const testContainer = page.getByTestId("language-setting-value").first();
+    const testContainer = page.getByTestId("language-setting").first();
     await expect(testContainer).toContainText("Systemeinstellung");
 });
 
@@ -22,6 +22,6 @@ test("load english system langauge", async ({ browser }) => {
 
     await page.goto("/settings");
 
-    const testContainer = page.getByTestId("language-setting-value").first();
+    const testContainer = page.getByTestId("language-setting").first();
     await expect(testContainer).toContainText("System");
 });

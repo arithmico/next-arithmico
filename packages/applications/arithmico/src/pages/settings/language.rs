@@ -23,7 +23,7 @@ pub fn LanguageSetting() -> impl IntoView {
 
         view! {
             <>
-                <span data-testid="language-setting-value">
+                <span>
                     {move || match language.get() {
                         LanguageValue::System => {
                             view! { <FormattedMessage id="settings.language.system" /> }
@@ -62,6 +62,7 @@ pub fn LanguageSetting() -> impl IntoView {
             on_change=on_change
             definition=listbox_definition
             value=language
+            test_id="language-setting"
         />
     }
 }
