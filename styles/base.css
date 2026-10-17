@@ -24,6 +24,16 @@ ul, ol {
   padding: 0;
 }
 
+button {
+  color: inherit;
+  border: none;
+  outline: none;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
 *:focus-visible {
   outline-width: 2px;
   outline-offset: 2px;
