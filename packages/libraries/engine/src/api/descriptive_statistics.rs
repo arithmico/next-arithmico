@@ -5,6 +5,8 @@ use evaluator::ApiModule;
 use crate::api::descriptive_statistics::avg::AvgEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_corr")]
 use crate::api::descriptive_statistics::corr::CorrEndpoint;
+#[cfg(feature = "api_endpoint_descriptive_statistics_count")]
+use crate::api::descriptive_statistics::count::CountEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_cov")]
 use crate::api::descriptive_statistics::cov::CovEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_max")]
@@ -17,6 +19,12 @@ use crate::api::descriptive_statistics::min::MinEndpoint;
 use crate::api::descriptive_statistics::quantile::QuantileEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_sd")]
 use crate::api::descriptive_statistics::sd::SdEndpoint;
+#[cfg(feature = "api_endpoint_descriptive_statistics_sum_products")]
+use crate::api::descriptive_statistics::sum_products::SumProductsEndpoint;
+#[cfg(feature = "api_endpoint_descriptive_statistics_sum_squares")]
+use crate::api::descriptive_statistics::sum_squares::SumSquaresEndpoint;
+#[cfg(feature = "api_endpoint_descriptive_statistics_total")]
+use crate::api::descriptive_statistics::total::TotalEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_unbiased_sd")]
 use crate::api::descriptive_statistics::unbiased_sd::UnbiasedSdEndpoint;
 #[cfg(feature = "api_endpoint_descriptive_statistics_unbiased_var")]
@@ -26,12 +34,16 @@ use crate::api::descriptive_statistics::var::VarEndpoint;
 
 mod avg;
 mod corr;
+mod count;
 mod cov;
 mod max;
 mod median;
 mod min;
 mod quantile;
 mod sd;
+mod sum_products;
+mod sum_squares;
+mod total;
 mod unbiased_sd;
 mod unbiased_var;
 mod var;
@@ -74,6 +86,18 @@ pub fn load_descriptive_statistics_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_descriptive_statistics_corr")]
     let module = module.function::<CorrEndpoint>();
+
+    #[cfg(feature = "api_endpoint_descriptive_statistics_count")]
+    let module = module.function::<CountEndpoint>();
+
+    #[cfg(feature = "api_endpoint_descriptive_statistics_total")]
+    let module = module.function::<TotalEndpoint>();
+
+    #[cfg(feature = "api_endpoint_descriptive_statistics_sum_squares")]
+    let module = module.function::<SumSquaresEndpoint>();
+
+    #[cfg(feature = "api_endpoint_descriptive_statistics_sum_products")]
+    let module = module.function::<SumProductsEndpoint>();
 
     module.build()
 }
