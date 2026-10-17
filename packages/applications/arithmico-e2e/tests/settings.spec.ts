@@ -18,12 +18,12 @@ test("accessiblity checks (dark theme)", async ({ page }) => {
     expect(results.violations).toEqual([]);
 });
 
-test("Settings Title", async ({ page }) => {
+test("title", async ({ page }) => {
     await page.goto("/settings");
     await expect(page.locator(".page-title")).toContainText("Settings");
 });
 
-test("Set Theme", async ({ page }) => {
+test("set theme", async ({ page }) => {
     await page.goto("/settings");
     await expect(page.locator(".page-title")).toContainText("Settings");
 
@@ -44,4 +44,24 @@ test("Set Theme", async ({ page }) => {
     await page.reload();
 
     await expect(button).toContainText("Dark");
+});
+
+test("set language", async ({ page }) => {
+    await page.goto("/settings");
+    const title = page.locator(".page-title");
+    await expect(title).toHaveText("Settings");
+
+    const html = page.locator("html");
+    await expect(html).toHaveAttribute("lang", "en");
+
+    const setting = page.getByTestId("language-setting");
+    await setting.locator("button").click();
+    await setting.getByText("German").click();
+
+    await expect(html).toHaveAttribute("lang", "de");
+    await expect(title).toHaveText("Einstellungen");
+
+    await page.reload();
+    await expect(html).toHaveAttribute("lang", "de");
+    await expect(title).toHaveText("Einstellungen");
 });
