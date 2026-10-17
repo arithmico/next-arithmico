@@ -1,29 +1,25 @@
-use proc_macro::TokenStream;
-use quote::{quote, quote_spanned};
+use proc_macro2::TokenStream;
+use quote::quote;
 use syn::{DeriveInput, LitStr, spanned::Spanned};
 
 use crate::{DescriptionAttribute, crete_path::crate_path};
 
-pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
+pub fn impl_constant_metadata(ast: &DeriveInput) -> syn::Result<TokenStream> {
     let struct_name = &ast.ident;
 
-    let Some(name_attr) = ast.attrs.iter().find_map(|attr| {
-        if attr.path().is_ident("name") {
-            Some(attr.parse_args::<LitStr>())
-        } else {
-            None
-        }
-    }) else {
-        return quote_spanned! {
-            ast.span() => compile_error!("missing #[name(...)] attribute")
-        }
-        .into();
-    };
-
-    let name = match name_attr {
-        Ok(v) => v,
-        Err(e) => return e.to_compile_error().into(),
-    };
+    let name = ast
+        .attrs
+        .iter()
+        .find_map(|attr| {
+            if attr.path().is_ident("name") {
+                Some(attr.parse_args::<LitStr>())
+            } else {
+                None
+            }
+        })
+        .ok_or_else(|| {
+            syn::Error::new(ast.span(), "Missing name attribute.")
+        })??;
 
     let descriptions = ast
         .attrs
@@ -35,12 +31,7 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
                 None
             }
         })
-        .collect::<Result<Vec<_>, _>>();
-
-    let descriptions = match descriptions {
-        Ok(v) => v,
-        Err(e) => return e.to_compile_error().into(),
-    };
+        .collect::<Result<Vec<_>, _>>()?;
 
     let description_tokens = descriptions.iter().map(|attr| {
         let lang = &attr.language;
@@ -51,7 +42,7 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
         }
     });
 
-    let evaluator_path = crate_path("evaluator");
+    let evaluator_path = crate_path("evaluator")?;
 
     let generated = quote! {
         impl #evaluator_path::ConstantMetadata for #struct_name {
@@ -68,5 +59,5 @@ pub fn impl_constant_metadata(ast: &DeriveInput) -> TokenStream {
         }
     };
 
-    generated.into()
+    Ok(generated)
 }

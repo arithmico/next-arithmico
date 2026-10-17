@@ -41,7 +41,11 @@ pub fn function_arguments_derive(input: TokenStream) -> TokenStream {
         Err(err) => return err.to_compile_error().into(),
     };
 
-    impl_function_arguments(&ast)
+    match impl_function_arguments(&ast) {
+        Ok(ok) => ok,
+        Err(err) => err.into_compile_error(),
+    }
+    .into()
 }
 
 #[proc_macro_derive(ConstantMetadata, attributes(name, description))]
@@ -51,5 +55,9 @@ pub fn constant_endpoint_derive(input: TokenStream) -> TokenStream {
         Err(err) => return err.to_compile_error().into(),
     };
 
-    impl_constant_metadata(&ast)
+    match impl_constant_metadata(&ast) {
+        Ok(ok) => ok,
+        Err(err) => err.to_compile_error(),
+    }
+    .into()
 }
