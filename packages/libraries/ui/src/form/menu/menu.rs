@@ -5,7 +5,10 @@ use crate::form::menu::{menu_context::MenuContext, menu_items::MenuItems};
 use super::MenuDefinition;
 
 #[component]
-pub fn Menu(definition: MenuDefinition) -> impl IntoView {
+pub fn Menu(
+    definition: MenuDefinition,
+    #[prop(optional, into)] class: Option<String>,
+) -> impl IntoView {
     let container_ref = NodeRef::<html::Div>::new();
     let button_ref = NodeRef::<html::Button>::new();
     let focus_button = Callback::new(move |_| {
@@ -24,7 +27,7 @@ pub fn Menu(definition: MenuDefinition) -> impl IntoView {
 
     view! {
         <div
-            class="menu-container"
+            class=format!("menu-container {}", class.unwrap_or_default())
             node_ref=container_ref
             data-testid="calculator-actions"
         >
