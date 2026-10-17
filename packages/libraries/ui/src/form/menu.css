@@ -23,7 +23,7 @@
     cursor: pointer;
 }
 
-.menu-button:has( .icon:last-child) {
+.menu-button:has(.icon:last-child) {
     padding-right: var(--spacing-1);
 }
 
