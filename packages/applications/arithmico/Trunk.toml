@@ -1,6 +1,6 @@
 [watch]
 watch = ["../../"]
-ignore = ["./index.css"]
+ignore = ["./index.css", "../arithmico-e2e"]
 
 [build]
 target = "index.html"
