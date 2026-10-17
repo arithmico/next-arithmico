@@ -27,6 +27,9 @@ test("set theme", async ({ page }) => {
     await page.goto("/settings");
     await expect(page.locator(".page-title")).toContainText("Settings");
 
+    const themeProvider = page.getByTestId("theme-provider");
+    await expect(themeProvider).toHaveClass("theme-light");
+
     const setting = page.getByTestId("theme-setting");
     await expect(setting).toBeVisible();
 
@@ -44,6 +47,7 @@ test("set theme", async ({ page }) => {
     await page.reload();
 
     await expect(button).toContainText("Dark");
+    await expect(themeProvider).toHaveClass("theme-dark");
 });
 
 test("set language", async ({ page }) => {
