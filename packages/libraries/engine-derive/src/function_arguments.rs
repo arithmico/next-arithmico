@@ -1,4 +1,4 @@
-use proc_macro::TokenStream;
+use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
 use syn::{Data, DeriveInput, Ident, LitStr, Type, spanned::Spanned};
 
@@ -54,37 +54,42 @@ fn parse_repeatable_attribute(
     Ok((min, max))
 }
 
-pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
+pub(crate) fn impl_function_arguments(
+    ast: &DeriveInput,
+) -> syn::Result<TokenStream> {
     let struct_name = &ast.ident;
 
-    let data_struct = if let Data::Struct(data_struct) = &ast.data {
-        data_struct
-    } else {
-        return quote_spanned! {
-            ast.span() => compile_error!("expected struct")
+    let data_struct = match &ast.data {
+        Data::Struct(data_struct) => data_struct,
+        Data::Enum(_) => {
+            return Err(syn::Error::new(
+                ast.span(),
+                "Expected struct got enum",
+            ));
         }
-        .into();
+        Data::Union(_) => {
+            return Err(syn::Error::new(
+                ast.span(),
+                "Expected struct got union",
+            ));
+        }
     };
 
-    let Some(function_name) = ast.attrs.iter().find_map(|attribute| {
-        if attribute.path().is_ident("name") {
-            Some(attribute.parse_args::<LitStr>())
-        } else {
-            None
-        }
-    }) else {
-        return quote_spanned! {
-            ast.span() => compile_error!("missing function name attribute")
-        }
-        .into();
-    };
+    let function_name = ast
+        .attrs
+        .iter()
+        .find_map(|attribute| {
+            if attribute.path().is_ident("name") {
+                Some(attribute.parse_args::<LitStr>())
+            } else {
+                None
+            }
+        })
+        .ok_or_else(|| {
+            syn::Error::new(ast.span(), "Missing name attribute.")
+        })??;
 
-    let function_name = match function_name {
-        Ok(v) => v,
-        Err(err) => return err.to_compile_error().into(),
-    };
-
-    let struct_descriptions = ast
+    let struct_attributes = ast
         .attrs
         .iter()
         .filter_map(|attribute| {
@@ -94,12 +99,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 None
             }
         })
-        .collect::<Result<Vec<_>, _>>();
-
-    let struct_attributes = match struct_descriptions {
-        Ok(vec) => vec,
-        Err(e) => return e.to_compile_error().into(),
-    };
+        .collect::<Result<Vec<_>, _>>()?;
 
     let struct_descriptions = struct_attributes
         .into_iter()
@@ -225,12 +225,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
                 skip_evaluate,
             })
         })
-        .collect::<Result<Vec<_>, syn::Error>>();
-
-    let fields = match fields {
-        Ok(vec) => vec,
-        Err(err) => return err.to_compile_error().into(),
-    };
+        .collect::<Result<Vec<_>, syn::Error>>()?;
 
     let field_mapping = fields
         .iter()
@@ -331,7 +326,7 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         )
         .collect::<Vec<_>>();
 
-    let evaluator_path = crate_path("evaluator");
+    let evaluator_path = crate_path("evaluator")?;
 
     let generated = quote! {
         impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_name<'a> {
@@ -362,5 +357,5 @@ pub(crate) fn impl_function_arguments(ast: &DeriveInput) -> TokenStream {
         }
     };
 
-    generated.into()
+    Ok(generated)
 }
