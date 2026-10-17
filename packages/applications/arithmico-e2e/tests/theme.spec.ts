@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-test("switch theme preference", async ({page}) => {
+test("switch theme preference", async ({ page }) => {
     await page.goto("/");
 
-    const testContainer = page.getByTestId("theme-div").first();
+    const testContainer = page.getByTestId("theme-provider").first();
 
     await page.emulateMedia({ colorScheme: "light" });
     await expect(testContainer).toHaveClass("theme-light");
