@@ -1,10 +1,13 @@
 import { Page } from "@playwright/test";
 
 export async function clearInput(page: Page) {
-    await page.goto("/");
-    const menu = page.getByTestId("calculator-actions");
-    const button = menu.locator("button");
-    await button.click();
-    let action = menu.getByText("Clear Input");
-    await action.click();
+    await page.locator(".navigation-item > a")
+        .getByText("Calculator")
+        .click();
+    await page.getByTestId("calculator-actions")
+        .locator("button")
+        .click();
+    await page.getByTestId("calculator-actions")
+        .getByText("Clear Input")
+        .click();
 }
