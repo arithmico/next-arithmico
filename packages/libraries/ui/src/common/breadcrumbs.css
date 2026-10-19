@@ -9,11 +9,20 @@
     gap: var(--spacing-1);
 }
 
-.theme-dark .breadcrumbs > ol > .icon {
+.breadcrumb-separator {
+    padding-left: 0;
+    padding-right: var(--spacing-1);
+}
+
+.breadcrumbs-item:first-child .breadcrumb-separator {
+    display: none;
+}
+
+.theme-dark .breadcrumbs > ol .breadcrumb-separator {
     fill: var(--color-neutral-400);
 }
 
-.theme-light .breadcrumbs > ol > .icon {
+.theme-light .breadcrumbs > ol .breadcrumb-separator {
     fill: var(--color-neutral-400);
 }
 

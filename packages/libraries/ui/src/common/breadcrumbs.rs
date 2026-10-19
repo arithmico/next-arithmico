@@ -1,5 +1,7 @@
 use leptos::prelude::*;
 
+use crate::icon::chevron_right_icon::ChevronRightIcon;
+
 #[component]
 pub fn Breadcrumbs(children: Children) -> impl IntoView {
     view! {
@@ -20,6 +22,7 @@ pub fn BreadcrumbsItem(
             "breadcrumbs-item {}",
             if current { "current" } else { "" },
         )>
+            <ChevronRightIcon class="breadcrumb-separator" />
             <a href=href aria_current=current>
                 {children()}
             </a>
