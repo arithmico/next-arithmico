@@ -4,7 +4,7 @@ use engine_protocol::{DocumentationItem, DocumentationItemType};
 use leptos::prelude::*;
 use leptos_router::{hooks::use_params, params::Params};
 use serializer::SerializeNode;
-use translate::FormattedMessage;
+use translate::{FormattedMessage, use_translate};
 use ui::{
     common::breadcrumbs::{Breadcrumbs, BreadcrumbsItem},
     container::page_header::PageHeader,
@@ -81,10 +81,13 @@ fn ItemSection(
         let item = item.clone();
         move || item.get_description(language.get())
     });
+    let translate = use_translate();
 
     view! {
         <PageHeader>
-            <Breadcrumbs>
+            <Breadcrumbs attr:aria-label=move || {
+                translate("breadcrumbs.label", None).unwrap_or_default()
+            }>
                 <BreadcrumbsItem href="/reference">
                     <FormattedMessage id="reference.title" />
                 </BreadcrumbsItem>
