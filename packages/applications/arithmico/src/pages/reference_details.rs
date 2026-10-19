@@ -8,7 +8,6 @@ use translate::FormattedMessage;
 use ui::{
     common::breadcrumbs::{Breadcrumbs, BreadcrumbsItem},
     container::page_header::PageHeader,
-    icon::chevron_right_icon::ChevronRightIcon,
 };
 use web_state::use_state;
 
@@ -89,7 +88,6 @@ fn ItemSection(
                 <BreadcrumbsItem href="/reference">
                     <FormattedMessage id="reference.title" />
                 </BreadcrumbsItem>
-                <ChevronRightIcon />
                 <BreadcrumbsItem
                     href=format!("/reference/{}", endpoint_name)
                     current=true
