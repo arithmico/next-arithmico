@@ -23,7 +23,6 @@
     justify-content: center;
     font-size: var(--text-xs);
     height: var(--text-xl);
-    color: var(--color-neutral-400);
 }
 
 .history-item > dl {
@@ -37,6 +36,11 @@
     align-items: center;
     justify-content: end;
     font-size: var(--text-xs);
-    color: var(--color-neutral-400);
     height: var(--text-xl);
+}
+
+.history-item > dl > dd {
+    display: flex;
+    align-items: center;
+    font-size: var(--text-xs);
 }
