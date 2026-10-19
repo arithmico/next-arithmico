@@ -305,3 +305,7 @@ German = "Lizenz"
 [font_license.title]
 English = "Font License"
 German = "Lizenz der Schriftart"
+
+[breadcrumbs.label]
+English = "Breadcrumb navigation"
+German = "Pfadnavigation"
