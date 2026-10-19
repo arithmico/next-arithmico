@@ -30,7 +30,7 @@ pub fn ListboxButton<V: Send + Sync + Clone + PartialEq + 'static>(
 
             aria-labelledby=move || {
                 format!(
-                    "widget-{}-listbox-label",
+                    "widget-{0}-listbox-label widget-{0}-listbox-button",
                     listbox_context.get().widget_id(),
                 )
             }
