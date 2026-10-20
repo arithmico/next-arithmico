@@ -45,8 +45,8 @@ jobs:
       shell: bash
       run: |
         touch index.css 
-        ~/.cargo/bin/trunk build
-        ~/.cargo/bin/trunk serve > /dev/null 2>&1 &
+        ~/.cargo/bin/trunk build --release
+        ~/.cargo/bin/trunk serve --release > /dev/null 2>&1 &
         npm i -g wait-on@9.5.1
         npx --no wait-on http://localhost:8080 --timeout 30000
 
