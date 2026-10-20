@@ -268,6 +268,8 @@ api_module_analysis = [
     "api_endpoint_analysis_floor",
     "api_endpoint_analysis_ceil",
     "api_endpoint_analysis_abs",
+    "api_endpoint_analysis_rand",
+    "api_endpoint_analysis_rand_int",
     "api_endpoint_analysis_table",
 ]
 
@@ -283,6 +285,8 @@ api_endpoint_analysis_round = ["api_module_loader_analysis"]
 api_endpoint_analysis_floor = ["api_module_loader_analysis"]
 api_endpoint_analysis_ceil = ["api_module_loader_analysis"]
 api_endpoint_analysis_abs = ["api_module_loader_analysis"]
+api_endpoint_analysis_rand = ["api_module_loader_analysis"]
+api_endpoint_analysis_rand_int = ["api_module_loader_analysis"]
 api_endpoint_analysis_table = ["api_module_loader_analysis", "datatype_data_frame"]
 
 # algebra

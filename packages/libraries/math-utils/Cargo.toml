@@ -10,11 +10,15 @@ translate-core = { version = "0.1.0", path = "../translate-core" }
 approx = "0.5.1"
 num-prime = { version = "0.7.0", default-features = false }
 nalgebra = "0.35.0"
+rand = "0.10.3"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# necassary as peer dependency of rand 0.10 for wasm target
+getrandom = { version = "0.4.3", features = ["wasm_js"] }
 
 # necassary as peer dependency of num-prime
 # if num-prime will be updated we can bump getrandom 
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-getrandom = { version = "0.2.17", features = ["js"] }
+getrandom_02 = { package = "getrandom", version = "0.2.17", features = ["js"] }
 
 [lints]
 workspace = true
