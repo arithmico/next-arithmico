@@ -1,16 +1,18 @@
 import * as cdk from 'aws-cdk-lib';
 import { CfnOutput } from 'aws-cdk-lib';
+import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
 export type StaticWebsiteStackProps = {
     domainName: string,
     artifactPath: string,
-    originAccessIdentityId: string
+    originAccessIdentityId: string,
+    certificate: ICertificate,
 }
 
-export class StaticWebsiteDeployment extends Construct {
-    constructor(scope: Construct, id: string, { domainName, artifactPath, originAccessIdentityId, ...props }: StaticWebsiteStackProps) {
+export class SinglePageApplication extends Construct {
+    constructor(scope: Construct, id: string, { domainName, artifactPath, originAccessIdentityId, certificate, ...props }: StaticWebsiteStackProps) {
         super(scope, id);
 
         const zone = cdk.aws_route53.HostedZone.fromLookup(this, "HostedZone", {
@@ -24,12 +26,6 @@ export class StaticWebsiteDeployment extends Construct {
             "OriginAccessIdentityId",
             originAccessIdentityId
         );
-
-        const certificate = new cdk.aws_certificatemanager.DnsValidatedCertificate(this, "Certificate", {
-            domainName,
-            hostedZone: zone,
-            region: "us-east-1"
-        });
 
         const distribution = new cdk.aws_cloudfront.Distribution(this, "Distribution", {
             certificate,
