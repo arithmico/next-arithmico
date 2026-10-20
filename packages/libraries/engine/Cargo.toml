@@ -265,6 +265,8 @@ api_module_analysis = [
     "api_endpoint_analysis_floor",
     "api_endpoint_analysis_ceil",
     "api_endpoint_analysis_abs",
+    "api_endpoint_analysis_rand",
+    "api_endpoint_analysis_rand_int",
     "api_endpoint_analysis_table",
     "api_endpoint_analysis_sum",
     "api_endpoint_analysis_product"
@@ -281,6 +283,8 @@ api_endpoint_analysis_round = []
 api_endpoint_analysis_floor = []
 api_endpoint_analysis_ceil = []
 api_endpoint_analysis_abs = []
+api_endpoint_analysis_rand = []
+api_endpoint_analysis_rand_int = []
 api_endpoint_analysis_table = ["datatype_data_frame"]
 api_endpoint_analysis_sum = [
     "datatype_function",
