@@ -1,6 +1,11 @@
-import * as cdk from 'aws-cdk-lib';
-import { CfnOutput } from 'aws-cdk-lib';
+import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
+import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
+import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { LogGroup } from 'aws-cdk-lib/aws-logs';
+import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
@@ -15,23 +20,23 @@ export class SinglePageApplication extends Construct {
     constructor(scope: Construct, id: string, { domainName, artifactPath, originAccessIdentityId, certificate, ...props }: StaticWebsiteStackProps) {
         super(scope, id);
 
-        const zone = cdk.aws_route53.HostedZone.fromLookup(this, "HostedZone", {
+        const zone = HostedZone.fromLookup(this, "HostedZone", {
             domainName: "arithmico.com"
         });
 
-        const bucket = cdk.aws_s3.Bucket.fromBucketName(this, "Bucket", "arithmico-application-artifacts");
+        const bucket = Bucket.fromBucketName(this, "Bucket", "arithmico-application-artifacts");
 
-        const originAccessIdentity = cdk.aws_cloudfront.OriginAccessIdentity.fromOriginAccessIdentityId(
+        const originAccessIdentity = OriginAccessIdentity.fromOriginAccessIdentityId(
             this,
             "OriginAccessIdentityId",
             originAccessIdentityId
         );
 
-        const distribution = new cdk.aws_cloudfront.Distribution(this, "Distribution", {
+        const distribution = new Distribution(this, "Distribution", {
             certificate,
             domainNames: [domainName],
             defaultBehavior: {
-                origin: cdk.aws_cloudfront_origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
+                origin: S3BucketOrigin.withOriginAccessIdentity(bucket, {
                     originAccessIdentity,
                     originPath: artifactPath,
                 }),
@@ -55,25 +60,30 @@ export class SinglePageApplication extends Construct {
             value: `https://${distribution.distributionDomainName}`,
         });
 
+        const logGroup = new LogGroup(this, "BucketDeploymentLogGroup", {
+            removalPolicy: RemovalPolicy.DESTROY
+        });
+
         new BucketDeployment(this, "BucketDeployment", {
             sources: [Source.asset("../packages/applications/arithmico/dist")],
             destinationKeyPrefix: artifactPath,
             destinationBucket: bucket,
             distribution,
             distributionPaths: ["/*"],
-            retainOnDelete: true
+            retainOnDelete: true,
+            logGroup
         });
 
-        new cdk.CfnOutput(this, 'DistributionId', {
+        new CfnOutput(this, 'DistributionId', {
             value: distribution.distributionId,
             key: "DistributionId"
         });
 
-        new cdk.aws_route53.ARecord(this, "AliasRecord", {
+        new ARecord(this, "AliasRecord", {
             zone,
             recordName: domainName,
-            target: cdk.aws_route53.RecordTarget.fromAlias(
-                new cdk.aws_route53_targets.CloudFrontTarget(distribution)
+            target: RecordTarget.fromAlias(
+                new CloudFrontTarget(distribution)
             )
         });
     }
