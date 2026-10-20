@@ -11,20 +11,16 @@ pub fn HistoryHeader() -> impl IntoView {
 
     view! {
         <PageHeader>
-            {move || {
-                let aria_label = translate("breadcrumbs.label", None)
-                    .unwrap_or_default();
-                view! {
-                    <Breadcrumbs attr:aria-label=aria_label>
-                        <BreadcrumbsItem href="/">
-                            <FormattedMessage id="calculator.title" />
-                        </BreadcrumbsItem>
-                        <BreadcrumbsItem href="/history" current=true>
-                            <FormattedMessage id="history.title" />
-                        </BreadcrumbsItem>
-                    </Breadcrumbs>
-                }
-            }}
+            <Breadcrumbs attr:aria-label=move || {
+                translate("breadcrumbs.label", None).unwrap_or_default()
+            }>
+                <BreadcrumbsItem href="/">
+                    <FormattedMessage id="calculator.title" />
+                </BreadcrumbsItem>
+                <BreadcrumbsItem href="/history" current=true>
+                    <FormattedMessage id="history.title" />
+                </BreadcrumbsItem>
+            </Breadcrumbs>
         </PageHeader>
     }
 }
