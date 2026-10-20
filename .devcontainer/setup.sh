@@ -10,6 +10,6 @@ npx -y playwright install --with-deps
 rustup update
 rustup target add wasm32-unknown-unknown
 rustup component add rustfmt
-cargo install trunk --locked
+cargo install trunk@0.22.0 --locked
 cargo install leptosfmt
 cargo install cargo-watch
