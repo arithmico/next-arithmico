@@ -19,6 +19,10 @@ use crate::api::analysis::ln::LnEndpoint;
 use crate::api::analysis::log::LogEndpoint;
 #[cfg(feature = "api_endpoint_analysis_product")]
 use crate::api::analysis::product::ProductEndpoint;
+#[cfg(feature = "api_endpoint_analysis_rand")]
+use crate::api::analysis::rand::RandEndpoint;
+#[cfg(feature = "api_endpoint_analysis_rand_int")]
+use crate::api::analysis::rand_int::RandIntEndpoint;
 #[cfg(feature = "api_endpoint_analysis_root")]
 use crate::api::analysis::root::RootEndpoint;
 #[cfg(feature = "api_endpoint_analysis_round")]
@@ -39,6 +43,8 @@ mod lg;
 mod ln;
 mod log;
 mod product;
+mod rand;
+mod rand_int;
 mod root;
 mod round;
 mod sqrt;
@@ -83,6 +89,12 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_abs")]
     let module = module.function::<AbsEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_rand")]
+    let module = module.function::<RandEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_rand_int")]
+    let module = module.function::<RandIntEndpoint>();
 
     #[cfg(feature = "api_endpoint_analysis_table")]
     let module = module.function::<TableEndpoint>();
