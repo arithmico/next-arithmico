@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { ArtifactsStack } from '../lib/artifacts-stack';
 import { getStringParameterOrThrow } from '../lib/utils';
-import { ApplicationsStack } from '../lib/applications';
+import { CalculatorStack } from '../lib/calculator';
 import { App, Stack } from 'aws-cdk-lib';
+import { CalculatorCertificateStack } from '../lib/calculator-certificate';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
@@ -24,12 +25,21 @@ if (environment === "main") {
     });
 }
 
-const applications = new ApplicationsStack(app, `applications-${environment}`, {
+const calculatorCertificate = new CalculatorCertificateStack(app, `calculator-certificate-${environment}`, {
+    env: {
+        account: env.account,
+        region: "us-east-1"
+    },
+    environment,
+});
+
+const calculator = new CalculatorStack(app, `calculator-${environment}`, {
     env,
     artifact,
-    environment
-})
+    environment,
+});
+calculator.addStackDependency(calculatorCertificate);
 
 if (artifacts) {
-    applications.addStackDependency(artifacts)
+    calculator.addStackDependency(artifacts)
 }
