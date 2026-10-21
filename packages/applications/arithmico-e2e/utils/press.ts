@@ -1,13 +1,11 @@
 import { expect, Locator } from "@playwright/test";
 
-export async function press(locator: Locator, key: string) {
+export async function waitForRevisionIncrease(locator: Locator) {
     const currentRevisionData = await locator.getAttribute("data-revision");
     if (!currentRevisionData) {
         throw new Error("Missing data-revision attribute!");
     }
     const currentRevision = parseInt(currentRevisionData, 10);
-
-    await locator.press(key);
 
     await expect(async () => {
         const currentData = await locator.getAttribute("data-revision");
@@ -17,6 +15,12 @@ export async function press(locator: Locator, key: string) {
         timeout: 5000,
         intervals: [10, 20, 50, 100]
     });
+}
+
+export async function press(locator: Locator, key: string) {
+    const promise = waitForRevisionIncrease(locator);
+    await locator.press(key);
+    await promise;
 }
 
 export async function pressSequentially(locator: Locator, text: string) {

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { press, pressSequentially } from "../utils/press";
+import { press, pressSequentially, waitForRevisionIncrease } from "../utils/press";
 
 test("autofocus", async ({ page }) => {
     await page.goto("/");
@@ -43,4 +43,15 @@ test("highlight error trace", async ({ page }) => {
     let spans = inputField.locator("span");
     await expect(spans).toHaveCount(1);
     await expect(spans).toHaveText("sin()");
+});
+
+test("multi-byte UTF-16 character insertion", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+    await pressSequentially(inputField, "1 + ");
+    const promise = waitForRevisionIncrease(inputField);
+    await page.keyboard.type("😂");
+    await promise;
+    await pressSequentially(inputField, " + 3");
+    await expect(inputField).toHaveText("1 + 😂 + 3");
 });
