@@ -20,6 +20,7 @@ export async function withRevisionIncrease(locator: Locator, action: (locator: L
 }
 
 export async function press(locator: Locator, key: string) {
+    await locator.focus();
     await withRevisionIncrease(locator, async (locator) => {
         await locator.press(key)
     });
