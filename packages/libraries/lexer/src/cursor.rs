@@ -65,7 +65,15 @@ impl<'a> LexerCursor<'a> {
         &mut self,
         ranges: &[RangeInclusive<char>],
     ) -> Option<Position> {
-        if let Some((position, front_char)) = self.peek_nth(0)
+        self.peek_nth_and_match_one_of(0, ranges)
+    }
+
+    pub fn peek_nth_and_match_one_of(
+        &mut self,
+        n: usize,
+        ranges: &[RangeInclusive<char>],
+    ) -> Option<Position> {
+        if let Some((position, front_char)) = self.peek_nth(n)
             && ranges.iter().any(|range| range.contains(&front_char))
         {
             return Some(position);
