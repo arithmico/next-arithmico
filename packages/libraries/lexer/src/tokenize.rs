@@ -145,18 +145,31 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
             }
             // identifier
             'a'..='z' | 'A'..='Z' | '_' => {
-                let span = if let Some(span) =
-                    cursor.match_many_of_and_advance(&[
+                let mut to = position;
+                loop {
+                    #[allow(clippy::single_range_in_vec_init)]
+                    if let Some(pos) = cursor.match_one_of_and_advance(&[
                         'a'..='z',
                         'A'..='Z',
                         '_'..='_',
-                        ':'..=':',
                         '0'..='9',
                     ]) {
-                    Span::new(position, span.to)
-                } else {
-                    Span::new(position, position)
-                };
+                        to = pos;
+                    } else if let Some(pos) = cursor.match_one_of(&[':'..=':'])
+                        && cursor
+                            .peek_nth_and_match_one_of(
+                                1,
+                                &['a'..='z', 'A'..='Z', '_'..='_', '0'..='9'],
+                            )
+                            .is_some()
+                    {
+                        to = pos;
+                        cursor.next();
+                    } else {
+                        break;
+                    }
+                }
+                let span = Span::new(position, to);
                 tokens.push(Token::Identifier(IdentifierToken {
                     span,
                     name: span.extract_str_from(input).to_string(),
@@ -384,6 +397,40 @@ mod tests {
                     }
                 ),
             })]
+        );
+    }
+
+    #[test]
+    fn define_symbol_no_spaces() {
+        assert_eq!(
+            tokenize("a:=", Default::default()).unwrap(),
+            vec![
+                Token::Identifier(IdentifierToken {
+                    name: "a".to_string(),
+                    span: Span::new(
+                        Position {
+                            byte_index: 0,
+                            char_index: 0
+                        },
+                        Position {
+                            byte_index: 0,
+                            char_index: 0
+                        }
+                    ),
+                }),
+                Token::Define(DefineToken {
+                    span: Span::new(
+                        Position {
+                            byte_index: 1,
+                            char_index: 1
+                        },
+                        Position {
+                            byte_index: 2,
+                            char_index: 2
+                        }
+                    ),
+                }),
+            ]
         );
     }
 
@@ -729,6 +776,21 @@ mod tests {
                 ),
                 name: "x:y:z".to_string()
             })]
+        );
+    }
+
+    #[test]
+    fn identifier_err_colon_at_the_end() {
+        let output = tokenize(" \n \tx:y: \r", Default::default()).unwrap_err();
+        assert_eq!(
+            output,
+            Error::UnexpectedCharacter {
+                character: ':',
+                position: Position {
+                    byte_index: 7,
+                    char_index: 7
+                }
+            }
         );
     }
 
