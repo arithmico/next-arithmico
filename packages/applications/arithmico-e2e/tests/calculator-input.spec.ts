@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { press, pressSequentially, waitForRevisionIncrease } from "../utils/press";
+import { press, pressSequentially, withRevisionIncrease } from "../utils/press";
 
 test("autofocus", async ({ page }) => {
     await page.goto("/");
@@ -49,9 +49,21 @@ test("multi-byte UTF-16 character insertion", async ({ page }) => {
     await page.goto("/");
     const inputField = page.getByTestId("calculator-input");
     await pressSequentially(inputField, "1 + ");
-    const promise = waitForRevisionIncrease(inputField);
-    await page.keyboard.type("😂");
-    await promise;
+    await withRevisionIncrease(inputField, async (inputField) => {
+        await page.keyboard.type("😂");
+    });
     await pressSequentially(inputField, " + 3");
     await expect(inputField).toHaveText("1 + 😂 + 3");
+});
+
+test("multi-byte UTF-16 character deletion", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async (inputField) => {
+        await page.keyboard.insertText("😂");
+    });
+    await expect(inputField).toHaveText("1 + 😂");
+    await press(inputField, "Backspace");
+    await expect(inputField).toHaveText("1 + ");
 });
