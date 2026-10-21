@@ -15,13 +15,16 @@ impl EditorCommand for DeleteContentBackwardCommand {
             let offset = selection.get_focus().get_offset();
             if offset > 0 {
                 let node = state.get_leaf_node(node_id)?;
+                let len = node.length();
                 if let Some((target_offset, _)) =
                     node.previous_character_boundary(offset)
                 {
                     let left_node = node.slice(0, target_offset);
                     let right_node = node.slice(offset, node.length());
                     state.replace_node(node_id, left_node)?;
-                    state.insert_node_after(right_node, node_id)?;
+                    if offset < len {
+                        state.insert_node_after(right_node, node_id)?;
+                    }
                     state.set_selection(SelectionRange::new_at(
                         node_id,
                         target_offset,
@@ -30,8 +33,11 @@ impl EditorCommand for DeleteContentBackwardCommand {
             } else {
                 // TODO: find previous **non-empty** leaf node
                 // TODO: delete all empty leaf nodes between
-                let previous_leaf_node_id =
-                    state.get_previous_leaf_node_or_err(node_id)?;
+                let Ok(previous_leaf_node_id) =
+                    state.get_previous_leaf_node_or_err(node_id)
+                else {
+                    return Ok(());
+                };
                 let previous_leaf_node =
                     state.get_leaf_node(previous_leaf_node_id)?;
                 let end_pos = previous_leaf_node.length().saturating_sub(1);
