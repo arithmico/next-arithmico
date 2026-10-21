@@ -122,3 +122,27 @@ test("forward deletion (Delete key) across surrogate pair", async ({ page }) => 
 
     await expect(inputField).toHaveText("1 +  + 2");
 });
+
+test("text selection spanning multi-byte UTF-16 characters", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.insertText("😂");
+    });
+    await pressSequentially(inputField, " + 2");
+
+    await page.keyboard.down("Shift");
+    for (let i = 0; i < 6; i++) {
+        await page.keyboard.press("ArrowLeft");
+    }
+    await page.keyboard.up("Shift");
+
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.press("Backspace");
+    });
+
+    await expect(inputField).toHaveText("1 + ");
+});
+
