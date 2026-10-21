@@ -63,4 +63,6 @@ pub trait EditorLeafNode:
     fn slice(&self, start: usize, end: usize) -> EditorNode;
     fn get_whitespaces(&self) -> Vec<(usize, usize)>;
     fn serialize(&self) -> String;
+    fn previous_character_boundary(&self, pos: usize)
+    -> Option<(usize, usize)>;
 }
