@@ -45,16 +45,26 @@ fn CalculatorInputEditor() -> impl IntoView {
         for span in error_spans.iter() {
             let start = span.from_byte_offset();
             let end = span.to_byte_offset();
+
             if start < pos || start >= content.len() {
                 error!("Start offset out of bounds!");
                 return;
             }
+
             if pos < start {
                 segments.push((content[pos..start].to_string(), false));
                 pos = start;
             }
-            segments.push((content[pos..=end].to_string(), true));
-            pos = end + 1;
+
+            let end_char_len = content[end..]
+                .chars()
+                .next()
+                .map(|c| c.len_utf8())
+                .unwrap_or(1);
+            let end_boundary = (end + end_char_len).min(content.len());
+
+            segments.push((content[pos..end_boundary].to_string(), true));
+            pos = end_boundary;
         }
 
         if pos < content.len() {
