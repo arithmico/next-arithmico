@@ -81,12 +81,56 @@ impl EditorLeafNode for TextNode {
         self.length
     }
 
-    fn slice(&self, start: usize, end: usize) -> EditorNode {
-        let new_content = String::from_utf16_lossy(
-            &self.content.encode_utf16().collect::<Vec<_>>()[start..end],
-        );
+    fn previous_character_boundary(
+        &self,
+        pos: usize,
+    ) -> Option<(usize, usize)> {
+        if pos == 0 {
+            return None;
+        }
 
-        TextNode::new_with_content(new_content).into_editor_node()
+        let u16_units = self.content.encode_utf16().collect::<Vec<_>>();
+        let len = u16_units.len();
+
+        if pos > len {
+            return None;
+        }
+
+        let char_len = if pos >= 2
+            && (0xDC00..=0xDFFF).contains(&u16_units[pos - 1])
+            && (0xD800..=0xDBFF).contains(&u16_units[pos - 2])
+        {
+            2
+        } else {
+            1
+        };
+
+        Some((pos - char_len, pos))
+    }
+
+    fn slice(&self, mut start: usize, mut end: usize) -> EditorNode {
+        let content = self.content.encode_utf16().collect::<Vec<_>>();
+        start = start.min(content.len().saturating_sub(1));
+        end = end.min(content.len());
+
+        if content.is_empty() {
+            return TextNode::new_with_content("").into_editor_node();
+        }
+
+        if (0xDC00..=0xDFFF).contains(&content[start]) {
+            start += 1;
+        }
+
+        if (0xD800..=0xDBFF).contains(&content[end.saturating_sub(1)]) {
+            end = end.saturating_sub(1);
+        }
+
+        if start >= end {
+            TextNode::new_with_content("").into_editor_node()
+        } else {
+            let new_content = String::from_utf16_lossy(&content[start..end]);
+            TextNode::new_with_content(new_content).into_editor_node()
+        }
     }
 
     fn get_whitespaces(&self) -> Vec<(usize, usize)> {
