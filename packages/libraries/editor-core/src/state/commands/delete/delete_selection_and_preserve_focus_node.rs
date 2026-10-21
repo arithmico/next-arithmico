@@ -21,12 +21,15 @@ impl EditorState {
 
         if focus_node_id == anchor_node_id {
             let node = self.get_leaf_node(focus_node_id)?;
+            let len = node.length();
             let start_offset = focus_offset.min(anchor_offset);
             let stop_offset = focus_offset.max(anchor_offset);
             let left_node = node.slice(0, start_offset);
             let right_node = node.slice(stop_offset, node.length());
             self.replace_node(focus_node_id, left_node)?;
-            self.insert_node_after(right_node, focus_node_id)?;
+            if stop_offset < len {
+                self.insert_node_after(right_node, focus_node_id)?;
+            }
             self.set_selection(SelectionRange::new_at(
                 focus_node_id,
                 start_offset,
