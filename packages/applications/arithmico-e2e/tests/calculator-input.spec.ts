@@ -67,3 +67,58 @@ test("multi-byte UTF-16 character deletion", async ({ page }) => {
     await press(inputField, "Backspace");
     await expect(inputField).toHaveText("1 + ");
 });
+
+test("cursor movement left across surrogate pair", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.insertText("😂");
+    });
+
+    await press(inputField, "ArrowLeft");
+
+    await pressSequentially(inputField, "2");
+    await expect(inputField).toHaveText("1 + 2😂");
+});
+
+test("cursor movement right across surrogate pair", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.insertText("😂");
+    });
+    await pressSequentially(inputField, "3");
+
+    await press(inputField, "ArrowLeft");
+    await press(inputField, "ArrowLeft");
+
+    await press(inputField, "ArrowRight");
+
+    await pressSequentially(inputField, "+");
+    await expect(inputField).toHaveText("1 + 😂+3");
+});
+
+test("forward deletion (Delete key) across surrogate pair", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.insertText("😂");
+    });
+    await pressSequentially(inputField, " + 2");
+
+    for (let i = 0; i < 5; i++) {
+        await press(inputField, "ArrowLeft");
+    }
+
+    await withRevisionIncrease(inputField, async () => {
+        await press(inputField, "Delete");
+    });
+
+    await expect(inputField).toHaveText("1 +  + 2");
+});
