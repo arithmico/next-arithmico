@@ -108,6 +108,26 @@ impl EditorLeafNode for TextNode {
         Some((pos - char_len, pos))
     }
 
+    fn next_character_boundary(&self, pos: usize) -> Option<(usize, usize)> {
+        let u16_units = self.content.encode_utf16().collect::<Vec<_>>();
+        let len = u16_units.len();
+
+        if pos >= len {
+            return None;
+        }
+
+        let char_len = if pos + 1 < len
+            && (0xD800..=0xDBFF).contains(&u16_units[pos])
+            && (0xDC00..=0xDFFF).contains(&u16_units[pos + 1])
+        {
+            2
+        } else {
+            1
+        };
+
+        Some((pos, pos + char_len))
+    }
+
     fn slice(&self, mut start: usize, mut end: usize) -> EditorNode {
         let content = self.content.encode_utf16().collect::<Vec<_>>();
         start = start.min(content.len().saturating_sub(1));

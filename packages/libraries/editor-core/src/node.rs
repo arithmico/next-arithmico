@@ -65,4 +65,5 @@ pub trait EditorLeafNode:
     fn serialize(&self) -> String;
     fn previous_character_boundary(&self, pos: usize)
     -> Option<(usize, usize)>;
+    fn next_character_boundary(&self, pos: usize) -> Option<(usize, usize)>;
 }
