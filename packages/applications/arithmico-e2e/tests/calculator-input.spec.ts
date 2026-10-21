@@ -135,14 +135,36 @@ test("text selection spanning multi-byte UTF-16 characters", async ({ page }) =>
 
     await page.keyboard.down("Shift");
     for (let i = 0; i < 6; i++) {
-        await page.keyboard.press("ArrowLeft");
+        await press(inputField, "ArrowLeft");
     }
     await page.keyboard.up("Shift");
 
-    await withRevisionIncrease(inputField, async () => {
-        await page.keyboard.press("Backspace");
-    });
+    await press(inputField, "Backspace");
 
     await expect(inputField).toHaveText("1 + ");
 });
 
+test("multi-byte UTF-16 character deletion via Cut shortcut", async ({ page }) => {
+    await page.goto("/");
+    const inputField = page.getByTestId("calculator-input");
+
+    await pressSequentially(inputField, "1 + ");
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.insertText("😂");
+    });
+    await pressSequentially(inputField, " + 2");
+
+    for (let i = 0; i < 4; i++) {
+        await press(inputField, "ArrowLeft");
+    }
+    await page.keyboard.down("Shift");
+    await press(inputField, "ArrowLeft");
+    await press(inputField, "ArrowLeft");
+    await page.keyboard.up("Shift");
+
+    await withRevisionIncrease(inputField, async () => {
+        await page.keyboard.press(`ControlOrMeta+x`);
+    });
+
+    await expect(inputField).toHaveText("1 + + 2");
+});
