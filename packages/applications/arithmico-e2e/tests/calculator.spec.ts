@@ -6,7 +6,10 @@ import { press, pressSequentially } from "../utils/press";
 test("accessiblity checks (light theme)", async ({ page }) => {
   await setTheme(page, "Light");
   await page.goto("/");
-  await page.waitForSelector(".page-title");
+  await page.locator(".page-title").waitFor();
+  await page.locator(".theme-light").waitFor({
+    state: "hidden"
+  });
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
@@ -14,7 +17,10 @@ test("accessiblity checks (light theme)", async ({ page }) => {
 test("accessiblity checks (dark theme)", async ({ page }) => {
   await setTheme(page, "Dark");
   await page.goto("/");
-  await page.waitForSelector(".page-title");
+  await page.locator(".page-title").waitFor();
+  await page.locator(".theme-dark").waitFor({
+    state: "hidden"
+  });
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
