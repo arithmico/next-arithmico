@@ -4,6 +4,7 @@ import { setTheme } from "../utils/set-theme";
 import { press, pressSequentially } from "../utils/press";
 import { setDecimalFormat } from "../utils/set-decimal-format";
 import { evaluate } from "../utils/evaluate";
+import { setAngleUnit } from "../utils/set-angle-unit";
 
 test("accessiblity checks (light theme)", async ({ page }) => {
   await setTheme(page, "Light");
@@ -92,4 +93,21 @@ test("output with german decimal format", async ({ page }) => {
   await evaluate(page, "1 / 3");
   const output = page.locator(".calculator-output")
   await expect(output).toHaveText("0,33333");
+});
+
+
+test("output with angle unit set to degrees", async ({ page }) => {
+  await page.goto("/");
+  await setAngleUnit(page, "Degrees");
+  await evaluate(page, "sin(90)");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("1");
+});
+
+test("output with angle unit set to radians", async ({ page }) => {
+  await page.goto("/");
+  await setAngleUnit(page, "Radians");
+  await evaluate(page, "sin(pi / 2)");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("1");
 });

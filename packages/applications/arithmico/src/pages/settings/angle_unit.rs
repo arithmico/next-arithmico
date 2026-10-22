@@ -50,6 +50,7 @@ pub fn AngleUnitSetting() -> impl IntoView {
             definition=listbox_definition
             value=angle_unit
             on_change=on_change
+            test_id="angle-unit-setting"
         />
     }
 }
