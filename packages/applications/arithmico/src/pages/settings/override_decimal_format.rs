@@ -70,6 +70,7 @@ pub fn OverrideDecimalFormatSetting() -> impl IntoView {
             value=override_decimal_format
             on_change=on_change
             definition=listbox_definition
+            test_id="decimal-format-setting"
         />
     }
 }
