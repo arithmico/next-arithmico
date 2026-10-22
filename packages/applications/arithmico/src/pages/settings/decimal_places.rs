@@ -48,6 +48,7 @@ pub fn DecimalPlacesSetting() -> impl IntoView {
             definition=definition
             value=state.query(|state| state.settings.decimal_places)
             on_change=on_change
+            test_id="decimal-places-setting"
         />
     }
 }
