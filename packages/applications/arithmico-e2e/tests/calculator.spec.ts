@@ -6,6 +6,7 @@ import { setDecimalFormat } from "../utils/set-decimal-format";
 import { evaluate } from "../utils/evaluate";
 import { setAngleUnit } from "../utils/set-angle-unit";
 import { setNumberRepresentation } from "../utils/set-number-representation";
+import { setDecimalPlaces } from "../utils/set-decimal-places";
 
 test("accessiblity checks (light theme)", async ({ page }) => {
   await setTheme(page, "Light");
@@ -157,4 +158,20 @@ test("reset session", async ({ page }) => {
   await pressSequentially(inputField, "a");
   await inputField.press("Enter");
   await expect(output).toContainText(`Unknown symbol: "a"`);
+});
+
+test("output with decimal places set to 5", async ({ page }) => {
+  await page.goto("/");
+  await setDecimalPlaces(page, "5");
+  await evaluate(page, "1 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("0.33333");
+});
+
+test("output with decimal places set to 3", async ({ page }) => {
+  await page.goto("/");
+  await setDecimalPlaces(page, "3");
+  await evaluate(page, "1 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("0.333");
 });
