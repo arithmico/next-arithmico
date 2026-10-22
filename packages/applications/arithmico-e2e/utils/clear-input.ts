@@ -1,9 +1,8 @@
 import { Page } from "@playwright/test";
+import { navigate } from "./navigate";
 
 export async function clearInput(page: Page) {
-    await page.locator(".navigation-item > a")
-        .getByText("Calculator")
-        .click();
+    await navigate(page, "/");
     await page.getByTestId("calculator-actions")
         .locator("button")
         .click();

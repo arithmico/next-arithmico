@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { setTheme } from "../utils/set-theme";
 import AxeBuilder from "@axe-core/playwright";
+import { evaluate } from "../utils/evaluate";
+import { navigate } from "../utils/navigate";
 
 test("accessiblity checks (light theme)", async ({ page }) => {
     await setTheme(page, "Light");
@@ -72,4 +74,17 @@ test("set language", async ({ page }) => {
     await page.reload();
     await expect(html).toHaveAttribute("lang", "de");
     await expect(title).toHaveText("Einstellungen");
+});
+
+test("set decimal format", async ({ page }) => {
+    await page.goto("/settings");
+    const title = page.locator(".page-title");
+    await expect(title).toHaveText("Settings");
+    const setting = page.getByTestId("decimal-format-setting");
+    const button = setting.locator("button");
+    await expect(button).toHaveText("No");
+    await button.click();
+    await setting.getByText("German").click();
+    await page.reload();
+    await expect(button).toHaveText("German");
 });

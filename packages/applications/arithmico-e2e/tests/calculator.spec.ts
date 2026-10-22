@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
 import { setTheme } from "../utils/set-theme";
 import { press, pressSequentially } from "../utils/press";
+import { setDecimalFormat } from "../utils/set-decimal-format";
+import { evaluate } from "../utils/evaluate";
 
 test("accessiblity checks (light theme)", async ({ page }) => {
   await setTheme(page, "Light");
@@ -74,4 +76,20 @@ test("clear output", async ({ page }) => {
   await action.click();
 
   await expect(output).toBeEmpty();
+});
+
+test("output with english decimal format", async ({ page }) => {
+  await page.goto("/");
+  await setDecimalFormat(page, "English");
+  await evaluate(page, "1 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("0.33333");
+});
+
+test("output with german decimal format", async ({ page }) => {
+  await page.goto("/");
+  await setDecimalFormat(page, "German");
+  await evaluate(page, "1 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("0,33333");
 });
