@@ -74,7 +74,7 @@ test("clear output", async ({ page }) => {
 
   await button.click();
 
-  let action = menu.getByText("Clear Output");
+  const action = menu.getByText("Clear Output");
   await action.click();
 
   await expect(output).toBeEmpty();
@@ -95,7 +95,6 @@ test("output with german decimal format", async ({ page }) => {
   const output = page.locator(".calculator-output")
   await expect(output).toHaveText("0,33333");
 });
-
 
 test("output with angle unit set to degrees", async ({ page }) => {
   await page.goto("/");
@@ -135,4 +134,27 @@ test("output with number representation set to mixed fraction", async ({ page })
   await evaluate(page, "4 / 3");
   const output = page.locator(".calculator-output")
   await expect(output).toHaveText("1 + 1 / 3");
+});
+
+test("reset session", async ({ page }) => {
+  await page.goto("/");
+  const inputField = page.getByTestId("calculator-input");
+  await pressSequentially(inputField, "a := 2");
+  await inputField.press("Enter");
+
+  const output = page.getByTestId("calculator-output");
+  await expect(output).toHaveText("a := 2");
+
+  const menu = page.getByTestId("calculator-actions");
+  const button = menu.locator("button");
+
+  await button.click();
+
+  await menu.getByText("Reset Session").click();
+
+  await expect(output).toBeEmpty();
+
+  await pressSequentially(inputField, "a");
+  await inputField.press("Enter");
+  await expect(output).toContainText(`Unknown symbol: "a"`);
 });
