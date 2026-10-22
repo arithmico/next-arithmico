@@ -16,5 +16,6 @@ impl SetDecimalPlacesAction {
 impl StateMutation<State> for SetDecimalPlacesAction {
     fn apply(&self, state: &mut State) {
         state.settings.decimal_places = self.value;
+        state.settings.save();
     }
 }
