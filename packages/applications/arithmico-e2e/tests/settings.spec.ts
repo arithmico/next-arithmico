@@ -136,3 +136,23 @@ test("set decimal places", async ({ page }) => {
     await page.reload();
     await expect(button).toHaveText("10");
 });
+
+test("reset settings", async ({ page }) => {
+    await page.goto("/settings");
+    const title = page.locator(".page-title");
+    await expect(title).toHaveText("Settings");
+    const setting = page.getByTestId("decimal-places-setting");
+    const button = setting.locator("button");
+    await expect(button).toHaveText("5");
+    await button.click();
+    await setting
+        .locator("li")
+        .getByText("10", { exact: true })
+        .click();
+    await page.reload();
+    await expect(button).toHaveText("10");
+
+    await page.locator(".reset-settings-button").click();
+    await page.reload();
+    await expect(button).toHaveText("5");
+});
