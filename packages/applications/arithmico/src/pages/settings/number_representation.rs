@@ -58,6 +58,7 @@ pub fn NumberRepresentationSetting() -> impl IntoView {
             definition=listbox_definition
             value=number_representation
             on_change=on_change
+            test_id="number-representation-setting"
         />
     }
 }

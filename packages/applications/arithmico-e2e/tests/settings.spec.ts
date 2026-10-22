@@ -104,3 +104,19 @@ test("set angle unit", async ({ page }) => {
     await page.reload();
     await expect(button).toHaveText("Radians");
 });
+
+test("set number representation", async ({ page }) => {
+    await page.goto("/settings");
+    const title = page.locator(".page-title");
+    await expect(title).toHaveText("Settings");
+    const setting = page.getByTestId("number-representation-setting");
+    const button = setting.locator("button");
+    await expect(button).toHaveText("Number");
+    await button.click();
+    await setting
+        .locator("li")
+        .getByText("Fraction", { exact: true })
+        .click();
+    await page.reload();
+    await expect(button).toHaveText("Fraction");
+});

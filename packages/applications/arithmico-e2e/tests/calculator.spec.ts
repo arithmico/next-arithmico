@@ -5,6 +5,7 @@ import { press, pressSequentially } from "../utils/press";
 import { setDecimalFormat } from "../utils/set-decimal-format";
 import { evaluate } from "../utils/evaluate";
 import { setAngleUnit } from "../utils/set-angle-unit";
+import { setNumberRepresentation } from "../utils/set-number-representation";
 
 test("accessiblity checks (light theme)", async ({ page }) => {
   await setTheme(page, "Light");
@@ -110,4 +111,28 @@ test("output with angle unit set to radians", async ({ page }) => {
   await evaluate(page, "sin(pi / 2)");
   const output = page.locator(".calculator-output")
   await expect(output).toHaveText("1");
+});
+
+test("output with number representation set to number", async ({ page }) => {
+  await page.goto("/");
+  await setNumberRepresentation(page, "Number");
+  await evaluate(page, "4 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("1.33333");
+});
+
+test("output with number representation set to fraction", async ({ page }) => {
+  await page.goto("/");
+  await setNumberRepresentation(page, "Fraction");
+  await evaluate(page, "4 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("4 / 3");
+});
+
+test("output with number representation set to mixed fraction", async ({ page }) => {
+  await page.goto("/");
+  await setNumberRepresentation(page, "Mixed fraction");
+  await evaluate(page, "4 / 3");
+  const output = page.locator(".calculator-output")
+  await expect(output).toHaveText("1 + 1 / 3");
 });
