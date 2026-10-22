@@ -88,3 +88,19 @@ test("set decimal format", async ({ page }) => {
     await page.reload();
     await expect(button).toHaveText("German");
 });
+
+test("set angle unit", async ({ page }) => {
+    await page.goto("/settings");
+    const title = page.locator(".page-title");
+    await expect(title).toHaveText("Settings");
+    const setting = page.getByTestId("angle-unit-setting");
+    const button = setting.locator("button");
+    await expect(button).toHaveText("Degrees");
+    await button.click();
+    await setting
+        .locator("li")
+        .getByText("Radians")
+        .click();
+    await page.reload();
+    await expect(button).toHaveText("Radians");
+});
