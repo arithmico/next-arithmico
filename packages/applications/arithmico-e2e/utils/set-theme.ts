@@ -6,6 +6,5 @@ export async function setTheme(page: Page, theme: "System" | "Dark" | "Light"): 
     const button = setting.locator("button");
     await button.click();
     const options = setting.locator("ul");
-    await page.getByText(theme)
-        .click();
+    await options.getByText(theme).click();
 }
