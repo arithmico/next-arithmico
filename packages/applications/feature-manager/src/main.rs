@@ -5,6 +5,7 @@ use clap::Parser;
 use crate::verify::verify;
 
 mod config;
+mod feature;
 mod verify;
 
 fn main() -> ExitCode {
