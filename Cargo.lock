@@ -701,6 +701,7 @@ dependencies = [
  "anyhow",
  "cargo_metadata",
  "clap",
+ "toml_edit",
 ]
 
 [[package]]
@@ -2478,6 +2479,7 @@ dependencies = [
  "indexmap",
  "toml_datetime",
  "toml_parser",
+ "toml_writer",
  "winnow",
 ]
 
