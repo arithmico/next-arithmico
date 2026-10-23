@@ -3,7 +3,7 @@ resolver = "2"
 members = [
     "packages/applications/arithmico", 
     "packages/applications/create-version", 
-    "packages/applications/engine-worker", 
+    "packages/applications/engine-worker", "packages/applications/feature-manager", 
     "packages/libraries/*",
 ]
 
