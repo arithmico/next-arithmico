@@ -130,8 +130,6 @@ jobs:
   validate-feature-configuration:
     name: Validate Feature Configuration
     runs-on: ubuntu-latest
-    concurrency:
-      group: review-environment-${{ github.event.number }}
     steps:
     - uses: actions/checkout@v7
     - uses: actions-rust-lang/setup-rust-toolchain@v2
