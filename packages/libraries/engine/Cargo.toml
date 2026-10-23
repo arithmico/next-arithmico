@@ -266,7 +266,8 @@ api_module_analysis = [
     "api_endpoint_analysis_ceil",
     "api_endpoint_analysis_abs",
     "api_endpoint_analysis_table",
-    "api_endpoint_analysis_sum"
+    "api_endpoint_analysis_sum",
+    "api_endpoint_analysis_product"
 ]
 
 api_endpoint_analysis_exp = []
@@ -282,6 +283,10 @@ api_endpoint_analysis_ceil = []
 api_endpoint_analysis_abs = []
 api_endpoint_analysis_table = ["datatype_data_frame"]
 api_endpoint_analysis_sum = [
+    "datatype_function",
+    "datatype_number"
+]
+api_endpoint_analysis_product = [
     "datatype_function",
     "datatype_number"
 ]
