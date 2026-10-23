@@ -1,0 +1,9 @@
+[package]
+name = "feature-manager"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[lints]
+workspace = true
