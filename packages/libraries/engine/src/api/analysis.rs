@@ -17,6 +17,8 @@ use crate::api::analysis::lg::LgEndpoint;
 use crate::api::analysis::ln::LnEndpoint;
 #[cfg(feature = "api_endpoint_analysis_log")]
 use crate::api::analysis::log::LogEndpoint;
+#[cfg(feature = "api_endpoint_analysis_product")]
+use crate::api::analysis::product::ProductEndpoint;
 #[cfg(feature = "api_endpoint_analysis_root")]
 use crate::api::analysis::root::RootEndpoint;
 #[cfg(feature = "api_endpoint_analysis_round")]
@@ -36,6 +38,7 @@ mod floor;
 mod lg;
 mod ln;
 mod log;
+mod product;
 mod root;
 mod round;
 mod sqrt;
@@ -86,6 +89,9 @@ pub fn load_analysis_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_analysis_sum")]
     let module = module.function::<SumEndpoint>();
+
+    #[cfg(feature = "api_endpoint_analysis_product")]
+    let module = module.function::<ProductEndpoint>();
 
     module.build()
 }
