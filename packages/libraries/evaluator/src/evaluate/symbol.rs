@@ -64,7 +64,7 @@ mod tests {
     fn evaluate_symbol_from_host_api() {
         let stack = Stack::new();
         let api = Api::builder()
-            .module(true, || {
+            .module(|| {
                 ApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
@@ -88,7 +88,7 @@ mod tests {
     fn evaluate_symbol_from_host_api_with_trace() {
         let stack = Stack::new();
         let api = Api::builder()
-            .module(true, || {
+            .module(|| {
                 ApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")

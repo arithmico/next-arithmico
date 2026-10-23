@@ -50,20 +50,15 @@ pub struct ApiBuilder {
 }
 
 impl ApiBuilder {
-    pub fn module(
-        mut self,
-        feature_flag: bool,
-        module_loader: fn() -> ApiModule,
-    ) -> ApiBuilder {
-        if feature_flag {
-            let module = module_loader();
-            for endpoint in module.into_endpoints() {
-                let name = endpoint.endpoint_name().to_string();
-                if self.endpoints.contains_key(&name) {
-                    panic!("endpoint \"{}\" already exists", name);
-                }
-                self.endpoints.insert(name, endpoint);
+    pub fn module(mut self, module_loader: fn() -> ApiModule) -> ApiBuilder {
+        let module = module_loader();
+        let endpoints = module.into_endpoints();
+        for endpoint in endpoints {
+            let name = endpoint.endpoint_name().to_string();
+            if self.endpoints.contains_key(&name) {
+                panic!("endpoint \"{}\" already exists", name);
             }
+            self.endpoints.insert(name, endpoint);
         }
         self
     }

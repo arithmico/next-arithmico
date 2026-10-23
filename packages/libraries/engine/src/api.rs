@@ -22,37 +22,13 @@ mod trigonometry;
 
 pub fn load_host_api() -> Api {
     Api::builder()
-        .module(
-            cfg!(feature = "api_module_loader_analysis"),
-            load_analysis_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_trigonometry"),
-            load_trigonometry_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_distributions"),
-            load_distributions_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_physics"),
-            load_physics_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_numerical_analysis"),
-            load_numerical_analysis_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_algebra"),
-            load_algebra_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_descriptive_statistics"),
-            load_descriptive_statistics_module,
-        )
-        .module(
-            cfg!(feature = "api_module_loader_discrete_mathematics"),
-            load_discrete_mathematics_module,
-        )
+        .module(load_analysis_module)
+        .module(load_trigonometry_module)
+        .module(load_distributions_module)
+        .module(load_physics_module)
+        .module(load_numerical_analysis_module)
+        .module(load_algebra_module)
+        .module(load_descriptive_statistics_module)
+        .module(load_discrete_mathematics_module)
         .build()
 }

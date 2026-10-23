@@ -126,7 +126,7 @@ mod tests {
 
         let stack = Stack::new();
         let api = Api::builder()
-            .module(true, || {
+            .module(|| {
                 ApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
@@ -176,7 +176,7 @@ mod tests {
 
         let stack = Stack::new();
         let api = Api::builder()
-            .module(true, || {
+            .module(|| {
                 ApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
@@ -231,7 +231,7 @@ mod tests {
 
         let stack = Stack::new();
         let api = Api::builder()
-            .module(true, || {
+            .module(|| {
                 ApiModule::builder()
                     .id("test")
                     .name(Language::English, "test")
