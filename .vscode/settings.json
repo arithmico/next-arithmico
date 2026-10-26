@@ -25,7 +25,8 @@
         "math-utils",
         "engine-protocol",
         "engine-worker",
-        "feature-manager"
+        "feature-manager",
+        "config-service"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "rust-analyzer.check.command": "clippy",
