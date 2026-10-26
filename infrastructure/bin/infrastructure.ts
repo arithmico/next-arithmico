@@ -4,6 +4,7 @@ import { getStringParameterOrThrow } from '../lib/utils';
 import { CalculatorStack } from '../lib/calculator';
 import { App, Stack } from 'aws-cdk-lib';
 import { CalculatorCertificateStack } from '../lib/calculator-certificate';
+import { ConfigServiceStack } from '../lib/config-service';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
@@ -22,6 +23,11 @@ const env = {
 if (environment === "main") {
     artifacts = new ArtifactsStack(app, 'Artifacts', {
         env
+    });
+
+    new ConfigServiceStack(app, `config-service-${environment}`, {
+        env,
+        environment
     });
 }
 
