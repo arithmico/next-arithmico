@@ -24,22 +24,8 @@ lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
 workspace = true
 
 [features]
-default = ["api_modules", "evaluator/default"]
-
-# api modules
-api_modules = [
-    "api_module_trigonometry",
-    "api_module_physics",
-    "api_module_distributions",
-    "api_module_analysis",
-    "api_module_algebra",
-    "api_module_numerical_analysis",
-    "api_module_descriptive_statistics",
-    "api_module_discrete_mathematics",
-]
-
-# trigonometry
-api_module_trigonometry = [
+default = [
+    "evaluator/default",
     "api_endpoint_trigonometry_pi",
     "api_endpoint_trigonometry_sin",
     "api_endpoint_trigonometry_cos",
@@ -53,24 +39,6 @@ api_module_trigonometry = [
     "api_endpoint_trigonometry_asinh",
     "api_endpoint_trigonometry_acosh",
     "api_endpoint_trigonometry_atanh",
-]
-
-api_endpoint_trigonometry_pi = []
-api_endpoint_trigonometry_sin = []
-api_endpoint_trigonometry_cos = []
-api_endpoint_trigonometry_tan = []
-api_endpoint_trigonometry_asin = []
-api_endpoint_trigonometry_acos = []
-api_endpoint_trigonometry_atan = []
-api_endpoint_trigonometry_sinh = []
-api_endpoint_trigonometry_cosh = []
-api_endpoint_trigonometry_tanh = []
-api_endpoint_trigonometry_asinh = []
-api_endpoint_trigonometry_acosh = []
-api_endpoint_trigonometry_atanh = []
-
-# physics
-api_module_physics = [
     "api_endpoint_physics_m_p",
     "api_endpoint_physics_m_n",
     "api_endpoint_physics_m_e",
@@ -110,9 +78,84 @@ api_module_physics = [
     "api_endpoint_physics_z_0",
     "api_endpoint_physics_t",
     "api_endpoint_physics_g",
-    "api_endpoint_physics_atm"
+    "api_endpoint_physics_atm",
+    "api_endpoint_distributions_normal",
+    "api_endpoint_distributions_cnormal",
+    "api_endpoint_distributions_qnormal",
+    "api_endpoint_distributions_binom",
+    "api_endpoint_distributions_cbinom",
+    "api_endpoint_distributions_qbinom",
+    "api_endpoint_distributions_pois",
+    "api_endpoint_distributions_cpois",
+    "api_endpoint_analysis_exp",
+    "api_endpoint_analysis_log",
+    "api_endpoint_analysis_ln",
+    "api_endpoint_analysis_lg",
+    "api_endpoint_analysis_e",
+    "api_endpoint_analysis_sqrt",
+    "api_endpoint_analysis_root",
+    "api_endpoint_analysis_round",
+    "api_endpoint_analysis_floor",
+    "api_endpoint_analysis_ceil",
+    "api_endpoint_analysis_abs",
+    "api_endpoint_analysis_rand",
+    "api_endpoint_analysis_rand_int",
+    "api_endpoint_analysis_table",
+    "api_endpoint_analysis_sum",
+    "api_endpoint_analysis_product",
+    "api_endpoint_algebra_length",
+    "api_endpoint_algebra_rank",
+    "api_endpoint_algebra_dims",
+    "api_endpoint_algebra_cross",
+    "api_endpoint_algebra_matrix_inverse",
+    "api_endpoint_algebra_matrix_rref",
+    "api_endpoint_algebra_matrix_transpose",
+    "api_endpoint_algebra_matrix_det",
+    "api_endpoint_algebra_matrix_id",
+    "api_endpoint_numerical_analysis_nsolve",
+    "api_endpoint_numerical_analysis_nintegrate",
+    "api_endpoint_numerical_analysis_nderive",
+    "api_endpoint_descriptive_statistics_min",
+    "api_endpoint_descriptive_statistics_max",
+    "api_endpoint_descriptive_statistics_avg",
+    "api_endpoint_descriptive_statistics_var",
+    "api_endpoint_descriptive_statistics_unbiased_var",
+    "api_endpoint_descriptive_statistics_sd",
+    "api_endpoint_descriptive_statistics_unbiased_sd",
+    "api_endpoint_descriptive_statistics_median",
+    "api_endpoint_descriptive_statistics_quantile",
+    "api_endpoint_descriptive_statistics_cov",
+    "api_endpoint_descriptive_statistics_corr",
+    "api_endpoint_descriptive_statistics_count",
+    "api_endpoint_descriptive_statistics_total",
+    "api_endpoint_descriptive_statistics_sum_squares",
+    "api_endpoint_descriptive_statistics_sum_products",
+    "api_endpoint_discrete_mathematics_mod",
+    "api_endpoint_discrete_mathematics_idiv",
+    "api_endpoint_discrete_mathematics_gcd",
+    "api_endpoint_discrete_mathematics_lcm",
+    "api_endpoint_discrete_mathematics_binco",
+    "api_endpoint_discrete_mathematics_perm",
+    "api_endpoint_discrete_mathematics_fact",
+    "api_endpoint_discrete_mathematics_fib",
 ]
 
+# trigonometry
+api_endpoint_trigonometry_pi = []
+api_endpoint_trigonometry_sin = []
+api_endpoint_trigonometry_cos = []
+api_endpoint_trigonometry_tan = []
+api_endpoint_trigonometry_asin = []
+api_endpoint_trigonometry_acos = []
+api_endpoint_trigonometry_atan = []
+api_endpoint_trigonometry_sinh = []
+api_endpoint_trigonometry_cosh = []
+api_endpoint_trigonometry_tanh = []
+api_endpoint_trigonometry_asinh = []
+api_endpoint_trigonometry_acosh = []
+api_endpoint_trigonometry_atanh = []
+
+# physics
 api_endpoint_physics_m_p = []
 api_endpoint_physics_m_n = []
 api_endpoint_physics_m_e = []
@@ -156,17 +199,6 @@ api_endpoint_physics_atm = []
 
 
 # distributions
-api_module_distributions = [
-    "api_endpoint_distributions_normal",
-    "api_endpoint_distributions_cnormal",
-    "api_endpoint_distributions_qnormal",
-    "api_endpoint_distributions_binom",
-    "api_endpoint_distributions_cbinom",
-    "api_endpoint_distributions_qbinom",
-    "api_endpoint_distributions_pois",
-    "api_endpoint_distributions_cpois",
-]
-
 api_endpoint_distributions_normal = []
 api_endpoint_distributions_cnormal = []
 api_endpoint_distributions_qnormal = []
@@ -177,25 +209,6 @@ api_endpoint_distributions_pois = []
 api_endpoint_distributions_cpois = []
 
 # analysis
-api_module_analysis = [
-    "api_endpoint_analysis_exp",
-    "api_endpoint_analysis_log",
-    "api_endpoint_analysis_ln",
-    "api_endpoint_analysis_lg",
-    "api_endpoint_analysis_e",
-    "api_endpoint_analysis_sqrt",
-    "api_endpoint_analysis_root",
-    "api_endpoint_analysis_round",
-    "api_endpoint_analysis_floor",
-    "api_endpoint_analysis_ceil",
-    "api_endpoint_analysis_abs",
-    "api_endpoint_analysis_rand",
-    "api_endpoint_analysis_rand_int",
-    "api_endpoint_analysis_table",
-    "api_endpoint_analysis_sum",
-    "api_endpoint_analysis_product"
-]
-
 api_endpoint_analysis_exp = []
 api_endpoint_analysis_log = []
 api_endpoint_analysis_ln = []
@@ -220,18 +233,6 @@ api_endpoint_analysis_product = [
 ]
 
 # algebra
-api_module_algebra = [
-    "api_endpoint_algebra_length",
-    "api_endpoint_algebra_rank",
-    "api_endpoint_algebra_dims",
-    "api_endpoint_algebra_cross",
-    "api_endpoint_algebra_matrix_inverse",
-    "api_endpoint_algebra_matrix_rref",
-    "api_endpoint_algebra_matrix_transpose",
-    "api_endpoint_algebra_matrix_det",
-    "api_endpoint_algebra_matrix_id",
-]
-
 api_endpoint_algebra_length = []
 api_endpoint_algebra_rank = []
 api_endpoint_algebra_dims = []
@@ -243,35 +244,11 @@ api_endpoint_algebra_matrix_det = []
 api_endpoint_algebra_matrix_id = []
 
 # numerical analysis
-api_module_numerical_analysis = [
-    "api_endpoint_numerical_analysis_nsolve",
-    "api_endpoint_numerical_analysis_nintegrate",
-    "api_endpoint_numerical_analysis_nderive",
-]
-
 api_endpoint_numerical_analysis_nsolve = []
 api_endpoint_numerical_analysis_nintegrate = []
 api_endpoint_numerical_analysis_nderive = []
 
 # descriptive statistics
-api_module_descriptive_statistics = [
-    "api_endpoint_descriptive_statistics_min",
-    "api_endpoint_descriptive_statistics_max",
-    "api_endpoint_descriptive_statistics_avg",
-    "api_endpoint_descriptive_statistics_var",
-    "api_endpoint_descriptive_statistics_unbiased_var",
-    "api_endpoint_descriptive_statistics_sd",
-    "api_endpoint_descriptive_statistics_unbiased_sd",
-    "api_endpoint_descriptive_statistics_median",
-    "api_endpoint_descriptive_statistics_quantile",
-    "api_endpoint_descriptive_statistics_cov",
-    "api_endpoint_descriptive_statistics_corr",
-    "api_endpoint_descriptive_statistics_count",
-    "api_endpoint_descriptive_statistics_total",
-    "api_endpoint_descriptive_statistics_sum_squares",
-    "api_endpoint_descriptive_statistics_sum_products",
-]
-
 api_endpoint_descriptive_statistics_min = []
 api_endpoint_descriptive_statistics_max = []
 api_endpoint_descriptive_statistics_avg = []
@@ -289,17 +266,6 @@ api_endpoint_descriptive_statistics_sum_squares = []
 api_endpoint_descriptive_statistics_sum_products = []
 
 # discrete mathematics
-api_module_discrete_mathematics = [
-    "api_endpoint_discrete_mathematics_mod",
-    "api_endpoint_discrete_mathematics_idiv",
-    "api_endpoint_discrete_mathematics_gcd",
-    "api_endpoint_discrete_mathematics_lcm",
-    "api_endpoint_discrete_mathematics_binco",
-    "api_endpoint_discrete_mathematics_perm",
-    "api_endpoint_discrete_mathematics_fact",
-    "api_endpoint_discrete_mathematics_fib",
-]
-
 api_endpoint_discrete_mathematics_mod = []
 api_endpoint_discrete_mathematics_idiv = []
 api_endpoint_discrete_mathematics_gcd = []
