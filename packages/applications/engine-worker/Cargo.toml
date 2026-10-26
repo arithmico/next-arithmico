@@ -19,7 +19,6 @@ workspace = true
 
 [features]
 default = [
-    "engine/default",
     "datatype_number",
     "datatype_symbol",
     "datatype_tensor",
@@ -53,6 +52,118 @@ default = [
     "operator_greater_than_or_equals_number_number",
     "operator_factorial_number",
     "operator_power_matrix_number",
+    "api_endpoint_trigonometry_pi",
+    "api_endpoint_trigonometry_sin",
+    "api_endpoint_trigonometry_cos",
+    "api_endpoint_trigonometry_tan",
+    "api_endpoint_trigonometry_asin",
+    "api_endpoint_trigonometry_acos",
+    "api_endpoint_trigonometry_atan",
+    "api_endpoint_trigonometry_sinh",
+    "api_endpoint_trigonometry_cosh",
+    "api_endpoint_trigonometry_tanh",
+    "api_endpoint_trigonometry_asinh",
+    "api_endpoint_trigonometry_acosh",
+    "api_endpoint_trigonometry_atanh",
+    "api_endpoint_physics_m_p",
+    "api_endpoint_physics_m_n",
+    "api_endpoint_physics_m_e",
+    "api_endpoint_physics_m_mu",
+    "api_endpoint_physics_a_0",
+    "api_endpoint_physics_h",
+    "api_endpoint_physics_mu_nucleus",
+    "api_endpoint_physics_mu_b",
+    "api_endpoint_physics_hbar",
+    "api_endpoint_physics_alpha",
+    "api_endpoint_physics_r_e",
+    "api_endpoint_physics_lambda_c",
+    "api_endpoint_physics_gamma_p",
+    "api_endpoint_physics_lambda_cp",
+    "api_endpoint_physics_lambda_cn",
+    "api_endpoint_physics_r_inf",
+    "api_endpoint_physics_u",
+    "api_endpoint_physics_mu_p",
+    "api_endpoint_physics_mu_e",
+    "api_endpoint_physics_mu_n",
+    "api_endpoint_physics_mu_mu",
+    "api_endpoint_physics_f",
+    "api_endpoint_physics_e",
+    "api_endpoint_physics_n_a",
+    "api_endpoint_physics_k",
+    "api_endpoint_physics_v_m",
+    "api_endpoint_physics_r",
+    "api_endpoint_physics_c",
+    "api_endpoint_physics_c_1",
+    "api_endpoint_physics_c_2",
+    "api_endpoint_physics_sigma",
+    "api_endpoint_physics_epsilon_0",
+    "api_endpoint_physics_mu_0",
+    "api_endpoint_physics_phi_0",
+    "api_endpoint_physics_g_standard",
+    "api_endpoint_physics_g_0",
+    "api_endpoint_physics_z_0",
+    "api_endpoint_physics_t",
+    "api_endpoint_physics_g",
+    "api_endpoint_physics_atm",
+    "api_endpoint_distributions_normal",
+    "api_endpoint_distributions_cnormal",
+    "api_endpoint_distributions_qnormal",
+    "api_endpoint_distributions_binom",
+    "api_endpoint_distributions_cbinom",
+    "api_endpoint_distributions_qbinom",
+    "api_endpoint_distributions_pois",
+    "api_endpoint_distributions_cpois",
+    "api_endpoint_analysis_exp",
+    "api_endpoint_analysis_log",
+    "api_endpoint_analysis_ln",
+    "api_endpoint_analysis_lg",
+    "api_endpoint_analysis_e",
+    "api_endpoint_analysis_sqrt",
+    "api_endpoint_analysis_root",
+    "api_endpoint_analysis_round",
+    "api_endpoint_analysis_floor",
+    "api_endpoint_analysis_ceil",
+    "api_endpoint_analysis_abs",
+    "api_endpoint_analysis_rand",
+    "api_endpoint_analysis_rand_int",
+    "api_endpoint_analysis_table",
+    "api_endpoint_analysis_sum",
+    "api_endpoint_analysis_product",
+    "api_endpoint_algebra_length",
+    "api_endpoint_algebra_rank",
+    "api_endpoint_algebra_dims",
+    "api_endpoint_algebra_cross",
+    "api_endpoint_algebra_matrix_inverse",
+    "api_endpoint_algebra_matrix_rref",
+    "api_endpoint_algebra_matrix_transpose",
+    "api_endpoint_algebra_matrix_det",
+    "api_endpoint_algebra_matrix_id",
+    "api_endpoint_numerical_analysis_nsolve",
+    "api_endpoint_numerical_analysis_nintegrate",
+    "api_endpoint_numerical_analysis_nderive",
+    "api_endpoint_descriptive_statistics_min",
+    "api_endpoint_descriptive_statistics_max",
+    "api_endpoint_descriptive_statistics_avg",
+    "api_endpoint_descriptive_statistics_var",
+    "api_endpoint_descriptive_statistics_unbiased_var",
+    "api_endpoint_descriptive_statistics_sd",
+    "api_endpoint_descriptive_statistics_unbiased_sd",
+    "api_endpoint_descriptive_statistics_median",
+    "api_endpoint_descriptive_statistics_quantile",
+    "api_endpoint_descriptive_statistics_cov",
+    "api_endpoint_descriptive_statistics_corr",
+    "api_endpoint_descriptive_statistics_count",
+    "api_endpoint_descriptive_statistics_total",
+    "api_endpoint_descriptive_statistics_sum_squares",
+    "api_endpoint_descriptive_statistics_sum_products",
+    "api_endpoint_discrete_mathematics_mod",
+    "api_endpoint_discrete_mathematics_idiv",
+    "api_endpoint_discrete_mathematics_gcd",
+    "api_endpoint_discrete_mathematics_lcm",
+    "api_endpoint_discrete_mathematics_binco",
+    "api_endpoint_discrete_mathematics_perm",
+    "api_endpoint_discrete_mathematics_fact",
+    "api_endpoint_discrete_mathematics_fib",
 ]
 
 # data type features
@@ -91,3 +202,133 @@ operator_less_than_or_equals_number_number = ["evaluator/operator_less_than_or_e
 operator_greater_than_or_equals_number_number = ["evaluator/operator_greater_than_or_equals_number_number"]
 operator_factorial_number = ["evaluator/operator_factorial_number"]
 operator_power_matrix_number = ["evaluator/operator_power_matrix_number"]
+
+
+# trigonometry
+api_endpoint_trigonometry_pi = ["engine/api_endpoint_trigonometry_pi"]
+api_endpoint_trigonometry_sin = ["engine/api_endpoint_trigonometry_sin"]
+api_endpoint_trigonometry_cos = ["engine/api_endpoint_trigonometry_cos"]
+api_endpoint_trigonometry_tan = ["engine/api_endpoint_trigonometry_tan"]
+api_endpoint_trigonometry_asin = ["engine/api_endpoint_trigonometry_asin"]
+api_endpoint_trigonometry_acos = ["engine/api_endpoint_trigonometry_acos"]
+api_endpoint_trigonometry_atan = ["engine/api_endpoint_trigonometry_atan"]
+api_endpoint_trigonometry_sinh = ["engine/api_endpoint_trigonometry_sinh"]
+api_endpoint_trigonometry_cosh = ["engine/api_endpoint_trigonometry_cosh"]
+api_endpoint_trigonometry_tanh = ["engine/api_endpoint_trigonometry_tanh"]
+api_endpoint_trigonometry_asinh = ["engine/api_endpoint_trigonometry_asinh"]
+api_endpoint_trigonometry_acosh = ["engine/api_endpoint_trigonometry_acosh"]
+api_endpoint_trigonometry_atanh = ["engine/api_endpoint_trigonometry_atanh"]
+
+# physics
+api_endpoint_physics_m_p = ["engine/api_endpoint_physics_m_p"]
+api_endpoint_physics_m_n = ["engine/api_endpoint_physics_m_n"]
+api_endpoint_physics_m_e = ["engine/api_endpoint_physics_m_e"]
+api_endpoint_physics_m_mu = ["engine/api_endpoint_physics_m_mu"]
+api_endpoint_physics_a_0 = ["engine/api_endpoint_physics_a_0"]
+api_endpoint_physics_h = ["engine/api_endpoint_physics_h"]
+api_endpoint_physics_mu_nucleus = ["engine/api_endpoint_physics_mu_nucleus"]
+api_endpoint_physics_mu_b = ["engine/api_endpoint_physics_mu_b"]
+api_endpoint_physics_hbar = ["engine/api_endpoint_physics_hbar"]
+api_endpoint_physics_alpha = ["engine/api_endpoint_physics_alpha"]
+api_endpoint_physics_r_e = ["engine/api_endpoint_physics_r_e"]
+api_endpoint_physics_lambda_c = ["engine/api_endpoint_physics_lambda_c"]
+api_endpoint_physics_gamma_p = ["engine/api_endpoint_physics_gamma_p"]
+api_endpoint_physics_lambda_cp = ["engine/api_endpoint_physics_lambda_cp"]
+api_endpoint_physics_lambda_cn = ["engine/api_endpoint_physics_lambda_cn"]
+api_endpoint_physics_r_inf = ["engine/api_endpoint_physics_r_inf"]
+api_endpoint_physics_u = ["engine/api_endpoint_physics_u"]
+api_endpoint_physics_mu_p = ["engine/api_endpoint_physics_mu_p"]
+api_endpoint_physics_mu_e = ["engine/api_endpoint_physics_mu_e"]
+api_endpoint_physics_mu_n = ["engine/api_endpoint_physics_mu_n"]
+api_endpoint_physics_mu_mu = ["engine/api_endpoint_physics_mu_mu"]
+api_endpoint_physics_f = ["engine/api_endpoint_physics_f"]
+api_endpoint_physics_e = ["engine/api_endpoint_physics_e"]
+api_endpoint_physics_n_a = ["engine/api_endpoint_physics_n_a"]
+api_endpoint_physics_k = ["engine/api_endpoint_physics_k"]
+api_endpoint_physics_v_m = ["engine/api_endpoint_physics_v_m"]
+api_endpoint_physics_r = ["engine/api_endpoint_physics_r"]
+api_endpoint_physics_c = ["engine/api_endpoint_physics_c"]
+api_endpoint_physics_c_1 = ["engine/api_endpoint_physics_c_1"]
+api_endpoint_physics_c_2 = ["engine/api_endpoint_physics_c_2"]
+api_endpoint_physics_sigma = ["engine/api_endpoint_physics_sigma"]
+api_endpoint_physics_epsilon_0 = ["engine/api_endpoint_physics_epsilon_0"]
+api_endpoint_physics_mu_0 = ["engine/api_endpoint_physics_mu_0"]
+api_endpoint_physics_phi_0 = ["engine/api_endpoint_physics_phi_0"]
+api_endpoint_physics_g_standard = ["engine/api_endpoint_physics_g_standard"]
+api_endpoint_physics_g_0 = ["engine/api_endpoint_physics_g_0"]
+api_endpoint_physics_z_0 = ["engine/api_endpoint_physics_z_0"]
+api_endpoint_physics_t = ["engine/api_endpoint_physics_t"]
+api_endpoint_physics_g = ["engine/api_endpoint_physics_g"]
+api_endpoint_physics_atm = ["engine/api_endpoint_physics_atm"]
+
+
+# distributions
+api_endpoint_distributions_normal = ["engine/api_endpoint_distributions_normal"]
+api_endpoint_distributions_cnormal = ["engine/api_endpoint_distributions_cnormal"]
+api_endpoint_distributions_qnormal = ["engine/api_endpoint_distributions_qnormal"]
+api_endpoint_distributions_binom = ["engine/api_endpoint_distributions_binom"]
+api_endpoint_distributions_cbinom = ["engine/api_endpoint_distributions_cbinom"]
+api_endpoint_distributions_qbinom = ["engine/api_endpoint_distributions_qbinom"]
+api_endpoint_distributions_pois = ["engine/api_endpoint_distributions_pois"]
+api_endpoint_distributions_cpois = ["engine/api_endpoint_distributions_cpois"]
+
+# analysis
+api_endpoint_analysis_exp = ["engine/api_endpoint_analysis_exp"]
+api_endpoint_analysis_log = ["engine/api_endpoint_analysis_log"]
+api_endpoint_analysis_ln = ["engine/api_endpoint_analysis_ln"]
+api_endpoint_analysis_lg = ["engine/api_endpoint_analysis_lg"]
+api_endpoint_analysis_e = ["engine/api_endpoint_analysis_e"]
+api_endpoint_analysis_sqrt = ["engine/api_endpoint_analysis_sqrt"]
+api_endpoint_analysis_root = ["engine/api_endpoint_analysis_root"]
+api_endpoint_analysis_round = ["engine/api_endpoint_analysis_round"]
+api_endpoint_analysis_floor = ["engine/api_endpoint_analysis_floor"]
+api_endpoint_analysis_ceil = ["engine/api_endpoint_analysis_ceil"]
+api_endpoint_analysis_abs = ["engine/api_endpoint_analysis_abs"]
+api_endpoint_analysis_rand = ["engine/api_endpoint_analysis_rand"]
+api_endpoint_analysis_rand_int = ["engine/api_endpoint_analysis_rand_int"]
+api_endpoint_analysis_table = ["engine/api_endpoint_analysis_table"]
+api_endpoint_analysis_sum = ["engine/api_endpoint_analysis_sum"]
+api_endpoint_analysis_product = ["engine/api_endpoint_analysis_product"]
+
+# algebra
+api_endpoint_algebra_length = ["engine/api_endpoint_algebra_length"]
+api_endpoint_algebra_rank = ["engine/api_endpoint_algebra_rank"]
+api_endpoint_algebra_dims = ["engine/api_endpoint_algebra_dims"]
+api_endpoint_algebra_cross = ["engine/api_endpoint_algebra_cross"]
+api_endpoint_algebra_matrix_inverse = ["engine/api_endpoint_algebra_matrix_inverse"]
+api_endpoint_algebra_matrix_rref = ["engine/api_endpoint_algebra_matrix_rref"]
+api_endpoint_algebra_matrix_transpose = ["engine/api_endpoint_algebra_matrix_transpose"]
+api_endpoint_algebra_matrix_det = ["engine/api_endpoint_algebra_matrix_det"]
+api_endpoint_algebra_matrix_id = ["engine/api_endpoint_algebra_matrix_id"]
+
+# numerical analysis
+api_endpoint_numerical_analysis_nsolve = ["engine/api_endpoint_numerical_analysis_nsolve"]
+api_endpoint_numerical_analysis_nintegrate = ["engine/api_endpoint_numerical_analysis_nintegrate"]
+api_endpoint_numerical_analysis_nderive = ["engine/api_endpoint_numerical_analysis_nderive"]
+
+# descriptive statistics
+api_endpoint_descriptive_statistics_min = ["engine/api_endpoint_descriptive_statistics_min"]
+api_endpoint_descriptive_statistics_max = ["engine/api_endpoint_descriptive_statistics_max"]
+api_endpoint_descriptive_statistics_avg = ["engine/api_endpoint_descriptive_statistics_avg"]
+api_endpoint_descriptive_statistics_var = ["engine/api_endpoint_descriptive_statistics_var"]
+api_endpoint_descriptive_statistics_unbiased_var = ["engine/api_endpoint_descriptive_statistics_unbiased_var"]
+api_endpoint_descriptive_statistics_sd = ["engine/api_endpoint_descriptive_statistics_sd"]
+api_endpoint_descriptive_statistics_unbiased_sd = ["engine/api_endpoint_descriptive_statistics_unbiased_sd"]
+api_endpoint_descriptive_statistics_median = ["engine/api_endpoint_descriptive_statistics_median"]
+api_endpoint_descriptive_statistics_quantile = ["engine/api_endpoint_descriptive_statistics_quantile"]
+api_endpoint_descriptive_statistics_cov = ["engine/api_endpoint_descriptive_statistics_cov"]
+api_endpoint_descriptive_statistics_corr = ["engine/api_endpoint_descriptive_statistics_corr"]
+api_endpoint_descriptive_statistics_count = ["engine/api_endpoint_descriptive_statistics_count"]
+api_endpoint_descriptive_statistics_total = ["engine/api_endpoint_descriptive_statistics_total"]
+api_endpoint_descriptive_statistics_sum_squares = ["engine/api_endpoint_descriptive_statistics_sum_squares"]
+api_endpoint_descriptive_statistics_sum_products = ["engine/api_endpoint_descriptive_statistics_sum_products"]
+
+# discrete mathematics
+api_endpoint_discrete_mathematics_mod = ["engine/api_endpoint_discrete_mathematics_mod"]
+api_endpoint_discrete_mathematics_idiv = ["engine/api_endpoint_discrete_mathematics_idiv"]
+api_endpoint_discrete_mathematics_gcd = ["engine/api_endpoint_discrete_mathematics_gcd"]
+api_endpoint_discrete_mathematics_lcm = ["engine/api_endpoint_discrete_mathematics_lcm"]
+api_endpoint_discrete_mathematics_binco = ["engine/api_endpoint_discrete_mathematics_binco"]
+api_endpoint_discrete_mathematics_perm = ["engine/api_endpoint_discrete_mathematics_perm"]
+api_endpoint_discrete_mathematics_fact = ["engine/api_endpoint_discrete_mathematics_fact"]
+api_endpoint_discrete_mathematics_fib = ["engine/api_endpoint_discrete_mathematics_fib"]
