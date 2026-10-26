@@ -20,19 +20,12 @@ workspace = true
 [features]
 default = [
     "engine/default",
-    "evaluator/default"
-]
-
-# feature groups
-datatypes = [
     "datatype_number",
     "datatype_symbol",
     "datatype_tensor",
     "datatype_function",
     "datatype_boolean",
     "datatype_data_frame",
-]
-operators = [
     "operator_negate_number",
     "operator_sum_number_number",
     "operator_sum_vector_vector",
@@ -59,7 +52,7 @@ operators = [
     "operator_less_than_or_equals_number_number",
     "operator_greater_than_or_equals_number_number",
     "operator_factorial_number",
-    "operator_power_matrix_number"
+    "operator_power_matrix_number",
 ]
 
 # data type features
