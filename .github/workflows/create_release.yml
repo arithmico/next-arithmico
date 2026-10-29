@@ -38,8 +38,8 @@ jobs:
           git push origin $VERSION_TAG
           echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
-  build-and-deploy-calculator:
-    name: Build And Deploy Calculator
+  build-and-deploy:
+    name: Build And Deploy
     runs-on: ubuntu-24.04
     needs: create-release
     steps:
@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo binstall -y --locked --force trunk@0.22.0
+          cargo binstall -y --locked --force trunk@0.22.0 cargo-lambda@=1.9.2
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
