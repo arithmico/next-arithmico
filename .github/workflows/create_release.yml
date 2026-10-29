@@ -51,6 +51,7 @@ jobs:
         run: |
           rustup target add wasm32-unknown-unknown
           cargo binstall -y --locked --force trunk@0.22.0 cargo-lambda@=1.9.2
+      - uses: mlugg/setup-zig@v1
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
