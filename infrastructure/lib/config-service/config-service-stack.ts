@@ -1,7 +1,8 @@
 import { Stack, StackProps } from "aws-cdk-lib";
-import { ISecret, Secret } from "aws-cdk-lib/aws-secretsmanager";
+import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { Database } from "./database";
+import { WebhookSecret } from "./webhook-secret";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
@@ -13,15 +14,7 @@ export class ConfigServiceStack extends Stack {
 
     constructor(scope: Construct, id: string, { environment, ...props }: ConfigServiceStackProps) {
         super(scope, id, props);
-
-        this.webhookSecret = new Secret(this, "WebhookSecret", {
-            secretName: `/config-service/${environment}/webhook-secret`,
-            generateSecretString: {
-                excludePunctuation: true,
-                passwordLength: 32
-            }
-        });
-
+        this.webhookSecret = new WebhookSecret(this, "WebhookSecert", { environment });
         this.database = new Database(this, "Database", { environment });
     }
 }
