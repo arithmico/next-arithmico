@@ -4,7 +4,7 @@ import { getStringParameterOrThrow } from '../lib/utils';
 import { CalculatorStack } from '../lib/calculator';
 import { App, Stack } from 'aws-cdk-lib';
 import { CalculatorCertificateStack } from '../lib/calculator-certificate';
-import { ConfigServiceStack } from '../lib/config-service';
+import { ConfigServiceStack } from '../lib/config-service/config-service-stack';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
