@@ -25,7 +25,7 @@ export class ApiHandler extends Construct {
         });
 
         this.lambda = new RustFunction(this, "Function", {
-            manifestPath: path.join(__dirname, "../packages/applications/config-service/Cargo.toml"),
+            manifestPath: path.join(__dirname, "../../../packages/applications/config-service/Cargo.toml"),
             architecture: Architecture.ARM_64,
             environment: {
                 WEBHOOK_SECRET_ARN: props.webhookSecret.secretArn,
