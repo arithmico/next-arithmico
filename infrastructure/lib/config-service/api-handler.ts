@@ -40,5 +40,6 @@ export class ApiHandler extends Construct {
         });
 
         props.webhookSecret.grantRead(this.lambda);
+        props.databaseTable.grantReadWriteData(this.lambda);
     }
 }
