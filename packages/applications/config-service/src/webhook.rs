@@ -9,7 +9,7 @@ use tracing::{error, info, instrument, warn};
 
 use crate::state::ServiceState;
 
-#[instrument]
+#[instrument(skip_all)]
 pub async fn handler(
     State(state): State<ServiceState>,
     headers: HeaderMap,
