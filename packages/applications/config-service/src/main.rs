@@ -2,18 +2,10 @@ use clap::Parser;
 use config_service::{config::Config, router, state::ServiceState};
 use lambda_http::{Error, run};
 use tracing::info;
-use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::from_env(format!(
-            "{}=info,tower_http=debug",
-            env!("CARGO_CRATE_NAME")
-        )))
-        .json()
-        .with_ansi(false)
-        .init();
+    tracing_subscriber::fmt().json().with_ansi(false).init();
 
     let config = Config::parse();
 
