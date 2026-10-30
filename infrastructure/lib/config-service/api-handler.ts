@@ -1,4 +1,5 @@
 import { RemovalPolicy } from "aws-cdk-lib";
+import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { ILogGroup, LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
@@ -8,6 +9,7 @@ import * as path from "path";
 
 export interface ApiHandlerProps {
     webhookSecret: ISecret;
+    databaseTable: ITableV2;
     environment: string;
 }
 
@@ -29,6 +31,7 @@ export class ApiHandler extends Construct {
             architecture: Architecture.ARM_64,
             environment: {
                 WEBHOOK_SECRET_ARN: props.webhookSecret.secretArn,
+                DYNAMODB_TABLE_NAME: props.databaseTable.tableName,
             },
             runtime: "provided.al2023",
             binaryName: "bootstrap",
