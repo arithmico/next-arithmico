@@ -7,7 +7,10 @@ use tracing_subscriber::EnvFilter;
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::from_default_env())
+        .with_env_filter(EnvFilter::from_env(format!(
+            "{}=info,tower_http=debug",
+            env!("CARGO_CRATE_NAME")
+        )))
         .json()
         .with_ansi(false)
         .init();
