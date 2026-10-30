@@ -44,6 +44,7 @@ export class ConfigServiceStack extends Stack {
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
             webhookSecret: this.webhookSecret,
+            databaseTable: this.database,
         });
 
         this.certificate = new Certificate(this, "Certificate", {
