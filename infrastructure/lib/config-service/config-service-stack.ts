@@ -9,6 +9,7 @@ import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { ApiGateway } from "./api-gateway";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
+import { JwtKey } from "./jwt-key";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
@@ -22,6 +23,7 @@ export class ConfigServiceStack extends Stack {
     private readonly customDomain: DomainName;
     private readonly apiGateway: ApiGateway;
     private readonly record: ARecord;
+    private readonly jwtKey: JwtKey;
 
     constructor(scope: Construct, id: string, { environment, ...props }: ConfigServiceStackProps) {
         super(scope, id, props);
@@ -33,25 +35,33 @@ export class ConfigServiceStack extends Stack {
             domainName: "arithmico.com"
         });
 
+        this.jwtKey = new JwtKey(this, "JwtKey", { environment });
+
         this.webhookSecret = new WebhookSecret(this, "WebhookSecert", { environment });
+
         this.database = new Database(this, "Database", { environment });
+
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
             webhookSecret: this.webhookSecret,
         });
+
         this.certificate = new Certificate(this, "Certificate", {
             domainName,
             validation: CertificateValidation.fromDns(zone),
         });
+
         this.customDomain = new DomainName(this, "DomainName", {
             domainName,
             certificate: this.certificate,
         });
+
         this.apiGateway = new ApiGateway(this, "ApiGateway", {
             domainName: this.customDomain,
             environment,
             lambda: this.apiHandler.lambda
         });
+
         this.record = new ARecord(this, "DnsRecord", {
             zone,
             recordName: domainName,
