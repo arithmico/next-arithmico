@@ -82,11 +82,12 @@ pub async fn handler(
                 );
                 return StatusCode::INTERNAL_SERVER_ERROR;
             }
+            info!(message = "Installation completed", installation_id, account);
         } else {
             warn!("Unknown action type: {}", action);
         }
     } else {
-        info!(message = "Unknown webhook type", body = ?payload);
+        warn!(message = "Unknown webhook type", body = ?payload);
     }
 
     StatusCode::OK
