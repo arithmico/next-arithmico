@@ -60,7 +60,9 @@ pub async fn handler(
                 );
                 return StatusCode::BAD_REQUEST;
             };
-            let Some(account) = payload["account"]["login"].as_str() else {
+            let Some(account) =
+                payload["installation"]["account"]["login"].as_str()
+            else {
                 error!(
                     message = "Invalid or missing account.login field",
                     payload = ?payload
