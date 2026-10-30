@@ -5,7 +5,7 @@ use axum::{
 };
 use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
-use tracing::{error, info, instrument, warn};
+use tracing::{debug, error, info, instrument, warn};
 
 use crate::state::ServiceState;
 
@@ -50,6 +50,10 @@ pub async fn handler(
 
     if let Some(action) = payload.get("action").and_then(|v| v.as_str()) {
         if action == "created" {
+            debug!(
+                message = "installation_id",
+                installation_id = ?payload["installation"]["id"]
+            );
             let Some(installation_id) = payload["installation"]["id"]
                 .as_number()
                 .and_then(|n| n.as_i64())
