@@ -76,7 +76,7 @@ pub async fn handler(
             {
                 error!(
                     message = "Installation failed",
-                    error = err.to_string(),
+                    error = ?err,
                     installation_id,
                     account,
                 );
