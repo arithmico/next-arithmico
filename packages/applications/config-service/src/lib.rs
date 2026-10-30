@@ -4,6 +4,7 @@ use tower_http::trace::TraceLayer;
 use crate::state::ServiceState;
 
 pub mod config;
+mod database;
 pub mod state;
 mod webhook;
 
