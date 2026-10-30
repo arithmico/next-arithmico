@@ -36,6 +36,7 @@ export class ApiHandler extends Construct {
             runtime: "provided.al2023",
             binaryName: "bootstrap",
             logGroup: this.logGroup,
+            reservedConcurrentExecutions: 50,
         });
 
         props.webhookSecret.grantRead(this.lambda);
