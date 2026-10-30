@@ -5,7 +5,7 @@ use axum::{
 };
 use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
-use tracing::{error, info, instrument};
+use tracing::{error, info, instrument, warn};
 
 use crate::state::ServiceState;
 
@@ -48,7 +48,33 @@ pub async fn handler(
         return StatusCode::BAD_REQUEST;
     };
 
-    info!(body = ?payload);
+    if let Some(action) = payload.get("action").and_then(|v| v.as_str()) {
+        if action == "created" {
+            let Some(installation_id) = payload["installation"]["id"]
+                .as_number()
+                .and_then(|n| n.as_i64())
+            else {
+                error!("Invalid or missing installation id");
+                return StatusCode::BAD_REQUEST;
+            };
+            let Some(account) = payload["account"]["login"].as_str() else {
+                error!("Invalid or missing account.login field");
+                return StatusCode::BAD_REQUEST;
+            };
+            if let Err(err) = state
+                .database
+                .put_installation(installation_id, account)
+                .await
+            {
+                error!("Installation failed: {}", err);
+                return StatusCode::INTERNAL_SERVER_ERROR;
+            }
+        } else {
+            warn!("Unknown action type: {}", action);
+        }
+    } else {
+        info!(message = "Unknown webhook type", body = ?payload);
+    }
 
     StatusCode::OK
 }
