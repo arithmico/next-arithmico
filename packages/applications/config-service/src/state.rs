@@ -4,8 +4,8 @@ use tracing::instrument;
 
 #[derive(Debug, Clone)]
 pub struct ServiceState {
-    pub webhook_secret: String,
-    pub database: Database,
+    pub(crate) webhook_secret: String,
+    pub(crate) database: Database,
 }
 
 impl ServiceState {
