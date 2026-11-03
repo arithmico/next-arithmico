@@ -1,7 +1,8 @@
 use aws_config::SdkConfig;
 use tracing::instrument;
 
-pub mod put_installation;
+pub mod put_organization;
+pub mod put_release;
 pub mod put_repository;
 
 #[derive(Debug, Clone)]

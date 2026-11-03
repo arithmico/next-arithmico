@@ -4,12 +4,12 @@ use derive_builder::Builder;
 use crate::database::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
-pub struct PutInstallationQuery {
+pub struct PutOrganizationQuery {
     organization_id: u64,
     installation_id: u64,
 }
 
-impl DatabaseQuery for PutInstallationQuery {
+impl DatabaseQuery for PutOrganizationQuery {
     type Output = ();
 
     async fn execute(
@@ -26,6 +26,17 @@ impl DatabaseQuery for PutInstallationQuery {
             )
             .item("SK", AttributeValue::S("METADATA".to_string()))
             .item(
+                "GSI1PK",
+                AttributeValue::S(format!(
+                    "INSTALLATION#{}",
+                    self.installation_id
+                )),
+            )
+            .item(
+                "GSI1SK",
+                AttributeValue::S(format!("ORG#{}", self.organization_id)),
+            )
+            .item(
                 "installation_id",
                 AttributeValue::S(self.installation_id.to_string()),
             )
@@ -33,6 +44,7 @@ impl DatabaseQuery for PutInstallationQuery {
                 "organization_id",
                 AttributeValue::S(self.organization_id.to_string()),
             )
+            .item("type", AttributeValue::S(String::from("organization")))
             .send()
             .await?;
         Ok(())

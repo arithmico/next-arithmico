@@ -9,7 +9,7 @@ use tracing::{info, instrument, warn};
 
 use crate::{
     database::{
-        put_installation::PutInstallationQueryBuilder,
+        put_organization::PutOrganizationQueryBuilder,
         put_repository::PutRepositoryQueryBuilder,
     },
     state::ServiceState,
@@ -38,7 +38,7 @@ pub async fn handle_installation(
             state
                 .database
                 .execute(
-                    PutInstallationQueryBuilder::default()
+                    PutOrganizationQueryBuilder::default()
                         .installation_id(installation_id)
                         .organization_id(organization_id)
                         .build()?,

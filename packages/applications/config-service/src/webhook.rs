@@ -6,8 +6,14 @@ use axum::{
 use octocrab::models::webhook_events::{WebhookEvent, WebhookEventPayload};
 use tracing::{error, instrument, warn};
 
-use crate::{state::ServiceState, webhook::installation::handle_installation};
+use crate::{
+    state::ServiceState,
+    webhook::{
+        create_tag::handle_create_tag, installation::handle_installation,
+    },
+};
 
+mod create_tag;
 mod installation;
 
 #[instrument(skip_all)]
@@ -46,18 +52,29 @@ pub async fn handler(
         }
     };
 
+    let Some(installation) = event.installation else {
+        error!("Missing installation information");
+        return StatusCode::BAD_REQUEST;
+    };
+
     match event.specific {
         WebhookEventPayload::Installation(payload) => {
-            let Some(installation) = event.installation else {
-                error!("Missing installation information");
-                return StatusCode::BAD_REQUEST;
-            };
-
             if let Err(err) =
                 handle_installation(&state, &installation, &payload).await
             {
                 error!(
                     message = "Failed to process installation event",
+                    error = ?err
+                );
+                return StatusCode::INTERNAL_SERVER_ERROR;
+            }
+        }
+        WebhookEventPayload::Create(payload) => {
+            if let Err(err) =
+                handle_create_tag(&state, &installation, &payload).await
+            {
+                error!(
+                    message = "Failed to process create event",
                     error = ?err
                 );
                 return StatusCode::INTERNAL_SERVER_ERROR;
