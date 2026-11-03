@@ -5,7 +5,7 @@ use octocrab::models::webhook_events::{
         InstallationWebhookEventAction, InstallationWebhookEventPayload,
     },
 };
-use tracing::{instrument, warn};
+use tracing::{info, instrument, warn};
 
 use crate::{
     database::{
@@ -45,16 +45,27 @@ pub async fn handle_installation(
                 )
                 .await?;
 
+            info!(
+                message = "Installation created",
+                organization_id, installation_id
+            );
+
             for repository in payload.repositories.iter().flatten() {
+                let repository_id = repository.id.0;
                 state
                     .database
                     .execute(
                         PutRepositoryQueryBuilder::default()
                             .organization_id(organization_id)
-                            .repository_id(repository.id.0)
+                            .repository_id(repository_id)
                             .build()?,
                     )
                     .await?;
+
+                info!(
+                    message = "Repository created",
+                    organization_id, repository_id
+                );
             }
         }
         action => warn!(
