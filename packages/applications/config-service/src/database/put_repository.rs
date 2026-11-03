@@ -29,6 +29,14 @@ impl DatabaseQuery for PutRepositoryQuery {
                 AttributeValue::S(format!("REPO#{}", self.repository_id)),
             )
             .item(
+                "GSI1PK",
+                AttributeValue::S(format!("REPO#{}", self.repository_id)),
+            )
+            .item(
+                "GSI1SK",
+                AttributeValue::S(format!("ORG#{}", self.organization_id)),
+            )
+            .item(
                 "repository_id",
                 AttributeValue::S(self.repository_id.to_string()),
             )
