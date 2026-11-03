@@ -50,9 +50,7 @@ pub async fn handler(
 
     if let Some(action) = payload.get("action").and_then(|v| v.as_str()) {
         if action == "created" {
-            let Some(installation_id) = payload["installation"]["id"]
-                .as_number()
-                .and_then(|n| n.as_i64())
+            let Some(installation_id) = payload["installation"]["id"].as_i64()
             else {
                 error!(
                     message = "Invalid or missing installation id",
@@ -61,7 +59,7 @@ pub async fn handler(
                 return StatusCode::BAD_REQUEST;
             };
             let Some(account) =
-                payload["installation"]["account"]["login"].as_str()
+                payload["installation"]["account"]["id"].as_i64()
             else {
                 error!(
                     message = "Invalid or missing account.login field",

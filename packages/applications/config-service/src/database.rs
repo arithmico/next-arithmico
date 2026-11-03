@@ -21,12 +21,12 @@ impl Database {
     pub async fn put_installation(
         &self,
         installation_id: i64,
-        account: &str,
+        account_id: i64,
     ) -> anyhow::Result<()> {
         self.client
             .put_item()
             .table_name(&self.table_name)
-            .item("PK", AttributeValue::S(format!("ACCOUNT#{}", account)))
+            .item("PK", AttributeValue::S(format!("ACCOUNT#{}", account_id)))
             .item(
                 "SK",
                 AttributeValue::S(format!("INSTALLATION#{}", installation_id)),
@@ -35,7 +35,7 @@ impl Database {
                 "installation_id",
                 AttributeValue::S(installation_id.to_string()),
             )
-            .item("account", AttributeValue::S(account.to_string()))
+            .item("account_id", AttributeValue::S(account_id.to_string()))
             .send()
             .await?;
 
