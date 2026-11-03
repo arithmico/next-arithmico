@@ -1,11 +1,19 @@
 use aws_config::SdkConfig;
-use aws_sdk_dynamodb::types::AttributeValue;
 use tracing::instrument;
 
+pub mod put_installation;
+pub mod put_repository;
+
 #[derive(Debug, Clone)]
-pub struct Database {
+pub(crate) struct Database {
     client: aws_sdk_dynamodb::Client,
     table_name: String,
+}
+
+pub(crate) trait DatabaseQuery {
+    type Output;
+    async fn execute(self, database: &Database)
+    -> anyhow::Result<Self::Output>;
 }
 
 impl Database {
@@ -17,28 +25,11 @@ impl Database {
         }
     }
 
-    #[instrument]
-    pub async fn put_installation(
+    #[instrument(skip_all)]
+    pub async fn execute<Q: DatabaseQuery>(
         &self,
-        installation_id: i64,
-        account_id: i64,
-    ) -> anyhow::Result<()> {
-        self.client
-            .put_item()
-            .table_name(&self.table_name)
-            .item("PK", AttributeValue::S(format!("ACCOUNT#{}", account_id)))
-            .item(
-                "SK",
-                AttributeValue::S(format!("INSTALLATION#{}", installation_id)),
-            )
-            .item(
-                "installation_id",
-                AttributeValue::S(installation_id.to_string()),
-            )
-            .item("account_id", AttributeValue::S(account_id.to_string()))
-            .send()
-            .await?;
-
-        Ok(())
+        query: Q,
+    ) -> anyhow::Result<Q::Output> {
+        query.execute(self).await
     }
 }

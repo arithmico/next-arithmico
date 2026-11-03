@@ -3,11 +3,12 @@ use axum::{
     extract::State,
     http::{HeaderMap, StatusCode},
 };
-use hmac::{Hmac, KeyInit, Mac};
-use sha2::Sha256;
-use tracing::{error, info, instrument, warn};
+use octocrab::models::webhook_events::{WebhookEvent, WebhookEventPayload};
+use tracing::{error, instrument, warn};
 
-use crate::state::ServiceState;
+use crate::{state::ServiceState, webhook::installation::handle_installation};
+
+mod installation;
 
 #[instrument(skip_all)]
 pub async fn handler(
@@ -15,6 +16,14 @@ pub async fn handler(
     headers: HeaderMap,
     body: Bytes,
 ) -> StatusCode {
+    let Some(event) = headers.get("X-GitHub-Event") else {
+        error!("Missing X-GitHub-Event header");
+        return StatusCode::BAD_REQUEST;
+    };
+    let Ok(event) = event.to_str() else {
+        error!("X-GitHub-Event header value is not a valid string");
+        return StatusCode::BAD_REQUEST;
+    };
     let Some(signature) = headers.get("X-Hub-Signature-256") else {
         error!("Missing X-Hub-Signature-256 header");
         return StatusCode::BAD_REQUEST;
@@ -23,69 +32,40 @@ pub async fn handler(
         error!("Signature is not a valid string");
         return StatusCode::BAD_REQUEST;
     };
-    let Some(signature) = signature.strip_prefix("sha256=") else {
-        error!("Header value does not contain a signature");
-        return StatusCode::BAD_REQUEST;
-    };
-    let Ok(signature) = hex::decode(signature) else {
-        error!("Failed to decode hex signature");
-        return StatusCode::BAD_REQUEST;
-    };
-    let Ok(mut mac) =
-        Hmac::<Sha256>::new_from_slice(state.webhook_secret.as_bytes())
-    else {
-        error!("Failed to initialize HMAC");
-        return StatusCode::INTERNAL_SERVER_ERROR;
-    };
-    mac.update(&body);
-    if mac.verify_slice(&signature).is_err() {
-        error!("Invalid signature");
-        return StatusCode::UNAUTHORIZED;
-    }
 
-    let Ok(payload) = serde_json::from_slice::<serde_json::Value>(&body) else {
-        error!("Failed to parse json");
-        return StatusCode::BAD_REQUEST;
+    let event = match WebhookEvent::try_from_header_signature_and_body(
+        event,
+        signature,
+        &state.webhook_secret,
+        &body,
+    ) {
+        Ok(event) => event,
+        Err(err) => {
+            error!(message = "Failed to deserialize event", error = ?err);
+            return StatusCode::BAD_REQUEST;
+        }
     };
 
-    if let Some(action) = payload.get("action").and_then(|v| v.as_str()) {
-        if action == "created" {
-            let Some(installation_id) = payload["installation"]["id"].as_i64()
-            else {
-                error!(
-                    message = "Invalid or missing installation id",
-                    payload = ?payload
-                );
+    match event.specific {
+        WebhookEventPayload::Installation(payload) => {
+            let Some(installation) = event.installation else {
+                error!("Missing installation information");
                 return StatusCode::BAD_REQUEST;
             };
-            let Some(account) =
-                payload["installation"]["account"]["id"].as_i64()
-            else {
-                error!(
-                    message = "Invalid or missing account.login field",
-                    payload = ?payload
-                );
-                return StatusCode::BAD_REQUEST;
-            };
-            if let Err(err) = state
-                .database
-                .put_installation(installation_id, account)
-                .await
+
+            if let Err(err) =
+                handle_installation(&state, &installation, &payload).await
             {
                 error!(
-                    message = "Installation failed",
-                    error = ?err,
-                    installation_id,
-                    account,
+                    message = "Failed to process installation event",
+                    error = ?err
                 );
                 return StatusCode::INTERNAL_SERVER_ERROR;
             }
-            info!(message = "Installation completed", installation_id, account);
-        } else {
-            warn!("Unknown action type: {}", action);
         }
-    } else {
-        warn!(message = "Unknown webhook type", body = ?payload);
+        _ => {
+            warn!("Unsupported webhook type: {:?}", event.kind)
+        }
     }
 
     StatusCode::OK
