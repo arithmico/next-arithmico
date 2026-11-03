@@ -38,11 +38,11 @@ impl DatabaseQuery for PutOrganizationQuery {
             )
             .item(
                 "installation_id",
-                AttributeValue::S(self.installation_id.to_string()),
+                AttributeValue::N(self.installation_id.to_string()),
             )
             .item(
                 "organization_id",
-                AttributeValue::S(self.organization_id.to_string()),
+                AttributeValue::N(self.organization_id.to_string()),
             )
             .item("type", AttributeValue::S(String::from("organization")))
             .send()
