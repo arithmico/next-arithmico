@@ -47,7 +47,7 @@ impl DatabaseQuery for PutReleaseQuery {
             )
             .item(
                 "repository_id",
-                AttributeValue::S(self.repository_id.to_string()),
+                AttributeValue::N(self.repository_id.to_string()),
             )
             .item("version", AttributeValue::S(self.version.to_string()))
             .item("type", AttributeValue::S(String::from("release")))
