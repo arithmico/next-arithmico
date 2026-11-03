@@ -1,7 +1,8 @@
 use aws_config::SdkConfig;
 use tracing::instrument;
 
-pub mod get_organization_by_installation_id;
+pub mod get_organization;
+pub mod get_repository;
 pub mod put_organization;
 pub mod put_release;
 pub mod put_repository;
