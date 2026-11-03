@@ -44,6 +44,7 @@ impl DatabaseQuery for PutRepositoryQuery {
                 "organization_id",
                 AttributeValue::S(self.organization_id.to_string()),
             )
+            .item("type", AttributeValue::S(String::from("repository")))
             .send()
             .await?;
         Ok(())

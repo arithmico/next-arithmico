@@ -1053,6 +1053,7 @@ dependencies = [
  "derive_builder",
  "lambda_http",
  "octocrab",
+ "semver",
  "serde",
  "tokio",
  "tower-http 0.7.1",
