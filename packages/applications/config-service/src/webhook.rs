@@ -70,8 +70,14 @@ pub async fn handler(
             }
         }
         WebhookEventPayload::Create(payload) => {
+            let Some(repository) = event.repository else {
+                error!(message = "Missing repository information");
+                return StatusCode::BAD_REQUEST;
+            };
+
             if let Err(err) =
-                handle_create_tag(&state, &installation, &payload).await
+                handle_create_tag(&state, &installation, &repository, &payload)
+                    .await
             {
                 error!(
                     message = "Failed to process create event",
