@@ -32,7 +32,10 @@ impl DatabaseQuery for GetOrganizationByInstallationIdQuery {
             .key_condition_expression("GSI1PK = :gsi1pk")
             .expression_attribute_values(
                 ":gsi1pk",
-                AttributeValue::S(self.installation_id.to_string()),
+                AttributeValue::S(format!(
+                    "INSTALLATION#{}",
+                    self.installation_id
+                )),
             )
             .limit(1)
             .send()
