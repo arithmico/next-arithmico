@@ -10,8 +10,7 @@ import * as path from "path";
 const GITHUB_OIDC_CONFIGURATION_URI = "https://token.actions.githubusercontent.com/.well-known/openid-configuration";
 
 export interface ApiHandlerProps {
-    webhookSecret: ISecret;
-    githubAppIdSecret: ISecret;
+    githubAppSecret: ISecret;
     databaseTable: ITableV2;
     environment: string;
 }
@@ -33,8 +32,7 @@ export class ApiHandler extends Construct {
             manifestPath: path.join(__dirname, "../../../packages/applications/config-service/Cargo.toml"),
             architecture: Architecture.ARM_64,
             environment: {
-                WEBHOOK_SECRET_ARN: props.webhookSecret.secretArn,
-                GITHUB_APP_ID_SECRET_ARN: props.githubAppIdSecret.secretArn,
+                GITHUB_APP_SECRET_ARN: props.githubAppSecret.secretArn,
                 DYNAMODB_TABLE_NAME: props.databaseTable.tableName,
                 GITHUB_OIDC_CONFIGURATION_URI,
             },
@@ -44,7 +42,7 @@ export class ApiHandler extends Construct {
             reservedConcurrentExecutions: 50,
         });
 
-        props.webhookSecret.grantRead(this.lambda);
+        props.githubAppSecret.grantRead(this.lambda);
         props.databaseTable.grantReadWriteData(this.lambda);
     }
 }
