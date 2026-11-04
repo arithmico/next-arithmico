@@ -9,7 +9,7 @@ export class GithubAppIdSecret extends Secret {
     constructor(scope: Construct, id: string, { environment }: GithubAppIdSecretProps) {
         super(scope, id, {
             secretName: `/config-service/${environment}/github-app`,
-            description: "webhook secret and github client id"
+            description: "contains webhook secret, github client id and private key"
         });
     }
 }
