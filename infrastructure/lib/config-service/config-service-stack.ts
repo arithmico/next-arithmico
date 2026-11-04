@@ -2,7 +2,6 @@ import { Stack, StackProps } from "aws-cdk-lib";
 import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { Database } from "./database";
-import { WebhookSecret } from "./webhook-secret";
 import { ApiHandler } from "./api-handler";
 import { Certificate, CertificateValidation, ICertificate } from "aws-cdk-lib/aws-certificatemanager";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
@@ -10,15 +9,14 @@ import { ApiGateway } from "./api-gateway";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { JwtKey } from "./jwt-key";
-import { GithubAppIdSecret } from "./github-app-id-secret";
+import { GithubAppIdSecret } from "./github-app-secret";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
 }
 
 export class ConfigServiceStack extends Stack {
-    private readonly webhookSecret: ISecret;
-    private readonly githubAppIdSecret: ISecret;
+    private readonly githubAppSecret: ISecret;
     private readonly database: Database;
     private readonly apiHandler: ApiHandler;
     private readonly certificate: ICertificate;
@@ -39,16 +37,13 @@ export class ConfigServiceStack extends Stack {
 
         this.jwtKey = new JwtKey(this, "JwtKey", { environment });
 
-        this.webhookSecret = new WebhookSecret(this, "WebhookSecert", { environment });
-
-        this.githubAppIdSecret = new GithubAppIdSecret(this, "GithubAppId", { environment });
+        this.githubAppSecret = new GithubAppIdSecret(this, "GithubAppSecret", { environment });
 
         this.database = new Database(this, "Database", { environment });
 
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
-            webhookSecret: this.webhookSecret,
-            githubAppIdSecret: this.githubAppIdSecret,
+            githubAppSecret: this.githubAppSecret,
             databaseTable: this.database,
         });
 
