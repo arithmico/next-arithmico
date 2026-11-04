@@ -4,7 +4,14 @@ use cargo_metadata::MetadataCommand;
 
 use crate::feature::CrateFeatures;
 
-pub fn verify() -> anyhow::Result<()> {
+#[derive(Debug)]
+pub struct VerifyOutput {
+    pub evaluator: CrateFeatures,
+    pub engine: CrateFeatures,
+    pub engine_worker: CrateFeatures,
+}
+
+pub fn verify() -> anyhow::Result<VerifyOutput> {
     let metadata = MetadataCommand::new().exec()?;
     let workspace_root = metadata.workspace_root.into_std_path_buf();
     let evaluator = read_evaluator_features(&workspace_root)?;
@@ -18,7 +25,11 @@ pub fn verify() -> anyhow::Result<()> {
     engine_worker.validate_forwards_features_of(&evaluator)?;
     engine_worker.validate_forwards_features_of(&engine)?;
 
-    Ok(())
+    Ok(VerifyOutput {
+        evaluator,
+        engine,
+        engine_worker,
+    })
 }
 
 fn read_worker_features(

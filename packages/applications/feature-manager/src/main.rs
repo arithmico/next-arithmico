@@ -2,10 +2,11 @@ use std::process::ExitCode;
 
 use clap::Parser;
 
-use crate::verify::verify;
+use crate::{show::normalize, verify::verify};
 
 mod config;
 mod feature;
+mod show;
 mod verify;
 
 fn main() -> ExitCode {
@@ -20,5 +21,15 @@ fn main() -> ExitCode {
                 ExitCode::SUCCESS
             }
         }
+        config::Command::Show => match normalize() {
+            Ok(output) => {
+                println!("{:#?}", output);
+                ExitCode::SUCCESS
+            }
+            Err(err) => {
+                println!("Error: {}", err);
+                ExitCode::FAILURE
+            }
+        },
     }
 }
