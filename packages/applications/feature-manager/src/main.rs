@@ -2,10 +2,11 @@ use std::process::ExitCode;
 
 use clap::Parser;
 
-use crate::{show::normalize, verify::verify};
+use crate::{report::report_features, show::normalize, verify::verify};
 
 mod config;
 mod feature;
+mod report;
 mod show;
 mod verify;
 
@@ -31,5 +32,13 @@ fn main() -> ExitCode {
                 ExitCode::FAILURE
             }
         },
+        config::Command::Report(report) => {
+            if let Err(err) = report_features(report) {
+                println!("Error: {}", err);
+                ExitCode::FAILURE
+            } else {
+                ExitCode::SUCCESS
+            }
+        }
     }
 }
