@@ -6,6 +6,7 @@ pub mod get_repository;
 pub mod put_organization;
 pub mod put_release;
 pub mod put_repository;
+pub mod set_release_features;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Database {
