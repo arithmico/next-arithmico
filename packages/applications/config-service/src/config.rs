@@ -10,4 +10,7 @@ pub struct Config {
 
     #[arg(long, env)]
     pub github_oidc_configuration_uri: String,
+
+    #[arg(long, env)]
+    pub github_app_id_secret_arn: String,
 }
