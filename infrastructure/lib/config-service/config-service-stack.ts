@@ -8,7 +8,6 @@ import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { ApiGateway } from "./api-gateway";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
-import { JwtKey } from "./jwt-key";
 import { GithubAppIdSecret } from "./github-app-secret";
 
 export interface ConfigServiceStackProps extends StackProps {
@@ -23,7 +22,6 @@ export class ConfigServiceStack extends Stack {
     private readonly customDomain: DomainName;
     private readonly apiGateway: ApiGateway;
     private readonly record: ARecord;
-    private readonly jwtKey: JwtKey;
 
     constructor(scope: Construct, id: string, { environment, ...props }: ConfigServiceStackProps) {
         super(scope, id, props);
@@ -34,8 +32,6 @@ export class ConfigServiceStack extends Stack {
         const zone = HostedZone.fromLookup(this, "HostedZone", {
             domainName: "arithmico.com"
         });
-
-        this.jwtKey = new JwtKey(this, "JwtKey", { environment });
 
         this.githubAppSecret = new GithubAppIdSecret(this, "GithubAppSecret", { environment });
 
