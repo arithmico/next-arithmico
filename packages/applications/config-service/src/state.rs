@@ -1,11 +1,16 @@
-use crate::{config::Config, database::Database};
+use crate::{
+    config::Config, database::Database, state::github_oidc::GithubOidcClient,
+};
 use anyhow::anyhow;
 use tracing::instrument;
+
+mod github_oidc;
 
 #[derive(Debug, Clone)]
 pub struct ServiceState {
     pub(crate) webhook_secret: String,
     pub(crate) database: Database,
+    pub(crate) github_oidc_client: GithubOidcClient,
 }
 
 impl ServiceState {
@@ -26,9 +31,14 @@ impl ServiceState {
 
         let database = Database::new(&sdk_config, &config.dynamodb_table_name);
 
+        let github_oidc_client =
+            GithubOidcClient::init(&config.github_oidc_configuration_uri)
+                .await?;
+
         Ok(Self {
             webhook_secret,
             database,
+            github_oidc_client,
         })
     }
 }
