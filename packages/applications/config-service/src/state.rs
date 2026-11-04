@@ -42,7 +42,7 @@ impl ServiceState {
             .to_string();
 
         let github_client_id = github_app_secret
-            .get("webhook_secret")
+            .get("client_id")
             .ok_or_else(|| {
                 anyhow!("Github app secret is missing the client_id field")
             })?
