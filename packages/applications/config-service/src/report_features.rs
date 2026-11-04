@@ -6,6 +6,7 @@ use axum::{
     http::StatusCode,
 };
 use reqwest::header::AUTHORIZATION;
+use semver::Version;
 use serde::Deserialize;
 use tracing::{error, info, instrument};
 
@@ -13,6 +14,7 @@ use crate::{
     database::{
         get_organization::GetOrganizationByOrganizationIdQueryBuilder,
         get_repository::GetRepositoryByOrganizationIdAndRepositoryIdBuilder,
+        set_release_features::SetReleaseFeaturesBuilder,
     },
     error::ServiceError,
     state::ServiceState,
@@ -128,6 +130,27 @@ pub async fn handler(
         .map_err(|err| {
             error!(message = "Failed to find repository", error = ?err);
             ServiceError::NotFound
+        })?;
+
+    let version = Version::parse(tag).map_err(|err| {
+        error!(message = "Failed to parse version", version = tag, error = ?err);
+        ServiceError::BadRequest
+    })?;
+
+    state
+        .database
+        .execute(
+            SetReleaseFeaturesBuilder::default()
+                .organization_id(organization_id)
+                .repository_id(repository_id)
+                .version(version)
+                .features(body)
+                .build()?,
+        )
+        .await
+        .map_err(|err| {
+            error!(message = "Failed to save features to database", error = ?err);
+            ServiceError::InternalServerError(err)
         })?;
 
     info!(message = "Received tag features", tag = tag);
