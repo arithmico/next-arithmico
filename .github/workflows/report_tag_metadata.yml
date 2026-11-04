@@ -1,0 +1,27 @@
+name: Report Tag Metadata
+
+on:
+  push:
+    tags:
+      # Matches v1.2.3, v1.2.3-alpha.234, v10.0.1-beta, etc.
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  report-features:
+    name: Report Features
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
+      - name: Install feature-manager
+        shell: bash
+        run: cargo install --path packages/applications/feature-manager
+      - name: Create and push tag
+        shell: bash
+        env: 
+          CONFIG_SERVICE_REPORT_URL: https://v2.api.arithmico.com/github/tag/features
+        run: feature-manager report
