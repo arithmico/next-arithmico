@@ -1070,6 +1070,7 @@ dependencies = [
  "semver",
  "serde",
  "serde_dynamo",
+ "thiserror 2.0.21",
  "tokio",
  "tower-http 0.7.1",
  "tracing",

@@ -5,6 +5,7 @@ use semver::Version;
 use crate::database::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
+#[builder(build_fn(error = "crate::error::ServiceError"))]
 pub struct PutReleaseQuery {
     organization_id: u64,
     repository_id: u64,

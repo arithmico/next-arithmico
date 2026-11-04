@@ -27,6 +27,7 @@ pub struct Repository {
 }
 
 #[derive(Debug, Clone, Builder)]
+#[builder(build_fn(error = "crate::error::ServiceError"))]
 pub struct GetRepositoryByOrganizationIdAndRepositoryId {
     organization_id: u64,
     repository_id: u64,

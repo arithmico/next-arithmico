@@ -4,6 +4,7 @@ use derive_builder::Builder;
 use crate::database::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
+#[builder(build_fn(error = "crate::error::ServiceError"))]
 pub struct PutOrganizationQuery {
     organization_id: u64,
     installation_id: u64,
