@@ -7,6 +7,8 @@ import { RustFunction } from "cargo-lambda-cdk";
 import { Construct } from "constructs";
 import * as path from "path";
 
+const GITHUB_OIDC_CONFIGURATION_URI = "https://token.actions.githubusercontent.com/.well-known/openid-configuration";
+
 export interface ApiHandlerProps {
     webhookSecret: ISecret;
     databaseTable: ITableV2;
@@ -32,6 +34,7 @@ export class ApiHandler extends Construct {
             environment: {
                 WEBHOOK_SECRET_ARN: props.webhookSecret.secretArn,
                 DYNAMODB_TABLE_NAME: props.databaseTable.tableName,
+                GITHUB_OIDC_CONFIGURATION_URI,
             },
             runtime: "provided.al2023",
             binaryName: "bootstrap",
