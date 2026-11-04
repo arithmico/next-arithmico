@@ -9,6 +9,7 @@ pub fn report_features(args: Report) -> anyhow::Result<()> {
             "Authorization",
             format!("bearer {}", args.actions_id_token_request_token),
         )
+        .query("audience", "https://api.arithmico.com/github/features")
         .config()
         .timeout_global(Some(Duration::from_secs(30)))
         .build()
