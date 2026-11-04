@@ -11,6 +11,7 @@ const GITHUB_OIDC_CONFIGURATION_URI = "https://token.actions.githubusercontent.c
 
 export interface ApiHandlerProps {
     webhookSecret: ISecret;
+    githubAppIdSecret: ISecret;
     databaseTable: ITableV2;
     environment: string;
 }
@@ -33,6 +34,7 @@ export class ApiHandler extends Construct {
             architecture: Architecture.ARM_64,
             environment: {
                 WEBHOOK_SECRET_ARN: props.webhookSecret.secretArn,
+                GITHUB_APP_ID_SECRET_ARN: props.githubAppIdSecret.secretArn,
                 DYNAMODB_TABLE_NAME: props.databaseTable.tableName,
                 GITHUB_OIDC_CONFIGURATION_URI,
             },

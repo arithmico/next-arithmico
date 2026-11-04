@@ -10,6 +10,7 @@ import { ApiGateway } from "./api-gateway";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { JwtKey } from "./jwt-key";
+import { GithubAppIdSecret } from "./github-app-id-secret";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
@@ -17,6 +18,7 @@ export interface ConfigServiceStackProps extends StackProps {
 
 export class ConfigServiceStack extends Stack {
     private readonly webhookSecret: ISecret;
+    private readonly githubAppIdSecret: ISecret;
     private readonly database: Database;
     private readonly apiHandler: ApiHandler;
     private readonly certificate: ICertificate;
@@ -39,11 +41,14 @@ export class ConfigServiceStack extends Stack {
 
         this.webhookSecret = new WebhookSecret(this, "WebhookSecert", { environment });
 
+        this.githubAppIdSecret = new GithubAppIdSecret(this, "GithubAppId", { environment });
+
         this.database = new Database(this, "Database", { environment });
 
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
             webhookSecret: this.webhookSecret,
+            githubAppIdSecret: this.githubAppIdSecret,
             databaseTable: this.database,
         });
 
