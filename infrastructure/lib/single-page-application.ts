@@ -2,7 +2,8 @@ import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { LogGroup } from 'aws-cdk-lib/aws-logs';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -61,18 +62,25 @@ export class SinglePageApplication extends Construct {
         });
 
         const logGroup = new LogGroup(this, "BucketDeploymentLogGroup", {
-            removalPolicy: RemovalPolicy.DESTROY
+            removalPolicy: RemovalPolicy.DESTROY,
+            retention: RetentionDays.THREE_MONTHS,
         });
 
-        new BucketDeployment(this, "BucketDeployment", {
+        const deployment = new BucketDeployment(this, "BucketDeployment", {
             sources: [Source.asset("../packages/applications/arithmico/dist")],
             destinationKeyPrefix: artifactPath,
             destinationBucket: bucket,
             distribution,
             distributionPaths: ["/*"],
             retainOnDelete: true,
-            logGroup
+            logGroup,
         });
+
+        deployment.handlerRole.addToPrincipalPolicy(new PolicyStatement({
+            resources: [logGroup.logGroupArn],
+            actions: ["logs:CreateLogGroup"],
+            effect: Effect.DENY,
+        }));
 
         new CfnOutput(this, 'DistributionId', {
             value: distribution.distributionId,
