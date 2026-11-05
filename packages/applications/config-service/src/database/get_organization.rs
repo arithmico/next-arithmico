@@ -72,6 +72,7 @@ impl DatabaseQuery for GetOrganizationByOrganizationIdQuery {
         let response = database
             .client
             .get_item()
+            .table_name(&database.table_name)
             .key(
                 "PK",
                 AttributeValue::S(format!("ORG#{}", self.organization_id)),
