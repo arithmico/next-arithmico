@@ -1,16 +1,24 @@
 use crate::{
-    config::Config, database::Database, state::github_oidc::GithubOidcClient,
+    config::Config,
+    database::Database,
+    state::{
+        github_oidc::GithubOidcClient,
+        installation_token_provider::GithubInstallationTokenProvider,
+    },
 };
 use anyhow::anyhow;
+use jsonwebtoken::EncodingKey;
 use tracing::instrument;
 
 mod github_oidc;
+mod installation_token_provider;
 
 #[derive(Debug, Clone)]
 pub struct ServiceState {
     pub(crate) github_webhook_secret: String,
     #[allow(dead_code)]
-    pub(crate) github_client_id: String,
+    pub(crate) github_installation_token_provider:
+        GithubInstallationTokenProvider,
     pub(crate) database: Database,
     pub(crate) github_oidc_client: GithubOidcClient,
 }
@@ -50,17 +58,33 @@ impl ServiceState {
             .ok_or_else(|| anyhow!("client_id is not a string"))?
             .to_string();
 
+        let private_key = github_app_secret
+            .get("private_key")
+            .ok_or_else(|| {
+                anyhow!("Github app secret is missing the private_key field")
+            })?
+            .as_str()
+            .ok_or_else(|| anyhow!("private_key is not a string"))?
+            .to_string();
+
         let database = Database::new(&sdk_config, &config.dynamodb_table_name);
 
         let github_oidc_client =
             GithubOidcClient::init(&config.github_oidc_configuration_uri)
                 .await?;
 
+        let github_installation_token_provider =
+            GithubInstallationTokenProvider::connect(
+                EncodingKey::from_rsa_pem(private_key.as_bytes())?,
+                &github_client_id,
+            )
+            .await?;
+
         Ok(Self {
             github_webhook_secret,
             database,
             github_oidc_client,
-            github_client_id,
+            github_installation_token_provider,
         })
     }
 }
