@@ -11,6 +11,8 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 use tracing::{error, instrument};
 
+const USER_AGENT: &str = "arithmico-github-app";
+
 #[derive(Debug)]
 struct CachedToken {
     expires_at: Instant,
@@ -133,7 +135,7 @@ impl GithubInstallationTokenProvider {
                 installation_id
             ))
             .header("Authorization", format!("Bearer {}", access_token))
-            .header("User-Agent", "arithmico-github-app")
+            .header("User-Agent", USER_AGENT)
             .send()
             .await?
             .bytes()
