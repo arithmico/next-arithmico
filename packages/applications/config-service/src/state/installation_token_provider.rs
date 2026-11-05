@@ -9,6 +9,7 @@ use jsonwebtoken::{
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
+use tracing::{error, instrument};
 
 #[derive(Debug)]
 struct CachedToken {
@@ -113,6 +114,7 @@ impl GithubInstallationTokenProvider {
         Ok(output)
     }
 
+    #[instrument(skip_all)]
     async fn fetch_installation_access_token(
         &self,
         installation_id: u64,
@@ -124,7 +126,7 @@ impl GithubInstallationTokenProvider {
 
         let access_token = self.get_access_token().await?;
         let expires_at = Instant::now() + Duration::from_mins(30);
-        let response: Response = self
+        let response = self
             .http_client
             .post(format!(
                 "https://api.github.com/app/installations/{}/access_tokens",
@@ -133,8 +135,16 @@ impl GithubInstallationTokenProvider {
             .header("Authorization", format!("Bearer {}", access_token))
             .send()
             .await?
-            .json()
+            .bytes()
             .await?;
+
+        let response: Response = serde_json::from_slice(&response)
+            .inspect_err(|err| {
+                error!(message = "Failed to deserialize response",
+                    error = ?err,
+                    body = ?String::from_utf8_lossy(&response)
+                );
+            })?;
 
         Ok(CachedToken::new(&response.token, expires_at))
     }
