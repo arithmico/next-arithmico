@@ -28,7 +28,12 @@ impl DatabaseQuery for SetReleaseFeatures {
             self.features
                 .into_iter()
                 .map(|(key, value)| {
-                    (key, AttributeValue::Ss(value.into_iter().collect()))
+                    (
+                        key,
+                        AttributeValue::L(
+                            value.into_iter().map(AttributeValue::S).collect(),
+                        ),
+                    )
                 })
                 .collect(),
         );
