@@ -133,6 +133,7 @@ impl GithubInstallationTokenProvider {
                 installation_id
             ))
             .header("Authorization", format!("Bearer {}", access_token))
+            .header("User-Agent", "arithmico-github-app")
             .send()
             .await?
             .bytes()
