@@ -8,7 +8,7 @@ use axum::{
 use reqwest::header::AUTHORIZATION;
 use semver::Version;
 use serde::Deserialize;
-use tracing::{error, info, instrument};
+use tracing::{error, info, instrument, warn};
 
 use crate::{
     database::{
@@ -137,6 +137,11 @@ pub async fn handler(
         ServiceError::BadRequest
     })?;
 
+    if body.is_empty() {
+        warn!(message = "received empty feature set");
+        return Ok(());
+    }
+
     state
         .database
         .execute(
@@ -144,12 +149,16 @@ pub async fn handler(
                 .organization_id(organization_id)
                 .repository_id(repository_id)
                 .version(version)
-                .features(body)
+                .features(body.clone())
                 .build()?,
         )
         .await
         .map_err(|err| {
-            error!(message = "Failed to save features to database", error = ?err);
+            error!(
+                message = "Failed to save features to database",
+                features = ?body,
+                error = ?err
+            );
             ServiceError::InternalServerError(err)
         })?;
 
