@@ -1,9 +1,12 @@
 use anyhow::anyhow;
-use octocrab::models::{
-    Repository,
-    webhook_events::{
-        EventInstallation,
-        payload::{CreateWebhookEventPayload, RefType},
+use octocrab::{
+    Octocrab,
+    models::{
+        Repository,
+        webhook_events::{
+            EventInstallation,
+            payload::{CreateWebhookEventPayload, RefType},
+        },
     },
 };
 use semver::Version;
@@ -50,7 +53,8 @@ pub async fn handle_create_tag(
         )
         .await?;
 
-    let version = payload.r#ref.strip_prefix("v").unwrap_or(&payload.r#ref);
+    let tag = payload.r#ref.clone();
+    let version = tag.strip_prefix("v").unwrap_or(&tag);
     let version = Version::parse(version)?;
 
     state
@@ -70,6 +74,27 @@ pub async fn handle_create_tag(
         repository_id,
         version = ?version
     );
+
+    let access_token = state
+        .github_installation_token_provider
+        .get_installtion_access_token(installation_id)
+        .await?;
+
+    let instance = Octocrab::builder().personal_token(access_token).build()?;
+
+    let repo = instance.repos_by_id(repository_id).get().await?;
+
+    let owner = repo
+        .owner
+        .ok_or_else(|| anyhow!("Repository is missing the owner field"))?
+        .login;
+    let name = repo.name;
+
+    instance
+        .actions()
+        .create_workflow_dispatch(owner, name, "report-tag-metadata.yml", tag)
+        .send()
+        .await?;
 
     Ok(())
 }
