@@ -258,10 +258,6 @@ German = "Name"
 English = "Role"
 German = "Rolle"
 
-[about.team.member.email]
-English = "Email"
-German = "Email"
-
 [not-found.title]
 English = "Page Not Found"
 German = "Seite nicht gefunden"

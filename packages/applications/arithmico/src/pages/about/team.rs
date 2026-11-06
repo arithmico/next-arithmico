@@ -4,15 +4,13 @@ use translate::FormattedMessage;
 
 pub struct TeamMember {
     name: String,
-    email: String,
     role: String,
 }
 
 fn get_team_member(table: &Map<String, Value>) -> Option<TeamMember> {
     let name = table.get("name")?.as_str()?.to_string();
-    let email = table.get("email")?.as_str()?.to_string();
     let role = table.get("role")?.as_str()?.to_string();
-    Some(TeamMember { name, email, role })
+    Some(TeamMember { name, role })
 }
 
 fn get_team_members() -> Option<Vec<TeamMember>> {
@@ -60,13 +58,6 @@ pub fn TeamMembers() -> impl IntoView {
                                     <dd>
                                         <FormattedMessage id="about.team.member.email" />
                                     </dd>
-                                    <dt>
-                                        <a href=format!(
-                                            "mailto:{}",
-                                            member.email.clone(),
-                                        )>{member.email.clone()}</a>
-
-                                    </dt>
                                 </dl>
                             </li>
                         }
