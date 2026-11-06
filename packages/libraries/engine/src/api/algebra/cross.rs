@@ -56,7 +56,7 @@ impl FunctionEndpoint for CrossEndpoint {
                 Number::new_node(a3.value * b1.value - a1.value * b3.value),
                 Number::new_node(a1.value * b2.value - a2.value * b1.value),
             ],
-            _ => unreachable!("already validated before"),
+            _ => return Err(Error::unreachable()),
         };
 
         Ok(Tensor::new(output))
