@@ -1,7 +1,20 @@
-.about-page {
+.about-page .page-with-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
     section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
         h2 {
             margin-bottom: 0.5rem;
+        }
+
+        a {
+            text-decoration: underline;
         }
     }
 }

@@ -258,6 +258,18 @@ German = "Name"
 English = "Role"
 German = "Rolle"
 
+[about.contact]
+English = "Contact"
+German = "Kontakt"
+
+[about.contact.description]
+English = "If you have any questions, feedback, or interest in contributing, feel free to reach out to our project via email using the address listed below."
+German = "Bei Fragen, Anregungen oder Interesse an einer Mitarbeit können Sie unser Projekt jederzeit per E-Mail kontaktieren. Die passende E-Mail-Adresse finden Sie direkt untenstehend."
+
+[about.contact.email]
+English = "Send email to the project"
+German = "E-Mail an das Projekt senden"
+
 [not-found.title]
 English = "Page Not Found"
 German = "Seite nicht gefunden"

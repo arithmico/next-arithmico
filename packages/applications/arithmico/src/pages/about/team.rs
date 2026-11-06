@@ -54,10 +54,6 @@ pub fn TeamMembers() -> impl IntoView {
                                         <FormattedMessage id="about.team.member.role" />
                                     </dd>
                                     <dt>{member.role.clone()}</dt>
-
-                                    <dd>
-                                        <FormattedMessage id="about.team.member.email" />
-                                    </dd>
                                 </dl>
                             </li>
                         }
