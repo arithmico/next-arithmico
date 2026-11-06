@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{Data, DeriveInput, Ident, LitStr, Type, spanned::Spanned};
+use syn::{Data, DeriveInput, Fields, Ident, LitStr, Type, spanned::Spanned};
 
 use crate::{DescriptionAttribute, crete_path::crate_path};
 
@@ -328,14 +328,37 @@ pub(crate) fn impl_function_arguments(
 
     let evaluator_path = crate_path("evaluator")?;
 
+    let is_empty = data_struct.fields.is_empty();
+
+    let struct_type = if is_empty {
+        quote! { #struct_name }
+    } else {
+        quote! { #struct_name<'a> }
+    };
+
+    let struct_initializer = match &data_struct.fields {
+        Fields::Unit => quote! {
+            #struct_name
+        },
+        Fields::Named(_) => quote! {
+            #struct_name {
+                #(#field_mapping,)*
+            }
+        },
+        Fields::Unnamed(_) => {
+            return Err(syn::Error::new(
+                ast.span(),
+                "tuple structs are not supported",
+            ));
+        }
+    };
+
     let generated = quote! {
-        impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_name<'a> {
+        impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_type {
             fn from_mapping(
                 arguments: &'a #evaluator_path::ArgumentMapping,
             ) -> Result<Self, #evaluator_path::Error> {
-                Ok(#struct_name {
-                    #(#field_mapping,)*
-                })
+                Ok(#struct_initializer)
             }
 
             fn signature() -> node::FunctionSignature {
