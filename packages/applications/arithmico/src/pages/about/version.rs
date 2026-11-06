@@ -19,48 +19,48 @@ pub fn VersionDetails() -> impl IntoView {
                 <FormattedMessage id="about.version.title" />
             </h2>
             <dl>
-                <dd>
-                    <FormattedMessage id="about.version.version" />
-                </dd>
-                <dt>{option_env!("APP_VERSION").unwrap_or("DEV")}</dt>
-                <dd>
-                    <FormattedMessage id="about.version.source_date_epoch" />
-                </dd>
                 <dt>
-                    {get_source_date_epoch().format("%d.%m.%Y").to_string()}
+                    <FormattedMessage id="about.version.version" />
+                </dt>
+                <dd>{option_env!("APP_VERSION").unwrap_or("DEV")}</dd>
+                <dt>
+                    <FormattedMessage id="about.version.source_date_epoch" />
                 </dt>
                 <dd>
-                    <FormattedMessage id="about.version.commit_hash" />
-                </dd>
-                <dt>{env!("COMMIT_HASH")}</dt>
-                <dd>
-                    <FormattedMessage id="about.version.sbom" />
+                    {get_source_date_epoch().format("%d.%m.%Y").to_string()}
                 </dd>
                 <dt>
+                    <FormattedMessage id="about.version.commit_hash" />
+                </dt>
+                <dd>{env!("COMMIT_HASH")}</dd>
+                <dt>
+                    <FormattedMessage id="about.version.sbom" />
+                </dt>
+                <dd>
                     <a href="/sbom.json" download>
                         SBOM
                     </a>
-                </dt>
-                <dd>
+                </dd>
+                <dt>
                     <FormattedMessage id="about.version.license" />
-                </dd>
-                <dt>
-                    <A href="/about/license">AGPL v3</A>
                 </dt>
                 <dd>
-                    <FormattedMessage id="about.version.repository" />
+                    <A href="/about/license">AGPL v3</A>
                 </dd>
                 <dt>
+                    <FormattedMessage id="about.version.repository" />
+                </dt>
+                <dd>
                     <a href="https://github.com/arithmico/next-arithmico">
                         GitHub
                     </a>
-                </dt>
-                <dd>
-                    <FormattedMessage id="about.version.font_license" />
                 </dd>
                 <dt>
-                    <A href="/about/font_license">SIL Open Font License</A>
+                    <FormattedMessage id="about.version.font_license" />
                 </dt>
+                <dd>
+                    <A href="/about/font_license">SIL Open Font License</A>
+                </dd>
             </dl>
         </section>
     }

@@ -19,7 +19,7 @@
     font-size: var(--text-2xs);
 }
 
-.team-member > dl > dd {
+.team-member > dl > dt {
     display: flex;
     align-items: center;
     justify-content: end;
