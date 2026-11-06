@@ -1,9 +1,13 @@
-use crate::{components::*, pages::about::version::VersionDetails};
+use crate::{
+    components::*,
+    pages::about::{contact::Contact, version::VersionDetails},
+};
 use leptos::prelude::*;
 use team::TeamMembers;
 use translate::FormattedMessage;
 use ui::common::page_title::PageTitle;
 
+mod contact;
 mod team;
 mod version;
 
@@ -16,6 +20,8 @@ pub fn AboutPage() -> impl IntoView {
             </PageTitle>
 
             <VersionDetails />
+
+            <Contact />
 
             <TeamMembers />
         </PageWithSidebar>
