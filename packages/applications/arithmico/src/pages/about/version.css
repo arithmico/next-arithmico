@@ -9,10 +9,10 @@
     }
 }
 
-.theme-light .version-details > dl > dd {
+.theme-light .version-details > dl > dt {
     color: var(--color-neutral-600);
 }
 
-.theme-dark .version-details > dl > dd {
+.theme-dark .version-details > dl > dt {
     color: var(--color-neutral-400);
 }
