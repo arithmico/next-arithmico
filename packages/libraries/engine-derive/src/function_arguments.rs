@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{Data, DeriveInput, Ident, LitStr, Type, spanned::Spanned};
+use syn::{Data, DeriveInput, Fields, Ident, LitStr, Type, spanned::Spanned};
 
 use crate::{DescriptionAttribute, crete_path::crate_path};
 
@@ -328,34 +328,57 @@ pub(crate) fn impl_function_arguments(
 
     let evaluator_path = crate_path("evaluator")?;
 
-    let generated = quote! {
-        impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_name<'a> {
-            fn from_mapping(
-                arguments: &'a #evaluator_path::ArgumentMapping,
-            ) -> Result<Self, #evaluator_path::Error> {
-                Ok(#struct_name {
-                    #(#field_mapping,)*
-                })
-            }
+    let is_empty = data_struct.fields.is_empty();
 
-            fn signature() -> node::FunctionSignature {
-                node::FunctionSignature::default()
-                #(#signature_arguments)*
-            }
+    let struct_type = if is_empty {
+        quote! { #struct_name }
+    } else {
+        quote! { #struct_name<'a> }
+    };
 
-            fn function_description() -> translate_core::RenderedTranslatedMessage {
-                let mut description = translate_core::RenderedTranslatedMessage::default();
-                #(
-                    #struct_descriptions
-                )*
-                description
+    let struct_initializer = match &data_struct.fields {
+        Fields::Unit => quote! {
+            #struct_name
+        },
+        Fields::Named(_) => quote! {
+            #struct_name {
+                #(#field_mapping,)*
             }
-
-            fn function_name() -> &'static str {
-                #function_name
-            }
+        },
+        Fields::Unnamed(_) => {
+            return Err(syn::Error::new(
+                ast.span(),
+                "tuple structs are not supported",
+            ));
         }
     };
+
+    let generated = quote! {
+            impl<'a> #evaluator_path::FunctionArguments<'a> for #struct_type {
+                fn from_mapping(
+        arguments: &'a #evaluator_path::ArgumentMapping,
+    ) -> Result<Self, #evaluator_path::Error> {
+        Ok(#struct_initializer)
+    }
+
+                fn signature() -> node::FunctionSignature {
+                    node::FunctionSignature::default()
+                    #(#signature_arguments)*
+                }
+
+                fn function_description() -> translate_core::RenderedTranslatedMessage {
+                    let mut description = translate_core::RenderedTranslatedMessage::default();
+                    #(
+                        #struct_descriptions
+                    )*
+                    description
+                }
+
+                fn function_name() -> &'static str {
+                    #function_name
+                }
+            }
+        };
 
     Ok(generated)
 }
