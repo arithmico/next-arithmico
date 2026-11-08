@@ -55,4 +55,6 @@ jobs:
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
       run: |
         mkdir -p ../packages/applications/arithmico/dist
-        npm run cdk -- destroy --all --force
+        npx --no cdk destroy \
+          --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
+          --all --force
