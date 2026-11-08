@@ -1,4 +1,5 @@
-import { RemovalPolicy } from "aws-cdk-lib";
+import { Duration, RemovalPolicy } from "aws-cdk-lib";
+import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { ILogGroup, LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
@@ -41,6 +42,33 @@ export class ApiHandler extends Construct {
             logGroup: this.logGroup,
             reservedConcurrentExecutions: 50,
         });
+
+        this.lambda
+            .metricThrottles()
+            .createAlarm(this, "ThrottleAlarm", {
+                threshold: 1,
+                evaluationPeriods: 3
+            });
+
+        this.lambda
+            .metricErrors()
+            .createAlarm(this, "ErrorsAlarm", {
+                threshold: 1,
+                evaluationPeriods: 1
+            });
+
+        this.lambda
+            .metricDuration({
+                statistic: "p99",
+            })
+            .createAlarm(this, "DurationP99Alarm", {
+                threshold: 10000,
+                evaluationPeriods: 3,
+                datapointsToAlarm: 2,
+                comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+                treatMissingData: TreatMissingData.NOT_BREACHING,
+            });
+
 
         props.githubAppSecret.grantRead(this.lambda);
         props.databaseTable.grantReadWriteData(this.lambda);
