@@ -1,4 +1,4 @@
-import { CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import { Annotations, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { ICertificate } from 'aws-cdk-lib/aws-certificatemanager';
 import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -56,6 +56,10 @@ export class SinglePageApplication extends Construct {
                 }
             ]
         });
+
+        Annotations.of(distribution).acknowledgeWarning(
+            "@aws-cdk/aws-cloudfront-origins:updateImportedBucketPolicyOai"
+        );
 
         new CfnOutput(this, `${id}-distribution-url`, {
             value: `https://${distribution.distributionDomainName}`,
