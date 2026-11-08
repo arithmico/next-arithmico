@@ -117,7 +117,8 @@ jobs:
         EXIT_CODE=$?
         DIFF_OUTPUT=$(echo "$RAW_DIFF" \
           | sed -E "s/${{ secrets.AWS_ACCOUNT_ID }}/****/g" \
-          | grep -vE "^(start:|success:|Hold on while|Building |Publishing )")
+          | grep -vE "^(start:|success:|Hold on while|Building |Publishing )" \
+          | grep -vE "^\s*$")
         echo "diff<<EOF" >> $GITHUB_OUTPUT
         echo "$DIFF_OUTPUT" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
