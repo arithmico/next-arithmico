@@ -102,6 +102,21 @@ jobs:
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
       run: npm run cdk -- deploy --all --require-approval never
+    - name: Find Comment
+      uses: peter-evans/find-comment@v4
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: '<!-- review-deployment-url-comment-marker -->'
+    - name: Create or Update Comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          <!-- review-deployment-url-comment-marker -->
+          **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com`)
 
   formatting:
     name: Check Formatting
@@ -145,26 +160,3 @@ jobs:
     - name: Validate Feature Configuration
       shell: bash
       run: feature-manager verify
-
-  comment-deployment-info:
-    name: Comment Deployment Info
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: 
-      - build-and-deploy
-    steps:
-      - name: Find Comment
-        uses: peter-evans/find-comment@v4
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: '<!-- review-deployment-url-comment-marker -->'
-
-      - uses: peter-evans/create-or-update-comment@v4
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            <!-- review-deployment-url-comment-marker -->
-            **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com`)
