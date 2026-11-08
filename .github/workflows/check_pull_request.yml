@@ -55,8 +55,8 @@ jobs:
       working-directory: packages/applications/arithmico-e2e
       run: npx playwright test
 
-  build-and-deploy:
-    name: Build And Deploy Review Artifact
+  deploy-calculator:
+    name: Deploy Calculator
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
@@ -70,7 +70,9 @@ jobs:
       shell: bash
       run: |
         rustup target add wasm32-unknown-unknown
-        cargo binstall -y --locked --force trunk@0.22.0 cargo-lambda@=1.9.2
+        cargo binstall -y --locked --force \
+          trunk@0.22.0 \
+          cargo-lambda@=1.9.2
     - name: Build Artifact
       working-directory: packages/applications/arithmico
       shell: bash
@@ -102,30 +104,11 @@ jobs:
         AWS_REGION: ${{ vars.AWS_REGION }}
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
-      run: npm run cdk -- deploy --all --require-approval never
-    - name: CDK Diff
-      id: cdk-diff
-      working-directory: infrastructure
-      env:
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        AWS_REGION: ${{ vars.AWS_REGION }}
-        CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
-        CDK_DEPLOY_ENVIRONMENT: main
       run: |
-        npm run cdk -- synth
-        RAW_DIFF=$(npx --no cdk diff --quiet --ci --no-color 2>/dev/null)
-        EXIT_CODE=$?
-        DIFF_OUTPUT=$(echo "$RAW_DIFF" \
-          | sed -E "s/${{ secrets.AWS_ACCOUNT_ID }}/****/g" \
-          | grep -vE "^(start:|success:|Hold on while|Building |Publishing )" \
-          | grep -vE "^\s*$")
-        echo "diff<<EOF" >> $GITHUB_OUTPUT
-        echo "$DIFF_OUTPUT" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        if [ $EXIT_CODE -ne 0 ]; then
-          echo "::error::CDK diff execution failed with code $EXIT_CODE. $DIFF_OUTPUT"
-          exit $EXIT_CODE
-        fi
+        npm run cdk -- deploy \
+          --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
+          --all \
+          --require-approval never
     - name: Find Comment
       uses: peter-evans/find-comment@v4
       id: fc
@@ -141,17 +124,41 @@ jobs:
         edit-mode: replace
         body: |
           <!-- review-deployment-url-comment-marker -->
-          **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com`)
+          **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com)
 
-          <details>
-            <summary>Infrastructure Diff</summary>
-          
-          ```diff
-          ${{ steps.cdk-diff.outputs.diff }}
-          ```
+  cdk-diff-matrix:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
+      # diff against main
+      CDK_DEPLOY_ENVIRONMENT: main
+    strategy:
+      matrix:
+        cdk-app:
+          - "base"
+          - "calculator"
+          - "config-service"
+      fail-fast: false
 
-          </details>
-
+    steps:
+      - uses: actions/checkout@v4
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Run CDK Diff
+        uses: ./.github/actions/cdk-diff
+        with:
+          working-directory: 'infrastructure'
+          aws-account-id: ${{ secrets.AWS_ACCOUNT_ID }}
+          aws-region: ${{ vars.AWS_REGION }}
+          cdk-deploy-artifact: 'review-${{ github.event.pull_request.number }}'
+          cdk-deploy-environment: 'main'
+          cdk-app: ${{ matrix.cdk-app }}
 
   formatting:
     name: Check Formatting

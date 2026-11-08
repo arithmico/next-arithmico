@@ -38,10 +38,79 @@ jobs:
           git push origin $VERSION_TAG
           echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
-  build-and-deploy:
-    name: Build And Deploy
+  deploy-base-infrastructure:
+    name: Deploy Base Infrastructure
     runs-on: ubuntu-24.04
-    needs: create-release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Install NPM Dependencies
+        run: npm ci
+      - name: CDK Deploy
+        working-directory: infrastructure
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          npm run cdk -- deploy \
+            --app "npx ts-node --prefer-ts-exts bin/base.ts" \
+            --all \
+            --require-approval never
+
+  deploy-config-service:
+    name: Deploy Base Infrastructure
+    runs-on: ubuntu-24.04
+    needs:
+      - deploy-base-infrastructure
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Setup Rust Toolchain
+        shell: bash
+        run: |
+          rustup target add wasm32-unknown-unknown
+          cargo binstall -y --locked --force \
+            trunk@0.22.0 \
+            cargo-lambda@=1.9.2
+      - uses: mlugg/setup-zig@v2
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Install NPM Dependencies
+        run: npm ci
+      - name: CDK Deploy
+        working-directory: infrastructure
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          npm run cdk -- deploy \
+            --app "npx ts-node --prefer-ts-exts bin/config-service.ts" \
+            --all \
+            --require-approval never
+
+  deploy-calculator:
+    name: Deploy Calculator
+    runs-on: ubuntu-24.04
+    needs: 
+      - create-release
+      - deploy-base-infrastructure
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -50,8 +119,8 @@ jobs:
         shell: bash
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo binstall -y --locked --force trunk@0.22.0 cargo-lambda@=1.9.2
-      - uses: mlugg/setup-zig@v2
+          cargo binstall -y --locked --force \
+            trunk@0.22.0
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
@@ -84,4 +153,8 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION }}
           CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
           CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
-        run: npm run cdk -- deploy --all --require-approval never
+        run: |
+          npm run cdk -- deploy \
+            --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
+            --all \
+            --require-approval never
