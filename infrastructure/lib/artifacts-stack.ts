@@ -23,8 +23,6 @@ export class ArtifactsStack extends Stack {
     new CfnOutput(this, "OriginAccessIdentityOutput", {
       value: originAccessIdentity.originAccessIdentityId,
       description: "Id of the OriginAccessIdentity for the artifacts bucket",
-      exportName: "ArtifactsOriginAccessIdentityId"
     })
   }
-
 }
