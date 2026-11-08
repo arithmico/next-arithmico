@@ -67,7 +67,7 @@ jobs:
             --require-approval never
 
   deploy-config-service:
-    name: Deploy Base Infrastructure
+    name: Deploy Config Service
     runs-on: ubuntu-24.04
     needs:
       - deploy-base-infrastructure
@@ -99,6 +99,7 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
+          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
         run: |
           npm run cdk -- deploy \
             --app "npx ts-node --prefer-ts-exts bin/config-service.ts" \
