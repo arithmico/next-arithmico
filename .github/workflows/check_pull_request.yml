@@ -126,7 +126,8 @@ jobs:
           <!-- review-deployment-url-comment-marker -->
           **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com)
 
-  cdk-diff-matrix:
+  cdk-diff:
+    name: CDK Diff
     runs-on: ubuntu-latest
     env:
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -141,7 +142,6 @@ jobs:
           - "calculator"
           - "config-service"
       fail-fast: false
-
     steps:
       - uses: actions/checkout@v4
       - name: configure aws credentials
