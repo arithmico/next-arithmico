@@ -63,13 +63,14 @@ jobs:
       group: review-environment-${{ github.event.number }}
     steps:
     - uses: actions/checkout@v7
+    - uses: mlugg/setup-zig@v2
     - uses: actions-rust-lang/setup-rust-toolchain@v2
     - uses: cargo-bins/cargo-binstall@main
     - name: Setup toolchain
       shell: bash
       run: |
         rustup target add wasm32-unknown-unknown
-        cargo binstall -y --locked --force trunk@0.22.0
+        cargo binstall -y --locked --force trunk@0.22.0 cargo-lambda@=1.9.2
     - name: Build Artifact
       working-directory: packages/applications/arithmico
       shell: bash
@@ -102,6 +103,28 @@ jobs:
         CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
         CDK_DEPLOY_ENVIRONMENT: review-${{ github.event.number }}
       run: npm run cdk -- deploy --all --require-approval never
+    - name: CDK Diff
+      id: cdk-diff
+      working-directory: infrastructure
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
+        CDK_DEPLOY_ENVIRONMENT: main
+      run: |
+        npm run cdk -- synth
+        RAW_DIFF=$(npx --no cdk diff --quiet --ci --no-color 2>/dev/null)
+        EXIT_CODE=$?
+        DIFF_OUTPUT=$(echo "$RAW_DIFF" \
+          | sed -E "s/${{ secrets.AWS_ACCOUNT_ID }}/****/g" \
+          | grep -vE "^(start:|success:|Hold on while|Building |Publishing )")
+        echo "diff<<EOF" >> $GITHUB_OUTPUT
+        echo "$DIFF_OUTPUT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "::error::CDK diff execution failed with code $EXIT_CODE. $DIFF_OUTPUT"
+          exit $EXIT_CODE
+        fi
     - name: Find Comment
       uses: peter-evans/find-comment@v4
       id: fc
@@ -114,9 +137,20 @@ jobs:
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
+        edit-mode: replace
         body: |
           <!-- review-deployment-url-comment-marker -->
           **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com`)
+
+          <details>
+            <summary>Infrastructure Diff</summary>
+          
+          ```diff
+          ${{ steps.cdk-diff.outputs.diff }}
+          ```
+
+          </details>
+
 
   formatting:
     name: Check Formatting
