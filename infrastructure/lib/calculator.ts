@@ -16,7 +16,10 @@ export class CalculatorStack extends Stack {
             ? "next.arithmico.com"
             : `${environment}.calculator.arithmico.com`;
 
-        const originAccessIdentityId = Fn.importValue("ArtifactsOriginAccessIdentityId");
+        const originAccessIdentityId = Fn.getStackOutput(
+            "Artifacts",
+            "OriginAccessIdentityOutput"
+        );
 
         const certificateArn = Fn.getStackOutput(
             `calculator-certificate-${environment}`,
