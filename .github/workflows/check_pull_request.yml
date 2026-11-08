@@ -150,20 +150,21 @@ jobs:
     name: Comment Deployment Info
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event.action == 'opened'
     needs: 
       - build-and-deploy
     steps:
-      - uses: actions/github-script@v9
-        env:
-          PR_NUMBER: ${{ github.event.number }}
+      - name: Find Comment
+        uses: peter-evans/find-comment@v4
+        id: fc
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const url = `https://review-${process.env.PR_NUMBER}.calculator.arithmico.com`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `**Review deployment created**: Click [here](${url})`
-            });
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- review-deployment-url-comment-marker -->'
+
+      - uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            <!-- review-deployment-url-comment-marker -->
+            **Review deployment created**: Click [here](https://review-${{ github.event.pull_request.number }}.calculator.arithmico.com`)
