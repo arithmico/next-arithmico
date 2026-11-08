@@ -20,7 +20,7 @@ export class ArtifactsStack extends Stack {
     const originAccessIdentity = new OriginAccessIdentity(this, 'OriginAccessIdentity');
     bucket.grantRead(originAccessIdentity);
 
-    new CfnOutput(this, "OriginAccessIdentityOutput", {
+    new CfnOutput(this, "OriginAccessIdentityId", {
       value: originAccessIdentity.originAccessIdentityId,
       description: "Id of the OriginAccessIdentity for the artifacts bucket",
     })

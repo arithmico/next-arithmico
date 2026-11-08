@@ -21,7 +21,7 @@ const env = {
 };
 
 if (environment === "main") {
-    artifacts = new ArtifactsStack(app, 'Artifacts', {
+    artifacts = new ArtifactsStack(app, 'artifacts', {
         env
     });
 
