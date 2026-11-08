@@ -1,0 +1,102 @@
+name: "CDK Diff"
+description: "Runs CDK synth and diff with output sanitization and log filtering"
+
+inputs:
+  working-directory:
+    description: "Path to the directory containing the CDK app"
+    required: false
+    default: "infrastructure"
+  aws-account-id:
+    description: "AWS Account ID to mask in output logs"
+    required: true
+  aws-region:
+    description: "AWS Region"
+    required: true
+  cdk-deploy-artifact:
+    description: "Value for CDK_DEPLOY_ARTIFACT env var"
+    required: true
+  cdk-deploy-environment:
+    description: "Value for CDK_DEPLOY_ENVIRONMENT env var"
+    required: true
+  cdk-app:
+    description: "Value for --app parameter."
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: mlugg/setup-zig@v2
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Setup toolchain
+      shell: bash
+      run: |
+        cargo binstall -y --locked --force \
+          cargo-lambda@=1.9.2
+    - name: Build Artifact
+      working-directory: packages/applications/arithmico
+      shell: bash
+      env:
+        APP_VERSION: review-${{ github.event.number }}
+      run: |
+        mkdir dist
+        touch dist/index.css 
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+    - name: Install Dependencies
+      shell: bash
+      run: npm ci
+    - name: Run CDK Diff
+      id: run-diff
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        AWS_ACCOUNT_ID: ${{ inputs.aws-account-id }}
+        AWS_REGION: ${{ inputs.aws-region }}
+        CDK_DEPLOY_ARTIFACT: ${{ inputs.cdk-deploy-artifact }}
+        CDK_DEPLOY_ENVIRONMENT: ${{ inputs.cdk-deploy-environment }}
+        CDK_APP: "npx ts-node --prefer-ts-exts bin/${{ inputs.cdk-app }}.ts"
+      run: |
+        npx --no cdk -- \
+          synth \
+          --app "$CDK_APP" \
+          > /dev/null
+        RAW_DIFF=$(npx --no cdk -- diff --quiet --ci --app "$CDK_APP" --no-color 2>/dev/null)
+        EXIT_CODE=$?
+        DIFF_OUTPUT=$(echo "$RAW_DIFF" \
+          | sed -E "s/$AWS_ACCOUNT_ID/****/g" \
+          | grep -vE "^(start:|success:|Hold on while|Building |Publishing )" \
+          | grep -vE "^\s*$")
+        echo "diff<<EOF" >> $GITHUB_OUTPUT
+        echo "$DIFF_OUTPUT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "::error::CDK diff execution failed with code $EXIT_CODE. $DIFF_OUTPUT"
+          exit $EXIT_CODE
+        fi
+    - name: Find Comment
+      uses: peter-evans/find-comment@v4
+      id: fc
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: 'github-actions[bot]'
+        body-includes: '<!-- cdk-diff-marker: ${{ inputs.cdk-app }} -->'
+    - name: Create or Update Comment
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        issue-number: ${{ github.event.pull_request.number }}
+        edit-mode: replace
+        body: |
+          <!-- cdk-diff-marker: ${{ inputs.cdk-app }} -->
+          ## CDK Diff for ${{ inputs.cdk-app }}
+
+          <details>
+            <summary>Infrastructure Diff</summary>
+          
+          ```diff
+          ${{ steps.run-diff.outputs.diff }}
+          ```
+
+          </details>
