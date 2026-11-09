@@ -26,7 +26,8 @@
         "engine-protocol",
         "engine-worker",
         "feature-manager",
-        "config-service"
+        "config-service",
+        "workflow-dispatcher"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "rust-analyzer.check.command": "clippy",
