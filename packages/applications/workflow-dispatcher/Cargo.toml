@@ -9,4 +9,4 @@ serde = "1"
 tokio = { version = "1", features = ["macros"] }
 tracing.workspace = true
 tracing-subscriber = { workspace = true, features = ["json"] }
-clap = { workspace = true, feature = "derive" }
+clap = { workspace = true, features = ["derive", "env"] }
