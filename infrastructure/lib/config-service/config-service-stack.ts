@@ -10,6 +10,7 @@ import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { GithubAppIdSecret } from "./github-app-secret";
 import { WorkflowQueue } from "./workflow-queue";
+import { WorkflowDispatcher } from "./workflow-dispatcher";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
@@ -20,6 +21,7 @@ export class ConfigServiceStack extends Stack {
     private readonly database: Database;
     private readonly workflowQueue: WorkflowQueue;
     private readonly apiHandler: ApiHandler;
+    private readonly workflowDispatcher: WorkflowDispatcher;
     private readonly certificate: ICertificate;
     private readonly customDomain: DomainName;
     private readonly apiGateway: ApiGateway;
@@ -42,6 +44,13 @@ export class ConfigServiceStack extends Stack {
         this.workflowQueue = new WorkflowQueue(this, "WorkflowQueue", { environment });
 
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
+            environment,
+            githubAppSecret: this.githubAppSecret,
+            databaseTable: this.database,
+            workflowQueue: this.workflowQueue.queue,
+        });
+
+        this.workflowDispatcher = new WorkflowDispatcher(this, "WorkflowDispatcher", {
             environment,
             githubAppSecret: this.githubAppSecret,
             databaseTable: this.database,
