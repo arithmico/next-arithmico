@@ -5329,6 +5329,7 @@ dependencies = [
 name = "workflow-dispatcher"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "lambda_runtime",
  "serde",
  "tokio",
