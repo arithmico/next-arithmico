@@ -9,6 +9,7 @@ import { ApiGateway } from "./api-gateway";
 import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
 import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { GithubAppIdSecret } from "./github-app-secret";
+import { WorkflowQueue } from "./workflow-queue";
 
 export interface ConfigServiceStackProps extends StackProps {
     environment: string;
@@ -17,6 +18,7 @@ export interface ConfigServiceStackProps extends StackProps {
 export class ConfigServiceStack extends Stack {
     private readonly githubAppSecret: ISecret;
     private readonly database: Database;
+    private readonly workflowQueue: WorkflowQueue;
     private readonly apiHandler: ApiHandler;
     private readonly certificate: ICertificate;
     private readonly customDomain: DomainName;
@@ -37,10 +39,13 @@ export class ConfigServiceStack extends Stack {
 
         this.database = new Database(this, "Database", { environment });
 
+        this.workflowQueue = new WorkflowQueue(this, "WorkflowQueue", { environment });
+
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
             githubAppSecret: this.githubAppSecret,
             databaseTable: this.database,
+            workflowQueue: this.workflowQueue.queue,
         });
 
         this.certificate = new Certificate(this, "Certificate", {
