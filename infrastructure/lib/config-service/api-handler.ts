@@ -32,7 +32,7 @@ export class ApiHandler extends Construct {
         });
 
         this.lambda = new RustFunction(this, "Function", {
-            manifestPath: path.join(__dirname, "../../../packages/applications/config-service/Cargo.toml"),
+            manifestPath: path.join(__dirname, "../../../packages/applications/api-handler/Cargo.toml"),
             architecture: Architecture.ARM_64,
             environment: {
                 GITHUB_APP_SECRET_ARN: props.githubAppSecret.secretArn,
@@ -41,7 +41,6 @@ export class ApiHandler extends Construct {
                 WORKFLOW_QUEUE_URL: props.workflowQueue.queueUrl,
             },
             runtime: "provided.al2023",
-            binaryName: "bootstrap",
             logGroup: this.logGroup,
             reservedConcurrentExecutions: 50,
         });

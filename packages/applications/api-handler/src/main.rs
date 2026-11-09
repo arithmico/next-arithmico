@@ -1,5 +1,5 @@
+use api_handler::{config::Config, router, state::ServiceState};
 use clap::Parser;
-use config_service::{config::Config, router, state::ServiceState};
 use lambda_http::{Error, run};
 use tracing::info;
 
