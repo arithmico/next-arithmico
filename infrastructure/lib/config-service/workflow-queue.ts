@@ -10,11 +10,15 @@ export class WorkflowQueue extends Construct {
     public readonly queue: Queue;
     public readonly deadLetterQueue: Queue;
 
+    private static generateQueueName(environment: string): string {
+        return `${environment}_config-service_workflows_dispatch_v1`;
+    }
+
     constructor(scope: Construct, id: string, props: WorkflowQueueProps) {
         super(scope, id)
 
         this.deadLetterQueue = new Queue(this, "DeadLetterQueue", {
-            queueName: `${props.environment}.config-service.workflows.dispatch.v1.dlq`,
+            queueName: `${WorkflowQueue.generateQueueName(props.environment)}_dlq`,
             enforceSSL: true,
             retentionPeriod: Duration.days(14),
         });
@@ -27,7 +31,7 @@ export class WorkflowQueue extends Construct {
             });
 
         this.queue = new Queue(this, "Queue", {
-            queueName: `${props.environment}.config-service.workflows.dispatch.v1`,
+            queueName: WorkflowQueue.generateQueueName(props.environment),
             enforceSSL: true,
             retentionPeriod: Duration.days(14),
             deadLetterQueue: {
