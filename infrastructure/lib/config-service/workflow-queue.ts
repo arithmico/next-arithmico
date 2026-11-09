@@ -11,7 +11,7 @@ export class WorkflowQueue extends Construct {
     public readonly deadLetterQueue: Queue;
 
     private static generateQueueName(environment: string): string {
-        return `${environment}_config-service_workflows_dispatch_v1`;
+        return `${environment}_workflows_dispatch_v1`;
     }
 
     constructor(scope: Construct, id: string, props: WorkflowQueueProps) {
