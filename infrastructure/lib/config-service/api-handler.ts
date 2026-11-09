@@ -1,4 +1,4 @@
-import { Duration, RemovalPolicy } from "aws-cdk-lib";
+import { RemovalPolicy } from "aws-cdk-lib";
 import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
@@ -26,7 +26,7 @@ export class ApiHandler extends Construct {
         super(scope, id);
 
         this.logGroup = new LogGroup(this, "LogGroup", {
-            logGroupName: `/config-service/${props.environment}/api-handler`,
+            logGroupName: `/api-handler/${props.environment}`,
             retention: RetentionDays.THREE_MONTHS,
             removalPolicy: RemovalPolicy.DESTROY,
         });
