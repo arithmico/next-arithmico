@@ -25,7 +25,7 @@ serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
 tokio = { version = "1.54.1", features = ["full"] }
 tower-http = { version = "0.7.1", features = ["trace"] }
 tracing.workspace = true
-tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"] }
+tracing-subscriber = { workspace = true, features = ["json"] }
 thiserror.workspace = true
 serde_json = "1.0.154"
 
