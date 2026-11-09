@@ -111,6 +111,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
+name = "api-handler"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "aws-config",
+ "aws-sdk-dynamodb",
+ "aws-sdk-secretsmanager",
+ "axum",
+ "clap",
+ "derive_builder",
+ "jsonwebtoken 11.1.0",
+ "lambda_http",
+ "octocrab",
+ "reqwest",
+ "semver",
+ "serde",
+ "serde_dynamo",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tower-http 0.7.1",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1051,32 +1077,6 @@ dependencies = [
  "serde_core",
  "toml",
  "winnow",
-]
-
-[[package]]
-name = "config-service"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "aws-config",
- "aws-sdk-dynamodb",
- "aws-sdk-secretsmanager",
- "axum",
- "clap",
- "derive_builder",
- "jsonwebtoken 11.1.0",
- "lambda_http",
- "octocrab",
- "reqwest",
- "semver",
- "serde",
- "serde_dynamo",
- "serde_json",
- "thiserror 2.0.21",
- "tokio",
- "tower-http 0.7.1",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]

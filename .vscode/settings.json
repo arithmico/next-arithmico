@@ -26,7 +26,7 @@
         "engine-protocol",
         "engine-worker",
         "feature-manager",
-        "config-service",
+        "api-handler",
         "workflow-dispatcher"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
