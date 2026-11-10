@@ -27,7 +27,7 @@ aws-sdk-sqs = "1.120.0"
 anyhow = "1.0.104"
 aws-sdk-secretsmanager = "1.124.0"
 aws-config = { version = "1.13.0", features = ["behavior-version-latest"] }
-
+octocrab = "0.54.9"
 
 [workspace.lints.clippy]
 module_inception = "allow"
