@@ -121,6 +121,7 @@ dependencies = [
  "axum",
  "clap",
  "database",
+ "github-app-auth",
  "jsonwebtoken 11.1.0",
  "lambda_http",
  "octocrab",
@@ -1807,6 +1808,19 @@ dependencies = [
  "libc",
  "libgit2-sys",
  "log",
+]
+
+[[package]]
+name = "github-app-auth"
+version = "0.1.0"
+dependencies = [
+ "jsonwebtoken 11.1.0",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
