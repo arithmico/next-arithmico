@@ -42,7 +42,7 @@ pub async fn handler(
     let event = match WebhookEvent::try_from_header_signature_and_body(
         event,
         signature,
-        &state.github_webhook_secret,
+        state.github_app_secret.webhook_secret(),
         &body,
     ) {
         Ok(event) => event,

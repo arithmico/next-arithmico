@@ -5,11 +5,13 @@ use std::{
 };
 
 use jsonwebtoken::{
-    Algorithm, EncodingKey, Header, dangerous::insecure_decode_claims, encode,
+    Algorithm, Header, dangerous::insecure_decode_claims, encode,
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 use tracing::{error, instrument};
+
+use crate::github_app_secret::GithubAppSecret;
 
 const USER_AGENT: &str = "arithmico-github-app";
 
@@ -54,14 +56,12 @@ pub struct GithubInstallationTokenProvider {
     access_token: Arc<RwLock<CachedToken>>,
     /// Map<installation_id, CachedToken>
     installation_access_tokens: Arc<RwLock<HashMap<u64, CachedToken>>>,
-    encoding_key: EncodingKey,
-    client_id: String,
+    github_app_secret: Arc<GithubAppSecret>,
     http_client: reqwest::Client,
 }
 
 async fn generate_access_token(
-    encoding_key: &EncodingKey,
-    client_id: &str,
+    github_app_secret: &GithubAppSecret,
 ) -> Result<CachedToken, crate::Error> {
     #[derive(Debug, Serialize)]
     struct AccessTokenClaims {
@@ -74,31 +74,29 @@ async fn generate_access_token(
     let exp = iat + Duration::from_mins(9);
 
     let claims = AccessTokenClaims {
-        iss: client_id.to_string(),
+        iss: github_app_secret.client_id().to_string(),
         iat: iat.duration_since(UNIX_EPOCH)?.as_secs(),
         exp: exp.duration_since(UNIX_EPOCH)?.as_secs(),
     };
 
     let header = Header::new(Algorithm::RS256);
 
-    let token = encode(&header, &claims, encoding_key)?;
+    let token = encode(&header, &claims, github_app_secret.encoding_key())?;
 
     CachedToken::try_from_jwt(&token)
 }
 
 impl GithubInstallationTokenProvider {
     pub async fn connect(
-        encoding_key: EncodingKey,
-        client_id: &str,
+        github_app_secret: Arc<GithubAppSecret>,
     ) -> Result<Self, crate::Error> {
         let access_token =
-            generate_access_token(&encoding_key, client_id).await?;
+            generate_access_token(github_app_secret.as_ref()).await?;
 
         Ok(Self {
             access_token: Arc::new(RwLock::new(access_token)),
             installation_access_tokens: Default::default(),
-            encoding_key,
-            client_id: client_id.to_string(),
+            github_app_secret,
             http_client: reqwest::Client::new(),
         })
     }
@@ -109,8 +107,7 @@ impl GithubInstallationTokenProvider {
             return Ok(token.token.clone());
         }
         drop(token);
-        let new_token =
-            generate_access_token(&self.encoding_key, &self.client_id).await?;
+        let new_token = generate_access_token(&self.github_app_secret).await?;
         let output = new_token.token.clone();
         *self.access_token.write().await = new_token;
         Ok(output)

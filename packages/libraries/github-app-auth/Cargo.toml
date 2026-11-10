@@ -11,6 +11,9 @@ reqwest.workspace = true
 tokio = { workspace = true, features = ["sync"] }
 jsonwebtoken = { version = "11.1.0", features = ["aws_lc_rs"] }
 serde_json.workspace = true
+aws-sdk-secretsmanager.workspace = true
+secrecy = { version = "0.10.3", features = ["serde"] }
+aws-config = { workspace = true, features = ["behavior-version-latest"] }
 
 [lints]
 workspace = true

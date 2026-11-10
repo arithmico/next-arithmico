@@ -23,6 +23,11 @@ semver = "1.0.28"
 tokio = "1.54.1"
 reqwest = "0.13.5"
 serde_json = "1.0.154"
+aws-sdk-sqs = "1.120.0"
+anyhow = "1.0.104"
+aws-sdk-secretsmanager = "1.124.0"
+aws-config = { version = "1.13.0", features = ["behavior-version-latest"] }
+
 
 [workspace.lints.clippy]
 module_inception = "allow"
