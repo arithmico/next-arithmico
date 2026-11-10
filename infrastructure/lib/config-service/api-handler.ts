@@ -1,4 +1,4 @@
-import { RemovalPolicy } from "aws-cdk-lib";
+import { Duration, RemovalPolicy } from "aws-cdk-lib";
 import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
@@ -43,6 +43,7 @@ export class ApiHandler extends Construct {
             runtime: "provided.al2023",
             logGroup: this.logGroup,
             reservedConcurrentExecutions: 50,
+            timeout: Duration.seconds(10),
         });
 
         this.lambda
@@ -64,7 +65,7 @@ export class ApiHandler extends Construct {
                 statistic: "p99",
             })
             .createAlarm(this, "DurationP99Alarm", {
-                threshold: 10000,
+                threshold: 5000,
                 evaluationPeriods: 3,
                 datapointsToAlarm: 2,
                 comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
