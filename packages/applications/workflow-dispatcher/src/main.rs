@@ -21,7 +21,7 @@ async fn main() -> Result<(), Error> {
 
     info!("Handler initialized");
 
-    run(service_fn(|_event: LambdaEvent<()>| {
+    run(service_fn(|_event: LambdaEvent<serde_json::Value>| {
         let handler = handler.clone();
         async move {
             handler
