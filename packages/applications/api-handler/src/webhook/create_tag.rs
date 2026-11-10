@@ -11,6 +11,7 @@ use octocrab::{
 };
 use semver::Version;
 use tracing::{info, instrument};
+use workflow_dispatcher_protocol::DispatchWorkflow;
 
 use crate::{
     database::{
@@ -74,6 +75,15 @@ pub async fn handle_create_tag(
         repository_id,
         version = ?version
     );
+
+    state
+        .workflow_publisher
+        .dispatch_workflow(DispatchWorkflow {
+            repository_id,
+            workflow_id: "report-tag-metadata.yml".to_string(),
+            git_ref: tag.clone(),
+        })
+        .await?;
 
     let access_token = state
         .github_installation_token_provider
