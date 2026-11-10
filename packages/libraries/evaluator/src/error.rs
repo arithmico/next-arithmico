@@ -282,6 +282,16 @@ impl Error {
             ),
         )
     }
+
+    pub fn non_linear_expression() -> Self {
+        Self::new(
+            ErrorKind::InvalidParameterType,
+            &TranslatedMessage::new(
+                "engine.evaluate.error.non_linear_expression",
+                translation_resolver,
+            ),
+        )
+    }
 }
 
 impl AsRef<Trace> for Error {
