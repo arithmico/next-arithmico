@@ -7,7 +7,7 @@ license = "AGPL-3.0-or-later"
 [dependencies]
 anyhow = "1.0.102"
 git2 = "0.21.0"
-semver = "1.0.28"
+semver.workspace = true
 
 [lints]
 workspace = true

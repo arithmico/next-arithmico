@@ -5,20 +5,17 @@ use axum::{
     extract::{FromRequestParts, State},
     http::StatusCode,
 };
+use database::{
+    get_organization::GetOrganizationByOrganizationIdQueryBuilder,
+    get_repository::GetRepositoryByOrganizationIdAndRepositoryIdBuilder,
+    set_release_features::SetReleaseFeaturesBuilder,
+};
 use reqwest::header::AUTHORIZATION;
 use semver::Version;
 use serde::Deserialize;
 use tracing::{error, info, instrument, warn};
 
-use crate::{
-    database::{
-        get_organization::GetOrganizationByOrganizationIdQueryBuilder,
-        get_repository::GetRepositoryByOrganizationIdAndRepositoryIdBuilder,
-        set_release_features::SetReleaseFeaturesBuilder,
-    },
-    error::ServiceError,
-    state::ServiceState,
-};
+use crate::{error::ServiceError, state::ServiceState};
 
 const AUDIENCE: &str = "https://api.arithmico.com/github/features";
 
@@ -159,7 +156,7 @@ pub async fn handler(
                 features = ?body,
                 error = ?err
             );
-            ServiceError::InternalServerError(err)
+            ServiceError::InternalServerError(err.into())
         })?;
 
     info!(message = "Received tag features", tag = tag);

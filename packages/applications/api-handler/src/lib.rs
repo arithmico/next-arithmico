@@ -7,7 +7,6 @@ use tower_http::trace::TraceLayer;
 use crate::state::ServiceState;
 
 pub mod config;
-mod database;
 mod error;
 mod report_features;
 pub mod state;

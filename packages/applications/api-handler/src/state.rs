@@ -1,6 +1,5 @@
 use crate::{
     config::Config,
-    database::Database,
     state::{
         github_oidc::GithubOidcClient,
         installation_token_provider::GithubInstallationTokenProvider,
@@ -8,6 +7,7 @@ use crate::{
     },
 };
 use anyhow::anyhow;
+use database::Database;
 use jsonwebtoken::EncodingKey;
 use tracing::instrument;
 

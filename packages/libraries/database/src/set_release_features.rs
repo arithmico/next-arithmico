@@ -5,10 +5,10 @@ use derive_builder::Builder;
 use semver::Version;
 use tracing::instrument;
 
-use crate::database::DatabaseQuery;
+use crate::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
-#[builder(build_fn(error = "crate::error::ServiceError"))]
+#[builder(build_fn(error = "crate::error::Error"))]
 pub struct SetReleaseFeatures {
     organization_id: u64,
     repository_id: u64,
@@ -23,7 +23,7 @@ impl DatabaseQuery for SetReleaseFeatures {
     async fn execute(
         self,
         database: &super::Database,
-    ) -> anyhow::Result<Self::Output> {
+    ) -> Result<Self::Output, crate::error::Error> {
         let features = AttributeValue::M(
             self.features
                 .into_iter()

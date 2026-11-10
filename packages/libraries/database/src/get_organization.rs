@@ -1,11 +1,10 @@
-use anyhow::anyhow;
 use aws_sdk_dynamodb::types::AttributeValue;
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use serde_dynamo::from_item;
 use tracing::instrument;
 
-use crate::database::DatabaseQuery;
+use crate::DatabaseQuery;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Organization {
@@ -14,7 +13,7 @@ pub struct Organization {
 }
 
 #[derive(Debug, Clone, Builder)]
-#[builder(build_fn(error = "crate::error::ServiceError"))]
+#[builder(build_fn(error = "crate::error::Error"))]
 pub struct GetOrganizationByInstallationIdQuery {
     installation_id: u64,
 }
@@ -25,7 +24,7 @@ impl DatabaseQuery for GetOrganizationByInstallationIdQuery {
     async fn execute(
         self,
         database: &super::Database,
-    ) -> anyhow::Result<Self::Output> {
+    ) -> Result<Self::Output, crate::error::Error> {
         let response = database
             .client
             .query()
@@ -46,7 +45,7 @@ impl DatabaseQuery for GetOrganizationByInstallationIdQuery {
         let item = response
             .items()
             .first()
-            .ok_or_else(|| anyhow!("organization not found"))?
+            .ok_or(crate::error::Error::NotFound)?
             .clone();
 
         let organization: Organization = from_item(item)?;
@@ -56,7 +55,7 @@ impl DatabaseQuery for GetOrganizationByInstallationIdQuery {
 }
 
 #[derive(Debug, Clone, Builder)]
-#[builder(build_fn(error = "crate::error::ServiceError"))]
+#[builder(build_fn(error = "crate::error::Error"))]
 pub struct GetOrganizationByOrganizationIdQuery {
     organization_id: u64,
 }
@@ -68,7 +67,7 @@ impl DatabaseQuery for GetOrganizationByOrganizationIdQuery {
     async fn execute(
         self,
         database: &super::Database,
-    ) -> anyhow::Result<Self::Output> {
+    ) -> Result<Self::Output, crate::error::Error> {
         let response = database
             .client
             .get_item()
@@ -82,7 +81,7 @@ impl DatabaseQuery for GetOrganizationByOrganizationIdQuery {
             .await?;
 
         let Some(item) = response.item else {
-            return Err(anyhow!("Organization not found"));
+            return Err(crate::error::Error::NotFound);
         };
 
         let organization: Organization = from_item(item)?;

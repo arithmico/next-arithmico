@@ -1,0 +1,17 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+derive_builder = "0.20.2"
+tracing.workspace = true
+serde = { workspace = true, features = ["derive"] }
+thiserror.workspace = true
+aws-sdk-dynamodb = "1.135.0"
+serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
+semver.workspace = true
+aws-config = { version = "1.13.0", features = ["behavior-version-latest"] }
+
+[lints]
+workspace = true

@@ -1,4 +1,9 @@
 use anyhow::anyhow;
+use database::{
+    get_organization::GetOrganizationByInstallationIdQueryBuilder,
+    get_repository::GetRepositoryByOrganizationIdAndRepositoryIdBuilder,
+    put_release::PutReleaseQueryBuilder,
+};
 use octocrab::{
     Octocrab,
     models::{
@@ -13,14 +18,7 @@ use semver::Version;
 use tracing::{info, instrument};
 use workflow_dispatcher_protocol::DispatchWorkflow;
 
-use crate::{
-    database::{
-        get_organization::GetOrganizationByInstallationIdQueryBuilder,
-        get_repository::GetRepositoryByOrganizationIdAndRepositoryIdBuilder,
-        put_release::PutReleaseQueryBuilder,
-    },
-    state::ServiceState,
-};
+use crate::state::ServiceState;
 
 #[instrument(skip_all)]
 pub async fn handle_create_tag(

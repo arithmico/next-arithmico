@@ -116,19 +116,17 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "aws-config",
- "aws-sdk-dynamodb",
  "aws-sdk-secretsmanager",
  "aws-sdk-sqs",
  "axum",
  "clap",
- "derive_builder",
+ "database",
  "jsonwebtoken 11.1.0",
  "lambda_http",
  "octocrab",
  "reqwest",
  "semver",
  "serde",
- "serde_dynamo",
  "serde_json",
  "thiserror 2.0.21",
  "tokio",
@@ -1311,6 +1309,20 @@ dependencies = [
  "darling_core",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "database"
+version = "0.1.0"
+dependencies = [
+ "aws-config",
+ "aws-sdk-dynamodb",
+ "derive_builder",
+ "semver",
+ "serde",
+ "serde_dynamo",
+ "thiserror 2.0.21",
+ "tracing",
 ]
 
 [[package]]
