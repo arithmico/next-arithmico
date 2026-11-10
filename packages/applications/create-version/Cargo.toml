@@ -5,9 +5,9 @@ edition = "2024"
 license = "AGPL-3.0-or-later"
 
 [dependencies]
-anyhow = "1.0.102"
-git2 = "0.21.0"
+anyhow.workspace = true
 semver.workspace = true
+git2 = "0.21.0"
 
 [lints]
 workspace = true

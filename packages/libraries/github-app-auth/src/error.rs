@@ -9,4 +9,5 @@ pub enum Error {
     JsonWebTokenError(#[from] jsonwebtoken::errors::Error),
     HttpError(#[from] reqwest::Error),
     SerdeError(#[from] serde_json::Error),
+    MissingGithubAppSecret,
 }

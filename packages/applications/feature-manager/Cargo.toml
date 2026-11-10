@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.104"
+anyhow.workspace = true
 cargo_metadata = "0.23.1"
 clap = { workspace = true, features = ["derive", "env"] }
 serde.workspace = true

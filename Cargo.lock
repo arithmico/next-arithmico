@@ -116,7 +116,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "aws-config",
- "aws-sdk-secretsmanager",
  "aws-sdk-sqs",
  "axum",
  "clap",
@@ -1814,8 +1813,11 @@ dependencies = [
 name = "github-app-auth"
 version = "0.1.0"
 dependencies = [
+ "aws-config",
+ "aws-sdk-secretsmanager",
  "jsonwebtoken 11.1.0",
  "reqwest",
+ "secrecy",
  "serde",
  "serde_json",
  "thiserror 2.0.21",
@@ -3901,6 +3903,7 @@ version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e891af845473308773346dc847b2c23ee78fe442e0472ac50e22a18a93d3ae5a"
 dependencies = [
+ "serde",
  "zeroize",
 ]
 
@@ -5382,12 +5385,18 @@ dependencies = [
 name = "workflow-dispatcher"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "aws-config",
+ "aws-sdk-sqs",
  "clap",
+ "database",
+ "github-app-auth",
  "lambda_runtime",
  "serde",
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "workflow-dispatcher-protocol",
 ]
 
 [[package]]
