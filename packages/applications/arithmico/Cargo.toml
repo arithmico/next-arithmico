@@ -11,7 +11,7 @@ serde.workspace = true
 leptos_router = { version = "0.8.13" }
 ui = { version = "0.1.0", path = "../../libraries/ui" }
 gloo-storage = "0.4.0"
-serde_json = "1.0.150"
+serde_json.workspace = true
 web-sys = { version = "0.3.72", features = [
     "InputEvent",
     "DataTransfer",
