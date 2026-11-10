@@ -1,10 +1,10 @@
 import { Duration, RemovalPolicy } from "aws-cdk-lib";
 import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
-import { Rule, Schedule } from "aws-cdk-lib/aws-events";
-import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { ILogGroup, LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
+import { Schedule, ScheduleExpression } from "aws-cdk-lib/aws-scheduler";
+import { LambdaInvoke } from "aws-cdk-lib/aws-scheduler-targets";
 import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { IQueue } from "aws-cdk-lib/aws-sqs";
 import { RustFunction } from "cargo-lambda-cdk";
@@ -21,7 +21,7 @@ export interface WorkflowDispatcherProps {
 export class WorkflowDispatcher extends Construct {
     public readonly logGroup: ILogGroup;
     public readonly lambda: RustFunction;
-    public readonly schedule: Rule;
+    public readonly schedule: Schedule;
 
     constructor(scope: Construct, id: string, props: WorkflowDispatcherProps) {
         super(scope, id);
@@ -72,12 +72,11 @@ export class WorkflowDispatcher extends Construct {
                 treatMissingData: TreatMissingData.NOT_BREACHING,
             });
 
-        this.schedule = new Rule(this, "ScheduleRule", {
-            schedule: Schedule.rate(Duration.minutes(5)),
+        this.schedule = new Schedule(this, "FixedRateSchedule", {
+            schedule: ScheduleExpression.rate(Duration.minutes(5)),
+            target: new LambdaInvoke(this.lambda),
             description: "Trigger the workflow dispatcher at a fixed rate",
         });
-
-        this.schedule.addTarget(new LambdaFunction(this.lambda));
 
         props.githubAppSecret.grantRead(this.lambda);
         props.databaseTable.grantReadWriteData(this.lambda);
