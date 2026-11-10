@@ -1,5 +1,8 @@
-import { RemovalPolicy } from "aws-cdk-lib";
+import { Duration, RemovalPolicy } from "aws-cdk-lib";
+import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
+import { Rule, Schedule } from "aws-cdk-lib/aws-events";
+import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { ILogGroup, LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
@@ -18,6 +21,7 @@ export interface WorkflowDispatcherProps {
 export class WorkflowDispatcher extends Construct {
     public readonly logGroup: ILogGroup;
     public readonly lambda: RustFunction;
+    public readonly schedule: Rule;
 
     constructor(scope: Construct, id: string, props: WorkflowDispatcherProps) {
         super(scope, id);
@@ -39,9 +43,41 @@ export class WorkflowDispatcher extends Construct {
             runtime: "provided.al2023",
             logGroup: this.logGroup,
             reservedConcurrentExecutions: 1,
+            timeout: Duration.seconds(10),
         });
 
-        // TODO: scheduled execution with event bridge
+        this.lambda
+            .metricThrottles()
+            .createAlarm(this, "ThrottleAlarm", {
+                threshold: 1,
+                evaluationPeriods: 1
+            });
+
+        this.lambda
+            .metricErrors()
+            .createAlarm(this, "ErrorsAlarm", {
+                threshold: 1,
+                evaluationPeriods: 1
+            });
+
+        this.lambda
+            .metricDuration({
+                statistic: "p99",
+            })
+            .createAlarm(this, "DurationP99Alarm", {
+                threshold: 5000,
+                evaluationPeriods: 3,
+                datapointsToAlarm: 2,
+                comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+                treatMissingData: TreatMissingData.NOT_BREACHING,
+            });
+
+        this.schedule = new Rule(this, "ScheduleRule", {
+            schedule: Schedule.rate(Duration.minutes(5)),
+            description: "Trigger the workflow dispatcher at a fixed rate",
+        });
+
+        this.schedule.addTarget(new LambdaFunction(this.lambda));
 
         props.githubAppSecret.grantRead(this.lambda);
         props.databaseTable.grantReadWriteData(this.lambda);
