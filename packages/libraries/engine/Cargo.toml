@@ -103,6 +103,7 @@ default = [
     "api_endpoint_analysis_table",
     "api_endpoint_analysis_sum",
     "api_endpoint_analysis_product",
+    "api_endpoint_algebra_lsolve",
     "api_endpoint_algebra_length",
     "api_endpoint_algebra_rank",
     "api_endpoint_algebra_dims",
@@ -497,6 +498,11 @@ api_endpoint_analysis_product = [
 ]
 
 # algebra
+api_endpoint_algebra_lsolve = [
+    "evaluator/datatype_number",
+    "evaluator/datatype_symbol",
+    "evaluator/datatype_tensor",
+]
 api_endpoint_algebra_length = [
     "evaluator/datatype_number",
     "evaluator/datatype_symbol",

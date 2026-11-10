@@ -7,6 +7,8 @@ use crate::api::algebra::cross::CrossEndpoint;
 use crate::api::algebra::dims::DimsEndpoint;
 #[cfg(feature = "api_endpoint_algebra_length")]
 use crate::api::algebra::length::LengthEndpoint;
+#[cfg(feature = "api_endpoint_algebra_lsolve")]
+use crate::api::algebra::lsolve::LSolveEndpoint;
 #[cfg(feature = "api_endpoint_algebra_matrix_det")]
 use crate::api::algebra::matrix_det::MatrixDetEndpoint;
 #[cfg(feature = "api_endpoint_algebra_matrix_id")]
@@ -23,6 +25,7 @@ use crate::api::algebra::rank::RankEndpoint;
 mod cross;
 mod dims;
 mod length;
+mod lsolve;
 mod matrix_det;
 mod matrix_id;
 mod matrix_inverse;
@@ -35,6 +38,9 @@ pub fn load_algebra_module() -> ApiModule {
         .id("algebra")
         .name(Language::English, "Algebra")
         .name(Language::German, "Algebra");
+
+    #[cfg(feature = "api_endpoint_algebra_lsolve")]
+    let module = module.function::<LSolveEndpoint>();
 
     #[cfg(feature = "api_endpoint_algebra_length")]
     let module = module.function::<LengthEndpoint>();

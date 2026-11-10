@@ -1,5 +1,5 @@
 use clap::Parser;
-use lambda_runtime::{Error, run, service_fn};
+use lambda_runtime::{run, service_fn, Error};
 mod handler;
 use handler::handler;
 

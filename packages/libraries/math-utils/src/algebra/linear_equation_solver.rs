@@ -1,5 +1,8 @@
 use nalgebra::{DMatrix, DMatrixView, DVectorView, Dyn, U1};
 use thiserror::Error;
+use translate_core::{Translatable, TranslatedMessage};
+
+use crate::translation_provider::translation_resolver;
 
 #[derive(Debug, Clone, Error, PartialEq)]
 pub enum EquationSolveError {
@@ -11,6 +14,29 @@ pub enum EquationSolveError {
     InfiniteSolutions,
     #[error("linear equation system has no solution")]
     NoSolution,
+}
+
+impl Translatable for EquationSolveError {
+    fn translate(
+        &self,
+        language: translate_core::Language,
+    ) -> Result<String, translate_core::TranslationError> {
+        match self {
+            EquationSolveError::ShapeError => TranslatedMessage::new(
+                "linear_equation_solver.error.shape_error",
+                translation_resolver,
+            ),
+            EquationSolveError::InfiniteSolutions => TranslatedMessage::new(
+                "linear_equation_solver.error.infinite_solutions",
+                translation_resolver,
+            ),
+            EquationSolveError::NoSolution => TranslatedMessage::new(
+                "linear_equation_solver.error.no_solutions",
+                translation_resolver,
+            ),
+        }
+        .translate(language)
+    }
 }
 
 pub fn solve_linear_equation(
