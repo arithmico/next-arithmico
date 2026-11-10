@@ -137,3 +137,7 @@ German = "Nicht positiv"
 [engine.evaluate.error.not_positive]
 English = "Value must be positive."
 German = "Wert muss positiv sein."
+
+[engine.evaluate.error.non_linear_expression]
+English = "Expression is non linear."
+German = "Ausdruck ist nicht linear."

@@ -48,3 +48,16 @@ German = "Die Nullstelle im Intervall von {a} bis {b} konnte nicht eingeschlosse
 [matrix.non_invertible]
 English = "Matrix is not invertible."
 German = "Die Matrix is nicht invertierbar."
+
+# linear equation solver
+[linear_equation_solver.error.shape_error]
+English = "The number of equations does not match the number of variables."
+German = "Die Anzahl der Gleichungen stimmt nicht mit der Anzahl der Variablen überein."
+
+[linear_equation_solver.error.infinite_solutions]
+English = "The linear equation system has infinitely many solutions."
+German = "Das lineare Gleichungssystem hat unendlich viele Lösungen."
+
+[linear_equation_solver.error.no_solutions]
+English = "The linear equation system has no solution."
+German = "Das lineare Gleichungssystem hat keine Lösung."

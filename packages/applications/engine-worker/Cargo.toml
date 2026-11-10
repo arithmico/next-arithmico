@@ -129,6 +129,7 @@ default = [
     "api_endpoint_analysis_table",
     "api_endpoint_analysis_sum",
     "api_endpoint_analysis_product",
+    "api_endpoint_algebra_lsolve",
     "api_endpoint_algebra_length",
     "api_endpoint_algebra_rank",
     "api_endpoint_algebra_dims",
@@ -291,6 +292,7 @@ api_endpoint_analysis_sum = ["engine/api_endpoint_analysis_sum"]
 api_endpoint_analysis_product = ["engine/api_endpoint_analysis_product"]
 
 # algebra
+api_endpoint_algebra_lsolve = ["engine/api_endpoint_algebra_lsolve"]
 api_endpoint_algebra_length = ["engine/api_endpoint_algebra_length"]
 api_endpoint_algebra_rank = ["engine/api_endpoint_algebra_rank"]
 api_endpoint_algebra_dims = ["engine/api_endpoint_algebra_dims"]
