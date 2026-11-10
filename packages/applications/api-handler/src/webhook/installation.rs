@@ -1,4 +1,8 @@
 use anyhow::anyhow;
+use database::{
+    put_organization::PutOrganizationQueryBuilder,
+    put_repository::PutRepositoryQueryBuilder,
+};
 use octocrab::models::webhook_events::{
     EventInstallation,
     payload::{
@@ -7,13 +11,7 @@ use octocrab::models::webhook_events::{
 };
 use tracing::{info, instrument, warn};
 
-use crate::{
-    database::{
-        put_organization::PutOrganizationQueryBuilder,
-        put_repository::PutRepositoryQueryBuilder,
-    },
-    state::ServiceState,
-};
+use crate::state::ServiceState;
 
 #[instrument(skip_all)]
 pub async fn handle_installation(

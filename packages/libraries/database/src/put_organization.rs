@@ -1,22 +1,22 @@
 use aws_sdk_dynamodb::types::AttributeValue;
 use derive_builder::Builder;
 
-use crate::database::DatabaseQuery;
+use crate::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
-#[builder(build_fn(error = "crate::error::ServiceError"))]
-pub struct PutRepositoryQuery {
-    repository_id: u64,
+#[builder(build_fn(error = "crate::error::Error"))]
+pub struct PutOrganizationQuery {
     organization_id: u64,
+    installation_id: u64,
 }
 
-impl DatabaseQuery for PutRepositoryQuery {
+impl DatabaseQuery for PutOrganizationQuery {
     type Output = ();
 
     async fn execute(
         self,
         database: &super::Database,
-    ) -> anyhow::Result<Self::Output> {
+    ) -> Result<Self::Output, crate::error::Error> {
         database
             .client
             .put_item()
@@ -25,27 +25,27 @@ impl DatabaseQuery for PutRepositoryQuery {
                 "PK",
                 AttributeValue::S(format!("ORG#{}", self.organization_id)),
             )
-            .item(
-                "SK",
-                AttributeValue::S(format!("REPO#{}", self.repository_id)),
-            )
+            .item("SK", AttributeValue::S("METADATA".to_string()))
             .item(
                 "GSI1PK",
-                AttributeValue::S(format!("REPO#{}", self.repository_id)),
+                AttributeValue::S(format!(
+                    "INSTALLATION#{}",
+                    self.installation_id
+                )),
             )
             .item(
                 "GSI1SK",
                 AttributeValue::S(format!("ORG#{}", self.organization_id)),
             )
             .item(
-                "repository_id",
-                AttributeValue::N(self.repository_id.to_string()),
+                "installation_id",
+                AttributeValue::N(self.installation_id.to_string()),
             )
             .item(
                 "organization_id",
                 AttributeValue::N(self.organization_id.to_string()),
             )
-            .item("type", AttributeValue::S(String::from("repository")))
+            .item("type", AttributeValue::S(String::from("organization")))
             .send()
             .await?;
         Ok(())

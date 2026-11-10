@@ -2,10 +2,10 @@ use aws_sdk_dynamodb::types::AttributeValue;
 use derive_builder::Builder;
 use semver::Version;
 
-use crate::database::DatabaseQuery;
+use crate::DatabaseQuery;
 
 #[derive(Debug, Clone, Builder)]
-#[builder(build_fn(error = "crate::error::ServiceError"))]
+#[builder(build_fn(error = "crate::error::Error"))]
 pub struct PutReleaseQuery {
     organization_id: u64,
     repository_id: u64,
@@ -18,7 +18,7 @@ impl DatabaseQuery for PutReleaseQuery {
     async fn execute(
         self,
         database: &super::Database,
-    ) -> anyhow::Result<Self::Output> {
+    ) -> Result<Self::Output, crate::error::Error> {
         database
             .client
             .put_item()

@@ -24,8 +24,8 @@ impl IntoResponse for ServiceError {
     }
 }
 
-impl From<derive_builder::UninitializedFieldError> for ServiceError {
-    fn from(value: derive_builder::UninitializedFieldError) -> Self {
+impl From<database::error::Error> for ServiceError {
+    fn from(value: database::error::Error) -> Self {
         Self::InternalServerError(value.into())
     }
 }

@@ -1,6 +1,7 @@
 use aws_config::SdkConfig;
 use tracing::instrument;
 
+pub mod error;
 pub mod get_organization;
 pub mod get_repository;
 pub mod put_organization;
@@ -18,8 +19,10 @@ pub struct Database {
 pub trait DatabaseQuery {
     type Output;
 
-    async fn execute(self, database: &Database)
-    -> anyhow::Result<Self::Output>;
+    async fn execute(
+        self,
+        database: &Database,
+    ) -> Result<Self::Output, crate::error::Error>;
 }
 
 impl Database {
@@ -35,7 +38,7 @@ impl Database {
     pub async fn execute<Q: DatabaseQuery>(
         &self,
         query: Q,
-    ) -> anyhow::Result<Q::Output> {
+    ) -> Result<Q::Output, crate::error::Error> {
         query.execute(self).await
     }
 }
