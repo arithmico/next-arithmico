@@ -1,18 +1,16 @@
 use crate::{
     config::Config,
     state::{
-        github_oidc::GithubOidcClient,
-        installation_token_provider::GithubInstallationTokenProvider,
-        workflow_publisher::WorkflowPublisher,
+        github_oidc::GithubOidcClient, workflow_publisher::WorkflowPublisher,
     },
 };
 use anyhow::anyhow;
 use database::Database;
+use github_app_auth::GithubInstallationTokenProvider;
 use jsonwebtoken::EncodingKey;
 use tracing::instrument;
 
 mod github_oidc;
-mod installation_token_provider;
 mod workflow_publisher;
 
 #[derive(Debug, Clone)]

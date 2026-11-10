@@ -19,7 +19,7 @@ struct CachedToken {
     token: String,
 }
 
-fn timestamp_to_instant(timestamp: u64) -> anyhow::Result<Instant> {
+fn timestamp_to_instant(timestamp: u64) -> Result<Instant, crate::Error> {
     let now = Instant::now();
     let now_delta = SystemTime::now().duration_since(UNIX_EPOCH)?;
     let delta = Duration::from_secs(timestamp).saturating_sub(now_delta);
@@ -34,7 +34,7 @@ impl CachedToken {
         }
     }
 
-    pub fn try_from_jwt(token: &str) -> anyhow::Result<Self> {
+    pub fn try_from_jwt(token: &str) -> Result<Self, crate::Error> {
         #[derive(Debug, Deserialize)]
         struct CachedTokenClaims {
             exp: u64,
@@ -62,7 +62,7 @@ pub struct GithubInstallationTokenProvider {
 async fn generate_access_token(
     encoding_key: &EncodingKey,
     client_id: &str,
-) -> anyhow::Result<CachedToken> {
+) -> Result<CachedToken, crate::Error> {
     #[derive(Debug, Serialize)]
     struct AccessTokenClaims {
         iss: String,
@@ -90,7 +90,7 @@ impl GithubInstallationTokenProvider {
     pub async fn connect(
         encoding_key: EncodingKey,
         client_id: &str,
-    ) -> anyhow::Result<Self> {
+    ) -> Result<Self, crate::Error> {
         let access_token =
             generate_access_token(&encoding_key, client_id).await?;
 
@@ -103,7 +103,7 @@ impl GithubInstallationTokenProvider {
         })
     }
 
-    async fn get_access_token(&self) -> anyhow::Result<String> {
+    async fn get_access_token(&self) -> Result<String, crate::Error> {
         let token = self.access_token.read().await;
         if Instant::now() < token.expires_at {
             return Ok(token.token.clone());
@@ -120,7 +120,7 @@ impl GithubInstallationTokenProvider {
     async fn fetch_installation_access_token(
         &self,
         installation_id: u64,
-    ) -> anyhow::Result<CachedToken> {
+    ) -> Result<CachedToken, crate::Error> {
         #[derive(Debug, Deserialize)]
         struct Response {
             token: String,
@@ -156,7 +156,7 @@ impl GithubInstallationTokenProvider {
     pub async fn get_installtion_access_token(
         &self,
         installation_id: u64,
-    ) -> anyhow::Result<String> {
+    ) -> Result<String, crate::Error> {
         if let Some(token) = self
             .installation_access_tokens
             .read()
