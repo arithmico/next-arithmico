@@ -9,13 +9,15 @@ pub mod put_repository;
 pub mod set_release_features;
 
 #[derive(Debug, Clone)]
-pub(crate) struct Database {
+pub struct Database {
     client: aws_sdk_dynamodb::Client,
     table_name: String,
 }
 
-pub(crate) trait DatabaseQuery {
+#[allow(async_fn_in_trait)]
+pub trait DatabaseQuery {
     type Output;
+
     async fn execute(self, database: &Database)
     -> anyhow::Result<Self::Output>;
 }

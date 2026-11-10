@@ -4,6 +4,7 @@ use crate::{
     state::{
         github_oidc::GithubOidcClient,
         installation_token_provider::GithubInstallationTokenProvider,
+        workflow_publisher::WorkflowPublisher,
     },
 };
 use anyhow::anyhow;
@@ -12,15 +13,16 @@ use tracing::instrument;
 
 mod github_oidc;
 mod installation_token_provider;
+mod workflow_publisher;
 
 #[derive(Debug, Clone)]
 pub struct ServiceState {
-    pub(crate) github_webhook_secret: String,
+    pub github_webhook_secret: String,
     #[allow(dead_code)]
-    pub(crate) github_installation_token_provider:
-        GithubInstallationTokenProvider,
-    pub(crate) database: Database,
-    pub(crate) github_oidc_client: GithubOidcClient,
+    pub github_installation_token_provider: GithubInstallationTokenProvider,
+    pub database: Database,
+    pub github_oidc_client: GithubOidcClient,
+    pub workflow_publisher: WorkflowPublisher,
 }
 
 impl ServiceState {
@@ -80,11 +82,15 @@ impl ServiceState {
             )
             .await?;
 
+        let workflow_publisher =
+            WorkflowPublisher::new(&config.workflow_queue_url, &sdk_config);
+
         Ok(Self {
             github_webhook_secret,
             database,
             github_oidc_client,
             github_installation_token_provider,
+            workflow_publisher,
         })
     }
 }

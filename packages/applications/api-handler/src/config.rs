@@ -10,4 +10,7 @@ pub struct Config {
 
     #[arg(long, env)]
     pub github_app_secret_arn: String,
+
+    #[arg(long, env)]
+    pub workflow_queue_url: String,
 }
