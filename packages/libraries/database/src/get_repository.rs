@@ -64,3 +64,42 @@ impl DatabaseQuery for GetRepositoryByOrganizationIdAndRepositoryId {
         Ok(repository)
     }
 }
+
+#[derive(Debug, Clone, Builder)]
+#[builder(build_fn(error = "crate::error::Error"))]
+pub struct GetRepositoryByRepositoryId {
+    repository_id: u64,
+}
+
+impl DatabaseQuery for GetRepositoryByRepositoryId {
+    type Output = Repository;
+
+    async fn execute(
+        self,
+        database: &crate::Database,
+    ) -> Result<Self::Output, crate::error::Error> {
+        let response = database
+            .client
+            .query()
+            .table_name(&database.table_name)
+            .index_name("GSI1")
+            .key_condition_expression("GSI1PK = :gsi1pk")
+            .expression_attribute_values(
+                ":gsi1pk",
+                AttributeValue::S(format!("REPO#{}", self.repository_id)),
+            )
+            .limit(1)
+            .send()
+            .await?;
+
+        let item = response
+            .items()
+            .first()
+            .ok_or(crate::error::Error::NotFound)?
+            .clone();
+
+        let repository: Repository = from_item(item)?;
+
+        Ok(repository)
+    }
+}
