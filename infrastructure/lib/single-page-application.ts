@@ -4,7 +4,7 @@ import { Distribution, OriginAccessIdentity } from 'aws-cdk-lib/aws-cloudfront';
 import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
+import { AaaaRecord, ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
@@ -36,6 +36,7 @@ export class SinglePageApplication extends Construct {
         const distribution = new Distribution(this, "Distribution", {
             certificate,
             domainNames: [domainName],
+            enableIpv6: true,
             defaultBehavior: {
                 origin: S3BucketOrigin.withOriginAccessIdentity(bucket, {
                     originAccessIdentity,
@@ -91,12 +92,20 @@ export class SinglePageApplication extends Construct {
             key: "DistributionId"
         });
 
-        new ARecord(this, "AliasRecord", {
+        const target = RecordTarget.fromAlias(
+            new CloudFrontTarget(distribution)
+        );
+
+        new ARecord(this, "ARecord", {
             zone,
             recordName: domainName,
-            target: RecordTarget.fromAlias(
-                new CloudFrontTarget(distribution)
-            )
+            target
+        });
+
+        new AaaaRecord(this, "AaaaRecord", {
+            zone,
+            recordName: domainName,
+            target
         });
     }
 }
