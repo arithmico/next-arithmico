@@ -1,4 +1,4 @@
-import { CorsHttpMethod, DomainName, HttpApi, HttpMethod } from "aws-cdk-lib/aws-apigatewayv2";
+import { CorsHttpMethod, DomainName, HttpApi, HttpMethod, IpAddressType } from "aws-cdk-lib/aws-apigatewayv2";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import { IFunction } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
@@ -26,8 +26,10 @@ export class ApiGateway extends HttpApi {
                     "X-Hub-Signature-256"
                 ]
             },
+            ipAddressType: IpAddressType.DUAL_STACK,
+            disableExecuteApiEndpoint: true,
             defaultDomainMapping: {
-                domainName: props.domainName
+                domainName: props.domainName,
             }
         });
         this.addRoutes({
