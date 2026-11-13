@@ -3,11 +3,8 @@ import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { Database } from "./database";
 import { ApiHandler } from "./api-handler";
-import { Certificate, CertificateValidation, ICertificate } from "aws-cdk-lib/aws-certificatemanager";
-import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import { HostedZone } from "aws-cdk-lib/aws-route53";
 import { ApiGateway } from "./api-gateway";
-import { DomainName } from "aws-cdk-lib/aws-apigatewayv2";
-import { ApiGatewayv2DomainProperties } from "aws-cdk-lib/aws-route53-targets";
 import { GithubAppIdSecret } from "./github-app-secret";
 import { WorkflowQueue } from "./workflow-queue";
 import { WorkflowDispatcher } from "./workflow-dispatcher";
@@ -22,10 +19,7 @@ export class ConfigServiceStack extends Stack {
     private readonly workflowQueue: WorkflowQueue;
     private readonly apiHandler: ApiHandler;
     private readonly workflowDispatcher: WorkflowDispatcher;
-    private readonly certificate: ICertificate;
-    private readonly customDomain: DomainName;
     private readonly apiGateway: ApiGateway;
-    private readonly record: ARecord;
 
     constructor(scope: Construct, id: string, { environment, ...props }: ConfigServiceStackProps) {
         super(scope, id, props);
@@ -57,29 +51,11 @@ export class ConfigServiceStack extends Stack {
             workflowQueue: this.workflowQueue.queue,
         });
 
-        this.certificate = new Certificate(this, "Certificate", {
-            domainName,
-            validation: CertificateValidation.fromDns(zone),
-        });
-
-        this.customDomain = new DomainName(this, "DomainName", {
-            domainName,
-            certificate: this.certificate,
-        });
-
         this.apiGateway = new ApiGateway(this, "ApiGateway", {
-            domainName: this.customDomain,
+            zone,
+            domainName,
             environment,
             lambda: this.apiHandler.lambda
-        });
-
-        this.record = new ARecord(this, "DnsRecord", {
-            zone,
-            recordName: domainName,
-            target: RecordTarget.fromAlias(new ApiGatewayv2DomainProperties(
-                this.customDomain.regionalDomainName,
-                this.customDomain.regionalHostedZoneId
-            ))
         });
     }
 }
