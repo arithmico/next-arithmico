@@ -17,6 +17,22 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
       - uses: cargo-bins/cargo-binstall@main
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            pkg-config \
+            libdbus-1-dev \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
       - run: cargo test --all-features
         shell: bash
 
@@ -185,6 +201,22 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: clippy
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            pkg-config \
+            libdbus-1-dev \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
