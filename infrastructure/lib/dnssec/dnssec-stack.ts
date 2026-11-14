@@ -6,7 +6,7 @@ export class DnssecStack extends Stack {
     private readonly arithmicoComKsk: Key;
 
     constructor(scope: Construct, id: string, props: StackProps) {
-        super(scope, id);
+        super(scope, id, props);
 
         this.arithmicoComKsk = new Key(this, "ArithmicoComKSK", {
             alias: "arithmico-com-dnssec-key",
