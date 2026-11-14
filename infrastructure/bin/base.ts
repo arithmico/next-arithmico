@@ -2,6 +2,7 @@
 import { App } from "aws-cdk-lib";
 import { ArtifactsStack } from "../lib/artifacts-stack";
 import { getStringParameterOrThrow } from "../lib/utils";
+import { DnsStack } from "../lib/dns/dns-stack";
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
@@ -13,6 +14,10 @@ const env = {
 
 const app = new App();
 
-new ArtifactsStack(app, 'artifacts', {
+new ArtifactsStack(app, "artifacts", {
+    env
+});
+
+new DnsStack(app, "dns", {
     env
 });
