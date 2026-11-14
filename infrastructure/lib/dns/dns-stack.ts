@@ -7,7 +7,7 @@ export class DnsStack extends Stack {
     private readonly zone: PublicHostedZone;
 
     constructor(scope: Construct, id: string, props: StackProps) {
-        super(scope, id);
+        super(scope, id, props);
 
         const keyArn = Fn.getStackOutput("dnssec", "ArithmicoComKSKArn", "us-east-1");
 
