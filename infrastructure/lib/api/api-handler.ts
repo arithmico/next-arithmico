@@ -96,7 +96,10 @@ export class ApiHandler extends Construct {
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
             ],
-            resources: [props.databaseTable.tableArn]
+            resources: [
+                props.databaseTable.tableArn,
+                `${props.databaseTable.tableArn}/index/*`,
+            ]
         }));
         this.lambda.addToRolePolicy(new PolicyStatement({
             sid: "AllowSendingMessagesToTheSqsQueue",
