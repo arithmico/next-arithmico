@@ -23,11 +23,13 @@ const dnssecStack = new DnssecStack(app, "dnssec", {
     env: {
         account: env.account,
         region: "us-east-1"
-    }
+    },
+    terminationProtection: true,
 });
 
 const dnsStack = new DnsStack(app, "dns", {
-    env
+    env,
+    terminationProtection: true,
 });
 dnsStack.addStackDependency(dnssecStack);
 
