@@ -1,6 +1,7 @@
 import { Duration, RemovalPolicy } from "aws-cdk-lib";
 import { ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Architecture } from "aws-cdk-lib/aws-lambda";
 import { ILogGroup, LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Schedule, ScheduleExpression } from "aws-cdk-lib/aws-scheduler";
@@ -78,8 +79,40 @@ export class WorkflowDispatcher extends Construct {
             description: "Trigger the workflow dispatcher at a fixed rate",
         });
 
-        props.githubAppSecret.grantRead(this.lambda);
-        props.databaseTable.grantReadWriteData(this.lambda);
-        props.workflowQueue.grantConsumeMessages(this.lambda);
+        this.lambda.addToRolePolicy(new PolicyStatement({
+            sid: "AllowAccessToGithubAppSecret",
+            actions: [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+            ],
+            resources: [props.githubAppSecret.secretArn]
+        }));
+        this.lambda.addToRolePolicy(new PolicyStatement({
+            sid: "AllowDynamodbAccess",
+            actions: [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+            ],
+            resources: [props.databaseTable.tableArn]
+        }));
+        this.lambda.addToRolePolicy(new PolicyStatement({
+            sid: "AllowReceivingMessagesFromTheSqsQueue",
+            actions: [
+                "sqs:ChangeMessageVisibility",
+                "sqs:DeleteMessage",
+                "sqs:ReceiveMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl"
+            ],
+            resources: [props.workflowQueue.queueArn],
+        }));
     }
 }
