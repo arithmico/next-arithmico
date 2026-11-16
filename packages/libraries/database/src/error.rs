@@ -3,11 +3,14 @@ use derive_builder::UninitializedFieldError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-#[error("DatabaseError")]
 pub enum Error {
+    #[error("QueryBuilderError: {0:#?}")]
     QueryBuilderError(Box<UninitializedFieldError>),
+    #[error("DynamoDbError: {0}")]
     DynamoDbError(String),
+    #[error("SerdeError: {0:#?}")]
     Serde(#[from] serde_dynamo::Error),
+    #[error("NotFoundError")]
     NotFound,
 }
 

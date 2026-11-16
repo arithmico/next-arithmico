@@ -12,7 +12,7 @@ use octocrab::models::{
     },
 };
 use semver::Version;
-use tracing::{info, instrument};
+use tracing::{error, info, instrument};
 use workflow_dispatcher_protocol::DispatchWorkflow;
 
 use crate::state::ServiceState;
@@ -36,7 +36,13 @@ pub async fn handle_create_tag(
                 .installation_id(installation_id)
                 .build()?,
         )
-        .await?;
+        .await
+        .inspect_err(|err| {
+            error!(
+                message = "Failed to lookup organization",
+                error = ?err,
+            );
+        })?;
 
     let repository_id = repository.id.0;
     let repository = state
@@ -47,7 +53,13 @@ pub async fn handle_create_tag(
                 .repository_id(repository_id)
                 .build()?,
         )
-        .await?;
+        .await
+        .inspect_err(|err| {
+            error!(
+                message = "Failed to lookup repository",
+                error = ?err,
+            );
+        })?;
 
     let tag = payload.r#ref.clone();
     let version = tag.strip_prefix("v").unwrap_or(&tag);
@@ -62,7 +74,13 @@ pub async fn handle_create_tag(
                 .version(version.clone())
                 .build()?,
         )
-        .await?;
+        .await
+        .inspect_err(|err| {
+            error!(
+                message = "Failed to put release information.",
+                error = ?err,
+            );
+        })?;
 
     info!(
         message = "Created release",
