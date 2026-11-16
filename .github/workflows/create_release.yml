@@ -66,8 +66,8 @@ jobs:
             --all \
             --require-approval never
 
-  deploy-config-service:
-    name: Deploy Config Service
+  deploy-api:
+    name: Deploy API
     runs-on: ubuntu-24.04
     needs:
       - deploy-base-infrastructure
@@ -99,10 +99,10 @@ jobs:
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
-          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
+          CDK_DEPLOY_ENVIRONMENT: production
         run: |
           npm run cdk -- deploy \
-            --app "npx ts-node --prefer-ts-exts bin/config-service.ts" \
+            --app "npx ts-node --prefer-ts-exts bin/api.ts" \
             --all \
             --require-approval never
 
@@ -153,7 +153,7 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ vars.AWS_REGION }}
           CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
-          CDK_DEPLOY_ENVIRONMENT: ${{ github.ref_name }}
+          CDK_DEPLOY_ENVIRONMENT: production
         run: |
           npm run cdk -- deploy \
             --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
