@@ -1,29 +1,25 @@
 import { Stack, StackProps } from "aws-cdk-lib";
-import { ISecret } from "aws-cdk-lib/aws-secretsmanager";
 import { Construct } from "constructs";
 import { Database } from "./database";
 import { ApiHandler } from "./api-handler";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
 import { ApiGateway } from "./api-gateway";
-import { GithubAppIdSecret } from "./github-app-secret";
+import { GithubAppSecret } from "./github-app-secret";
 import { WorkflowQueue } from "./workflow-queue";
 import { WorkflowDispatcher } from "./workflow-dispatcher";
 
-export interface ConfigServiceStackProps extends StackProps {
+export interface ApiComputeStackProps extends StackProps {
     environment: string;
 }
 
-export class ConfigServiceStack extends Stack {
-    private readonly githubAppSecret: ISecret;
-    private readonly database: Database;
-    private readonly workflowQueue: WorkflowQueue;
+export class ApiComputeStack extends Stack {
     private readonly apiHandler: ApiHandler;
     private readonly workflowDispatcher: WorkflowDispatcher;
     private readonly apiGateway: ApiGateway;
 
-    constructor(scope: Construct, id: string, { environment, ...props }: ConfigServiceStackProps) {
+    constructor(scope: Construct, id: string, { environment, ...props }: ApiComputeStackProps) {
         super(scope, id, props);
-        const domainName = environment === "main"
+        const domainName = environment === "production"
             ? "v2.api.arithmico.com"
             : `${environment}.v2.api.arithmico.com`;
 
@@ -31,24 +27,22 @@ export class ConfigServiceStack extends Stack {
             domainName: "arithmico.com"
         });
 
-        this.githubAppSecret = new GithubAppIdSecret(this, "GithubAppSecret", { environment });
-
-        this.database = new Database(this, "Database", { environment });
-
-        this.workflowQueue = new WorkflowQueue(this, "WorkflowQueue", { environment });
+        const workflowQueue = WorkflowQueue.lookup(this, "WorkflowQueue", environment);
+        const databaseTable = Database.lookup(this, "Database", environment);
+        const githubAppSecret = GithubAppSecret.lookup(this, "GithubAppSecret", environment);
 
         this.apiHandler = new ApiHandler(this, "ApiHandler", {
             environment,
-            githubAppSecret: this.githubAppSecret,
-            databaseTable: this.database,
-            workflowQueue: this.workflowQueue.queue,
+            githubAppSecret,
+            databaseTable,
+            workflowQueue,
         });
 
         this.workflowDispatcher = new WorkflowDispatcher(this, "WorkflowDispatcher", {
             environment,
-            githubAppSecret: this.githubAppSecret,
-            databaseTable: this.database,
-            workflowQueue: this.workflowQueue.queue,
+            githubAppSecret,
+            databaseTable,
+            workflowQueue,
         });
 
         this.apiGateway = new ApiGateway(this, "ApiGateway", {
