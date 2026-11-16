@@ -1,7 +1,8 @@
 import { Fn, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { SinglePageApplication } from "./single-page-application";
+import { SinglePageApplication } from "../single-page-application";
 import { Certificate } from "aws-cdk-lib/aws-certificatemanager";
+import { getCalculatorHostname } from "./calculator-hostname";
 
 export type ApplicationsStackProps = StackProps & {
     artifact: string,
@@ -12,9 +13,7 @@ export class CalculatorStack extends Stack {
     constructor(scope: Construct, id: string, { artifact, environment, ...props }: ApplicationsStackProps) {
         super(scope, id, props);
 
-        const domainName = environment === "main"
-            ? "next.arithmico.com"
-            : `${environment}.calculator.arithmico.com`;
+        const domainName = getCalculatorHostname(environment);
 
         const originAccessIdentityId = Fn.getStackOutput(
             "artifacts",

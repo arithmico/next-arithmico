@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { getStringParameterOrThrow } from '../lib/utils';
-import { CalculatorStack } from '../lib/calculator';
+import { CalculatorStack } from '../lib/calculator/calculator';
 import { App } from 'aws-cdk-lib';
-import { CalculatorCertificateStack } from '../lib/calculator-certificate';
+import { CalculatorCertificateStack } from '../lib/calculator/calculator-certificate';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
