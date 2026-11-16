@@ -17,11 +17,13 @@ const env = {
 
 const apiDataStack = new ApiDataStack(app, `api-data-${environment}`, {
     env,
-    environment
+    environment,
+    terminationProtection: environment === "production",
 });
 
 const apiComputeStack = new ApiComputeStack(app, `api-compute-${environment}`, {
     env,
-    environment
+    environment,
+    terminationProtection: environment === "production",
 });
 apiComputeStack.addStackDependency(apiDataStack);

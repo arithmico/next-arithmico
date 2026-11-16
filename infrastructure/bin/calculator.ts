@@ -23,11 +23,13 @@ const calculatorCertificate = new CalculatorCertificateStack(app, `calculator-ce
         region: "us-east-1"
     },
     environment,
+    terminationProtection: environment === "production",
 });
 
 const calculator = new CalculatorStack(app, `calculator-${environment}`, {
     env,
     artifact,
     environment,
+    terminationProtection: environment === "production",
 });
 calculator.addStackDependency(calculatorCertificate);
