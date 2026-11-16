@@ -150,13 +150,13 @@ jobs:
       AWS_REGION: ${{ vars.AWS_REGION }}
       CDK_DEPLOY_ARTIFACT: review-${{ github.event.number }}
       # diff against main
-      CDK_DEPLOY_ENVIRONMENT: main
+      CDK_DEPLOY_ENVIRONMENT: production
     strategy:
       matrix:
         cdk-app:
           - "base"
           - "calculator"
-          - "config-service"
+          - "api"
       fail-fast: false
     steps:
       - uses: actions/checkout@v7
@@ -169,11 +169,11 @@ jobs:
       - name: Run CDK Diff
         uses: ./.github/actions/cdk-diff
         with:
-          working-directory: 'infrastructure'
+          working-directory: infrastructure
           aws-account-id: ${{ secrets.AWS_ACCOUNT_ID }}
           aws-region: ${{ vars.AWS_REGION }}
-          cdk-deploy-artifact: 'review-${{ github.event.pull_request.number }}'
-          cdk-deploy-environment: 'main'
+          cdk-deploy-artifact: "review-${{ github.event.pull_request.number }}"
+          cdk-deploy-environment: production
           cdk-app: ${{ matrix.cdk-app }}
 
   formatting:
