@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { getStringParameterOrThrow } from '../lib/utils';
 import { App } from 'aws-cdk-lib';
-import { ConfigServiceStack } from '../lib/config-service/config-service-stack';
+import { ApiDataStack } from '../lib/api/api-data-stack';
+import { ApiComputeStack } from '../lib/api/api-compute-stack';
 
 const account = getStringParameterOrThrow("AWS_ACCOUNT_ID");
 const region = getStringParameterOrThrow("AWS_REGION");
@@ -14,7 +15,13 @@ const env = {
     region
 };
 
-new ConfigServiceStack(app, `config-service-${environment}`, {
+const apiDataStack = new ApiDataStack(app, `api-data-${environment}`, {
     env,
     environment
 });
+
+const apiComputeStack = new ApiComputeStack(app, `api-compute-${environment}`, {
+    env,
+    environment
+});
+apiComputeStack.addStackDependency(apiDataStack);

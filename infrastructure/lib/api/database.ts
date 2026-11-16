@@ -1,4 +1,5 @@
-import { AttributeType, Billing, ProjectionType, TableV2 } from "aws-cdk-lib/aws-dynamodb";
+import { CfnOutput, Fn } from "aws-cdk-lib";
+import { AttributeType, Billing, ITableV2, ProjectionType, TableV2 } from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
 
 export interface DatabaseProps {
@@ -8,7 +9,7 @@ export interface DatabaseProps {
 export class Database extends TableV2 {
     constructor(scope: Construct, id: string, { environment }: DatabaseProps) {
         super(scope, id, {
-            tableName: `config-service-${environment}`,
+            tableName: `api-${environment}`,
             partitionKey: {
                 name: "PK",
                 type: AttributeType.STRING,
@@ -31,5 +32,15 @@ export class Database extends TableV2 {
             },
             projectionType: ProjectionType.ALL,
         });
+
+        new CfnOutput(this, "DatabaseTableArn", {
+            key: "DatabaseTableArn",
+            value: this.tableArn
+        });
+    }
+
+    public static lookup(scope: Construct, id: string, environment: string): ITableV2 {
+        const tableArn = Fn.getStackOutput(`api-data-${environment}`, "DatabaseTableArn");
+        return TableV2.fromTableArn(scope, id, tableArn);
     }
 }

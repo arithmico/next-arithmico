@@ -1,5 +1,5 @@
-import { Duration } from "aws-cdk-lib";
-import { Queue } from "aws-cdk-lib/aws-sqs";
+import { CfnOutput, Duration, Fn } from "aws-cdk-lib";
+import { IQueue, Queue } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 
 export interface WorkflowQueueProps {
@@ -11,7 +11,7 @@ export class WorkflowQueue extends Construct {
     public readonly deadLetterQueue: Queue;
 
     private static generateQueueName(environment: string): string {
-        return `${environment}_workflows_dispatch_v1`;
+        return `${environment}_api_workflow_dispatch_v1`;
     }
 
     constructor(scope: Construct, id: string, props: WorkflowQueueProps) {
@@ -39,5 +39,15 @@ export class WorkflowQueue extends Construct {
                 maxReceiveCount: 3,
             }
         });
+
+        new CfnOutput(this, "WorkflowDispatchQueueArn", {
+            key: "WorkflowDispatchQueueArn",
+            value: this.queue.queueArn
+        });
+    }
+
+    public static lookup(scope: Construct, id: string, environment: string): IQueue {
+        const queueArn = Fn.getStackOutput(`api-data-${environment}`, "WorkflowDispatchQueueArn");
+        return Queue.fromQueueArn(scope, id, queueArn);
     }
 }

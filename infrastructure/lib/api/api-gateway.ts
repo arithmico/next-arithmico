@@ -34,7 +34,7 @@ export class ApiGateway extends Construct {
         });
 
         this.httpApi = new HttpApi(this, "HttpApi", {
-            apiName: `config-service-${props.environment}`,
+            apiName: `api-${props.environment}`,
             corsPreflight: {
                 allowOrigins: ['*'],
                 allowMethods: [
