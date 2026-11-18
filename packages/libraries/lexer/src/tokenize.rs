@@ -326,6 +326,25 @@ mod tests {
     }
 
     #[test]
+    fn unicode_minus() {
+        assert_eq!(
+            tokenize(" \n \t− \r", Default::default()).unwrap(),
+            vec![Token::Minus(MinusToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
     fn multiply() {
         assert_eq!(
             tokenize(" \n \t* \r", Default::default()).unwrap(),
