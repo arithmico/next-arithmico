@@ -28,7 +28,8 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                     span: Span::new(position, span.to),
                 }));
             }
-            '-' => {
+            '-' | '−' | '–' | '—' | '―' | '‐' | '‑' | '‒' | '﹘' | '﹣'
+            | '－' => {
                 tokens.push(Token::Minus(MinusToken {
                     span: Span::new(position, position),
                 }));
