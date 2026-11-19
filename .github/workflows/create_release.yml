@@ -12,6 +12,12 @@ permissions:
   id-token: write
   actions: write
 
+env:
+  SCCACHE_GHA_ENABLED: true
+  RUSTC_WRAPPER: sccache
+  SCCACHE_BUCKET: ${{ secrets.SCCACHE_BUCKET }}
+  SCCACHE_REGION: ${{ secrets.SCCACHE_BUCKET_REGION }}
+
 jobs:
   create-release:
     name: Create Release
@@ -19,52 +25,61 @@ jobs:
     outputs:
       version_tag: ${{ steps.create-tag.outputs.version_tag }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-      - name: Install create-version
-        shell: bash
-        run: cargo install --path packages/applications/create-version
-      - name: Create and push tag
-        id: create-tag
-        shell: bash
-        env: 
-          SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
-        run: |
-          VERSION_TAG=$(create-version)
-          git tag $VERSION_TAG
-          git push origin $VERSION_TAG
-          echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
+    - name: Checkout code
+      uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Install create-version
+      shell: bash
+      run: cargo install --path packages/applications/create-version
+    - name: Create and push tag
+      id: create-tag
+      shell: bash
+      env: 
+        SEMVER_PRERELEASE: ${{ vars.SEMVER_PRERELEASE }}
+      run: |
+        VERSION_TAG=$(create-version)
+        git tag $VERSION_TAG
+        git push origin $VERSION_TAG
+        echo "version_tag=$VERSION_TAG" >> "$GITHUB_OUTPUT"
   
   deploy-base-infrastructure:
     name: Deploy Base Infrastructure
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.3.0
-        with:
-          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ vars.AWS_REGION }}
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - name: Install NPM Dependencies
-        run: npm ci
-      - name: CDK Deploy
-        working-directory: infrastructure
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-        run: |
-          npm run cdk -- deploy \
-            --app "npx ts-node --prefer-ts-exts bin/base.ts" \
-            --all \
-            --require-approval never
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+    - name: Install NPM Dependencies
+      run: npm ci
+    - name: CDK Deploy
+      working-directory: infrastructure
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+      run: |
+        npm run cdk -- deploy \
+          --app "npx ts-node --prefer-ts-exts bin/base.ts" \
+          --all \
+          --require-approval never
 
   deploy-api:
     name: Deploy API
@@ -72,39 +87,42 @@ jobs:
     needs:
       - deploy-base-infrastructure
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Setup Rust Toolchain
-        shell: bash
-        run: |
-          rustup target add wasm32-unknown-unknown
-          cargo binstall -y --locked --force \
-            trunk@0.22.0 \
-            cargo-lambda@=1.9.2
-      - uses: mlugg/setup-zig@v2
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.3.0
-        with:
-          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ vars.AWS_REGION }}
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - name: Install NPM Dependencies
-        run: npm ci
-      - name: CDK Deploy
-        working-directory: infrastructure
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          CDK_DEPLOY_ENVIRONMENT: production
-        run: |
-          npm run cdk -- deploy \
-            --app "npx ts-node --prefer-ts-exts bin/api.ts" \
-            --all \
-            --require-approval never
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Setup Rust Toolchain
+      shell: bash
+      run: |
+        rustup target add wasm32-unknown-unknown
+        cargo binstall -y --locked --force \
+          trunk@0.22.0 \
+          cargo-lambda@=1.9.2
+    - uses: mlugg/setup-zig@v2
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+    - name: Install NPM Dependencies
+      run: npm ci
+    - name: CDK Deploy
+      working-directory: infrastructure
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        CDK_DEPLOY_ENVIRONMENT: production
+      run: |
+        npm run cdk -- deploy \
+          --app "npx ts-node --prefer-ts-exts bin/api.ts" \
+          --all \
+          --require-approval never
 
   deploy-calculator:
     name: Deploy Calculator
@@ -113,49 +131,52 @@ jobs:
       - create-release
       - deploy-base-infrastructure
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Setup toolchain
-        shell: bash
-        run: |
-          rustup target add wasm32-unknown-unknown
-          cargo binstall -y --locked --force \
-            trunk@0.22.0
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v6.3.0
-        with:
-          role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
-          role-session-name: GitHub_to_AWS_via_FederatedOIDC
-          aws-region: ${{ vars.AWS_REGION }}
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-      - name: build calculator
-        working-directory: packages/applications/arithmico
-        shell: bash
-        env:
-          APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
-        run: |
-          touch index.css 
-          ~/.cargo/bin/trunk build --release
-      - name: Generate SBOM
-        run: |
-          cargo binstall -y --locked --force cargo-cyclonedx
-          cargo cyclonedx --format json --override-filename sbom
-          cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-      - name: Install NPM Dependencies
-        run: npm ci
-      - name: CDK Deploy
-        working-directory: infrastructure
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
-          CDK_DEPLOY_ENVIRONMENT: production
-        run: |
-          npm run cdk -- deploy \
-            --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
-            --all \
-            --require-approval never
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Setup toolchain
+      shell: bash
+      run: |
+        rustup target add wasm32-unknown-unknown
+        cargo binstall -y --locked --force \
+          trunk@0.22.0
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: build calculator
+      working-directory: packages/applications/arithmico
+      shell: bash
+      env:
+        APP_VERSION: ${{ needs.create-release.outputs.version_tag }}
+      run: |
+        touch index.css 
+        ~/.cargo/bin/trunk build --release
+    - name: Generate SBOM
+      run: |
+        cargo binstall -y --locked --force cargo-cyclonedx
+        cargo cyclonedx --format json --override-filename sbom
+        cp packages/applications/arithmico/sbom.json packages/applications/arithmico/dist/sbom.json
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+    - name: Install NPM Dependencies
+      run: npm ci
+    - name: CDK Deploy
+      working-directory: infrastructure
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        CDK_DEPLOY_ARTIFACT: ${{ needs.create-release.outputs.version_tag }}
+        CDK_DEPLOY_ENVIRONMENT: production
+      run: |
+        npm run cdk -- deploy \
+          --app "npx ts-node --prefer-ts-exts bin/calculator.ts" \
+          --all \
+          --require-approval never
