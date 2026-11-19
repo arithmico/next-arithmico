@@ -28,7 +28,8 @@
         "feature-manager",
         "api-handler",
         "workflow-dispatcher",
-        "database"
+        "database",
+        "github-app-auth"
     ],
     "rust-analyzer.rustfmt.overrideCommand": ["leptosfmt", "--stdin", "--rustfmt"],
     "rust-analyzer.check.command": "clippy",
