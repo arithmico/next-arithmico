@@ -8,33 +8,47 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  SCCACHE_GHA_ENABLED: true
+  RUSTC_WRAPPER: sccache
+  SCCACHE_BUCKET: ${{ secrets.SCCACHE_BUCKET }}
+  SCCACHE_REGION: ${{ secrets.SCCACHE_BUCKET_REGION }}
+
 jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Install Dependencies
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            pkg-config \
-            libdbus-1-dev \
-            libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev
-      - run: cargo test --all-features
-        shell: bash
+    - uses: actions/checkout@v7
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - uses: cargo-bins/cargo-binstall@main
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          pkg-config \
+          libdbus-1-dev \
+          libwebkit2gtk-4.1-dev \
+          build-essential \
+          curl \
+          wget \
+          file \
+          libxdo-dev \
+          libssl-dev \
+          libayatana-appindicator3-dev \
+          librsvg2-dev
+    - run: cargo test --all-features
+      shell: bash
 
   test-e2e:
     name: Run E2E Tests
@@ -43,6 +57,14 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
     - uses: cargo-bins/cargo-binstall@main
     - name: Setup toolchain
       shell: bash
@@ -81,6 +103,14 @@ jobs:
     - uses: actions/checkout@v7
     - uses: mlugg/setup-zig@v2
     - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
     - uses: cargo-bins/cargo-binstall@main
     - name: Setup toolchain
       shell: bash
@@ -166,6 +196,8 @@ jobs:
           role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ vars.AWS_REGION }}
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.11
       - name: Run CDK Diff
         uses: ./.github/actions/cdk-diff
         with:
@@ -181,14 +213,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-        with:
-          components: rustfmt
-      - name: Install leptosfmt
-        run: cargo install leptosfmt
-      - name: Format check
-        run: leptosfmt --check .
+    - uses: actions/checkout@v7
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+      with:
+        components: rustfmt
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Install leptosfmt
+      run: cargo install leptosfmt
+    - name: Format check
+      run: leptosfmt --check .
 
   lint:
     name: Check Clippy
@@ -197,28 +237,36 @@ jobs:
     env:
       RUSTFLAGS: "-Dwarnings" # Make sure CI fails on all warnings
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions-rust-lang/setup-rust-toolchain@v2
-        with:
-          components: clippy
-      - name: Install Dependencies
-        shell: bash
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            pkg-config \
-            libdbus-1-dev \
-            libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev
-      - name: Run Clippy
-        run: cargo clippy --all-targets --all-features
+    - uses: actions/checkout@v7
+    - uses: actions-rust-lang/setup-rust-toolchain@v2
+      with:
+        components: clippy
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
+    - name: Install Dependencies
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          pkg-config \
+          libdbus-1-dev \
+          libwebkit2gtk-4.1-dev \
+          build-essential \
+          curl \
+          wget \
+          file \
+          libxdo-dev \
+          libssl-dev \
+          libayatana-appindicator3-dev \
+          librsvg2-dev
+    - name: Run Clippy
+      run: cargo clippy --all-targets --all-features
 
   validate-feature-configuration:
     name: Validate Feature Configuration
@@ -227,6 +275,14 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - uses: actions-rust-lang/setup-rust-toolchain@v2
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ secrets.CDK_ROLE_ARN }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ vars.AWS_REGION }}
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.11
     - uses: cargo-bins/cargo-binstall@main
     - name: Install Feature Manager
       shell: bash
