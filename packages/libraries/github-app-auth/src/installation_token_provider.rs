@@ -1,7 +1,7 @@
 use std::{
     collections::HashMap,
     sync::Arc,
-    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
+    time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 use jsonwebtoken::{
@@ -17,19 +17,18 @@ const USER_AGENT: &str = "arithmico-github-app";
 
 #[derive(Debug)]
 struct CachedToken {
-    expires_at: Instant,
+    expires_at: SystemTime,
     token: String,
 }
 
-fn timestamp_to_instant(timestamp: u64) -> Result<Instant, crate::Error> {
-    let now = Instant::now();
-    let now_delta = SystemTime::now().duration_since(UNIX_EPOCH)?;
-    let delta = Duration::from_secs(timestamp).saturating_sub(now_delta);
-    Ok(now + delta)
+fn timestamp_to_system_time(
+    timestamp: u64,
+) -> Result<SystemTime, crate::Error> {
+    Ok(SystemTime::UNIX_EPOCH + Duration::from_secs(timestamp))
 }
 
 impl CachedToken {
-    pub fn new(token: &str, expires_at: Instant) -> Self {
+    pub fn new(token: &str, expires_at: SystemTime) -> Self {
         Self {
             token: token.to_string(),
             expires_at,
@@ -43,7 +42,7 @@ impl CachedToken {
         }
 
         let claims: CachedTokenClaims = insecure_decode_claims(token)?;
-        let expires_at = timestamp_to_instant(claims.exp)?;
+        let expires_at = timestamp_to_system_time(claims.exp)?;
         Ok(CachedToken {
             expires_at,
             token: token.to_string(),
@@ -103,7 +102,7 @@ impl GithubInstallationTokenProvider {
 
     async fn get_access_token(&self) -> Result<String, crate::Error> {
         let token = self.access_token.read().await;
-        if Instant::now() < token.expires_at {
+        if SystemTime::now() < token.expires_at {
             return Ok(token.token.clone());
         }
         drop(token);
@@ -124,7 +123,7 @@ impl GithubInstallationTokenProvider {
         }
 
         let access_token = self.get_access_token().await?;
-        let expires_at = Instant::now() + Duration::from_mins(30);
+        let expires_at = SystemTime::now() + Duration::from_mins(30);
         let response = self
             .http_client
             .post(format!(
@@ -159,7 +158,7 @@ impl GithubInstallationTokenProvider {
             .read()
             .await
             .get(&installation_id)
-            && Instant::now() < token.expires_at
+            && SystemTime::now() < token.expires_at
         {
             return Ok(token.token.clone());
         };
