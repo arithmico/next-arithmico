@@ -76,6 +76,15 @@ pub enum TokenKind {
 
     /// "!"
     ExclamationMark,
+
+    /// "{"
+    LeftBrace,
+
+    /// "}"
+    RightBrace,
+
+    /// "\\"
+    Backslash,
 }
 
 pub trait GetTokenKind {
@@ -141,6 +150,9 @@ impl Translatable for TokenKind {
             TokenKind::ExclamationMark => {
                 Ok(String::from("!").quoted(language)?)
             }
+            TokenKind::LeftBrace => Ok(String::from("{").quoted(language)?),
+            TokenKind::RightBrace => Ok(String::from("}").quoted(language)?),
+            TokenKind::Backslash => Ok(String::from("\\").quoted(language)?),
         }
     }
 }
