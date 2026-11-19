@@ -130,6 +130,21 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
                     },
                 ));
             }
+            '\\' => {
+                tokens.push(Token::Backslash(crate::BackslashToken {
+                    span: Span::new(position, position),
+                }));
+            }
+            '{' => {
+                tokens.push(Token::LeftBrace(crate::LeftBraceToken {
+                    span: Span::new(position, position),
+                }));
+            }
+            '}' => {
+                tokens.push(Token::RightBrace(crate::RightBraceToken {
+                    span: Span::new(position, position),
+                }));
+            }
             // true
             't' if let Some(span) = cursor.match_and_advance("rue") => {
                 tokens.push(Token::Boolean(BooleanToken {
@@ -255,7 +270,10 @@ pub fn tokenize(input: &str, language: Language) -> Result<Vec<Token>, Error> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{AndToken, ExclamationMarkToken, OrToken, Position};
+    use crate::{
+        AndToken, BackslashToken, ExclamationMarkToken, LeftBraceToken,
+        OrToken, Position, RightBraceToken,
+    };
 
     use super::*;
 
@@ -628,6 +646,63 @@ mod tests {
         assert_eq!(
             tokenize(" \n \t) \r", Default::default()).unwrap(),
             vec![Token::RightParenthesis(RightParenthesisToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
+    fn left_brace() {
+        assert_eq!(
+            tokenize(" \n \t{ \r", Default::default()).unwrap(),
+            vec![Token::LeftBrace(LeftBraceToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
+    fn right_brace() {
+        assert_eq!(
+            tokenize(" \n \t} \r", Default::default()).unwrap(),
+            vec![Token::RightBrace(RightBraceToken {
+                span: Span::new(
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    },
+                    Position {
+                        byte_index: 4,
+                        char_index: 4
+                    }
+                ),
+            })]
+        );
+    }
+
+    #[test]
+    fn backslash() {
+        assert_eq!(
+            tokenize(" \n \t\\ \r", Default::default()).unwrap(),
+            vec![Token::Backslash(BackslashToken {
                 span: Span::new(
                     Position {
                         byte_index: 4,
