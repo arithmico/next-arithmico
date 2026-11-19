@@ -159,7 +159,7 @@ impl GithubInstallationTokenProvider {
             .read()
             .await
             .get(&installation_id)
-            && Instant::now() > token.expires_at
+            && Instant::now() < token.expires_at
         {
             return Ok(token.token.clone());
         };
