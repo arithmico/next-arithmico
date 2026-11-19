@@ -1,6 +1,11 @@
+use std::fmt::Display;
+
+use serde::{Deserialize, Serialize};
+
 mod and;
 mod arrow;
 mod asterisk;
+mod bashslash;
 mod boolean;
 mod caret;
 mod define;
@@ -9,6 +14,7 @@ mod exclamation_mark;
 mod greater_than;
 mod greater_than_or_equals;
 mod identifier;
+mod left_brace;
 mod left_bracket;
 mod left_parenthesis;
 mod less_than;
@@ -17,16 +23,16 @@ mod minus;
 mod number;
 mod or;
 mod plus;
+mod right_brace;
 mod right_bracket;
 mod right_parenthesis;
 mod separator;
 mod slash;
 
-use std::fmt::Display;
-
 pub use and::*;
 pub use arrow::*;
 pub use asterisk::*;
+pub use bashslash::*;
 pub use boolean::*;
 pub use caret::*;
 pub use define::*;
@@ -35,6 +41,7 @@ pub use exclamation_mark::*;
 pub use greater_than::*;
 pub use greater_than_or_equals::*;
 pub use identifier::*;
+pub use left_brace::*;
 pub use left_bracket::*;
 pub use left_parenthesis::*;
 pub use less_than::*;
@@ -43,10 +50,10 @@ pub use minus::*;
 pub use number::*;
 pub use or::*;
 pub use plus::*;
+pub use right_brace::*;
 pub use right_bracket::*;
 pub use right_parenthesis::*;
 pub use separator::*;
-use serde::{Deserialize, Serialize};
 pub use slash::*;
 
 use crate::{GetTokenKind, GetTokenSpan};
@@ -76,6 +83,9 @@ pub enum Token {
     And(AndToken),
     Or(OrToken),
     ExclamationMark(ExclamationMarkToken),
+    LeftBrace(LeftBraceToken),
+    RightBrace(RightBraceToken),
+    Backslash(BackslashToken),
 }
 
 impl Display for Token {
@@ -112,6 +122,9 @@ impl Display for Token {
             Token::And(_) => f.write_str("&"),
             Token::Or(_) => f.write_str("|"),
             Token::ExclamationMark(_) => f.write_str("!"),
+            Token::LeftBrace(_) => f.write_str("{"),
+            Token::RightBrace(_) => f.write_str("}"),
+            Token::Backslash(_) => f.write_str("\\"),
         }
     }
 }
@@ -142,6 +155,9 @@ impl GetTokenKind for Token {
             Token::And(token) => token.token_kind(),
             Token::Or(token) => token.token_kind(),
             Token::ExclamationMark(token) => token.token_kind(),
+            Token::LeftBrace(token) => token.token_kind(),
+            Token::RightBrace(token) => token.token_kind(),
+            Token::Backslash(token) => token.token_kind(),
         }
     }
 }
@@ -172,6 +188,9 @@ impl GetTokenSpan for Token {
             Token::And(token) => token.get_span(),
             Token::Or(token) => token.get_span(),
             Token::ExclamationMark(token) => token.get_span(),
+            Token::LeftBrace(token) => token.get_span(),
+            Token::RightBrace(token) => token.get_span(),
+            Token::Backslash(token) => token.get_span(),
         }
     }
 }

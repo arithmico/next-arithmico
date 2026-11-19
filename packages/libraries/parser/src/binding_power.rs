@@ -15,6 +15,9 @@ impl GetBindingPower for TokenKind {
             | TokenKind::LeftBracket
             | TokenKind::Separator
             | TokenKind::Arrow
+            | TokenKind::Backslash
+            | TokenKind::LeftBrace
+            | TokenKind::RightBrace
             | TokenKind::RightBracket => None,
             TokenKind::Define => Some(0),
             TokenKind::Or => Some(1),
