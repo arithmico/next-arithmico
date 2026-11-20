@@ -24,10 +24,24 @@ semver = "1.0.28"
 tokio = "1.54.1"
 reqwest = "0.13.5"
 serde_json = "1.0.154"
-aws-sdk-sqs = "1.120.0"
 anyhow = "1.0.104"
-aws-sdk-secretsmanager = "1.124.0"
 octocrab = "0.54.9"
+
+[workspace.dependencies.aws-sdk-secretsmanager]
+version = "1.124.0"
+default-features = false
+features = [
+    "default-https-client",
+    "rt-tokio",
+]
+
+[workspace.dependencies.aws-sdk-sqs]
+version = "1.120.0"
+default-features = false
+feature = [
+    "default-https-client",
+    "rt-tokio",
+]
 
 [workspace.dependencies.aws-config] 
 version = "1.13.3"
