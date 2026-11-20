@@ -8,7 +8,7 @@ derive_builder = "0.20.2"
 tracing.workspace = true
 serde = { workspace = true, features = ["derive"] }
 thiserror.workspace = true
-aws-sdk-dynamodb = "1.135.0"
+aws-sdk-dynamodb = { version = "1.135.0", default-features = false, features = ["default-https-client", "rt-tokio"] }
 serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
 semver.workspace = true
 aws-config.workspace = true
