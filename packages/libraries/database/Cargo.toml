@@ -11,7 +11,7 @@ thiserror.workspace = true
 aws-sdk-dynamodb = "1.135.0"
 serde_dynamo = { version = "4.3.0", features = ["aws-sdk-dynamodb+1"] }
 semver.workspace = true
-aws-config = { version = "1.13.0", features = ["behavior-version-latest"] }
+aws-config.workspace = true
 
 [lints]
 workspace = true

@@ -13,7 +13,7 @@ jsonwebtoken = { version = "12.0.0", features = ["aws_lc_rs"] }
 serde_json.workspace = true
 aws-sdk-secretsmanager.workspace = true
 secrecy = { version = "0.10.3", features = ["serde"] }
-aws-config = { workspace = true, features = ["behavior-version-latest"] }
+aws-config.workspace = true
 
 [lints]
 workspace = true
