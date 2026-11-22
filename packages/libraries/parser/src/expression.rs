@@ -1195,4 +1195,82 @@ mod tests {
             }
         );
     }
+
+    #[test]
+    fn latex_frac() {
+        let tokens = tokenize("\\frac 1 2", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(6, 6)),
+                Number::new_node(2.0).with_span(Span::new_between(8, 8))
+            )
+            .with_span(Span::new_between(0, 8))
+        );
+    }
+
+    #[test]
+    fn latex_frac_with_braces_divisor() {
+        let tokens =
+            tokenize("\\frac 1 {2}", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(6, 6)),
+                Number::new_node(2.0).with_span(Span::new_between(9, 9))
+            )
+            .with_span(Span::new_between(0, 9))
+        );
+    }
+
+    #[test]
+    fn latex_frac_with_braces_dividend() {
+        let tokens =
+            tokenize("\\frac {1} 2", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(7, 7)),
+                Number::new_node(2.0).with_span(Span::new_between(10, 10))
+            )
+            .with_span(Span::new_between(0, 10))
+        );
+    }
+
+    #[test]
+    fn latex_frac_with_braces_dividend_and_divisor() {
+        let tokens =
+            tokenize("\\frac {1} {2}", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(7, 7)),
+                Number::new_node(2.0).with_span(Span::new_between(11, 11))
+            )
+            .with_span(Span::new_between(0, 11))
+        );
+    }
+
+    #[test]
+    fn latex_frac_with_braces_dividend_and_sum_divisor() {
+        let tokens =
+            tokenize("\\frac {1} {2+3}", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Division::new(
+                Number::new_node(1.0).with_span(Span::new_between(7, 7)),
+                Sum::new(vec![
+                    Number::new_node(2.0).with_span(Span::new_between(11, 11)),
+                    Number::new_node(3.0).with_span(Span::new_between(13, 13)),
+                ])
+                .with_span(Span::new_between(11, 13))
+            )
+            .with_span(Span::new_between(0, 13))
+        );
+    }
 }

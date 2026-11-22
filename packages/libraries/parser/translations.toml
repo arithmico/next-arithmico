@@ -29,3 +29,7 @@ German = "Fehlende schließende Klammer für \"(\" an Position {pos}."
 [error.duplicate_function_argument_name]
 English = "Duplicate function argument name {name}."
 German = "Doppelter Funktionsargumentname {name}."
+
+[error.unsupported_latex_command]
+English = "Unsupported LaTeX command: {name}"
+German = "Nicht unterstützer LaTeX-Befehl: {name}."
