@@ -1,10 +1,11 @@
 use lexer::{
-    ArrowToken, GetTokenSpan, IdentifierToken, RightBracketToken,
-    RightParenthesisToken, SeparatorToken, Span, Token, TokenKind,
+    ArrowToken, GetTokenSpan, IdentifierToken, RightBraceToken,
+    RightBracketToken, RightParenthesisToken, SeparatorToken, Span, Token,
+    TokenKind,
 };
 use node::{
-    Boolean, Function, FunctionCall, FunctionSignature, Node, NodeType, Number,
-    Symbol, Tensor,
+    Boolean, Division, Function, FunctionCall, FunctionSignature, Node,
+    NodeType, Number, Symbol, Tensor,
 };
 use trace::{Tracable, TracableMut};
 
@@ -177,11 +178,27 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             // parse expression between braces
             let (next_cursor, node) = parse_expression(cursor)?;
             cursor = next_cursor;
-            match cursor.next_or_err()? {
-                Token::RightBrace(_) => Ok((cursor, node)),
-                token => Err(Error::UnexpectedToken {
-                    expected: vec![TokenKind::RightParenthesis],
-                    actual: token.clone(),
+            cursor.expect::<RightBraceToken>()?;
+            Ok((cursor, node))
+        }
+        Token::Backslash(token) => {
+            let command = cursor.expect::<IdentifierToken>()?;
+            match command.name.as_str() {
+                "frac" => {
+                    let (cursor, dividend) = parse_primary(cursor)?;
+                    let (cursor, divisor) = parse_primary(cursor)?;
+                    let mut hull = token.get_span();
+                    if let Some(span) = divisor.hull() {
+                        hull = hull.hull(&span);
+                    }
+                    Ok((
+                        cursor,
+                        Division::new(dividend, divisor).with_span(hull),
+                    ))
+                }
+                name => Err(Error::UnsupportedLatexCommand {
+                    span: command.get_span(),
+                    name: name.to_string(),
                 }),
             }
         }

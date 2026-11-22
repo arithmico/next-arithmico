@@ -39,6 +39,10 @@ pub enum Error {
     MissingClosingParenthesis {
         span: Span,
     },
+    UnsupportedLatexCommand {
+        span: Span,
+        name: String,
+    },
     Lexer(lexer::Error),
 }
 
@@ -53,6 +57,7 @@ impl Error {
             Error::DuplicateFunctionArgumentName { span, .. } => *span,
             Error::InvalidFunctionName { span } => *span,
             Error::MissingClosingParenthesis { span } => *span,
+            Error::UnsupportedLatexCommand { span, .. } => *span,
             Error::Lexer(error) => {
                 Span::new(error.position(), error.position())
             }
@@ -127,6 +132,14 @@ impl Translatable for Error {
             Error::DuplicateFunctionArgumentName { name, .. } => {
                 TranslatedMessage::new(
                     "error.duplicate_function_argument_name",
+                    translation_resolver,
+                )
+                .key("name", name)
+                .translate(language)
+            }
+            Error::UnsupportedLatexCommand { name, .. } => {
+                TranslatedMessage::new(
+                    "error.unsupported_latex_command",
                     translation_resolver,
                 )
                 .key("name", name)
