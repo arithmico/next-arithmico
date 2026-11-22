@@ -23,3 +23,23 @@ pub fn find_closing_parenthesis<'a>(
     }
     None
 }
+
+pub fn find_closing_brace<'a>(mut cursor: Cursor<'a>) -> Option<Cursor<'a>> {
+    let mut inner_left_parenthesis: usize = 0;
+    while let Some(token) = cursor.next() {
+        match token.token_kind() {
+            TokenKind::LeftBrace => {
+                inner_left_parenthesis += 1;
+            }
+            TokenKind::RightBrace => {
+                if inner_left_parenthesis == 0 {
+                    return Some(cursor);
+                } else {
+                    inner_left_parenthesis -= 1;
+                }
+            }
+            _ => (),
+        }
+    }
+    None
+}
