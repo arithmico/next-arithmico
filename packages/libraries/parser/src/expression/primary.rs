@@ -1,0 +1,180 @@
+use lexer::{
+    ArrowToken, GetTokenSpan, IdentifierToken, RightBracketToken,
+    RightParenthesisToken, SeparatorToken, Span, Token, TokenKind,
+};
+use node::{
+    Boolean, Function, FunctionCall, FunctionSignature, Node, NodeType, Number,
+    Symbol, Tensor,
+};
+use trace::{Tracable, TracableMut};
+
+use crate::{
+    Error, ParseResult,
+    binding_power::GetBindingPower,
+    cursor::Cursor,
+    expression::{
+        group::find_closing_parenthesis, parse_expression,
+        parse_expression_pratt,
+    },
+};
+
+pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
+    let token = cursor.next_or_err()?;
+
+    match token {
+        // TODO: handle anonymous composite function calls: (f + g)(x)
+        Token::Identifier(identifier_token) => {
+            if let Some(Token::LeftParenthesis(..)) = cursor.peek() {
+                let mut outer_span = identifier_token.get_span();
+                // function call
+                cursor.next(); // consume left parenthesis
+                let mut arguments = Vec::<Node>::new();
+                while let Ok((next_cursor, node)) = parse_expression(cursor) {
+                    cursor = next_cursor;
+                    arguments.push(node);
+
+                    if let Token::RightParenthesis(token) = cursor
+                        .expect_one_of(&[
+                            TokenKind::RightParenthesis,
+                            TokenKind::Separator,
+                        ])?
+                    {
+                        outer_span = outer_span.hull(&token.get_span());
+                        break;
+                    }
+                }
+                if arguments.is_empty() {
+                    // consume right parenthesis
+                    outer_span = outer_span.hull(
+                        &cursor.expect::<RightParenthesisToken>()?.get_span(),
+                    );
+                }
+                Ok((
+                    cursor,
+                    FunctionCall::new(
+                        Symbol::new(&identifier_token.name)
+                            .with_span(identifier_token.get_span()),
+                        arguments,
+                    )
+                    .with_span(outer_span),
+                ))
+            } else {
+                // symbol
+                Ok((
+                    cursor,
+                    Symbol::new(&identifier_token.name)
+                        .with_span(token.get_span()),
+                ))
+            }
+        }
+        Token::Number(number_token) => Ok((
+            cursor,
+            Number::new_node(number_token.value).with_span(number_token.span),
+        )),
+        Token::Boolean(boolean_token) => Ok((
+            cursor,
+            Boolean::new(boolean_token.value).with_span(boolean_token.span),
+        )),
+        Token::LeftParenthesis(token) => {
+            let Some(closing_cursor) = find_closing_parenthesis(cursor) else {
+                return Err(Error::MissingClosingParenthesis {
+                    span: token.get_span(),
+                });
+            };
+            if closing_cursor.peek_token_kind() == Some(TokenKind::Arrow) {
+                let mut span = token.get_span();
+                // parse inline function declaration
+                let mut parameters = Vec::<(String, Span)>::new();
+                // read function parameters e. g. (a, b, c)
+                while let Some(token) = cursor.next_if::<IdentifierToken>() {
+                    parameters.push((token.name.clone(), token.get_span()));
+                    cursor.next_if::<SeparatorToken>();
+                }
+
+                // consume closing parenthesis
+                cursor.expect::<RightParenthesisToken>()?;
+
+                // consume arrow
+                cursor.expect::<ArrowToken>()?;
+
+                // parse function expression
+                let (next_cursor, node) = parse_expression_pratt(
+                    cursor,
+                    TokenKind::Define.binding_power().unwrap_or_default() + 1,
+                )?;
+                let mut signature = FunctionSignature::default();
+                for (param, span) in parameters {
+                    if signature.has_argument(&param) {
+                        return Err(Error::DuplicateFunctionArgumentName {
+                            name: param,
+                            span,
+                        });
+                    }
+                    signature.add_argument(param, |arg| {
+                        arg.node_type(NodeType::Any)
+                    });
+                }
+                let signature = signature.add_return_type(NodeType::Any);
+                if let Some(s) = node.hull() {
+                    span = span.hull(&s);
+                }
+
+                Ok((
+                    next_cursor,
+                    Function::new(signature, node).with_span(span),
+                ))
+            } else {
+                // parse expression between parenthesis
+                let (next_cursor, node) = parse_expression(cursor)?;
+                cursor = next_cursor;
+                match cursor.next_or_err()? {
+                    Token::RightParenthesis(_) => Ok((cursor, node)),
+                    token => Err(Error::UnexpectedToken {
+                        expected: vec![TokenKind::RightParenthesis],
+                        actual: token.clone(),
+                    }),
+                }
+            }
+        }
+        Token::LeftBracket(token) => {
+            let mut span = token.span;
+            let mut elements = Vec::<Node>::new();
+            while let Ok((next_cursor, node)) = parse_expression(cursor) {
+                cursor = next_cursor;
+                elements.push(node);
+                match cursor.next_or_err()? {
+                    Token::Separator(_) => (),
+                    Token::RightBracket(token) => {
+                        span = span.hull(&token.span);
+                        break;
+                    }
+                    token => {
+                        return Err(Error::UnexpectedToken {
+                            expected: vec![
+                                TokenKind::RightBracket,
+                                TokenKind::Separator,
+                            ],
+                            actual: token.clone(),
+                        });
+                    }
+                }
+            }
+            if elements.is_empty() {
+                // consume right bracket
+                span = span
+                    .hull(&cursor.expect::<RightBracketToken>()?.get_span());
+            }
+            Ok((cursor, Tensor::new_node(elements).with_span(span)))
+        }
+        token => Err(Error::UnexpectedToken {
+            expected: vec![
+                TokenKind::Identifier,
+                TokenKind::Boolean,
+                TokenKind::Number,
+                TokenKind::LeftParenthesis,
+                TokenKind::LeftBracket,
+            ],
+            actual: token.clone(),
+        }),
+    }
+}
