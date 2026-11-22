@@ -13,8 +13,8 @@ use crate::{
     binding_power::GetBindingPower,
     cursor::Cursor,
     expression::{
-        group::find_closing_parenthesis, parse_expression,
-        parse_expression_pratt,
+        group::{find_closing_brace, find_closing_parenthesis},
+        parse_expression, parse_expression_pratt,
     },
 };
 
@@ -165,6 +165,25 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                     .hull(&cursor.expect::<RightBracketToken>()?.get_span());
             }
             Ok((cursor, Tensor::new_node(elements).with_span(span)))
+        }
+        Token::LeftBrace(token) => {
+            // check if closing brace exists
+            find_closing_brace(cursor).ok_or(
+                Error::MissingClosingParenthesis {
+                    span: token.get_span(),
+                },
+            )?;
+
+            // parse expression between braces
+            let (next_cursor, node) = parse_expression(cursor)?;
+            cursor = next_cursor;
+            match cursor.next_or_err()? {
+                Token::RightBrace(_) => Ok((cursor, node)),
+                token => Err(Error::UnexpectedToken {
+                    expected: vec![TokenKind::RightParenthesis],
+                    actual: token.clone(),
+                }),
+            }
         }
         token => Err(Error::UnexpectedToken {
             expected: vec![

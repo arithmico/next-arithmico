@@ -1173,4 +1173,26 @@ mod tests {
             .with_span(Span::new_between(0, 12)),
         );
     }
+
+    #[test]
+    fn symbol_inside_braces() {
+        let tokens = tokenize("{foo}", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            Symbol::new("foo").with_span(Span::new_between(1, 3))
+        );
+    }
+
+    #[test]
+    fn err_missing_right_brace() {
+        let tokens = tokenize("{foo", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap_err(),
+            Error::MissingClosingParenthesis {
+                span: Span::new_between(0, 0)
+            }
+        );
+    }
 }
