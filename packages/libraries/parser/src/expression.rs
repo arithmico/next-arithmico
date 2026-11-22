@@ -15,10 +15,13 @@ use crate::{
     ParseResult,
     binding_power::GetBindingPower,
     cursor::Cursor,
-    expression::group::find_closing_parenthesis,
+    expression::{
+        group::find_closing_parenthesis, relation_type::RelationType,
+    },
 };
 
 mod group;
+mod relation_type;
 
 pub(crate) fn parse_expression<'a>(
     cursor: Cursor<'a>,
@@ -324,38 +327,6 @@ fn parse_expression_pratt<'a>(
     }
 
     Ok((cursor, left))
-}
-
-enum RelationType {
-    Equals,
-    LessThan,
-    LessThanOrEquals,
-    GreaterThan,
-    GreaterThanOrEquals,
-}
-
-impl RelationType {
-    fn try_from_token(token: &Token) -> Result<Self, Error> {
-        match token.token_kind() {
-            TokenKind::Equals => Ok(RelationType::Equals),
-            TokenKind::LessThan => Ok(RelationType::LessThan),
-            TokenKind::LessThanOrEquals => Ok(RelationType::LessThanOrEquals),
-            TokenKind::GreaterThan => Ok(RelationType::GreaterThan),
-            TokenKind::GreaterThanOrEquals => {
-                Ok(RelationType::GreaterThanOrEquals)
-            }
-            _ => Err(Error::UnexpectedToken {
-                expected: vec![
-                    TokenKind::Equals,
-                    TokenKind::LessThan,
-                    TokenKind::LessThanOrEquals,
-                    TokenKind::GreaterThan,
-                    TokenKind::GreaterThanOrEquals,
-                ],
-                actual: token.clone(),
-            }),
-        }
-    }
 }
 
 fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
