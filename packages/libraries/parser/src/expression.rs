@@ -1273,4 +1273,32 @@ mod tests {
             .with_span(Span::new_between(0, 13))
         );
     }
+
+    #[test]
+    fn latex_sqrt() {
+        let tokens = tokenize("\\sqrt 1", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            FunctionCall::new(
+                Symbol::new("sqrt"),
+                vec![Number::new_node(1.0).with_span(Span::new_between(6, 6)),]
+            )
+            .with_span(Span::new_between(0, 6))
+        );
+    }
+
+    #[test]
+    fn latex_sqrt_with_braces() {
+        let tokens = tokenize("\\sqrt {1}", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap().1,
+            FunctionCall::new(
+                Symbol::new("sqrt"),
+                vec![Number::new_node(1.0).with_span(Span::new_between(7, 7)),]
+            )
+            .with_span(Span::new_between(0, 7))
+        );
+    }
 }

@@ -183,11 +183,22 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
         }
         Token::Backslash(token) => {
             let command = cursor.expect::<IdentifierToken>()?;
+            let mut hull = token.get_span();
             match command.name.as_str() {
+                "sqrt" => {
+                    let (cursor, argument) = parse_primary(cursor)?;
+                    if let Some(span) = argument.hull() {
+                        hull = hull.hull(&span);
+                    }
+                    Ok((
+                        cursor,
+                        FunctionCall::new(Symbol::new("sqrt"), vec![argument])
+                            .with_span(hull),
+                    ))
+                }
                 "frac" => {
                     let (cursor, dividend) = parse_primary(cursor)?;
                     let (cursor, divisor) = parse_primary(cursor)?;
-                    let mut hull = token.get_span();
                     if let Some(span) = divisor.hull() {
                         hull = hull.hull(&span);
                     }
