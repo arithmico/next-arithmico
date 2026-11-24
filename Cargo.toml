@@ -38,7 +38,7 @@ features = [
 [workspace.dependencies.aws-sdk-sqs]
 version = "1.120.0"
 default-features = false
-feature = [
+features = [
     "default-https-client",
     "rt-tokio",
 ]
