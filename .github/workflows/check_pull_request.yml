@@ -9,7 +9,6 @@ permissions:
   pull-requests: write
 
 env:
-  SCCACHE_GHA_ENABLED: true
   RUSTC_WRAPPER: sccache
   SCCACHE_BUCKET: ${{ secrets.SCCACHE_BUCKET }}
   SCCACHE_REGION: ${{ secrets.SCCACHE_BUCKET_REGION }}
