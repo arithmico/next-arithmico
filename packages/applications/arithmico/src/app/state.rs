@@ -14,12 +14,24 @@ use web_sys::{Blob, BlobPropertyBag, MessageEvent, Url, Worker};
 
 use crate::state::{State, UpdateOutputAction};
 
-fn create_worker(name: &str) -> Option<Worker> {
+fn create_worker() -> Option<Worker> {
     let origin = window().location().origin().ok()?;
+
+    let js_path = document()
+        .query_selector("meta[name='engine-worker-js-url'")
+        .ok()
+        .flatten()?
+        .get_attribute("content")?;
+
+    let wasm_path = document()
+        .query_selector("meta[name='engine-worker-wasm-url'")
+        .ok()
+        .flatten()?
+        .get_attribute("content")?;
 
     let script = Array::new();
     script.push(
-        &format!(r#"importScripts("{origin}/{name}.js");wasm_bindgen("{origin}/{name}_bg.wasm");"#)
+        &format!(r#"importScripts("{origin}/{js_path}");wasm_bindgen("{origin}/{wasm_path}");"#)
             .into(),
     );
 
@@ -36,7 +48,7 @@ fn create_worker(name: &str) -> Option<Worker> {
 
 #[component]
 pub fn StateProvider(children: Children) -> impl IntoView {
-    let Some(worker) = create_worker("engine-worker") else {
+    let Some(worker) = create_worker() else {
         error!("Failed to create WebWorker!");
         return ().into_any();
     };
