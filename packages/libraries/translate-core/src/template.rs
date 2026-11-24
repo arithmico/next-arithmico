@@ -56,29 +56,60 @@ impl TranslationTemmplateItem {
 
 fn parse_template(input: &str) -> Result<Template, String> {
     let mut items = Vec::new();
-    let mut remaining = input;
+    let mut buffer = String::new();
+    let mut chars = input.chars();
+    let mut is_key = false;
 
-    while !remaining.is_empty() {
-        if remaining.starts_with("{") {
-            let end = remaining.find("}").ok_or("closing \"}\" is missing")?;
-            let key = &remaining[1..end].trim();
-
-            if key.is_empty() {
-                return Err("empty template key".into());
+    while let Some(c) = chars.next() {
+        match c {
+            '\\' => match chars.next() {
+                Some('{') => buffer.push('{'),
+                Some('}') => buffer.push('}'),
+                other => {
+                    buffer.push(c);
+                    if let Some(other) = other {
+                        buffer.push(other);
+                    }
+                }
+            },
+            '{' => {
+                if is_key {
+                    return Err(String::from(
+                        "SyntaxError: nested '{' are not allowed",
+                    ));
+                }
+                if !buffer.is_empty() {
+                    items.push(TranslationTemmplateItem::Text(buffer.clone()));
+                    buffer.clear();
+                }
+                is_key = true;
             }
-            if key.contains(['{', '}', ' ']) {
-                return Err("invalid characters in template key".into());
+            '}' => {
+                if !is_key {
+                    return Err(String::from(
+                        "SyntaxError: missing opening brace",
+                    ));
+                }
+                if buffer.is_empty() {
+                    return Err(String::from("SyntaxError: missing key name"));
+                }
+                items.push(TranslationTemmplateItem::Key(buffer.clone()));
+                buffer.clear();
+                is_key = false;
             }
-
-            items.push(TranslationTemmplateItem::Key(key.to_string()));
-            remaining = &remaining[(end + 1)..];
-        } else {
-            let end = remaining.find('{').unwrap_or(remaining.len());
-            let text = &remaining[..end];
-
-            items.push(TranslationTemmplateItem::Text(text.to_string()));
-            remaining = &remaining[end..];
+            c => {
+                if c.is_whitespace() && is_key {
+                    continue;
+                }
+                buffer.push(c)
+            }
         }
+    }
+    if is_key {
+        return Err(String::from("SyntaxError: missing closing brace"));
+    }
+    if !buffer.is_empty() {
+        items.push(TranslationTemmplateItem::Text(buffer.clone()));
     }
 
     Ok(Template::new_with_items(items))
@@ -97,6 +128,18 @@ mod tests {
             Template {
                 items: vec![TranslationTemmplateItem::Text(
                     "hello world".into()
+                )]
+            }
+        )
+    }
+
+    #[test]
+    fn parse_text_with_excaped_braces() {
+        assert_eq!(
+            Template::new("\\{hello world\\}"),
+            Template {
+                items: vec![TranslationTemmplateItem::Text(
+                    "{hello world}".into()
                 )]
             }
         )
