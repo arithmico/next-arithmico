@@ -1190,7 +1190,7 @@ mod tests {
         let cursor = Cursor::new(&tokens);
         assert_eq!(
             parse_expression(cursor).unwrap_err(),
-            Error::MissingClosingParenthesis {
+            Error::MissingClosingBrace {
                 span: Span::new_between(0, 0)
             }
         );

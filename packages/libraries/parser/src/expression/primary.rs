@@ -14,7 +14,9 @@ use crate::{
     binding_power::GetBindingPower,
     cursor::Cursor,
     expression::{
-        group::{find_closing_brace, find_closing_parenthesis},
+        group::{
+            find_closing_brace, find_closing_bracket, find_closing_parenthesis,
+        },
         parse_expression, parse_expression_pratt,
     },
 };
@@ -140,6 +142,13 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
         Token::LeftBracket(token) => {
             let mut span = token.span;
             let mut elements = Vec::<Node>::new();
+            // check if closing bracket exists
+            find_closing_bracket(cursor).ok_or(
+                Error::MissingClosingBracket {
+                    span: token.get_span(),
+                },
+            )?;
+
             while let Ok((next_cursor, node)) = parse_expression(cursor) {
                 cursor = next_cursor;
                 elements.push(node);
@@ -169,11 +178,9 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
         }
         Token::LeftBrace(token) => {
             // check if closing brace exists
-            find_closing_brace(cursor).ok_or(
-                Error::MissingClosingParenthesis {
-                    span: token.get_span(),
-                },
-            )?;
+            find_closing_brace(cursor).ok_or(Error::MissingClosingBrace {
+                span: token.get_span(),
+            })?;
 
             // parse expression between braces
             let (next_cursor, node) = parse_expression(cursor)?;

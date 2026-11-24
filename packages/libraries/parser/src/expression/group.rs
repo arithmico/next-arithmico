@@ -25,17 +25,37 @@ pub fn find_closing_parenthesis<'a>(
 }
 
 pub fn find_closing_brace<'a>(mut cursor: Cursor<'a>) -> Option<Cursor<'a>> {
-    let mut inner_left_parenthesis: usize = 0;
+    let mut inner_left_braces: usize = 0;
     while let Some(token) = cursor.next() {
         match token.token_kind() {
             TokenKind::LeftBrace => {
-                inner_left_parenthesis += 1;
+                inner_left_braces += 1;
             }
             TokenKind::RightBrace => {
-                if inner_left_parenthesis == 0 {
+                if inner_left_braces == 0 {
                     return Some(cursor);
                 } else {
-                    inner_left_parenthesis -= 1;
+                    inner_left_braces -= 1;
+                }
+            }
+            _ => (),
+        }
+    }
+    None
+}
+
+pub fn find_closing_bracket<'a>(mut cursor: Cursor<'a>) -> Option<Cursor<'a>> {
+    let mut inner_left_brackets: usize = 0;
+    while let Some(token) = cursor.next() {
+        match token.token_kind() {
+            TokenKind::LeftBracket => {
+                inner_left_brackets += 1;
+            }
+            TokenKind::RightBracket => {
+                if inner_left_brackets == 0 {
+                    return Some(cursor);
+                } else {
+                    inner_left_brackets -= 1;
                 }
             }
             _ => (),
