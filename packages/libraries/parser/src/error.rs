@@ -39,6 +39,12 @@ pub enum Error {
     MissingClosingParenthesis {
         span: Span,
     },
+    MissingClosingBracket {
+        span: Span,
+    },
+    MissingClosingBrace {
+        span: Span,
+    },
     UnsupportedLatexCommand {
         span: Span,
         name: String,
@@ -57,6 +63,8 @@ impl Error {
             Error::DuplicateFunctionArgumentName { span, .. } => *span,
             Error::InvalidFunctionName { span } => *span,
             Error::MissingClosingParenthesis { span } => *span,
+            Error::MissingClosingBracket { span } => *span,
+            Error::MissingClosingBrace { span } => *span,
             Error::UnsupportedLatexCommand { span, .. } => *span,
             Error::Lexer(error) => {
                 Span::new(error.position(), error.position())
@@ -129,6 +137,18 @@ impl Translatable for Error {
                 .key("pos", span.from.char_index + 1)
                 .translate(language)
             }
+            Error::MissingClosingBracket { span } => TranslatedMessage::new(
+                "error.missing_closing_bracket",
+                translation_resolver,
+            )
+            .key("pos", span.from.char_index + 1)
+            .translate(language),
+            Error::MissingClosingBrace { span } => TranslatedMessage::new(
+                "error.missing_closing_brace",
+                translation_resolver,
+            )
+            .key("pos", span.from.char_index + 1)
+            .translate(language),
             Error::DuplicateFunctionArgumentName { name, .. } => {
                 TranslatedMessage::new(
                     "error.duplicate_function_argument_name",
