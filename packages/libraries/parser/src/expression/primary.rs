@@ -1,7 +1,7 @@
 use lexer::{
-    ArrowToken, GetTokenSpan, IdentifierToken, RightBraceToken,
-    RightBracketToken, RightParenthesisToken, SeparatorToken, Span, Token,
-    TokenKind,
+    ArrowToken, GetTokenSpan, IdentifierToken, LeftParenthesisToken,
+    RightBraceToken, RightBracketToken, RightParenthesisToken, SeparatorToken,
+    Span, Token, TokenKind,
 };
 use node::{
     Boolean, Division, Function, FunctionCall, FunctionSignature, Node,
@@ -28,9 +28,16 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
         // TODO: handle anonymous composite function calls: (f + g)(x)
         Token::Identifier(identifier_token) => {
             if let Some(Token::LeftParenthesis(..)) = cursor.peek() {
-                let mut outer_span = identifier_token.get_span();
                 // function call
-                cursor.next(); // consume left parenthesis
+                let mut outer_span = identifier_token.get_span();
+                let left_parenthesis =
+                    cursor.expect::<LeftParenthesisToken>()?;
+                find_closing_parenthesis(cursor).ok_or(
+                    Error::MissingClosingParenthesis {
+                        span: left_parenthesis.get_span(),
+                    },
+                )?;
+
                 let mut arguments = Vec::<Node>::new();
                 while let Ok((next_cursor, node)) = parse_expression(cursor) {
                     cursor = next_cursor;

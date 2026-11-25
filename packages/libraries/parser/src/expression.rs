@@ -893,15 +893,15 @@ mod tests {
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(
             err,
-            Error::UnexpectedEndOfInput {
-                span: Span::new_between(5, 5)
+            Error::MissingClosingParenthesis {
+                span: Span::new_between(1, 1)
             }
         );
     }
 
     #[test]
     fn function_call_err_unexpected_token() {
-        let tokens = tokenize("f(x]", common::Language::English).unwrap();
+        let tokens = tokenize("f(x])", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
         let err = parse_expression(cursor).unwrap_err();
         assert_eq!(
