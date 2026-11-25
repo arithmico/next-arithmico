@@ -213,7 +213,10 @@ operator_power_matrix_number = ["evaluator/operator_power_matrix_number"]
 
 
 # trigonometry
-api_endpoint_trigonometry_pi = ["engine/api_endpoint_trigonometry_pi"]
+api_endpoint_trigonometry_pi = [
+    "engine/api_endpoint_trigonometry_pi",
+    "parser/latex_pi",
+]
 api_endpoint_trigonometry_sin = ["engine/api_endpoint_trigonometry_sin"]
 api_endpoint_trigonometry_cos = ["engine/api_endpoint_trigonometry_cos"]
 api_endpoint_trigonometry_tan = ["engine/api_endpoint_trigonometry_tan"]
