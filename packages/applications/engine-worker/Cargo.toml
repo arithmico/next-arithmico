@@ -81,6 +81,7 @@ default = [
     "api_endpoint_physics_lambda_cp",
     "api_endpoint_physics_lambda_cn",
     "api_endpoint_physics_r_inf",
+    "api_endpoint_physics_r_h",
     "api_endpoint_physics_u",
     "api_endpoint_physics_mu_p",
     "api_endpoint_physics_mu_e",
@@ -237,6 +238,7 @@ api_endpoint_physics_gamma_p = ["engine/api_endpoint_physics_gamma_p"]
 api_endpoint_physics_lambda_cp = ["engine/api_endpoint_physics_lambda_cp"]
 api_endpoint_physics_lambda_cn = ["engine/api_endpoint_physics_lambda_cn"]
 api_endpoint_physics_r_inf = ["engine/api_endpoint_physics_r_inf"]
+api_endpoint_physics_r_h = ["engine/api_endpoint_physics_r_h"]
 api_endpoint_physics_u = ["engine/api_endpoint_physics_u"]
 api_endpoint_physics_mu_p = ["engine/api_endpoint_physics_mu_p"]
 api_endpoint_physics_mu_e = ["engine/api_endpoint_physics_mu_e"]

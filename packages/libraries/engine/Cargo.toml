@@ -56,6 +56,7 @@ default = [
     "api_endpoint_physics_lambda_cp",
     "api_endpoint_physics_lambda_cn",
     "api_endpoint_physics_r_inf",
+    "api_endpoint_physics_r_h",
     "api_endpoint_physics_u",
     "api_endpoint_physics_mu_p",
     "api_endpoint_physics_mu_e",
@@ -271,6 +272,10 @@ api_endpoint_physics_lambda_cn = [
     "evaluator/datatype_symbol",
 ]
 api_endpoint_physics_r_inf = [
+    "evaluator/datatype_number",
+    "evaluator/datatype_symbol",
+]
+api_endpoint_physics_r_h = [
     "evaluator/datatype_number",
     "evaluator/datatype_symbol",
 ]
