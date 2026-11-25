@@ -84,6 +84,9 @@ use constants::VMEndpoint;
 #[cfg(feature = "api_endpoint_physics_z_0")]
 use constants::Z0Endpoint;
 
+#[cfg(feature = "api_endpoint_physics_r_h")]
+use crate::api::physics::constants::RHEndpoint;
+
 pub fn load_physics_module() -> ApiModule {
     let module = ApiModule::builder()
         .id("physics")
@@ -137,6 +140,9 @@ pub fn load_physics_module() -> ApiModule {
 
     #[cfg(feature = "api_endpoint_physics_r_inf")]
     let module = module.constant::<RInfEndpoint>();
+
+    #[cfg(feature = "api_endpoint_physics_r_h")]
+    let module = module.constant::<RHEndpoint>();
 
     #[cfg(feature = "api_endpoint_physics_u")]
     let module = module.constant::<UEndpoint>();

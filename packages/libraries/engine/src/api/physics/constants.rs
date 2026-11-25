@@ -293,11 +293,11 @@ impl ConstantEndpoint for LambdaCNEndpoint {
 #[name("physics:R_inf")]
 #[description(
     Language::English,
-    "The Rydberg constant in 1/m is used for the calculation of atomic spectra."
+    "The Rydberg constant for an infinitely massive nucleus, expressed in 1/m. It defines the spectral wavenumbers of hydrogen-like atoms when nuclear recoil is neglected."
 )]
 #[description(
     Language::German,
-    "Die Rydberg-Konstante in 1/m wird zur Berechnung von Atomspektren verwendet."
+    "Die Rydberg-Konstante für einen Atomkern mit unendlicher Masse, angegeben in 1/m. Sie beschreibt die Wellenzahlen der Spektrallinien wasserstoffähnlicher Atome unter Vernachlässigung der Kernbewegung."
 )]
 pub struct RInfEndpoint;
 
@@ -306,6 +306,32 @@ impl ConstantEndpoint for RInfEndpoint {
 
     fn executor(_context: Options) -> Self::Output {
         Number::new(10_973_731.568_1)
+    }
+}
+
+// https://physics.nist.gov/cgi-bin/cuu/Value?ryd
+// https://physics.nist.gov/cgi-bin/cuu/Value?mpsme
+//
+// R_H := R_inf * mu / m_e = R_inf * (m_p / (m_p + m_e)) = R_inf * q / (q + 1)
+// with the reduced mass mu = m_e * m_p / (m_e + m_p)
+// and the proton-electron ration mass q = m_p / m_e
+#[derive(ConstantMetadata)]
+#[name("physics:R_H")]
+#[description(
+    Language::English,
+    "The Rydberg constant for hydrogen, expressed in 1/m. It accounts for the finite proton mass through the reduced mass of the electron-proton system and is used to calculate hydrogen spectral lines."
+)]
+#[description(
+    Language::German,
+    "Die Rydberg-Konstante für Wasserstoff, angegeben in 1/m. Sie berücksichtigt die endliche Protonenmasse mithilfe der reduzierten Masse des Elektron-Proton-Systems und dient zur Berechnung der Wasserstoff-Spektrallinien."
+)]
+pub struct RHEndpoint;
+
+impl ConstantEndpoint for RHEndpoint {
+    type Output = Number;
+
+    fn executor(_context: Options) -> Self::Output {
+        Number::new(10_967_758.340_3)
     }
 }
 
