@@ -18,3 +18,17 @@ lexer = { version = "0.1.0", path = "../lexer", features = ["test_utils"] }
 
 [lints]
 workspace = true
+
+[features]
+default = [
+    "latex_frac",
+    "latex_sqrt"
+]
+
+latex_base = ["latex_braces", "latex_backslash"]
+latex_braces = []
+latex_backslash = []
+
+# latex commands
+latex_frac = ["latex_base"]
+latex_sqrt = ["latex_base"]
