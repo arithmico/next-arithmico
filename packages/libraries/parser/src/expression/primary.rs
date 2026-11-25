@@ -168,34 +168,8 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 cursor.expect::<RightBracketToken>()?.get_span();
             let span = token.span.hull(&right_bracket_span);
             Ok((cursor, Tensor::new_node(elements).with_span(span)))
-
-            /*while let Ok((next_cursor, node)) = {
-                cursor = next_cursor;
-                elements.push(node);
-                match cursor.next_or_err()? {
-                    Token::Separator(_) => (),
-                    Token::RightBracket(token) => {
-                        span = span.hull(&token.span);
-                        break;
-                    }
-                    token => {
-                        return Err(Error::UnexpectedToken {
-                            expected: vec![
-                                TokenKind::RightBracket,
-                                TokenKind::Separator,
-                            ],
-                            actual: token.clone(),
-                        });
-                    }
-                }
-            }
-            if elements.is_empty() {
-                // consume right bracket
-                span = span
-                    .hull(&cursor.expect::<RightBracketToken>()?.get_span());
-            }*/
         }
-        Token::LeftBrace(token) => {
+        Token::LeftBrace(token) if cfg!(feature = "latex_braces") => {
             // check if closing brace exists
             find_closing_brace(cursor).ok_or(Error::MissingClosingBrace {
                 span: token.get_span(),
@@ -207,11 +181,11 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             cursor.expect::<RightBraceToken>()?;
             Ok((cursor, node))
         }
-        Token::Backslash(token) => {
+        Token::Backslash(token) if cfg!(feature = "latex_backslash") => {
             let command = cursor.expect::<IdentifierToken>()?;
             let mut hull = token.get_span();
             match command.name.as_str() {
-                "sqrt" => {
+                "sqrt" if cfg!(feature = "latex_sqrt") => {
                     let (cursor, argument) = parse_primary(cursor)?;
                     if let Some(span) = argument.hull() {
                         hull = hull.hull(&span);
@@ -222,7 +196,7 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                             .with_span(hull),
                     ))
                 }
-                "frac" => {
+                "frac" if cfg!(feature = "latex_sqrt") => {
                     let (cursor, dividend) = parse_primary(cursor)?;
                     let (cursor, divisor) = parse_primary(cursor)?;
                     if let Some(span) = divisor.hull() {

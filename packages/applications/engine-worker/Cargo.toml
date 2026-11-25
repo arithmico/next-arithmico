@@ -10,7 +10,7 @@ engine = { version = "0.1.0", path = "../../libraries/engine", default-features 
 engine-protocol = { version = "0.1.0", path = "../../libraries/engine-protocol" }
 evaluator = { version = "0.1.0", path = "../../libraries/evaluator", default-features = false }
 node = { version = "0.1.0", path = "../../libraries/node" }
-parser = { version = "0.1.0", path = "../../libraries/parser" }
+parser = { version = "0.1.0", path = "../../libraries/parser", default-features = false }
 serde_json.workspace = true
 web-sys = { version = "0.3.106", features = ["DedicatedWorkerGlobalScope", "MessageEvent", "console"] }
 
@@ -187,8 +187,14 @@ operator_sum_tensor_tensor = ["evaluator/operator_sum_tensor_tensor"]
 operator_product_number_number = ["evaluator/operator_product_number_number"]
 operator_product_number_tensor = ["evaluator/operator_product_number_tensor"]
 operator_product_vector_vector = ["evaluator/operator_product_vector_vector"]
-operator_division_number_number = ["evaluator/operator_division_number_number"]
-operator_division_tensor_number = ["evaluator/operator_division_tensor_number"]
+operator_division_number_number = [
+    "evaluator/operator_division_number_number",
+    "parser/latex_frac",
+]
+operator_division_tensor_number = [
+    "evaluator/operator_division_tensor_number",
+    "parser/latex_frac"
+]
 operator_power_number_number = ["evaluator/operator_power_number_number"]
 operator_function_call = ["evaluator/operator_function_call"]
 operator_definition = ["evaluator/operator_definition"]
@@ -281,7 +287,10 @@ api_endpoint_analysis_log = ["engine/api_endpoint_analysis_log"]
 api_endpoint_analysis_ln = ["engine/api_endpoint_analysis_ln"]
 api_endpoint_analysis_lg = ["engine/api_endpoint_analysis_lg"]
 api_endpoint_analysis_e = ["engine/api_endpoint_analysis_e"]
-api_endpoint_analysis_sqrt = ["engine/api_endpoint_analysis_sqrt"]
+api_endpoint_analysis_sqrt = [
+    "engine/api_endpoint_analysis_sqrt",
+    "parser/latex_sqrt"
+]
 api_endpoint_analysis_root = ["engine/api_endpoint_analysis_root"]
 api_endpoint_analysis_round = ["engine/api_endpoint_analysis_round"]
 api_endpoint_analysis_floor = ["engine/api_endpoint_analysis_floor"]
