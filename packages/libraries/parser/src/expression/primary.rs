@@ -207,6 +207,9 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                         Division::new(dividend, divisor).with_span(hull),
                     ))
                 }
+                "pi" if cfg!(feature = "latex_pi") => {
+                    Ok((cursor, Symbol::new("pi")))
+                }
                 name => Err(Error::UnsupportedLatexCommand {
                     span: command.get_span(),
                     name: name.to_string(),
