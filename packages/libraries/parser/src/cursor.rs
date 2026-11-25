@@ -121,8 +121,26 @@ impl<'a> Cursor<'a> {
         self.tokens.get(self.position)
     }
 
+    pub fn peek_or_err(&self) -> Result<&'a Token, Error> {
+        self.peek().ok_or(Error::UnexpectedEndOfInput {
+            span: self
+                .current()
+                .map(|token| token.get_span())
+                .unwrap_or_default(),
+        })
+    }
+
     pub fn peek_token_kind(&self) -> Option<TokenKind> {
         self.peek().map(|token| token.token_kind())
+    }
+
+    pub fn peek_token_kind_or_err(&self) -> Result<TokenKind, Error> {
+        self.peek_token_kind().ok_or(Error::UnexpectedEndOfInput {
+            span: self
+                .current()
+                .map(|token| token.get_span())
+                .unwrap_or_default(),
+        })
     }
 
     pub fn peek_position(&self) -> Option<Position> {

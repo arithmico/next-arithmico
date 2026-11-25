@@ -140,7 +140,6 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
             }
         }
         Token::LeftBracket(token) => {
-            let mut span = token.span;
             let mut elements = Vec::<Node>::new();
             // check if closing bracket exists
             find_closing_bracket(cursor).ok_or(
@@ -149,7 +148,21 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 },
             )?;
 
-            while let Ok((next_cursor, node)) = parse_expression(cursor) {
+            while cursor.peek_token_kind_or_err()? != TokenKind::RightBracket {
+                let (next_cursor, node) = parse_expression(cursor)?;
+                cursor = next_cursor;
+                elements.push(node);
+                if let Token::Separator(_) = cursor.peek_or_err()? {
+                    cursor.next_or_err()?;
+                }
+            }
+
+            let right_bracket_span =
+                cursor.expect::<RightBracketToken>()?.get_span();
+            let span = token.span.hull(&right_bracket_span);
+            Ok((cursor, Tensor::new_node(elements).with_span(span)))
+
+            /*while let Ok((next_cursor, node)) = {
                 cursor = next_cursor;
                 elements.push(node);
                 match cursor.next_or_err()? {
@@ -173,8 +186,7 @@ pub fn parse_primary<'a>(mut cursor: Cursor<'a>) -> ParseResult<'a, Node> {
                 // consume right bracket
                 span = span
                     .hull(&cursor.expect::<RightBracketToken>()?.get_span());
-            }
-            Ok((cursor, Tensor::new_node(elements).with_span(span)))
+            }*/
         }
         Token::LeftBrace(token) => {
             // check if closing brace exists

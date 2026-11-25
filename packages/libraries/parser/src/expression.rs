@@ -1197,6 +1197,18 @@ mod tests {
     }
 
     #[test]
+    fn err_missing_right_parenthesis_inside_brackets() {
+        let tokens = tokenize("[(1+2]", common::Language::English).unwrap();
+        let cursor = Cursor::new(&tokens);
+        assert_eq!(
+            parse_expression(cursor).unwrap_err(),
+            Error::MissingClosingParenthesis {
+                span: Span::new_between(1, 1)
+            }
+        );
+    }
+
+    #[test]
     fn latex_frac() {
         let tokens = tokenize("\\frac 1 2", common::Language::English).unwrap();
         let cursor = Cursor::new(&tokens);
