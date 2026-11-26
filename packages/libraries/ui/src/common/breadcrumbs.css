@@ -1,12 +1,12 @@
 .breadcrumbs {
     display: flex;
-    padding: var(--spacing-4) var(--spacing-10) var(--spacing-4) 0;
 }
 
 .breadcrumbs > ol {
     display: flex;
     align-items: center;
     gap: var(--spacing-1);
+    flex-wrap: wrap;
 }
 
 .breadcrumb-separator {
