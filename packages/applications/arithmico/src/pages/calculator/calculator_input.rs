@@ -160,6 +160,7 @@ fn CalculatorInputEditor() -> impl IntoView {
             attr:aria-label=move || {
                 translate("calculator.input.label", None).unwrap_or_default()
             }
+            attr:aria-multiline="false"
             attr:data-revision=revision
             on:keydown=move |event| {
                 if event.key() == "Enter" {
