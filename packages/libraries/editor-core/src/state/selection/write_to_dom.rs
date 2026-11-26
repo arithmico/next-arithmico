@@ -25,11 +25,26 @@ impl EditorState {
 
         match self.get_selection_data() {
             Some((anchor_node, anchor_offset, focus_node, focus_offset)) => {
+                let anchor_offset = anchor_offset as u32;
+                let focus_offset = focus_offset as u32;
+                let anchor = selection.anchor_node();
+                let focus = selection.focus_node();
+                let a_offset = selection.anchor_offset();
+                let f_offset = selection.focus_offset();
+
+                if anchor.as_ref() == Some(&anchor_node)
+                    && focus.as_ref() == Some(&focus_node)
+                    && a_offset == anchor_offset
+                    && f_offset == focus_offset
+                {
+                    return Ok(());
+                }
+
                 selection.set_base_and_extent(
                     &anchor_node,
-                    anchor_offset as u32,
+                    anchor_offset,
                     &focus_node,
-                    focus_offset as u32,
+                    focus_offset,
                 )?;
             }
             None => selection.remove_all_ranges()?,
