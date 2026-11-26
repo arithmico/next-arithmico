@@ -10,6 +10,8 @@ pub fn PageWithSidebar(
     children: Children,
     #[prop(optional, into)] class: Option<String>,
 ) -> impl IntoView {
+    let class = format!("page-with-sidebar {}", class.unwrap_or_default());
+
     view! {
         <Page class=class>
             <Sidebar title="Arithmico">

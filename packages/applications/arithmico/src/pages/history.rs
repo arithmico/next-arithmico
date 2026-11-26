@@ -10,7 +10,7 @@ mod history_list;
 #[component]
 pub fn HistoryPage() -> impl IntoView {
     view! {
-        <PageWithSidebar>
+        <PageWithSidebar class="history-page">
             <HistoryHeader />
             <HistoryList />
         </PageWithSidebar>

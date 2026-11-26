@@ -34,7 +34,7 @@ pub fn ReferencePage() -> impl IntoView {
     );
 
     view! {
-        <PageWithSidebar>
+        <PageWithSidebar class="reference-page">
             <ReferenceHeader search_query=search_query />
             {move || {
                 search_results

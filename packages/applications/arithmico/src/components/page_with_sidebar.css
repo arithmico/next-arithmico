@@ -1,5 +1,12 @@
+.page-with-sidebar {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
 .page-with-sidebar-container {
     padding: 0 var(--spacing-4);
+    min-height: 0;
+    max-height: 100%;
     overflow-y: auto;
 }
 
