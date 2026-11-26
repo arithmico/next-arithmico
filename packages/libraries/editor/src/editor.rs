@@ -115,6 +115,22 @@ pub fn Editor(
         document_element,
         "selectionchange",
         move |_: web_sys::Event| {
+            let Some(editor) = editor_ref.get_untracked() else {
+                return;
+            };
+
+            let Ok(Some(selection)) = window().get_selection() else {
+                return;
+            };
+
+            if !editor.contains(selection.focus_node().as_ref()) {
+                return;
+            }
+
+            if !editor.contains(selection.anchor_node().as_ref()) {
+                return;
+            }
+
             update_editor_state.run(EditorStateMutation::new(move |state| {
                 state.read_selection_from_dom();
                 Ok(())
