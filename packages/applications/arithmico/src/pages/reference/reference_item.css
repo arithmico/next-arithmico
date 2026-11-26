@@ -6,18 +6,32 @@
     padding: 0.5rem 1rem;
     align-items: center;
     gap: 0.25rem;
+    position: relative;
 
     > div {
         display: flex;
         gap: 0.25rem;
 
         > a {
-            margin-left: auto;
+            position: absolute;
+            inset: 0;
+            display: block;
+            scroll-margin-block: 1rem;
+        }
+
+        > a:focus-visible {
+            outline: none;
         }
     }
 
     &:hover {
         cursor: pointer;
+    }
+
+    &:has(a:focus-visible) {
+        outline-style: solid;
+        outline-width: 2px;
+        outline-offset: 2px;
     }
 }
 
@@ -29,6 +43,10 @@
         background-color: var(--color-neutral-800);
         border: 1px solid var(--color-neutral-700);
     }
+
+    &:has(a:focus-visible) {
+        outline-color: white;
+    }
 }
 
 .theme-light .reference-item {
@@ -38,5 +56,9 @@
     &:hover {
         background-color: var(--color-neutral-200);
         border: 1px solid var(--color-neutral-400);
+    }
+
+    &:has(a:focus-visible) {
+        outline-color: black;
     }
 }
