@@ -2,7 +2,8 @@ input[type=search].reference-search {
     border-width: 1px;
     border-style: solid;
     border-radius: var(--radius-sm);
-    width: 100%;
+    flex: 1;
+    min-width: max(50%, 200px);
     font-size: var(--text-xs);
     padding-left: var(--spacing-2);
     padding-right: var(--spacing-3);

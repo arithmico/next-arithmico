@@ -2,7 +2,7 @@ use decimal_places::DecimalPlacesSetting;
 use leptos::prelude::*;
 use settings_section::SettingsSection;
 use translate::FormattedMessage;
-use ui::common::page_title::PageTitle;
+use ui::{common::page_title::PageTitle, container::page_header::PageHeader};
 use web_state::use_state;
 
 use crate::{
@@ -30,9 +30,11 @@ pub fn SettingsPage() -> impl IntoView {
 
     view! {
         <PageWithSidebar class="settings-page">
-            <PageTitle>
-                <FormattedMessage id="settings.title" />
-            </PageTitle>
+            <PageHeader>
+                <PageTitle>
+                    <FormattedMessage id="settings.title" />
+                </PageTitle>
+            </PageHeader>
 
             <SettingsSection title="settings.section.general">
                 <LanguageSetting />
