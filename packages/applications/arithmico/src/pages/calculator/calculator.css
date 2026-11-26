@@ -1,3 +1,7 @@
+.calcualtor .page-with-sidebar-container {
+    overflow-y: clip;
+}
+
 .calculator-layout {
     display: flex;
     flex-direction: column;

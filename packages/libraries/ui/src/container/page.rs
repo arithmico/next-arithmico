@@ -3,7 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn Page(
     children: Children,
-    #[prop(default = None)] class: Option<String>,
+    #[prop(default = None, into)] class: Option<String>,
 ) -> impl IntoView {
     view! {
         <div class=if let Some(class) = class {
