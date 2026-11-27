@@ -1,6 +1,7 @@
 use calculator_header::CalculatorHeader;
 use calculator_input::CaluclatorInput;
 use leptos::prelude::*;
+use translate::FormattedMessage;
 use web_state::use_state;
 
 mod calculator_header;
@@ -20,11 +21,24 @@ pub fn CalculatorPage() -> impl IntoView {
         <PageWithSidebar class="calculator">
             <CalculatorHeader />
             <div class="calculator-layout">
-                <CaluclatorInput />
-                <CalculatorOutput
-                    class="calculator-output-field"
-                    value=current_output
-                />
+                <div>
+                    <label id="calculator-input-label">
+                        <FormattedMessage id="calculator.input.label" />
+                    </label>
+                    <CaluclatorInput attr:aria-labelledby="calculator-input-label" />
+                </div>
+                <div>
+                    <label id="calculator-output-label">
+                        <FormattedMessage id="calculator.output.label" />
+                    </label>
+                    <CalculatorOutput
+                        attr:aria-labelledby="calculator-input-label"
+                        attr:aria-atomic=true
+                        attr:aria-live="polite"
+                        class="calculator-output-field"
+                        value=current_output
+                    />
+                </div>
             </div>
         </PageWithSidebar>
     }
