@@ -22,6 +22,10 @@ German = "Rechner"
 English = "Input"
 German = "Eingabe"
 
+[calculator.output.label]
+English = "Output"
+German = "Ausgabe"
+
 [calculator.toolbar.label]
 English = "Calculator Actions"
 German = "Rechner Funktionen"

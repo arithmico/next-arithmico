@@ -11,7 +11,6 @@ pub fn CalculatorOutput(
 ) -> impl IntoView {
     view! {
         <output
-            for="calculator-output"
             data-testid="calculator-output"
             class=format!("calculator-output {}", class.unwrap_or_default())
         >

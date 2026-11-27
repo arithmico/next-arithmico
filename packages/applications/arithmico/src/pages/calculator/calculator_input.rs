@@ -10,7 +10,6 @@ use leptos::{
     logging::{error, warn},
     prelude::*,
 };
-use translate::use_translate;
 use web_state::use_state;
 
 use crate::state::{EvaluateAction, State, UpdateInputEditorAction};
@@ -148,8 +147,6 @@ fn CalculatorInputEditor() -> impl IntoView {
             state.dispatch(UpdateInputEditorAction::new(mutation));
         });
 
-    let translate = use_translate();
-
     let revision = state.query(|state| state.input_editor_state.get_revision());
 
     view! {
@@ -157,9 +154,6 @@ fn CalculatorInputEditor() -> impl IntoView {
             id="calculator-input"
             autofocus=true
             data_test_id="calculator-input"
-            attr:aria-label=move || {
-                translate("calculator.input.label", None).unwrap_or_default()
-            }
             attr:aria-multiline="false"
             attr:data-revision=revision
             on:keydown=move |event| {
